@@ -142,5 +142,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "御魂溢出"
+  },
+  {
+    "itemName": "st_souls_close",
+    "imageName": "simple_st_souls_close.png",
+    "roiFront": "1180,227,56,83",
+    "roiBack": "1166,215,84,107",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "御魂关闭状态"
   }
 ]
