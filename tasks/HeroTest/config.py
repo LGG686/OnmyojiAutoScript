@@ -30,7 +30,8 @@ class HeroTestConfig(BaseModel):
         description="选择要打的关卡。\n兵藏秘境升级顺序八华斩->无畏 -> 暴击伤害 -> 默认祝福 -> 默认属性\n"
                     "藤原道长矩阵博士攻略:https://www.bilibili.com/opus/1162129635334422531",
     )
-    skill_mode: SkillMode = Field(default=SkillMode.PVE, description="技能本技能偏向\n藤原道长使用攻略高配阵容,需自己配置好技能和祝福")
+    skill_mode: SkillMode = Field(default=SkillMode.PVE, description="技能本技能偏向\n藤原道长使用攻略高配阵容,"
+                                                                     "自己配置好技能和祝福,PVP:阵容助手高配,PVE:矩阵博士高配")
     # 限制时间
     limit_time: Time = Field(default=Time(minute=30), description="limit_time_help")
     # 限制次数

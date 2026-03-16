@@ -153,8 +153,14 @@ class ScriptTask(GameUi, GeneralBattle, HeroTestAssets, SwitchSoul):
             self.I_HERO2_SKILL5,  # 敛神祝福
             self.I_HERO2_SKILL6,  # 速度祝福
         ]
-        # TODO: PVP
-        pvp_skill = []
+        pvp_skill = [
+            self.I_HERO2_SKILL7,  # 遏云祝福
+            self.I_HERO2_SKILL8,  # 音迹祝福
+            self.I_HERO2_SKILL9,  # 泛音祝福
+            self.I_HERO2_SKILL10,  # 凝啸祝福
+            self.I_HERO2_SKILL11,  # 逐空祝福
+            self.I_HERO2_SKILL12,  # 伤害加成
+        ]
         target_skill_dict: dict[SkillMode, list] = {
             SkillMode.PVE: pve_skill,
             SkillMode.PVP: pvp_skill,

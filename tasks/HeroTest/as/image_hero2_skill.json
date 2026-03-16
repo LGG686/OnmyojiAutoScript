@@ -52,5 +52,59 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "速度祝福"
+  },
+  {
+    "itemName": "hero2_skill7",
+    "imageName": "as_hero2_skill7.png",
+    "roiFront": "823,355,64,41",
+    "roiBack": "54,344,1170,74",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "遏云"
+  },
+  {
+    "itemName": "hero2_skill8",
+    "imageName": "as_hero2_skill8.png",
+    "roiFront": "221,353,60,40",
+    "roiBack": "54,343,1167,73",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "音迹"
+  },
+  {
+    "itemName": "hero2_skill9",
+    "imageName": "as_hero2_skill9.png",
+    "roiFront": "219,356,60,38",
+    "roiBack": "50,342,1169,73",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "泛音"
+  },
+  {
+    "itemName": "hero2_skill10",
+    "imageName": "as_hero2_skill10.png",
+    "roiFront": "1127,356,59,40",
+    "roiBack": "53,345,1169,74",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "凝啸"
+  },
+  {
+    "itemName": "hero2_skill11",
+    "imageName": "as_hero2_skill11.png",
+    "roiFront": "521,357,60,39",
+    "roiBack": "48,342,1172,74",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "逐空"
+  },
+  {
+    "itemName": "hero2_skill12",
+    "imageName": "as_hero2_skill12.png",
+    "roiFront": "1034,354,122,41",
+    "roiBack": "53,341,1172,74",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "伤害加成"
   }
 ]
