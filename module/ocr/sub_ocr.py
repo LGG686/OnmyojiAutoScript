@@ -229,6 +229,8 @@ class Quantity(BaseCor):
         if '/' in result:
             result_split = result.split('/')
             result = result_split[0]
+        if result == '':
+            return 0
         result = cn2an.cn2an(result, 'smart')
 
         try:
