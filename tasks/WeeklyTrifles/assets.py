@@ -25,7 +25,7 @@ class WeeklyTriflesAssets:
 	# 分享勾玉 
 	I_WT_AB_JADE = RuleImage(roi_front=(977,552,44,47), roi_back=(977,552,44,47), threshold=0.8, method="Template matching", file="./tasks/WeeklyTrifles/area_boss/area_boss_wt_ab_jade.png")
 	# 微信分享 
-	I_WT_AB_WECHAT = RuleImage(roi_front=(910,647,50,41), roi_back=(903,636,64,60), threshold=0.8, method="Template matching", file="./tasks/WeeklyTrifles/area_boss/area_boss_wt_ab_wechat.png")
+	I_WT_AB_WECHAT = RuleImage(roi_front=(910,647,50,41), roi_back=(680,617,594,95), threshold=0.8, method="Template matching", file="./tasks/WeeklyTrifles/area_boss/area_boss_wt_ab_wechat.png")
 
 
 	# Image Rule Assets
@@ -76,7 +76,7 @@ class WeeklyTriflesAssets:
 	# 秘闻分享 
 	I_WT_SE_SHARE = RuleImage(roi_front=(911,570,46,43), roi_back=(886,547,92,95), threshold=0.8, method="Template matching", file="./tasks/WeeklyTrifles/secret/secret_wt_se_share.png")
 	# 微信 
-	I_WT_SE_WECHAT = RuleImage(roi_front=(855,627,45,37), roi_back=(726,592,361,108), threshold=0.8, method="Template matching", file="./tasks/WeeklyTrifles/secret/secret_wt_se_wechat.png")
+	I_WT_SE_WECHAT = RuleImage(roi_front=(855,627,45,37), roi_back=(618,584,653,116), threshold=0.8, method="Template matching", file="./tasks/WeeklyTrifles/secret/secret_wt_se_wechat.png")
 	# 勾玉 
 	I_WT_SE_JADE = RuleImage(roi_front=(1126,533,35,39), roi_back=(1118,525,50,55), threshold=0.8, method="Template matching", file="./tasks/WeeklyTrifles/secret/secret_wt_se_jade.png")
 	# 排行 

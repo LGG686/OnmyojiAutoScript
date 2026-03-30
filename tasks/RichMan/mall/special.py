@@ -159,17 +159,10 @@ class Special(Buy, MallNavbar):
         # logger.info(f'图片的ROI是: {target.roi_front}')
         # logger.info(f'上中点是：{upper_midpoint}')
         # logger.info(f'数字的ROI是: {self.O_SP_RES_NUMBER.roi}')
-        result = self.O_SP_RES_NUMBER.ocr(self.device.image)
-        result = result.replace('？', '2').replace('?', '2').replace(':', '；').replace('火', '次').replace('教', '数').replace('刺', '剩').replace('头', '买')
-        try:
-            if '：' in result:
-                result = re.findall(r'(?:剩余)?购买次数：(\d+)', result)[0]
-                result = int(result)
-            else:
-                result = re.findall(r'本周剩余数量(\d+)', result)[0]
-                result = int(result)
-        except:
-            result = 0
+        txt = self.O_SP_RES_NUMBER.ocr(self.device.image)
+        txt = txt.replace('？', '2').replace('?', '2').replace(':', '；').replace('火', '次').replace('教', '数').replace('刺', '剩').replace('头', '买')
+        match = re.search(r'(\d+)', txt)
+        result = int(match.group(1)) if match else 0
         logger.info(f'Remain [{result}]')
         return result
 
