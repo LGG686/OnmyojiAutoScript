@@ -327,7 +327,7 @@ class SoloExploration(BaseExploration):
             # 有时候会出现准备邀请但是队友比较快直接上车了, 导致永远识别不到+号, 设置超时计时器
             if no_click_timeout.started() and no_click_timeout.reached():
                 logger.warning('Cannot invite friend, maybe already existing')
-                return False
+                return True
             if self.appear(self.I_LOAD_FRIEND):
                 break
             if self.appear(self.I_INVITE_ENSURE):

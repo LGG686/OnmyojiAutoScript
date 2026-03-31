@@ -50,11 +50,11 @@ class GeneralInviteAssets:
 	# 判断是否点中好友了 
 	I_SELECTED = RuleImage(roi_front=(895,373,33,32), roi_back=(347,174,589,369), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_selected.png")
 	# 用来判断当前的列表是哪儿的 
-	I_FLAG_1_ON = RuleImage(roi_front=(355,131,60,15), roi_back=(354,128,62,19), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_on.png")
+	I_FLAG_1_ON = RuleImage(roi_front=(355,131,43,15), roi_back=(354,128,62,19), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_on.png")
 	# description 
 	I_FLAG_1_OFF = RuleImage(roi_front=(353,128,58,20), roi_back=(353,126,58,22), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_off.png")
 	# description 
-	I_FLAG_2_ON = RuleImage(roi_front=(465,131,60,19), roi_back=(465,126,61,24), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_on.png")
+	I_FLAG_2_ON = RuleImage(roi_front=(472,82,32,11), roi_back=(454,74,56,26), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_on.png")
 	# description 
 	I_FLAG_2_OFF = RuleImage(roi_front=(469,131,58,17), roi_back=(469,127,58,21), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_off.png")
 	# description 
