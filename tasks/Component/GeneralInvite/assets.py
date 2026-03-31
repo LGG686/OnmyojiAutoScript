@@ -48,19 +48,19 @@ class GeneralInviteAssets:
 	# 点击邀请 
 	I_INVITE_ENSURE = RuleImage(roi_front=(710,544,132,60), roi_back=(710,544,132,60), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_invite_ensure.png")
 	# 判断是否点中好友了 
-	I_SELECTED = RuleImage(roi_front=(895,373,33,32), roi_back=(895,373,33,32), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_selected.png")
+	I_SELECTED = RuleImage(roi_front=(895,373,33,32), roi_back=(347,174,589,369), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_selected.png")
 	# 用来判断当前的列表是哪儿的 
-	I_FLAG_1_ON = RuleImage(roi_front=(354,126,62,21), roi_back=(354,126,62,21), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_on.png")
+	I_FLAG_1_ON = RuleImage(roi_front=(355,131,60,15), roi_back=(354,128,62,19), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_on.png")
 	# description 
-	I_FLAG_1_OFF = RuleImage(roi_front=(353,126,58,22), roi_back=(353,126,58,22), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_off.png")
+	I_FLAG_1_OFF = RuleImage(roi_front=(353,128,58,20), roi_back=(353,126,58,22), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_off.png")
 	# description 
-	I_FLAG_2_ON = RuleImage(roi_front=(465,126,61,24), roi_back=(465,126,61,24), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_on.png")
+	I_FLAG_2_ON = RuleImage(roi_front=(465,131,60,19), roi_back=(465,126,61,24), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_on.png")
 	# description 
-	I_FLAG_2_OFF = RuleImage(roi_front=(469,127,58,21), roi_back=(469,127,58,21), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_off.png")
+	I_FLAG_2_OFF = RuleImage(roi_front=(469,131,58,17), roi_back=(469,127,58,21), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_off.png")
 	# description 
-	I_FLAG_3_ON = RuleImage(roi_front=(588,126,48,22), roi_back=(588,126,48,22), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_3_on.png")
+	I_FLAG_3_ON = RuleImage(roi_front=(588,131,48,17), roi_back=(588,126,48,22), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_3_on.png")
 	# description 
-	I_FLAG_3_OFF = RuleImage(roi_front=(590,126,41,22), roi_back=(590,126,41,22), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_3_off.png")
+	I_FLAG_3_OFF = RuleImage(roi_front=(590,129,41,19), roi_back=(590,126,41,22), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_3_off.png")
 	# description 
 	I_FLAG_4_ON = RuleImage(roi_front=(713,128,34,21), roi_back=(713,128,34,21), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_4_on.png")
 	# description 
@@ -95,7 +95,7 @@ class GeneralInviteAssets:
 	I_BACK_YELLOW_SEA = RuleImage(roi_front=(31,16,42,42), roi_back=(31,16,42,42), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_back_yellow_sea.png")
 	# 识别到寄养邀请 
 	I_I_ACCEPT_JY = RuleImage(roi_front=(248,258,46,25), roi_back=(231,205,75,326), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_i_accept_jy.png")
-	#  
+	# 师徒邀请图标 
 	I_I_ACCEPT_APPRENTICE = RuleImage(roi_front=(115,229,55,45), roi_back=(107,209,69,296), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_i_accept_apprentice.png")
 
 

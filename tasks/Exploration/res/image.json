@@ -74,8 +74,8 @@
   {
     "itemName": "e_ratate_exsit",
     "imageName": "res_e_ratate_exsit.png",
-    "roiFront": "108,580,995,32",
-    "roiBack": "108,580,995,32",
+    "roiFront": "561,578,33,35",
+    "roiBack": "163,574,970,46",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "已候补出战的狗粮"

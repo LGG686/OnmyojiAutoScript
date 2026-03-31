@@ -165,7 +165,7 @@
     "itemName": "selected",
     "imageName": "gi_selected.png",
     "roiFront": "895,373,33,32",
-    "roiBack": "895,373,33,32",
+    "roiBack": "347,174,589,369",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "判断是否点中好友了"
@@ -173,8 +173,8 @@
   {
     "itemName": "flag_1_on",
     "imageName": "gi_flag_1_on.png",
-    "roiFront": "354,126,62,21",
-    "roiBack": "354,126,62,21",
+    "roiFront": "355,131,60,15",
+    "roiBack": "354,128,62,19",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "用来判断当前的列表是哪儿的"
@@ -182,7 +182,7 @@
   {
     "itemName": "flag_1_off",
     "imageName": "gi_flag_1_off.png",
-    "roiFront": "353,126,58,22",
+    "roiFront": "353,128,58,20",
     "roiBack": "353,126,58,22",
     "method": "Template matching",
     "threshold": 0.8,
@@ -191,7 +191,7 @@
   {
     "itemName": "flag_2_on",
     "imageName": "gi_flag_2_on.png",
-    "roiFront": "465,126,61,24",
+    "roiFront": "465,131,60,19",
     "roiBack": "465,126,61,24",
     "method": "Template matching",
     "threshold": 0.8,
@@ -200,7 +200,7 @@
   {
     "itemName": "flag_2_off",
     "imageName": "gi_flag_2_off.png",
-    "roiFront": "469,127,58,21",
+    "roiFront": "469,131,58,17",
     "roiBack": "469,127,58,21",
     "method": "Template matching",
     "threshold": 0.8,
@@ -209,7 +209,7 @@
   {
     "itemName": "flag_3_on",
     "imageName": "gi_flag_3_on.png",
-    "roiFront": "588,126,48,22",
+    "roiFront": "588,131,48,17",
     "roiBack": "588,126,48,22",
     "method": "Template matching",
     "threshold": 0.8,
@@ -218,7 +218,7 @@
   {
     "itemName": "flag_3_off",
     "imageName": "gi_flag_3_off.png",
-    "roiFront": "590,126,41,22",
+    "roiFront": "590,129,41,19",
     "roiBack": "590,126,41,22",
     "method": "Template matching",
     "threshold": 0.8,

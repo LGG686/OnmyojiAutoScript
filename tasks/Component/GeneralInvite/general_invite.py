@@ -202,6 +202,7 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
                 continue
             if self.appear_then_click(self.I_FIRE_SEA, interval=1, threshold=0.7):
                 continue
+
     @cached_property
     def room_type(self) -> RoomType:
         """
@@ -453,12 +454,7 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
         logger.info('Click invite ensure')
         if not self.appear(self.I_INVITE_ENSURE):
             logger.warning('No appear invite ensure while invite friend')
-        while 1:
-            self.screenshot()
-            if not self.appear(self.I_INVITE_ENSURE):
-                break
-            if self.appear_then_click(self.I_INVITE_ENSURE):
-                continue
+        self.ui_click_until_disappear(self.I_INVITE_ENSURE)
         # 哪怕没有找到好友也有点击 确认 以退出好友列表
         if not is_select:
             logger.warning('No find friend')
@@ -482,6 +478,7 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
             if not success:
                 logger.warning('Invite friend 2 failed')
         sleep(0.5)
+        return success
 
     def invite_again(self, default_invite: bool=True) -> bool:
         """

@@ -197,7 +197,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             logger.warning('Opening settings failed due to now in battle')
             return
         cu, res, total = self.O_E_ALTERNATE_NUMBER.ocr(self.device.image)
-        if cu >= 10:
+        if cu >= 20:
             logger.info("Alternate number is enough")
             self.ui_click_until_disappear(self.I_E_SURE_BUTTON)
             return
@@ -213,11 +213,11 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
                 return
         choose_rarity = self._config.exploration_config.choose_rarity
         rarity = ShikigamiClass.N if choose_rarity == ChooseRarity.N else ShikigamiClass.MATERIAL
-        self.switch_shikigami_class(rarity)
+        self.click(self.C_CLICK_STANDBY_TEAM)  # 先点击候补出战区域
+        self.switch_shikigami_class(rarity)  # 切换式神类别
 
-        self.click(self.C_CLICK_STANDBY_TEAM)
         # 移动至未候补的狗粮
-        while 1:
+        while True:
             # 慢一点
             time.sleep(0.5)
             self.screenshot()
@@ -228,7 +228,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
                 self.swipe(self.S_SWIPE_SHIKI_TO_LEFT)
             else:
                 break
-        while 1:
+        while True:
             # 候补出战数量识别
             self.screenshot()
             if not self.appear(self.I_E_OPEN_SETTINGS):
@@ -309,13 +309,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             return
 
         # 关闭加成
-        if self.appear(self.I_RED_CLOSE):
-            self.ui_click_until_disappear(self.I_RED_CLOSE)
-        if self.appear(self.I_UI_CANCEL):
-            self.ui_click_until_disappear(self.I_UI_CANCEL)
-        if self.appear(self.I_UI_CANCEL_SAMLL):
-            self.ui_click_until_disappear(self.I_UI_CANCEL_SAMLL)
-        self.ui_goto(page_main)
+        self.ui_goto_page(page_main)
         if con.buff_gold_50_click or con.buff_gold_100_click or con.buff_exp_50_click or con.buff_exp_100_click:
             self.open_buff()
             self.gold_50(is_open=False)
@@ -360,12 +354,10 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
                     self.appear_then_click(self.I_BACK_Y, interval=0.8):
                 continue
             if self.appear(self.I_EXPLORATION_TITLE) or self.appear(self.I_CHECK_EXPLORATION):
-                continue
-            if self.appear_then_click(self.I_UI_BACK_BLUE, interval=3.5):
-                continue
+                break
 
     def fire(self, button) -> bool:
-        self.ui_click_until_disappear(button, interval=3)
+        self.ui_click_until_disappear(button, interval=2)
         self.screenshot()
         if (self.appear(self.I_E_SETTINGS_BUTTON) or
                 self.appear(self.I_E_AUTO_ROTATE_ON) or

@@ -88,7 +88,7 @@ class ExplorationAssets:
 	# 候补素材 
 	I_E_S_RARITY = RuleImage(roi_front=(33,620,63,59), roi_back=(33,620,63,59), threshold=0.8, method="Template matching", file="./tasks/Exploration/res/res_e_s_rarity.png")
 	# 已候补出战的狗粮 
-	I_E_RATATE_EXSIT = RuleImage(roi_front=(108,580,995,32), roi_back=(108,580,995,32), threshold=0.8, method="Template matching", file="./tasks/Exploration/res/res_e_ratate_exsit.png")
+	I_E_RATATE_EXSIT = RuleImage(roi_front=(561,578,33,35), roi_back=(163,574,970,46), threshold=0.8, method="Template matching", file="./tasks/Exploration/res/res_e_ratate_exsit.png")
 	# 确定按钮 
 	I_E_SURE_BUTTON = RuleImage(roi_front=(1131,425,43,37), roi_back=(1077,367,165,152), threshold=0.65, method="Template matching", file="./tasks/Exploration/res/res_e_sure_button.png")
 	# 设置按钮 
