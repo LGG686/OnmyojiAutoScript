@@ -97,5 +97,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "确认跳过"
+  },
+  {
+    "itemName": "rm_check_boss",
+    "imageName": "as_rm_check_boss.png",
+    "roiFront": "988,599,75,29",
+    "roiBack": "952,546,142,115",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
   }
 ]

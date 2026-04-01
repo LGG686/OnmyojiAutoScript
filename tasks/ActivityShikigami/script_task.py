@@ -147,6 +147,7 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
         switch_souled = False
         click_ticket, no_tickets = 0, random.randint(3, 5)
         click_fire, no_fire = 0, random.randint(3, 5)
+        already_passed = False
         while True:
             self.screenshot()
             self.put_status()
@@ -160,7 +161,12 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
                 continue
             if self.appear(self.I_RM_FORWARD, interval=1.2):  # 等待骰子结果
                 continue
-            if self.appear(self.I_RM_BOSS, interval=1.2):  # 出现首领
+            if not already_passed and self.appear(self.I_RM_CHECK_BOSS, interval=1.2):
+                already_passed = True
+                logger.info('Already passed')
+                continue
+            if already_passed and self.appear(self.I_RM_BOSS, interval=1.2):  # 已经通关了且出现首领则退出,否则还要打
+                logger.info('Boss passed, exit')
                 self.appear_then_click(self.I_RED_EXIT, interval=1.2)
                 continue
             if self.appear_then_click(self.I_UI_CONFIRM, interval=2):

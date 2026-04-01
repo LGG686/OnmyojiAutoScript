@@ -93,6 +93,8 @@ class ActivityShikigamiAssets:
 	I_TO_BATTLE_MAIN_2 = RuleImage(roi_front=(15,94,247,38), roi_back=(2,68,311,100), threshold=0.65, method="Template matching", file="./tasks/ActivityShikigami/as/as_to_battle_main_2.png")
 	# 确认跳过 
 	I_CONFIRM_SKIP = RuleImage(roi_front=(707,442,137,38), roi_back=(656,397,231,124), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_confirm_skip.png")
+	#  
+	I_RM_CHECK_BOSS = RuleImage(roi_front=(988,599,75,29), roi_back=(952,546,142,115), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_rm_check_boss.png")
 
 
 	# Image Rule Assets
