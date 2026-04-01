@@ -96,9 +96,16 @@ class GeneralBattleConfig(BaseModel):
     enable_ap100_anti_detect: bool = Field(default=False, description='100体爬塔战斗过程是否随机点击或滑动')
 
 
+class RichManConfig(ConfigBase):
+    buy_ap: bool = Field(default=False, description='是否购买体力')
+    buy_reward: bool = Field(default=False, description='是否购买奖励积分')
+    buy_ticket: bool = Field(default=False, description='是否购买定向骰子')
+
+
 class ActivityShikigami(ConfigBase):
     scheduler: Scheduler = Field(default_factory=Scheduler)
     general_climb: GeneralClimb = Field(default_factory=GeneralClimb)
+    rich_man: RichManConfig = Field(default_factory=RichManConfig)
     switch_soul_config: SwitchSoulConfig = Field(default_factory=SwitchSoulConfig)
     general_battle: GeneralBattleConfig = Field(default_factory=GeneralBattleConfig)
 

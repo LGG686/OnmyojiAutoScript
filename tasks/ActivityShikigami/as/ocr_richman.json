@@ -1,0 +1,38 @@
+[
+  {
+    "itemName": "rm_question",
+    "roiFront": "358,159,593,111",
+    "roiBack": "358,159,593,111",
+    "mode": "Full",
+    "method": "Default",
+    "keyword": "",
+    "description": ""
+  },
+  {
+    "itemName": "rm_answer_1",
+    "roiFront": "415,290,468,53",
+    "roiBack": "415,290,468,53",
+    "mode": "Single",
+    "method": "Default",
+    "keyword": "",
+    "description": ""
+  },
+  {
+    "itemName": "rm_answer_2",
+    "roiFront": "418,401,467,53",
+    "roiBack": "418,401,467,53",
+    "mode": "Single",
+    "method": "Default",
+    "keyword": "",
+    "description": ""
+  },
+  {
+    "itemName": "rm_answer_3",
+    "roiFront": "418,516,468,54",
+    "roiBack": "418,516,468,54",
+    "mode": "Single",
+    "method": "Default",
+    "keyword": "",
+    "description": ""
+  }
+]

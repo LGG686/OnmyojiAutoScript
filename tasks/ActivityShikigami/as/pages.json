@@ -2,7 +2,7 @@
   {
     "itemName": "shi",
     "imageName": "as_shi.png",
-    "roiFront": "1184,384,47,29",
+    "roiFront": "1183,382,44,25",
     "roiBack": "1164,134,83,393",
     "method": "Template matching",
     "threshold": 0.7,
@@ -30,7 +30,7 @@
     "itemName": "red_exit",
     "imageName": "as_red_exit.png",
     "roiFront": "1162,96,39,38",
-    "roiBack": "1120,49,110,135",
+    "roiBack": "997,49,233,151",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "红色退出"
@@ -38,8 +38,8 @@
   {
     "itemName": "to_battle_main",
     "imageName": "as_to_battle_main.png",
-    "roiFront": "223,287,39,176",
-    "roiBack": "100,242,238,269",
+    "roiFront": "656,334,39,176",
+    "roiBack": "551,278,238,269",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "进入主要的战斗界面"
@@ -47,8 +47,8 @@
   {
     "itemName": "to_battle_boss",
     "imageName": "as_to_battle_boss.png",
-    "roiFront": "1076,241,37,136",
-    "roiBack": "934,209,234,327",
+    "roiFront": "863,244,37,136",
+    "roiBack": "816,157,234,327",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "点击进入boss战斗页面"
@@ -56,8 +56,8 @@
   {
     "itemName": "check_battle_main",
     "imageName": "as_check_battle_main.png",
-    "roiFront": "842,565,39,45",
-    "roiBack": "688,499,415,203",
+    "roiFront": "1149,596,81,77",
+    "roiBack": "865,508,415,203",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "description"
@@ -65,8 +65,8 @@
   {
     "itemName": "check_battle_boss",
     "imageName": "as_check_battle_boss.png",
-    "roiFront": "34,365,45,35",
-    "roiBack": "20,328,100,100",
+    "roiFront": "1209,494,26,31",
+    "roiBack": "1172,458,100,100",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "description"
@@ -74,8 +74,8 @@
   {
     "itemName": "battle_main_to_records",
     "imageName": "as_battle_main_to_records.png",
-    "roiFront": "1017,572,39,42",
-    "roiBack": "976,539,146,100",
+    "roiFront": "1016,563,39,42",
+    "roiBack": "674,539,448,142",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "从main进入到式神录"

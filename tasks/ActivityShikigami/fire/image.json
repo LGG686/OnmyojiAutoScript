@@ -111,7 +111,7 @@
     "itemName": "pass_13",
     "imageName": "fire_pass_13.png",
     "roiFront": "1018,570,100,100",
-    "roiBack": "984,538,169,152",
+    "roiBack": "984,538,261,167",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "魇兽将的战斗图片"

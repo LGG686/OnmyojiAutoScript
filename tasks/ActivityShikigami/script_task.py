@@ -1,12 +1,15 @@
 # This Python file uses the following encoding: utf-8
 # @author runhey
 # github https://github.com/runhey
+from cryptography.x509 import OCSPNonce
 from enum import Enum, auto
 from time import sleep
 from datetime import datetime, timedelta
 import cv2
 import numpy as np
 import random
+from tasks.DemonEncounter.data.answer import remove_symbols, Answer
+from tasks.Quiz.debug import Debugger
 from typing import Any
 from cached_property import cached_property
 
@@ -98,10 +101,15 @@ class StateMachine(BaseTask):
         return True
 
 
-class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikigamiAssets):
+class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikigamiAssets, Debugger):
     """
     更新前请先看 ./README.md
     """
+
+    @cached_property
+    def anwser(self) -> Answer:
+        # Misspelling
+        return Answer()
 
     def run(self) -> None:
         self.limit_time: timedelta = self.conf.general_climb.limit_time_v
@@ -135,38 +143,147 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
             更新前请先看 ./README.md
         """
         logger.hr(f'Start run climb type PASS', 1)
-        self.ui_clicks([self.I_TO_BATTLE_MAIN, self.I_TO_BATTLE_MAIN_2],
-                       stop=self.I_CHECK_BATTLE_MAIN, interval=1)
-        self.switch_soul(self.I_BATTLE_MAIN_TO_RECORDS, self.I_CHECK_BATTLE_MAIN)
-        self.switch_climb_mode_in_game('pass')
-
-        ocr_limit_timer = Timer(1).start()
-        click_limit_timer = Timer(4).start()
-        while 1:
+        self.click(self.I_TO_BATTLE_MAIN)
+        switch_souled = False
+        while True:
             self.screenshot()
             self.put_status()
-            # --------------------------------------------------------------
-            if (self.appear_then_click(self.I_UI_CONFIRM, interval=0.5)
-                    or self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=0.5)):
+            if self.ui_reward_appear_click():  # 获得奖励
                 continue
-            if self.ui_reward_appear_click():
+            if self.appear(self.I_RM_FORWARD, interval=1.2):  # 等待骰子结果
                 continue
-            if not ocr_limit_timer.reached():
+            if self.appear_then_click(self.I_RM_THROW, interval=2):  # 开始扔骰子
+                logger.hr('Throw ticket', 3)
+                self.device.stuck_record_clear()
+                self.device.stuck_record_add('BATTLE_STATUS_S')
+                while True:
+                    self.screenshot()
+                    if self.ui_reward_appear_click():  # 获得奖励
+                        break
+                    if self.appear(self.I_RM_THROW_WIN, interval=1.5):  # 扔骰子获胜
+                        logger.info('Throw win')
+                        continue
+                    if self.appear(self.I_RM_THROW_EQUAL, interval=1.5):  # 扔骰子平局
+                        logger.info('Throw equal')
+                        continue
+                    if self.appear_then_click(self.I_RM_THROW, interval=2):  # 开始扔骰子
+                        logger.info('Throw again')
+                        self.device.stuck_record_clear()
+                        self.device.stuck_record_add('BATTLE_STATUS_S')
+                        continue
                 continue
-            ocr_limit_timer.reset()
-            if not self.ocr_appear(self.O_FIRE):
+            if self.appear(self.I_RM_BUY_AP) or self.appear(self.I_RM_BUY_REWARD) or \
+                    self.appear(self.I_RM_BUY_TICKET):  # 开始买东西
+                logger.hr('Buy envent', 3)
+                rich_man_conf = self.config.model.activity_shikigami.rich_man
+                timeout_timer = Timer(5).start()
+                while True:
+                    self.screenshot()
+                    if self.ui_reward_appear_click():  # 获得奖励跳出循环
+                        break
+                    if self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=1):
+                        timeout_timer.reset()
+                        continue
+                    if timeout_timer.reached():  # 如果购买超时了则说明购买有问题, 则不买了
+                        logger.warning('Buy timeout, exit buy')
+                        self.appear_then_click(self.I_RED_EXIT, interval=1.5)
+                        continue
+                    if not rich_man_conf.buy_ap and not rich_man_conf.buy_ticket and not rich_man_conf.buy_reward:
+                        self.appear_then_click(self.I_RED_EXIT, interval=1.5)  # 一个都不买直接退出
+                        continue
+                    if self.config.model.activity_shikigami.rich_man.buy_ticket and self.appear_then_click(self.I_RM_BUY_TICKET, interval=1.5):
+                        continue
+                    if self.config.model.activity_shikigami.rich_man.buy_reward and self.appear_then_click(self.I_RM_BUY_REWARD, interval=1.5):
+                        continue
+                    if self.config.model.activity_shikigami.rich_man.buy_ap and self.appear_then_click(self.I_RM_BUY_AP, interval=1.5):
+                        continue
+            if self.appear(self.I_RM_QUESTION, interval=2):  # 开始答题
+                logger.hr('Start question', 3)
+                q, a1, a2, a3 = self.detect_question_and_answers()
+                index = self.anwser.answer_one(question=q, options=[a1, a2, a3])
+                if index is None:
+                    logger.error('Now question has no answer, please check')
+                    self.append_one(question=q, options=[a1, a2, a3])
+                    self.config.notifier.push(title='Quiz',
+                                              content=f"New question: \n{q} \n{[a1, a2, a3]}")
+                    index = 1
+                logger.attr(index, 'Answer')
+                self.click([self.O_RM_ANSWER_1, self.O_RM_ANSWER_2, self.O_RM_ANSWER_3][index - 1], interval=1)
+                self.device.click_record_clear()
                 continue
-            #  --------------------------------------------------------------
-            self.lock_team(self.conf.general_battle)
-            if not self.check_tickets_enough():
-                logger.warning(f'No tickets left, wait for next time')
-                break
-            if self.conf.general_climb.random_sleep:
-                random_sleep(probability=0.2)
-            if self.start_battle():
+            if self.ocr_appear(self.O_FIRE, interval=2):  # 开始战斗
+                if not switch_souled:
+                    self.switch_soul(self.I_BATTLE_MAIN_TO_RECORDS, self.I_CHECK_BATTLE_MAIN)
+                    switch_souled = True
+                if self.conf.general_climb.random_sleep:
+                    random_sleep(probability=0.2)
+                self.start_battle()
                 continue
+            if self.appear(self.I_CHECK_BATTLE_MAIN, interval=2):  # 扔门票骰子
+                if not self.check_tickets_enough():  # 检查是否有门票骰子
+                    logger.warning(f'No tickets left, wait for next time')
+                    break
+                self.click(self.I_CHECK_BATTLE_MAIN)
+                continue
+        self.ui_goto_page(game.page_climb_act)
 
-        self.ui_click(self.I_UI_BACK_YELLOW, stop=self.I_TO_BATTLE_MAIN, interval=1)
+    def detect_question_and_answers(self) -> tuple:
+        self.screenshot()
+        results = self.O_RM_QUESTION.detect_and_ocr(self.device.image)
+        question = ''
+        answer_1 = remove_symbols(self.O_RM_ANSWER_1.ocr(self.device.image))
+        answer_2 = remove_symbols(self.O_RM_ANSWER_2.ocr(self.device.image))
+        answer_3 = remove_symbols(self.O_RM_ANSWER_3.ocr(self.device.image))
+
+        for result in results:
+            # box 是四个点坐标 左上， 右上， 右下， 左下
+            # x1, y1, x2, y2 = result.box[0][0], result.box[0][1], result.box[2][0], result.box[2][1]
+            # w, h = x2 - x1, y2 - y1
+            y_start = result.box[0][1]
+            y_end = result.box[2][1]
+            text = result.ocr_text
+            if y_start >= 0 and y_end <= 150:
+                question += text
+
+        return remove_symbols(question), answer_1, answer_2, answer_3
+
+    # def _run_pass(self):
+    #     """
+    #         更新前请先看 ./README.md
+    #     """
+    #     logger.hr(f'Start run climb type PASS', 1)
+    #     self.ui_clicks([self.I_TO_BATTLE_MAIN, self.I_TO_BATTLE_MAIN_2],
+    #                    stop=self.I_CHECK_BATTLE_MAIN, interval=1)
+    #     self.switch_soul(self.I_BATTLE_MAIN_TO_RECORDS, self.I_CHECK_BATTLE_MAIN)
+    #     self.switch_climb_mode_in_game('pass')
+    #
+    #     ocr_limit_timer = Timer(1).start()
+    #     click_limit_timer = Timer(4).start()
+    #     while 1:
+    #         self.screenshot()
+    #         self.put_status()
+    #         # --------------------------------------------------------------
+    #         if (self.appear_then_click(self.I_UI_CONFIRM, interval=0.5)
+    #                 or self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=0.5)):
+    #             continue
+    #         if self.ui_reward_appear_click():
+    #             continue
+    #         if not ocr_limit_timer.reached():
+    #             continue
+    #         ocr_limit_timer.reset()
+    #         if not self.ocr_appear(self.O_FIRE):
+    #             continue
+    #         #  --------------------------------------------------------------
+    #         self.lock_team(self.conf.general_battle)
+    #         if not self.check_tickets_enough():
+    #             logger.warning(f'No tickets left, wait for next time')
+    #             break
+    #         if self.conf.general_climb.random_sleep:
+    #             random_sleep(probability=0.2)
+    #         if self.start_battle():
+    #             continue
+    #
+    #     self.ui_click(self.I_UI_BACK_YELLOW, stop=self.I_TO_BATTLE_MAIN, interval=1)
 
     def _run_ap(self):
         """
@@ -206,6 +323,21 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
         更新前请先看 ./README.md
         """
         logger.hr(f'Start run climb type BOSS')
+        self.click(self.I_TO_BATTLE_BOSS)
+        self.switch_soul(self.I_BATTLE_MAIN_TO_RECORDS, self.I_CHECK_BATTLE_BOSS)
+        while True:
+            self.screenshot()
+            self.put_status()
+            self.lock_team(self.conf.general_battle)
+            if not self.check_tickets_enough():
+                logger.warning(f'No tickets left, wait for next time')
+                break
+            if self.conf.general_climb.random_sleep:
+                random_sleep(probability=0.2)
+            if self.appear_then_click(self.I_PASS_13, interval=2):
+                self.run_general_battle(config=self.get_general_battle_conf())
+                continue
+        self.ui_goto_page(game.page_climb_act)
 
     def start_battle(self):
         click_times, max_times = 0, random.randint(2, 4)
@@ -245,13 +377,20 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
             if ok_cnt > 0 and self.ocr_appear(self.O_FIRE):
                 return True
             # 战斗失败
-            if self.appear(self.I_FALSE):
+            if self.appear(self.I_FALSE, interval=1.5):
                 logger.warning("Battle failed")
                 self.ui_click_until_smt_disappear(self.random_reward_click(click_now=False), self.I_FALSE, interval=1.5)
                 return False
             # 战斗成功
             if self.appear_then_click(self.I_WIN, interval=2):
                 continue
+            # 获得奖励
+            if self.ui_reward_appear_click():
+                continue
+            if self.appear(self.I_CHECK_BATTLE_MAIN, interval=1.5):  # 回到主界面了则退出
+                break
+            if self.appear(self.I_CHECK_BATTLE_BOSS, interval=1.5):  # 回到首领主界面了则退出
+                break
             #  出现 “魂” 和 紫蛇皮
             if self.appear(self.I_REWARD) or self.appear(self.I_REWARD_PURPLE_SNAKE_SKIN) or \
                     self.appear(self.I_REWARD_GOLD) or self.appear(self.I_REWARD_GOLD_SNAKE_SKIN):
@@ -312,9 +451,9 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
         :return: True 可以运行 or False
         """
         logger.hr(f'Check {self.climb_type} tickets')
-        if not self.wait_until_appear(self.O_FIRE, wait_time=3):
-            logger.warning(f'Detect fire fail, try reidentify')
-            return False
+        # if not self.wait_until_appear(self.O_FIRE, wait_time=3):
+        #     logger.warning(f'Detect fire fail, try reidentify')
+        #     return False
         self.screenshot()
         remain_times = 0
         if self.climb_type == 'pass':
@@ -322,7 +461,7 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
         if self.climb_type == 'ap':
             remain_times = self.O_REMAIN_AP.ocr_digit(self.device.image)
         if self.climb_type == 'boss':
-            _, remain_times, _ = self.O_REMAIN_BOSS.ocr_digit_counter(self.device.image)
+            remain_times = self.O_REMAIN_BOSS.ocr_digit(self.device.image)
         if self.climb_type == 'ap100':
             remain_times = self.O_REMAIN_AP100.ocr_digit(self.device.image)
         return remain_times > 0

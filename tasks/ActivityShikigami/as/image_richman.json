@@ -1,0 +1,83 @@
+[
+  {
+    "itemName": "rm_buy_ticket",
+    "imageName": "as_rm_buy_ticket.png",
+    "roiFront": "873,472,95,44",
+    "roiBack": "843,456,149,75",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "买门票"
+  },
+  {
+    "itemName": "rm_buy_reward",
+    "imageName": "as_rm_buy_reward.png",
+    "roiFront": "586,475,99,39",
+    "roiBack": "559,454,150,79",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "买奖励"
+  },
+  {
+    "itemName": "rm_buy_ap",
+    "imageName": "as_rm_buy_ap.png",
+    "roiFront": "312,472,94,41",
+    "roiBack": "283,459,148,71",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "买体力"
+  },
+  {
+    "itemName": "rm_throw",
+    "imageName": "as_rm_throw.png",
+    "roiFront": "1063,554,80,29",
+    "roiBack": "1012,445,183,196",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "投掷骰子"
+  },
+  {
+    "itemName": "rm_check_throw",
+    "imageName": "as_rm_check_throw.png",
+    "roiFront": "606,337,76,87",
+    "roiBack": "531,253,238,249",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "投掷对决开始"
+  },
+  {
+    "itemName": "rm_throw_win",
+    "imageName": "as_rm_throw_win.png",
+    "roiFront": "667,317,65,80",
+    "roiBack": "608,261,189,186",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "投掷胜利"
+  },
+  {
+    "itemName": "rm_question",
+    "imageName": "as_rm_question.png",
+    "roiFront": "541,109,212,40",
+    "roiBack": "482,30,339,171",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "问答"
+  },
+  {
+    "itemName": "rm_forward",
+    "imageName": "as_rm_forward.png",
+    "roiFront": "550,495,91,43",
+    "roiBack": "515,474,161,100",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
+  },
+  {
+    "itemName": "rm_throw_equal",
+    "imageName": "as_rm_throw_equal.png",
+    "roiFront": "350,355,51,75",
+    "roiBack": "277,307,189,186",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "扔骰子平局"
+  }
+]
