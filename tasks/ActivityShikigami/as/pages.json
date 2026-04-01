@@ -30,7 +30,7 @@
     "itemName": "red_exit",
     "imageName": "as_red_exit.png",
     "roiFront": "1162,96,39,38",
-    "roiBack": "997,49,233,151",
+    "roiBack": "939,49,291,166",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "红色退出"
