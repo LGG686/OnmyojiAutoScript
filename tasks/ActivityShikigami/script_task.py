@@ -146,11 +146,15 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
         self.click(self.I_TO_BATTLE_MAIN)
         switch_souled = False
         click_ticket, no_tickets = 0, random.randint(3, 5)
+        click_fire, no_fire = 0, random.randint(3, 5)
         while True:
             self.screenshot()
             self.put_status()
             if click_ticket > no_tickets:
                 logger.warning(f'Click ticket {click_ticket} times, no tickets left')
+                break
+            if click_fire > no_fire:
+                logger.warning(f'Click fire {click_fire} times, no fire left')
                 break
             if self.ui_reward_appear_click():  # 获得奖励
                 continue
@@ -232,13 +236,21 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
                 if self.conf.general_climb.random_sleep:
                     random_sleep(probability=0.2)
                 self.click(self.I_RICH_MAN_FIRE)
+                click_fire += 1
                 self.run_general_battle(config=self.get_general_battle_conf())
                 continue
             if self.appear(self.I_CHECK_BATTLE_MAIN, interval=3):  # 扔门票骰子
                 self.click(self.I_CHECK_BATTLE_MAIN)
                 click_ticket += 1
+                click_fire = 0
                 continue
-        self.ui_goto_page(game.page_climb_act)
+        while True:
+            self.screenshot()
+            if self.appear(self.I_TO_BATTLE_MAIN, interval=1):
+                break
+            if self.appear_then_click(self.I_UI_CONFIRM, interval=1) or self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=1):
+                continue
+            self.try_close_unknown_page()
 
     def detect_question_and_answers(self) -> tuple:
         self.screenshot()
