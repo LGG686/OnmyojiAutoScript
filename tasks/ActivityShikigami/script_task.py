@@ -156,6 +156,8 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
                 continue
             if self.appear(self.I_RM_FORWARD, interval=1.2):  # 等待骰子结果
                 continue
+            if self.appear_then_click(self.I_UI_CONFIRM, interval=2):
+                continue
             if self.appear_then_click(self.I_RM_THROW, interval=2):  # 开始扔骰子
                 logger.hr('Throw ticket', 3)
                 click_ticket = 0
