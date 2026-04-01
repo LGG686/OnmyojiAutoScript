@@ -215,13 +215,13 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
                 self.click([self.O_RM_ANSWER_1, self.O_RM_ANSWER_2, self.O_RM_ANSWER_3][index - 1], interval=1)
                 self.device.click_record_clear()
                 continue
-            if self.ocr_appear(self.O_FIRE, interval=1.5):  # 开始战斗
+            if self.appear_then_click(self.I_RICH_MAN_FIRE, interval=2):  # 开始战斗
                 if not switch_souled:
                     self.switch_soul(self.I_BATTLE_MAIN_TO_RECORDS, self.I_CHECK_BATTLE_MAIN)
                     switch_souled = True
                 if self.conf.general_climb.random_sleep:
                     random_sleep(probability=0.2)
-                self.start_battle()
+                self.run_general_battle(config=self.get_general_battle_conf())
                 continue
             if self.appear(self.I_CHECK_BATTLE_MAIN, interval=2):  # 扔门票骰子
                 if not self.check_tickets_enough():  # 检查是否有门票骰子

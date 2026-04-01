@@ -115,5 +115,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "魇兽将的战斗图片"
+  },
+  {
+    "itemName": "rich_man_fire",
+    "imageName": "fire_rich_man_fire.png",
+    "roiFront": "983,555,82,78",
+    "roiBack": "924,479,225,213",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
   }
 ]
