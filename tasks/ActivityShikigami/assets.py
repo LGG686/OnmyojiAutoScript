@@ -55,6 +55,8 @@ class ActivityShikigamiAssets:
 	I_RM_FORWARD = RuleImage(roi_front=(550,495,91,43), roi_back=(515,474,161,100), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_rm_forward.png")
 	# 扔骰子平局 
 	I_RM_THROW_EQUAL = RuleImage(roi_front=(350,355,51,75), roi_back=(277,307,189,186), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_rm_throw_equal.png")
+	#  
+	I_RM_BOSS = RuleImage(roi_front=(595,75,95,44), roi_back=(569,61,149,75), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_rm_boss.png")
 
 
 	# Ocr Rule Assets
@@ -76,7 +78,7 @@ class ActivityShikigamiAssets:
 	# 右上跳过按钮 
 	I_SKIP_BUTTON = RuleImage(roi_front=(1159,37,51,22), roi_back=(1141,27,86,43), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_skip_button.png")
 	# 红色退出 
-	I_RED_EXIT = RuleImage(roi_front=(1162,96,39,38), roi_back=(997,49,233,151), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_red_exit.png")
+	I_RED_EXIT = RuleImage(roi_front=(1162,96,39,38), roi_back=(939,49,291,166), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_red_exit.png")
 	# 进入主要的战斗界面 
 	I_TO_BATTLE_MAIN = RuleImage(roi_front=(656,334,39,176), roi_back=(551,278,238,269), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_to_battle_main.png")
 	# 点击进入boss战斗页面 
@@ -91,6 +93,8 @@ class ActivityShikigamiAssets:
 	I_TO_BATTLE_MAIN_2 = RuleImage(roi_front=(15,94,247,38), roi_back=(2,68,311,100), threshold=0.65, method="Template matching", file="./tasks/ActivityShikigami/as/as_to_battle_main_2.png")
 	# 确认跳过 
 	I_CONFIRM_SKIP = RuleImage(roi_front=(707,442,137,38), roi_back=(656,397,231,124), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_confirm_skip.png")
+	#  
+	I_RM_CHECK_BOSS = RuleImage(roi_front=(988,599,75,29), roi_back=(952,546,142,115), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_rm_check_boss.png")
 
 
 	# Image Rule Assets
