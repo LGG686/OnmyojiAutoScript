@@ -5,6 +5,8 @@ from tasks.KekkaiUtilize.assets import KekkaiUtilizeAssets
 
 # 阴阳寮结界页面
 page_guild_realm = Page(KekkaiUtilizeAssets.I_REALM_SHIN)
+KekkaiUtilizeAssets.I_SHI_GROWN.scale_range = (0.6, 1.2, 0.1)
+KekkaiUtilizeAssets.I_SHI_CARD.scale_range = (0.6, 1.2, 0.1)
 page_guild_realm.link(button=GlobalGameAssets.I_UI_BACK_YELLOW, destination=page_guild)
 page_guild.link(button=KekkaiUtilizeAssets.I_GUILD_REALM, destination=page_guild_realm)
 # 结界育成页面

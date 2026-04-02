@@ -45,7 +45,7 @@ class ScriptTask(KU, KekkaiActivationAssets):
             self.screenshot()
             if self.appear(self.I_REALM_SHIN):
                 break
-            if self.appear(self.I_SHI_GROWN):
+            if self.appear(self.I_SHI_GROWN,scale_range=(0.6, 1.2, 0.1)):
                 break
             if self.appear_then_click(self.I_UI_BACK_RED, interval=1):
                 continue
@@ -157,7 +157,7 @@ class ScriptTask(KU, KekkaiActivationAssets):
                 break
             if self.appear(self.I_A_AUTO_INVITE):
                 break
-            if self.appear_then_click(self.I_SHI_CARD, interval=1):
+            if self.appear_then_click(self.I_SHI_CARD, scale_range=(0.6, 1.2, 0.1), interval=1):
                 continue
         logger.info('Enter card page')
 

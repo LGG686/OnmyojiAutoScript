@@ -34,6 +34,8 @@ class RuleImage:
         self.roi_back = roi_back
         self.threshold = threshold
         self.file = file
+        self.scale_range: tuple[float, float] | tuple[float, float, float] | None = None
+        self.scale_step: float = 0.1
 
 
 
@@ -136,9 +138,10 @@ class RuleImage:
         x, y, w, h = int(x), int(y), int(w), int(h)
         return image[y:y + h, x:x + w]
 
-    def match(self, image: np.array, threshold: float = None) -> bool:
+    def match(self, image: np.array, threshold: float = None, scale_range: tuple[float, float] | tuple[float, float, float] = None) -> bool:
         """
         :param threshold:
+        :param scale_range: (min_scale, max_scale) or (min_scale, max_scale, step)
         :param image:
         :return:
         """
@@ -156,6 +159,44 @@ class RuleImage:
             logger.error(f"Template image is invalid: {mat.shape}") #检测模板尺寸，不合法则不进行匹配，避免两次截图画面完全相同造成模板不合法
             return True  # 如果模板图像无效，直接返回 True
 
+        active_scale_range = scale_range if scale_range is not None else self.scale_range
+        if active_scale_range is not None:
+            if len(active_scale_range) == 3:
+                min_scale, max_scale, step = active_scale_range
+            else:
+                min_scale, max_scale = active_scale_range
+                step = self.scale_step
+            if min_scale > max_scale:
+                min_scale, max_scale = max_scale, min_scale
+            step = step if step > 0 else 0.05
+            best_val = -1
+            best_loc = None
+            best_shape = None
+            cur_scale = min_scale
+            while cur_scale <= max_scale + 1e-8:
+                scaled_w = max(1, int(mat.shape[1] * cur_scale))
+                scaled_h = max(1, int(mat.shape[0] * cur_scale))
+                if scaled_w > source.shape[1] or scaled_h > source.shape[0]:
+                    cur_scale += step
+                    continue
+                scaled_mat = cv2.resize(mat, (scaled_w, scaled_h), interpolation=cv2.INTER_LINEAR)
+                res = cv2.matchTemplate(source, scaled_mat, cv2.TM_CCOEFF_NORMED)
+                _, max_val, _, max_loc = cv2.minMaxLoc(res)
+                if max_val > best_val:
+                    best_val = max_val
+                    best_loc = max_loc
+                    best_shape = (scaled_w, scaled_h)
+                cur_scale += step
+            if self.debug_mode:
+                logger.attr(self.name, f'multi-scale matching score {best_val:.5f}')
+            if best_loc is not None and best_shape is not None and best_val > threshold:
+                self.roi_front[0] = best_loc[0] + self.roi_back[0]
+                self.roi_front[1] = best_loc[1] + self.roi_back[1]
+                self.roi_front[2] = best_shape[0]
+                self.roi_front[3] = best_shape[1]
+                return True
+            return False
+
         res = cv2.matchTemplate(source, mat, cv2.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)  # 最小匹配度，最大匹配度，最小匹配度的坐标，最大匹配度的坐标
         if self.debug_mode:
@@ -164,6 +205,8 @@ class RuleImage:
         if max_val > threshold:
             self.roi_front[0] = max_loc[0] + self.roi_back[0]
             self.roi_front[1] = max_loc[1] + self.roi_back[1]
+            self.roi_front[2] = mat.shape[1]
+            self.roi_front[3] = mat.shape[0]
             return True
         else:
             return False
