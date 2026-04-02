@@ -41,6 +41,7 @@ ANNOTATOR_ROOT = (PROJECT_ROOT / "log" / "annotator").resolve()
 
 ALLOWED_IMAGE_EXT = {".png", ".jpg", ".jpeg", ".bmp", ".webp"}
 ALLOWED_RULE_TYPE = set(get_rule_types())
+ALLOWED_IMAGE_METHOD = set(field_options("image", "method"))
 ALLOWED_OCR_MODE = set(field_options("ocr", "mode"))
 ALLOWED_LIST_DIRECTION = set(field_options("list", "direction"))
 ALLOWED_LIST_MODE = set(field_options("list", "type"))
@@ -691,6 +692,9 @@ class AnnotatorManager:
             if not item_name:
                 raise AnnotatorError("invalid_rule", f"第 {index + 1} 条规则缺少 itemName", 400)
             image_name = str(rule.get("imageName", "")).strip() or f"{item_name}.png"
+            method = str(rule.get("method", field_default("image", "method", "Template matching"))).strip() or field_default("image", "method", "Template matching")
+            if method not in ALLOWED_IMAGE_METHOD:
+                raise AnnotatorError("invalid_rule", f"第 {index + 1} 条规则 method 不支持: {method}", 400)
             threshold_value = rule.get("threshold", 0.8)
             try:
                 threshold = float(threshold_value)
@@ -704,7 +708,7 @@ class AnnotatorManager:
                     "imageName": image_name,
                     "roiFront": self._parse_roi(str(rule.get("roiFront", ""))),
                     "roiBack": self._parse_roi(str(rule.get("roiBack", ""))),
-                    "method": str(rule.get("method", field_default("image", "method", "Template matching"))).strip() or field_default("image", "method", "Template matching"),
+                    "method": method,
                     "threshold": threshold,
                     "description": str(rule.get("description", "")).strip(),
                 }
@@ -1441,13 +1445,3 @@ class AnnotatorManager:
 
 
 annotator_manager = AnnotatorManager()
-
-
-
-
-
-
-
-
-
-
