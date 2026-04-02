@@ -18,6 +18,15 @@
     "description": "庭院卷轴关闭"
   },
   {
+    "itemName": "login_courtyard",
+    "imageName": "login_courtyard.png",
+    "roiFront": "40,640,100,50",
+    "roiBack": "40,640,100,50",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "闲庭图片"
+  },
+  {
     "itemName": "login_red_close",
     "imageName": "login_login_red_close.png",
     "roiFront": "800,0,480,290",
