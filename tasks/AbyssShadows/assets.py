@@ -52,8 +52,6 @@ class AbyssShadowsAssets:
 	# Image Rule Assets
 	# 阴阳竂->神社 
 	I_RYOU_SHENSHE = RuleImage(roi_front=(872,659,62,25), roi_back=(872,659,62,25), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_ryou_shenshe.png")
-	# 神社->狭间暗域 
-	I_RYOU_ABYSS_SHADOWS = RuleImage(roi_front=(707,492,110,27), roi_back=(707,492,110,27), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_ryou_abyss_shadows.png")
 	# 狭间_神龙入口 
 	I_ABYSS_DRAGON = RuleImage(roi_front=(200,150,110,270), roi_back=(200,150,110,270), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_dragon.png")
 	# 狭间_神龙入口_已封印 
@@ -70,8 +68,6 @@ class AbyssShadowsAssets:
 	I_ABYSS_SHIKI = RuleImage(roi_front=(1199,462,47,53), roi_back=(1199,462,47,53), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_shiki.png")
 	# 狭间暗域 
 	I_ABYSS_SHADOWS = RuleImage(roi_front=(711,489,107,38), roi_back=(711,479,107,48), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_shadows.png")
-	# 开启狭间暗域 
-	I_OPEN_ABYSS_SHADOWS = RuleImage(roi_front=(1133,602,74,58), roi_back=(1133,602,74,58), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_open_abyss_shadows.png")
 	# 战报页面 
 	I_ABYSS_MAP = RuleImage(roi_front=(306,147,170,48), roi_back=(306,147,170,48), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_map.png")
 	# 战报退出按钮 

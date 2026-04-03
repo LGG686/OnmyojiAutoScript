@@ -57,18 +57,8 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
         :return:
         """
         cfg: AbyssShadows = self.config.abyss_shadows
-
-        today = datetime.now().weekday()
-        if today not in [4, 5, 6]:
-            # 非周五六日，直接退出
-            logger.info(f"Today is not abyss shadows day, exit")
-            self.set_next_run(task='AbyssShadows', finish=False, server=True, success=True)
-            raise TaskEnd
-        server_time = datetime.combine(datetime.now().date(), cfg.scheduler.server_update)
-        if datetime.now() - server_time > timedelta(hours=2):
-            # 超时两小时未开始,直接退出
-            logger.info("Timeout threshold: 2h (force quit if not started)")
-            self.set_next_run(task='AbyssShadows', finish=False, server=True, success=True)
+        if not self.check_date(datetime.now()):
+            self.set_next_run(task='AbyssShadows', server=False, target=self.get_next_dt(datetime.now()))
             raise TaskEnd
 
         # 切换御魂
@@ -77,7 +67,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
         self.ui_goto_page(page_abyss)
 
         # 尝试开启狭间
-        if cfg.abyss_shadows_time.try_start_abyss_shadows:
+        if cfg.process_manage.try_start_abyss_shadows:
             self.start_abyss_shadows()
 
         try:
@@ -98,8 +88,8 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
             # 通过能否进入，检测狭间是否开启
             if not self.select_boss(area_enter):
                 logger.warning("Failed to enter abyss shadows")
-                self.goto_main()
-                self.set_next_run(task='AbyssShadows', finish=False, server=False, success=False)
+                self.ui_goto_page(page_main)
+                self.set_next_run(task='AbyssShadows', server=False, target=self.get_next_dt(datetime.now()))
                 raise TaskEnd
 
             # 集结中图片
@@ -124,7 +114,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
         self.ui_goto_page(page_main)
 
         # 设置下次运行时间
-        self.set_next_run(task='AbyssShadows', finish=True, server=True, success=True)
+        self.set_next_run(task='AbyssShadows', server=False, target=self.get_next_dt(datetime.now(), success=True))
 
         self.clear_saved_params()
 
@@ -420,7 +410,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
         self.ui_click(self.I_SELECT_DIFFICULTY, stop=self.I_DIFFICULTY_EASY, interval=2)
 
         difficulty_btn = None
-        match self.config.model.abyss_shadows.abyss_shadows_time.difficulty:
+        match self.config.model.abyss_shadows.process_manage.difficulty:
             case AbyssShadowsDifficulty.EASY:
                 difficulty_btn = self.I_DIFFICULTY_EASY
             case AbyssShadowsDifficulty.HARD:
@@ -447,7 +437,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
             if ps not in self.done_list and ps not in self.unavailable_list:
                 return ps
 
-        if not self.config.model.abyss_shadows.abyss_shadows_time.try_complete_enemy_count:
+        if not self.config.model.abyss_shadows.process_manage.try_complete_enemy_count:
             #
             logger.info("All done, don`t need to fix 246")
             return None
@@ -750,69 +740,51 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
         self.device.swipe_adb(p1, (p1[0] + dx, p1[1] + dy), duration=0.5)
         logger.info(f"Swipe {p1} to {(p1[0] + dx, p1[1] + dy)}")
 
+    def get_next_dt(self, now: datetime, success: bool = False) -> datetime:
+        """
+        获取下一次运行的时间
+        :return:
+        """
+        as_time = self.config.model.abyss_shadows.abyss_shadows_time
+        target_time = getattr(as_time, f'abyss_shadows_{now.weekday()}', None)
+        if target_time is None:  # 不在周五/六/日
+            fri_date = now + timedelta(days=(4 - now.weekday()))
+            return datetime.combine(fri_date, as_time.abyss_shadows_4)
+        target_dt = datetime.combine(now.date(), target_time)
+        if now >= (target_dt + timedelta(hours=1)) or success:  # 在预计的1小时之后或运行成功了
+            tomorrow_dt = now.date() + timedelta(days=1)
+            match now.weekday():
+                case 4:
+                    return datetime.combine(tomorrow_dt, as_time.abyss_shadows_5)
+                case 5:
+                    return datetime.combine(tomorrow_dt, as_time.abyss_shadows_6)
+                case 6:
+                    next_fri_dt = now.date() + timedelta(days=5)
+                    return datetime.combine(next_fri_dt, as_time.abyss_shadows_4)
+        if now < target_dt:  # 还没到点
+            return target_dt
+        # 到点了且在1小时之内, 则设置5分钟后再运行一次
+        return now + timedelta(minutes=5)
+
+    def check_date(self, now: datetime) -> bool:
+        """
+        检查当前时间是否可以运行狭间
+        """
+        as_time = self.config.model.abyss_shadows.abyss_shadows_time
+        target_time = getattr(as_time, f'abyss_shadows_{now.weekday()}', None)
+        if target_time is None:  # 不在周五/六/日
+            return False
+        target_dt = datetime.combine(now.date(), target_time)
+        # 是否在1小时之内
+        return target_dt <= now < (target_dt + timedelta(hours=1))
+
 
 if __name__ == "__main__":
-    import cv2, numpy as np
     from module.config.config import Config
     from module.device.device import Device
 
-    config = Config('oas')
+    config = Config('oas1')
     device = Device(config)
-
-    # image = cv2.imread('E:/f.png')
-    # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    #
-    # hsv_image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-    #
-    # lower_green = np.array([9, 128, 180])
-    # upper_green = np.array([30, 210, 255])
-    # mask = cv2.inRange(hsv_image, lower_green, upper_green)
-    # res_img = cv2.bitwise_and(image, image, mask=mask)
-    # res_img = cv2.cvtColor(res_img, cv2.COLOR_RGB2BGR)
-    # cv2.imshow('res', res_img)
-    # cv2.waitKey()
-
     t = ScriptTask(config, device)
-    radius = 150
-    p1 = (197, 568)
-    import random
 
-    while True:
-        dx, dy = random.randint(-radius, radius), random.randint(-radius, radius)
-        t.device.swipe_adb(p1, (p1[0] + dx, p1[1] + dy), duration=0.5)
-        logger.info(f"Swipe {p1} to {(p1[0] + dx, p1[1] + dy)}")
-        sleep(5)
-
-    # area_type = AreaType.DRAGON
-    # t.unavailable_list += CodeList(IndexMap[area_type.name].value)
-    # print(f"{t.unavailable_list=}")
-    # t.screenshot()
-
-    # cv2.imshow("origin", t.device.image)
-    # cv2.waitKey()
-
-    # res = t.O_TEST_PRE.ocr(image)
-    # print(res)
-    # damage = t.O_DAMAGE.ocr(res_img)
-    # print(damage)
-
-    # t.done_list = CodeList('A-4')
-    # t.unavailable_list  = CodeList('D-3')
-    # t.flash_list()
-
-    # code = Code('D-1')
-    # a = code.get_enemy_type()
-    # b = code.get_enemy_click()
-    # c = code.get_areatype()
-    # print(a, b, c)
-    #
-    # t.is_area_done(AreaType.DRAGON)
-    # t.screenshot()
-    # t.start_abyss_shadows()
-    # hsv_image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-    #
-    # lower_green = np.array([9, 128, 180])
-    # upper_green = np.array([30, 210, 255])
-    # mask = cv2.inRange(hsv_image, lower_green, upper_green)
-    # res_img = cv2.bitwise_and(image, image, mask=mask)
-    # res_img = cv2.cvtColor(res_img, cv2.COLOR_RGB2BGR)
+    print(t.get_next_dt(datetime(2026, 4, 5, 21, 20, 0)))

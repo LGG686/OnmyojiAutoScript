@@ -9,15 +9,6 @@
     "description": "阴阳竂->神社"
   },
   {
-    "itemName": "ryou_abyss_shadows",
-    "imageName": "res_ryou_abyss_shadows.png",
-    "roiFront": "707,492,110,27",
-    "roiBack": "707,492,110,27",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "神社->狭间暗域"
-  },
-  {
     "itemName": "abyss_dragon",
     "imageName": "res_abyss_dragon.png",
     "roiFront": "200,150,110,270",
@@ -88,15 +79,6 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "狭间暗域"
-  },
-  {
-    "itemName": "open_abyss_shadows",
-    "imageName": "res_open_abyss_shadows.png",
-    "roiFront": "1133,602,74,58",
-    "roiBack": "1133,602,74,58",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "开启狭间暗域"
   },
   {
     "itemName": "abyss_map",

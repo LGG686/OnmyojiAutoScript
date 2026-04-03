@@ -42,18 +42,12 @@
       "delay_date": 1,
       "float_time": "00:00:00"
     },
+    "restart_config": {
+      "enable_daily": true
+    },
     "tasks_config_reset": {
       "reset_task_datetime_enable": false,
       "reset_task_datetime": "2023-01-01 00:00:00"
-    },
-    "harvest_config": {
-      "enable": true,
-      "enable_jade": true,
-      "enable_sign": true,
-      "enable_sign_999": true,
-      "enable_mail": true,
-      "enable_soul": true,
-      "enable_ap": true
     },
     "login_character_config": {
       "character": ""
@@ -385,14 +379,24 @@
       "float_time": "00:00:00"
     },
     "trifles_config": {
+      "courtyard_affairs": true,
+      "pickup_email": true,
       "one_summon": false,
       "summon_type": "普通召唤",
       "draw_mystery_pattern": false,
       "guild_wish": false,
-      "friend_love": false,
       "luck_msg": false,
       "store_sign": false,
       "buy_sushi_count": -1
+    },
+    "done_record": {
+      "courtyard_affairs_dt": "2023-01-01 00:00:00",
+      "pickup_email_dt": "2023-01-01 00:00:00",
+      "summon_dt": "2023-01-01 00:00:00",
+      "guild_wish_dt": "2023-01-01 00:00:00",
+      "luck_msg_dt": "2023-01-01 00:00:00",
+      "store_sign_dt": "2023-01-01 00:00:00",
+      "sushi_dt": "2023-01-01 00:00:00"
     }
   },
   "talisman_pass": {
@@ -423,7 +427,6 @@
       "float_time": "00:00:00"
     },
     "pets_config": {
-      "pets_happy": true,
       "pets_feast": true
     }
   },
@@ -814,7 +817,6 @@
     },
     "general_climb": {
       "limit_time": "00:30:00",
-      "boss_limit_time": "00:05:00",
       "pass_limit": 50,
       "ap_limit": 300,
       "boss_limit": 20,
@@ -822,6 +824,11 @@
       "run_sequence": "pass,ap100,boss,ap",
       "active_souls_clean": false,
       "random_sleep": false
+    },
+    "rich_man": {
+      "buy_ap": false,
+      "buy_reward": false,
+      "buy_ticket": false
     },
     "switch_soul_config": {
       "enable_switch_pass": false,
@@ -1182,6 +1189,7 @@
     },
     "herotest": {
       "layer": "鬼兵演武",
+      "skill_mode": "PVE",
       "limit_time": "00:30:00",
       "limit_count": 100,
       "exp_50_buff_enable_help": false,
@@ -1593,9 +1601,9 @@
       "float_time": "00:00:00"
     },
     "abyss_shadows_time": {
-      "try_start_abyss_shadows": false,
-      "difficulty": "EASY",
-      "try_complete_enemy_count": false
+      "abyss_shadows_4": "20:00:00",
+      "abyss_shadows_5": "20:00:00",
+      "abyss_shadows_6": "20:00:00"
     },
     "process_manage": {
       "attack_order": "A-1;B-1;B;A-2;A-3;A-4;A-5;A-6",
@@ -1606,7 +1614,10 @@
       "preset_elite": "6,3",
       "strategy_boss": "FALSE",
       "strategy_general": "30",
-      "strategy_elite": "4380000"
+      "strategy_elite": "4380000",
+      "try_start_abyss_shadows": false,
+      "difficulty": "EASY",
+      "try_complete_enemy_count": false
     },
     "saved_params": {
       "save_date": "",
@@ -1661,6 +1672,29 @@
       "enable_switch_by_name": false,
       "group_name": "",
       "team_name": ""
+    }
+  },
+  "guild_activity_monitor": {
+    "scheduler": {
+      "enable": false,
+      "next_run": "2023-01-01 00:00:00",
+      "priority": 5,
+      "success_interval": "01 00:00:00",
+      "failure_interval": "01 00:00:00",
+      "server_update": "09:00:00",
+      "delay_date": 1,
+      "float_time": "00:00:00"
+    },
+    "guild_activity_monitor_combat_time": {
+      "detection_interval": 30,
+      "monitor_duration": 15,
+      "recheck_interval": 5
+    },
+    "guild_activity": {
+      "Dokan": true,
+      "AbyssShadows": true,
+      "GuildBanquet": true,
+      "DemonRetreat": true
     }
   }
 }

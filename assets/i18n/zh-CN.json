@@ -26,7 +26,22 @@
   "checkin_config": "签到配置",
   "Usage": "使用说明",
   "checkin_big_god_usage_help": "自动领取网易大神APP的阴阳师福利礼包。\n\n使用前准备：\n1. 开启模拟器的Root模式\n2. 模拟器中安装并登录「网易大神」APP\n3. 在大神APP中绑定阴阳师角色\n\nFrida Server 会自动推送到模拟器并启动，无需手动操作。",
-  "costume_main_14": "雪月华庭"
+  "costume_main_14": "雪月华庭",
+  "GuGuArtStudio": "呱呱画室",
+  "try_start_abyss_shadows": "是否自己开启狭间",
+  "attack_order": "攻击顺序",
+  "mark_main": "标记主怪",
+  "enable_switch_soul_in_as": "是否启用狭间切换预设",
+  "preset_boss": "首领预设",
+  "preset_general": "副将预设",
+  "preset_elite": "精英预设",
+  "strategy_boss": "首领战斗策略",
+  "strategy_general": "副将战斗策略",
+  "strategy_elite": "精英战斗策略",
+  "difficulty": "难度",
+  "try_complete_enemy_count": "是否尝试补全击败数",
+  "process_manage": "狭间战斗配置",
+  "abyss_shadows_4": "狭间周五运行时间",
+  "abyss_shadows_5": "狭间周六运行时间",
+  "abyss_shadows_6": "狭间周日运行时间"
 }
-
-

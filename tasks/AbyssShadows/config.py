@@ -57,6 +57,7 @@ class AbyssShadowsDifficulty(str, Enum):
     EASY = "EASY"
     NORMAL = "NORMAL"
     HARD = "HARD"
+    EXTREME = "EXTREME"
 
 
 class MarkMainConfig(str, Enum):
@@ -254,12 +255,12 @@ class Condition:
 
 
 class AbyssShadowsTime(ConfigBase):
-    # 尝试主动开启狭间-区别于游戏中的自动开启狭间功能
-    try_start_abyss_shadows: bool = Field(default=False, description='尝试主动开启狭间')
-    # 难度
-    difficulty: AbyssShadowsDifficulty = Field(default=AbyssShadowsDifficulty.EASY, description='选择开启的难度')
-    # 是否尝试补全首领副将精英 2/4/6 数量限制
-    try_complete_enemy_count: bool = Field(default=False, description='尝试击败所有首领副将精英, 无视数量限制')
+    """
+    AbyssShadowsTime类用于管理AbyssShadows时间配置。
+    """
+    abyss_shadows_4: Time = Field(default=Time(hour=20, minute=0, second=0))
+    abyss_shadows_5: Time = Field(default=Time(hour=20, minute=0, second=0))
+    abyss_shadows_6: Time = Field(default=Time(hour=20, minute=0, second=0))
 
 
 class ProcessManage(ConfigBase):
@@ -270,29 +271,36 @@ class ProcessManage(ConfigBase):
     # 之间用-分隔，不同怪物用;分隔
     # 未实现-->小蛇使用E,-后面表示打几只,例如E-2表示打两只小蛇
     # 例如 A-1;B-2;C-3...
-    attack_order: str = Field(default='A-1;B-1;B;A-2;A-3;A-4;A-5;A-6', description='攻击顺序A,B,C,D分别表示四个区域。123456表示区域内6个怪物\n从上到下,从左到右的顺序,用-分隔,不同怪物用;分隔')
+    attack_order: str = Field(default='A-1;B-1;B;A-2;A-3;A-4;A-5;A-6', description='A,B,C,D分别表示四个区域。123456表示区域内6个怪物\n从上到下从左到右的顺序,用-分隔.不同怪物用;分隔')
     # 标记主怪
     # EnemyType,  多个用;分隔
-    mark_main: MarkMainConfig = Field(default=MarkMainConfig.BOSS_ONLY, description='选择标记主怪的策略,BOSS首领,GENERAL副将,ELITE精英')
-    # 是否启用切换御魂
-    enable_switch_soul_in_as: bool = Field(default=False, description='是否启用切换御魂,会自动战斗内切换预设')
-    # 首领预设
-    preset_boss: str = Field(default='6,1', description='首领御魂，例6,1，同其他通用御魂配置')
-    # 副将预设
-    preset_general: str = Field(default='6,2', description='副将御魂')
-    # 精英预设
-    preset_elite: str = Field(default='6,3', description='精英御魂')
-    # 小蛇预设
-    # preset_snake: str = Field(default='', description='preset_snake_help')
-
+    mark_main: MarkMainConfig = Field(default=MarkMainConfig.BOSS_ONLY, description='BOSS首领,GENERAL副将,ELITE精英')
     # 首领策略 秒退/直到消灭/时间到了退出/伤害足够退出
     # 可用值: 'TRUE', 'FALSE', 时间（秒）(1-999)，或最大伤害值(1000-)
     # 详见类 :class:`~tasks.AbyssShadows.config.Condition
-    strategy_boss: str = Field(default='FALSE', description='首领战斗策略\nTRUE:秒退/FALSE:直到消灭为止/30:时间达到30秒退出(范围1-999)/4380000:伤害达到438万退出(范围从1000开始)')
+    strategy_boss: str = Field(default='FALSE',
+                               description='TRUE/FALSE:秒退/时间到\n数字1-999:x秒退出\n数字1000+:伤害达到y退出')
     # 副将策略
     strategy_general: str = Field(default='30', description='副将战斗策略,同首领')
     # 精英策略
     strategy_elite: str = Field(default='4380000', description='精英战斗策略,同首领')
+    # 是否启用切换御魂
+    enable_switch_soul_in_as: bool = Field(default=False)
+    # 首领预设
+    preset_boss: str = Field(default='6,1', description='例6,1，同其他通用预设配置')
+    # 副将预设
+    preset_general: str = Field(default='6,2')
+    # 精英预设
+    preset_elite: str = Field(default='6,3')
+    # 小蛇预设
+    # preset_snake: str = Field(default='', description='preset_snake_help')
+    # 是否尝试补全首领副将精英 2/4/6 数量限制
+    try_complete_enemy_count: bool = Field(default=False)
+    # 尝试主动开启狭间-区别于游戏中的自动开启狭间功能
+    try_start_abyss_shadows: bool = Field(default=False)
+    # 难度
+    difficulty: AbyssShadowsDifficulty = Field(default=AbyssShadowsDifficulty.EASY)
+
 
     def is_need_mark_main(self, enemy_type: EnemyType) -> bool:
         strategy = self.mark_main  # 获取 MarkMainConfig 枚举值
@@ -337,13 +345,11 @@ class SavedParams(ConfigBase):
     # 已知的已经打完的
     unavailable: str = Field(default='', description='未完成(仅供显示禁止操作)')
 
-    hide_fields = dynamic_hide('save_date')
-
 
 class AbyssShadows(ConfigBase):
     scheduler: Scheduler = Field(default_factory=Scheduler)
     abyss_shadows_time: AbyssShadowsTime = Field(default_factory=AbyssShadowsTime)
     process_manage: ProcessManage = Field(default_factory=ProcessManage)
     saved_params: SavedParams = Field(default_factory=SavedParams)
-    # general_battle_config: GeneralBattleConfig = Field(default_factory=GeneralBattleConfig)
-    # switch_soul_config: SwitchSoulConfig = Field(default_factory=SwitchSoulConfig)
+
+    hide_fields = dynamic_hide('saved_params')
