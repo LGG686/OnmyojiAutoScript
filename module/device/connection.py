@@ -598,22 +598,68 @@ class Connection(ConnectionAttr):
         del_cached_property(self, 'adb_client')
         _ = self.adb_client
 
+    def shared_adb_environment_reasons(self, devices: SelectedGrids = None) -> list[str]:
+        reasons = []
+        if self.is_over_http or not self.is_emulator:
+            return reasons
+
+        emulator_type = None
+        if hasattr(self, 'emulator_instance'):
+            try:
+                instance = self.emulator_instance
+                if instance is not None:
+                    emulator_type = instance.type
+            except Exception as e:
+                logger.warning(f'[adb-reconnect] failed to get emulator type: {e}')
+
+        if hasattr(self, 'all_emulator_instances'):
+            try:
+                instances = []
+                for emulator_instance in self.all_emulator_instances:
+                    if emulator_type and getattr(emulator_instance, 'type', None) != emulator_type:
+                        continue
+                    if getattr(emulator_instance, 'serial', ''):
+                        instances.append(emulator_instance.serial)
+                serials = sorted(set(instances))
+                if len(serials) > 1:
+                    reasons.append(f'emulator_instances={len(serials)}')
+            except Exception as e:
+                logger.warning(f'[adb-reconnect] failed to count emulator instances: {e}')
+
+        if devices is not None:
+            try:
+                available = devices.select(status='device')
+                if available.count > 1:
+                    reasons.append(f'adb_devices={available.count}')
+            except Exception as e:
+                logger.warning(f'[adb-reconnect] failed to count adb devices: {e}')
+
+        return reasons
+
     @Config.when(DEVICE_OVER_HTTP=False)
     def adb_reconnect(self):
         """
            Reboot adb client if no device found, otherwise try reconnecting device.
         """
-        # if self.config.Emulator_AdbRestart and len(self.list_device()) == 0:
-        if self.config.script.device.adb_restart and len(self.list_device()) == 0:
-            # Restart Adb
+        devices = self.list_device()
+        shared_reasons = self.shared_adb_environment_reasons(devices=devices)
+        allow_global_restart = self.config.script.device.adb_restart and len(devices) == 0 and not shared_reasons
+
+        logger.info(f'[adb-reconnect] start: serial={self.serial}')
+        if shared_reasons:
+            logger.warning(f'[adb-reconnect] global restart blocked: {", ".join(shared_reasons)}')
+        elif self.config.script.device.adb_restart and len(devices) == 0:
+            logger.info('[adb-reconnect] no devices found, global restart allowed')
+
+        if allow_global_restart:
+            logger.warning(f'[adb-reconnect] global restart: serial={self.serial}')
             self.adb_restart()
-            # Connect to device
-            self.adb_connect(self.serial)
-            self.detect_device()
         else:
-            self.adb_disconnect(self.serial)
-            self.adb_connect(self.serial)
-            self.detect_device()
+            logger.info(f'[adb-reconnect] local reconnect: serial={self.serial}')
+
+        self.adb_disconnect(self.serial)
+        self.adb_connect(self.serial)
+        self.detect_device()
 
     @Config.when(DEVICE_OVER_HTTP=True)
     def adb_reconnect(self):

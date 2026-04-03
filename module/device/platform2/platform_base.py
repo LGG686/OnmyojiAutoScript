@@ -67,6 +67,17 @@ class PlatformBase(EmulatorManagerBase):
             self.config.script.device.emulatorinfo_path = path
             self.config.save()
 
+    def refresh_emulator_instance(self, reason: str = '') -> t.Optional[EmulatorInstanceBase]:
+        """
+        Refresh emulator detection caches and resolve current target instance again.
+        """
+        if reason:
+            logger.info(f'[emu-instance] refresh: {reason}')
+        del_cached_property(self, 'emulator_instance')
+        del_cached_property(self, 'emulator_info')
+        del_cached_property(self, 'config_interface')
+        return self.emulator_instance
+
     @cached_property
     def emulator_info(self) -> EmulatorInfo:
         emulator = self.config_interface['emulator']
@@ -125,6 +136,7 @@ class PlatformBase(EmulatorManagerBase):
             )
             if new_info != old_info:
                 self._config_save_new(emulator=instance.type, name=instance.name, path=instance.path)
+                del_cached_property(self, 'config_interface')
                 del_cached_property(self, 'emulator_info')
 
         return instance
@@ -234,6 +246,7 @@ class PlatformBase(EmulatorManagerBase):
         # Still too many instances
         logger.warning(f'Found multiple emulator instances with {search_args}')
         return None
+
 
 def serial_to_id(serial: str):
     """

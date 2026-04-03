@@ -1,23 +1,26 @@
 import ctypes
+import os
 import re
 import subprocess
+from dataclasses import dataclass, field
+
 import psutil
 from adbutils import AdbDevice, AdbClient
+from filelock import FileLock
 
 from deploy.utils import DataProcessInfo
-from module.base.decorator import run_once
 from module.base.timer import Timer
 from module.device.handle import Handle
 from module.device.platform2.platform_base import PlatformBase
-from module.device.platform2.emulator_windows import Emulator, EmulatorInstance, EmulatorManager
+from module.device.platform2.emulator_windows import EmulatorInstance, EmulatorManager
 from module.logger import logger
 
-import ctypes
 from ctypes import wintypes
 
 
 class EmulatorUnknown(Exception):
     pass
+
 
 def minimize_by_name(window_name, convert_hidden=True):
     """
@@ -45,6 +48,7 @@ def minimize_by_name(window_name, convert_hidden=True):
     WNDENUMPROC = ctypes.WINFUNCTYPE(ctypes.c_bool, wintypes.HWND, ctypes.POINTER(ctypes.c_int))
     ctypes.windll.user32.EnumWindows(WNDENUMPROC(callback), None)
 
+
 def find_hwnd_by_name(window_name):
     """
     枚举所有窗口，返回第一个匹配名称的 hwnd
@@ -61,6 +65,8 @@ def find_hwnd_by_name(window_name):
     WNDENUMPROC = ctypes.WINFUNCTYPE(ctypes.c_bool, wintypes.HWND, ctypes.POINTER(ctypes.c_int))
     ctypes.windll.user32.EnumWindows(WNDENUMPROC(callback), None)
     return target
+
+
 def show_window_by_name(window_name):
     """
     显示指定名称的窗口
@@ -75,6 +81,7 @@ def show_window_by_name(window_name):
     else:
         logger.info(f'没有找到窗口: {window_name}')
 
+
 def get_focused_window():
     return ctypes.windll.user32.GetForegroundWindow()
 
@@ -85,6 +92,10 @@ def set_focus_window(hwnd):
 
 def minimize_window(hwnd):
     ctypes.windll.user32.ShowWindow(hwnd, 6)
+
+
+def hide_window(hwnd):
+    ctypes.windll.user32.ShowWindow(hwnd, 0)
 
 
 def get_window_title(hwnd):
@@ -113,7 +124,39 @@ class AdbDeviceWithStatus(AdbDevice):
     def __bool__(self):
         return True
 
+
+@dataclass
+class EmulatorStartWatchState:
+    serial: str
+    current_window: int
+    interval: Timer
+    timeout: Timer
+    struct_window: Timer
+    launch_confirm: Timer | None
+    window_hidden: bool = False
+    new_window: int = 0
+    logged_events: set[str] = field(default_factory=set)
+
+
 class PlatformWindows(PlatformBase, EmulatorManager):
+    LIFECYCLE_LOCK_FILE = os.path.abspath('./log/emulator_lifecycle.lock')
+
+    @classmethod
+    def build_startupinfo(cls, show_window=True):
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        if not show_window:
+            startupinfo.wShowWindow = 0
+        else:
+            startupinfo.wShowWindow = 1
+
+        return startupinfo
+
+    @classmethod
+    def normalize_command(cls, command: str) -> str:
+        return command.replace(r"\\", "/").replace("\\", "/").replace('"', '"')
+
     @classmethod
     def execute(cls, command, show_window=True):
         """
@@ -123,24 +166,27 @@ class PlatformWindows(PlatformBase, EmulatorManager):
         Returns:
             subprocess.Popen:
         """
-
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-
-        if not show_window:
-            startupinfo.wShowWindow = 0  # SW_MINIMIZE - 不显示窗口
-        else:
-            startupinfo.wShowWindow = 1  # SW_SHOWNORMAL - 正常显示
-
-
-        command = command.replace(r"\\", "/").replace("\\", "/").replace('"', '"')
+        startupinfo = cls.build_startupinfo(show_window=show_window)
+        command = cls.normalize_command(command)
         logger.info(f'Execute: {command}')
         return subprocess.Popen(
-        command,
-        close_fds=True,
-        startupinfo=startupinfo
+            command,
+            close_fds=True,
+            startupinfo=startupinfo
         )
-        #return subprocess.Popen(command, close_fds=True)  # only work on Windows
+
+    @classmethod
+    def execute_output(cls, command: str, timeout: int = 15, show_window: bool = False) -> subprocess.CompletedProcess:
+        startupinfo = cls.build_startupinfo(show_window=show_window)
+        command = cls.normalize_command(command)
+        return subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            startupinfo=startupinfo,
+            close_fds=True,
+        )
 
     @classmethod
     def kill_process_by_regex(cls, regex: str) -> int:
@@ -164,104 +210,332 @@ class PlatformWindows(PlatformBase, EmulatorManager):
 
         return count
 
+    @classmethod
+    def emulator_lifecycle_lock(cls) -> FileLock:
+        os.makedirs(os.path.dirname(cls.LIFECYCLE_LOCK_FILE), exist_ok=True)
+        return FileLock(cls.LIFECYCLE_LOCK_FILE)
+
+    def refresh_target_instance(self, reason: str = ''):
+        instance = self.refresh_emulator_instance(reason=reason)
+        if instance is None:
+            logger.error('[emu-instance] target instance not found')
+        return instance
+
+    def is_instance_online(self, instance: EmulatorInstance, log_prefix: str = '[emu-start]') -> bool:
+        try:
+            devices = self.list_device().select(serial=instance.serial)
+        except Exception as e:
+            logger.warning(f'{log_prefix} online check failed: serial={instance.serial}, error={e}')
+            return False
+
+        if not devices:
+            logger.info(f'{log_prefix} serial not in adb: serial={instance.serial}')
+            return False
+
+        device: AdbDeviceWithStatus = devices.first_or_none()
+        logger.info(f'{log_prefix} adb status: serial={instance.serial}, status={device.status}')
+        return device.status == 'device'
+
+    def _get_handler(self, instance: EmulatorInstance):
+        from module.device.platform2.handlers import get_handler
+        return get_handler(instance.type)
+
+    def _build_emulator_watch_state(self, instance: EmulatorInstance) -> EmulatorStartWatchState:
+        """
+        构建模拟器启动监视所需的运行状态。
+        """
+        handler = self._get_handler(instance)
+        launch_confirm = handler.build_launch_confirm_timer(instance) if handler else None
+        state = EmulatorStartWatchState(
+            serial=instance.serial,
+            current_window=get_focused_window(),
+            interval=Timer(1).start(),
+            timeout=Timer(120).start(),
+            struct_window=Timer(10),
+            launch_confirm=launch_confirm,
+        )
+        state._platform = self
+        state._handler = handler
+        return state
+
+    def _log_emulator_watch_once(
+        self,
+        state: EmulatorStartWatchState,
+        key: str,
+        level: str,
+        message: str
+    ) -> None:
+        """
+        在单次启动监视流程中只打印一次日志。
+
+        Args:
+            state (EmulatorStartWatchState): 启动监视状态对象。
+            key (str): 日志去重标识。
+            level (str): logger 对应的日志级别方法名。
+            message (str): 要输出的日志内容。
+
+        Returns:
+            None: 该方法仅负责日志输出，不返回有效结果。
+        """
+        if key in state.logged_events:
+            return
+        state.logged_events.add(key)
+        getattr(logger, level)(message)
+
+    def _wait_emulator_watch_tick(self, state: EmulatorStartWatchState) -> bool:
+        """
+        等待下一轮启动监视轮询，并处理整体超时。
+
+        Args:
+            state (EmulatorStartWatchState): 启动监视状态对象。
+
+        Returns:
+            bool: 未超时返回 True，达到总超时返回 False。
+        """
+        state.interval.wait()
+        state.interval.reset()
+        if state.timeout.reached():
+            logger.warning('Emulator start timeout')
+            return False
+        return True
+
+    def _check_handler_launch_state(
+        self,
+        instance: EmulatorInstance,
+        state: EmulatorStartWatchState
+    ) -> tuple[str, dict | None]:
+        """
+        通过 Handler 检查启动流程是否已经真正拉起。
+        """
+        handler = getattr(state, '_handler', None)
+        if handler is None:
+            return 'ready', None
+        return handler.check_launch_state(instance, state)
+
+    def _hide_emulator_window_if_needed(
+        self,
+        instance: EmulatorInstance,
+        state: EmulatorStartWatchState,
+        player_info: dict | None
+    ) -> None:
+        """
+        在仅后台运行模式下尝试隐藏模拟器窗口（委托给 Handler）。
+        """
+        if not self.config.script.device.run_background_only or state.window_hidden:
+            return
+        handler = getattr(state, '_handler', None)
+        if handler is None:
+            return
+        if player_info is None:
+            player_info = handler.query_player_info(instance, self)
+        if not handler.try_hide_window(instance, self, info=player_info):
+            return
+
+        self._log_emulator_watch_once(
+            state,
+            'hidden_window',
+            'info',
+            f'[emu-start] hide instance window: serial={state.serial}'
+        )
+        state.window_hidden = True
+
+    def _track_emulator_focus_window(self, state: EmulatorStartWatchState) -> None:
+        """
+        跟踪新弹出的模拟器窗口，并在需要时恢复原焦点。
+
+        Args:
+            state (EmulatorStartWatchState): 启动监视状态对象。
+
+        Returns:
+            None: 该方法仅更新窗口句柄状态，不返回有效结果。
+        """
+        if state.current_window == 0 or state.new_window != 0:
+            return
+
+        state.new_window = get_focused_window()
+        if state.current_window == state.new_window:
+            state.new_window = 0
+            return
+        if self.config.script.device.emulator_window_minimize or self.config.script.device.run_background_only:
+            state.new_window = 0
+            return
+
+        logger.info(f'New window showing up: {state.new_window}, focus back')
+        set_focus_window(state.current_window)
+
+    def _try_connect_emulator_adb(self, serial: str) -> bool:
+        """
+        尝试主动连接模拟器对应的 ADB 端口。
+
+        Args:
+            serial (str): 模拟器实例的 ADB 序列号。
+
+        Returns:
+            bool: 返回 ADB connect 是否给出了非预期提示信息。
+        """
+        message = self.adb_client.connect(serial)
+        if 'connected' in message:
+            return False
+        if '(10061)' in message:
+            return False
+        return True
+
+    def _ensure_emulator_device_ready(self, state: EmulatorStartWatchState) -> bool:
+        """
+        检查模拟器是否已经在 ADB 设备列表中可用。
+
+        Args:
+            state (EmulatorStartWatchState): 启动监视状态对象。
+
+        Returns:
+            bool: 设备可继续后续检查时返回 True，否则返回 False。
+        """
+        logger.info(f'Try to connect emulator, remain[{state.timeout.remain():.1f}s]')
+        try:
+            devices = self.list_device().select(serial=state.serial)
+            if not devices:
+                self._try_connect_emulator_adb(state.serial)
+                return False
+
+            device: AdbDeviceWithStatus = devices.first_or_none()
+            if device.status == 'offline':
+                self.adb_client.disconnect(state.serial)
+                self._try_connect_emulator_adb(state.serial)
+                return False
+
+            self._log_emulator_watch_once(state, 'online', 'info', f'Emulator online: {device}')
+            return True
+        except Exception as e:
+            self._log_emulator_watch_once(
+                state,
+                'adb_transient',
+                'warning',
+                f'[emu-start] transient adb error, keep waiting: serial={state.serial}, error={e}'
+            )
+            return False
+
+    def _ensure_emulator_command_ready(self, state: EmulatorStartWatchState) -> bool:
+        """
+        检查模拟器 ADB shell 命令是否已经可用。
+
+        Args:
+            state (EmulatorStartWatchState): 启动监视状态对象。
+
+        Returns:
+            bool: 命令执行成功返回 True，否则返回 False。
+        """
+        try:
+            pong = self.adb_shell(['echo', 'pong'])
+        except Exception as e:
+            logger.info(e)
+            return False
+
+        self._log_emulator_watch_once(state, 'ping', 'info', f'Command ping: {pong}')
+        return True
+
+    def _ensure_emulator_package_ready(self, state: EmulatorStartWatchState) -> bool:
+        """
+        检查目标游戏包是否已经可以从模拟器中查询到。
+
+        Args:
+            state (EmulatorStartWatchState): 启动监视状态对象。
+
+        Returns:
+            bool: 查到包列表返回 True，否则返回 False。
+        """
+        packages = self.list_app_packages(show_log=False)
+        if not packages:
+            return False
+
+        self._log_emulator_watch_once(state, 'package', 'info', f'Found azurlane packages: {packages}')
+        return True
+
+    def _is_emulator_window_ready(self, state: EmulatorStartWatchState) -> bool:
+        """
+        检查模拟器窗口结构是否已经稳定到可继续执行。
+
+        Args:
+            state (EmulatorStartWatchState): 启动监视状态对象。
+
+        Returns:
+            bool: 窗口结构满足要求时返回 True，否则返回 False。
+        """
+        if not state.struct_window.started():
+            state.struct_window.start()
+            return False
+        if state.struct_window.reached():
+            return True
+        if state.new_window == 0:
+            return False
+        if not Handle.handle_has_children(hwnd=state.new_window):
+            return False
+        return True
+
+    def _finalize_emulator_window(self, state: EmulatorStartWatchState) -> None:
+        """
+        在启动成功后处理窗口最小化和后台运行提示。
+
+        Args:
+            state (EmulatorStartWatchState): 启动监视状态对象。
+
+        Returns:
+            None: 该方法仅执行启动后的窗口处理，不返回有效结果。
+        """
+        emulator_window_minimize = self.config.script.device.emulator_window_minimize
+        if emulator_window_minimize:
+            logger.info(f'Minimize new emulator window: {emulator_window_minimize}')
+        if self.config.script.device.run_background_only:
+            logger.info(f'run background only: {self.config.script.device.run_background_only}')
+            logger.warning('run_background_only will not show any UI, emulator will run background only')
+            return
+        if not emulator_window_minimize:
+            return
+
+        sleep_time = 3
+        logger.info(f'Waiting {sleep_time} seconds before minimizing window')
+        Timer(sleep_time).wait()
+        target_window_name = self.config.script.device.handle
+        minimize_by_name(target_window_name)
+        logger.info(f'最小化窗口: {target_window_name}')
+
     def _emulator_start(self, instance: EmulatorInstance):
         """
-        Start a emulator without error handling
+        Start a emulator without error handling (delegates to Handler)
         """
-        show_window=not self.config.script.device.emulator_window_minimize and not self.config.script.device.run_background_only
-        exe: str = instance.emulator.path
-        if instance == Emulator.MuMuPlayer:
-            # NemuPlayer.exe
-            self.execute(exe, show_window=show_window)
-        elif instance == Emulator.MuMuPlayerX:
-            # NemuPlayer.exe -m nemu-12.0-x64-default
-            self.execute(f'"{exe}" -m {instance.name}', show_window=show_window)
-        elif instance == Emulator.MuMuPlayer12:
-            # MuMuPlayer.exe -v 0
-            if instance.MuMuPlayer12_id is None:
-                logger.warning(f'Cannot get MuMu instance index from name {instance.name}')
-            self.execute(f'"{exe}" -v {instance.MuMuPlayer12_id}', show_window=show_window)
-        elif instance == Emulator.LDPlayerFamily:
-            # ldconsole.exe launch --index 0
-            self.execute(f'"{Emulator.single_to_console(exe)}" launch --index {instance.LDPlayer_id}', show_window=show_window)
-        elif instance == Emulator.NoxPlayerFamily:
-            # Nox.exe -clone:Nox_1
-            self.execute(f'"{exe}" -clone:{instance.name}', show_window=show_window)
-        elif instance == Emulator.BlueStacks5:
-            # HD-Player.exe --instance Pie64
-            self.execute(f'"{exe}" --instance {instance.name}', show_window=show_window)
-        elif instance == Emulator.BlueStacks4:
-            # Bluestacks.exe -vmname Android_1
-            self.execute(f'"{exe}" -vmname {instance.name}', show_window=show_window)
-        elif instance == Emulator.MEmuPlayer:
-            # MEmu.exe MEmu_0
-            self.execute(f'"{exe}" {instance.name}', show_window=show_window)
-        else:
+        handler = self._get_handler(instance)
+        if handler is None:
             raise EmulatorUnknown(f'Cannot start an unknown emulator instance: {instance}')
+
+        cmd = handler.build_start_command(instance)
+        if cmd is None:
+            raise EmulatorUnknown(f'Handler returned no start command for: {instance}')
+
+        show_window = (
+            not self.config.script.device.emulator_window_minimize
+            and not self.config.script.device.run_background_only
+            and handler.start_show_window()
+        )
+        self.execute(cmd, show_window=show_window)
 
     def _emulator_stop(self, instance: EmulatorInstance):
         """
-        Stop a emulator without error handling
+        Stop a emulator without error handling (delegates to Handler)
         """
-        exe: str = instance.emulator.path
-        if instance == Emulator.MuMuPlayer:
-            # MuMu6 does not have multi instance, kill one means kill all
-            # Has 4 processes
-            # "C:\Program Files\NemuVbox\Hypervisor\NemuHeadless.exe" --comment nemu-6.0-x64-default --startvm
-            # "E:\ProgramFiles\MuMu\emulator\nemu\EmulatorShell\NemuPlayer.exe"
-            # E:\ProgramFiles\MuMu\emulator\nemu\EmulatorShell\NemuService.exe
-            # "C:\Program Files\NemuVbox\Hypervisor\NemuSVC.exe" -Embedding
-            self.kill_process_by_regex(
-                rf'('
-                rf'NemuHeadless.exe'
-                rf'|NemuPlayer.exe\"'
-                rf'|NemuPlayer.exe$'
-                rf'|NemuService.exe'
-                rf'|NemuSVC.exe'
-                rf')'
-            )
-        elif instance == Emulator.MuMuPlayerX:
-            # MuMu X has 3 processes
-            # "E:\ProgramFiles\MuMu9\emulator\nemu9\EmulatorShell\NemuPlayer.exe" -m nemu-12.0-x64-default -s 0 -l
-            # "C:\Program Files\Muvm6Vbox\Hypervisor\Muvm6Headless.exe" --comment nemu-12.0-x64-default --startvm xxx
-            # "C:\Program Files\Muvm6Vbox\Hypervisor\Muvm6SVC.exe" --Embedding
-            self.kill_process_by_regex(
-                rf'('
-                rf'NemuPlayer.exe.*-m {instance.name}'
-                rf'|Muvm6Headless.exe'
-                rf'|Muvm6SVC.exe'
-                rf')'
-            )
-        elif instance == Emulator.MuMuPlayer12:
-            # MuMuManager.exe api -v 1 shutdown_player
-            if instance.MuMuPlayer12_id is None:
-                logger.warning(f'Cannot get MuMu instance index from name {instance.name}')
-            self.execute(f'"{Emulator.single_to_console(exe)}" api -v {instance.MuMuPlayer12_id} shutdown_player')
-        elif instance == Emulator.LDPlayerFamily:
-            # ldconsole.exe quit --index 0
-            self.execute(f'"{Emulator.single_to_console(exe)}" quit --index {instance.LDPlayer_id}')
-        elif instance == Emulator.NoxPlayerFamily:
-            # Nox.exe -clone:Nox_1 -quit
-            self.execute(f'"{exe}" -clone:{instance.name} -quit')
-        elif instance == Emulator.BlueStacks5:
-            # BlueStack has 2 processes
-            # C:\Program Files\BlueStacks_nxt_cn\HD-Player.exe --instance Pie64
-            # C:\Program Files\BlueStacks_nxt_cn\BstkSVC.exe -Embedding
-            self.kill_process_by_regex(
-                rf'('
-                rf'HD-Player.exe.*"--instance" "{instance.name}"'
-                rf')'
-            )
-        elif instance == Emulator.BlueStacks4:
-            # E:\Program Files (x86)\BluestacksCN\bsconsole.exe quit --name Android
-            self.execute(f'"{Emulator.single_to_console(exe)}" quit --name {instance.name}')
-        elif instance == Emulator.MEmuPlayer:
-            # F:\Program Files\Microvirt\MEmu\memuc.exe stop -n MEmu_0
-            self.execute(f'"{Emulator.single_to_console(exe)}" stop -n {instance.name}')
-        else:
+        handler = self._get_handler(instance)
+        if handler is None:
             raise EmulatorUnknown(f'Cannot stop an unknown emulator instance: {instance}')
 
-    def _emulator_function_wrapper(self, func: callable):
+        kill_regex = handler.stop_by_kill(instance)
+        if kill_regex:
+            self.kill_process_by_regex(kill_regex)
+            return
+
+        cmd = handler.build_stop_command(instance)
+        if cmd is None:
+            raise EmulatorUnknown(f'Handler returned no stop command for: {instance}')
+        self.execute(cmd)
+
+    def _emulator_function_wrapper(self, func: callable, instance: EmulatorInstance = None):
         """
         Args:
             func (callable): _emulator_start or _emulator_stop
@@ -269,8 +543,13 @@ class PlatformWindows(PlatformBase, EmulatorManager):
         Returns:
             bool: If success
         """
+        if instance is None:
+            instance = self.emulator_instance
+        if instance is None:
+            logger.error(f'Emulator function {func.__name__}() failed because no target instance was found')
+            return False
         try:
-            func(self.emulator_instance)
+            func(instance)
             return True
         except OSError as e:
             msg = str(e)
@@ -285,155 +564,86 @@ class PlatformWindows(PlatformBase, EmulatorManager):
         logger.error(f'Emulator function {func.__name__}() failed')
         return False
 
-    def emulator_start_watch(self):
+    def emulator_start_watch(self, instance: EmulatorInstance = None):
         """
         Returns:
             bool: True if startup completed
                 False if timeout, unexpected stop, adb preemptive
         """
         logger.hr('Emulator start', level=2)
-        current_window = get_focused_window()
-        serial = self.emulator_instance.serial
-        logger.info(f'Current window: {current_window}')
-
-        def adb_connect():
-            m = self.adb_client.connect(self.serial)
-            if 'connected' in m:
-                # Connected to 127.0.0.1:59865
-                # Already connected to 127.0.0.1:59865
-                return False
-            elif '(10061)' in m:
-                # cannot connect to 127.0.0.1:55555:
-                # No connection could be made because the target machine actively refused it. (10061)
-                return False
-            else:
-                return True
-
-        @run_once
-        def show_online(m):
-            logger.info(f'Emulator online: {m}')
-
-        @run_once
-        def show_ping(m):
-            logger.info(f'Command ping: {m}')
-
-        @run_once
-        def show_package(m):
-            logger.info(f'Found azurlane packages: {m}')
-
-        interval = Timer(1).start()
-        timeout = Timer(120).start()
-        struct_window = Timer(10)
-        new_window = 0
+        if instance is None:
+            instance = self.emulator_instance
+        if instance is None:
+            logger.error('[emu-start] watch failed: target instance not found')
+            return False
+        state = self._build_emulator_watch_state(instance)
+        logger.info(f'Current window: {state.current_window}')
         while 1:
-            interval.wait()
-            interval.reset()
-            if timeout.reached():
-                logger.warning(f'Emulator start timeout')
+            if not self._wait_emulator_watch_tick(state):
                 return False
 
-            # Check emulator window showing up
-            # logger.info([get_focused_window(), get_window_title(get_focused_window())])
-            if current_window != 0 and new_window == 0:
-                new_window = get_focused_window()
-                if current_window != new_window and not self.config.script.device.emulator_window_minimize and not self.config.script.device.run_background_only:
-                    logger.info(f'New window showing up: {new_window}, focus back')
-                    set_focus_window(current_window)
-                else:
-                    new_window = 0
-            try:
-                logger.info(f'Try to connect emulator, remain[{timeout.remain():.1f}s]')
-                # Check device connection
-                devices = self.list_device().select(serial=serial)
-                # logger.info(devices)
-                if devices:
-                    device: AdbDeviceWithStatus = devices.first_or_none()
-                    if device.status == 'device':
-                        # Emulator online
-                        pass
-                    if device.status == 'offline':
-                        self.adb_client.disconnect(serial)
-                        adb_connect()
-                        continue
-                else:
-                    # Try to connect
-                    adb_connect()
-                    continue
-            except Exception as e:
-                logger.warning(f'Error during adb_connect in watch loop: {e}')
+            launch_state, player_info = self._check_handler_launch_state(instance, state)
+            if launch_state == 'fail':
                 return False
-
-            show_online(devices.first_or_none())
-
-            # Check command availability
-            try:
-                pong = self.adb_shell(['echo', 'pong'])
-            except Exception as e:
-                logger.info(e)
+            if launch_state == 'wait':
                 continue
-            show_ping(pong)
 
-            # Check game package
-            packages = self.list_app_packages(show_log=False)
-            if len(packages):
-                pass
-            else:
+            self._hide_emulator_window_if_needed(instance, state, player_info)
+            self._track_emulator_focus_window(state)
+            if not self._ensure_emulator_device_ready(state):
                 continue
-            show_package(packages)
-
-            # Check Window structure
-            if not struct_window.started():
-                struct_window.start()
-            elif struct_window.reached():
+            if not self._ensure_emulator_command_ready(state):
+                continue
+            if not self._ensure_emulator_package_ready(state):
+                continue
+            if self._is_emulator_window_ready(state):
                 break
-            if new_window == 0:
-                continue
-            if not Handle.handle_has_children(hwnd=new_window):
-                continue
 
-            # All check passed
-            break
-
-        emulator_window_minimize = self.config.script.device.emulator_window_minimize
-        if (emulator_window_minimize): logger.info(f'Minimize new emulator window: {emulator_window_minimize}')
-        if (self.config.script.device.run_background_only):
-            logger.info(f'run background only: {self.config.script.device.run_background_only}')
-            logger.warning('run_background_only will not show any UI, emulator will run background only')
-        if emulator_window_minimize and not self.config.script.device.run_background_only:
-            # 直接使用窗口名称最小化
-            sleep_time = 3
-            logger.info(f'Waiting {sleep_time} seconds before minimizing window')
-            Timer(sleep_time).wait()
-            target_window_name = self.config.script.device.handle  # 在这里输入你的具体窗口名称
-            minimize_by_name(target_window_name)
-            logger.info(f'最小化窗口: {target_window_name}')
-            # if current_window:
-            #     logger.info(f'De-flash current window: {current_window}')
-            #     flash_window(current_window, flash=False)
-
+        self._finalize_emulator_window(state)
         logger.info('Emulator start completed')
         return True
-
 
     def emulator_start(self):
         logger.hr('Emulator start', level=1)
         for i in range(3):
-            # Stop
-            if not self._emulator_function_wrapper(self._emulator_stop):
-                return False
-            # Start
-            if self._emulator_function_wrapper(self._emulator_start):
-                # Success
-                if self.emulator_start_watch():
-                    return True
-                logger.attr(2 - i, f'Failed to connect or start, try again')
-                continue
-            else:
-                # Failed to start, stop and start again
-                if self._emulator_function_wrapper(self._emulator_stop):
-                    continue
-                else:
+            attempt = i + 1
+            logger.info(f'[emu-start] lock wait: attempt={attempt}/3')
+            with self.emulator_lifecycle_lock():
+                logger.info(f'[emu-start] lock acquired: attempt={attempt}/3')
+                instance = self.refresh_target_instance(reason=f'pre-start refresh attempt={attempt}')
+                if instance is None:
+                    logger.info('[emu-start] lock release: target instance not found')
                     return False
+
+                if self.is_instance_online(instance):
+                    logger.info(f'[emu-start] already online: serial={instance.serial}')
+                    logger.info('[emu-start] lock release: already online')
+                    return True
+
+                if attempt > 1:
+                    logger.warning(f'[emu-start] retry with stop: serial={instance.serial}, attempt={attempt}/3')
+                    if not self._emulator_function_wrapper(self._emulator_stop, instance):
+                        logger.info('[emu-start] lock release: stop failed')
+                        return False
+                    instance = self.refresh_target_instance(reason=f'post-stop refresh attempt={attempt}')
+                    if instance is None:
+                        logger.info('[emu-start] lock release: target missing after stop')
+                        return False
+
+                logger.info(
+                    f'[emu-start] start target: serial={instance.serial}, name={instance.name or "<default>"}, '
+                    f'type={instance.type}, attempt={attempt}/3'
+                )
+                if not self._emulator_function_wrapper(self._emulator_start, instance):
+                    logger.warning(f'[emu-start] start command failed: serial={instance.serial}, attempt={attempt}/3')
+                    logger.info('[emu-start] lock release: start failed')
+                    continue
+                logger.info(f'[emu-start] start submitted: serial={instance.serial}, attempt={attempt}/3')
+                logger.info('[emu-start] lock release: start submitted')
+
+            if self.emulator_start_watch(instance):
+                return True
+            logger.attr(3 - attempt, f'Failed to connect or start, try again')
 
         logger.error('Failed to start emulator 3 times, stopped')
         return False
@@ -441,16 +651,25 @@ class PlatformWindows(PlatformBase, EmulatorManager):
     def emulator_stop(self):
         logger.hr('Emulator stop', level=1)
         for _ in range(3):
-            # Stop
-            if self._emulator_function_wrapper(self._emulator_stop):
-                # Success
-                return True
-            else:
-                # Failed to stop, start and stop again
-                if self._emulator_function_wrapper(self._emulator_start):
-                    continue
-                else:
+            logger.info('[emu-stop] lock wait')
+            with self.emulator_lifecycle_lock():
+                logger.info('[emu-stop] lock acquired')
+                instance = self.refresh_target_instance(reason='pre-stop refresh')
+                if instance is None:
+                    logger.info('[emu-stop] lock release: target instance not found')
                     return False
+                # Stop
+                if self._emulator_function_wrapper(self._emulator_stop, instance):
+                    logger.info(f'[emu-stop] stop submitted: serial={instance.serial}')
+                    logger.info('[emu-stop] lock release: stop ok')
+                    return True
+                # Failed to stop, start and stop again
+                if self._emulator_function_wrapper(self._emulator_start, instance):
+                    logger.warning(f'[emu-stop] stop failed, retry after start: serial={instance.serial}')
+                    logger.info('[emu-stop] lock release: retry')
+                    continue
+                logger.info('[emu-stop] lock release: stop/start failed')
+                return False
 
         logger.error('Failed to stop emulator 3 times, stopped')
         return False

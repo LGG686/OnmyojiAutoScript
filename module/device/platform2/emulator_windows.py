@@ -79,54 +79,19 @@ class Emulator(EmulatorBase):
         Returns:
             str: Emulator type, such as Emulator.NoxPlayer
         """
+        from module.device.platform2.handlers import all_handlers
+
         folder, exe = os.path.split(path)
         folder, dir1 = os.path.split(folder)
         folder, dir2 = os.path.split(folder)
         exe = exe.lower()
         dir1 = dir1.lower()
         dir2 = dir2.lower()
-        if exe == 'nox.exe':
-            if dir2 == 'nox':
-                return cls.NoxPlayer
-            elif dir2 == 'nox64':
-                return cls.NoxPlayer64
-            else:
-                return cls.NoxPlayer
-        if exe == 'bluestacks.exe':
-            if dir1 in ['bluestacks', 'bluestacks_cn']:
-                return cls.BlueStacks4
-            elif dir1 in ['bluestacks_nxt', 'bluestacks_nxt_cn']:
-                return cls.BlueStacks5
-            else:
-                return cls.BlueStacks4
-        if exe == 'hd-player.exe':
-            if dir1 in ['bluestacks', 'bluestacks_cn']:
-                return cls.BlueStacks4
-            elif dir1 in ['bluestacks_nxt', 'bluestacks_nxt_cn']:
-                return cls.BlueStacks5
-            else:
-                return cls.BlueStacks5
-        if exe == 'dnplayer.exe':
-            if dir1 == 'ldplayer':
-                return cls.LDPlayer3
-            elif dir1 == 'ldplayer4':
-                return cls.LDPlayer4
-            elif dir1 == 'ldplayer9':
-                return cls.LDPlayer9
-            else:
-                return cls.LDPlayer3
-        if exe == 'nemuplayer.exe':
-            if dir2 == 'nemu':
-                return cls.MuMuPlayer
-            elif dir2 == 'nemu9':
-                return cls.MuMuPlayerX
-            else:
-                return cls.MuMuPlayer
-        if exe in ['mumuplayer.exe', 'mumunxmain.exe']:
-            return cls.MuMuPlayer12
-        if exe == 'memu.exe':
-            return cls.MEmuPlayer
 
+        for handler in all_handlers():
+            result = handler.path_to_type(path, exe, dir1, dir2)
+            if result:
+                return result
         return ''
 
     @staticmethod
@@ -140,23 +105,14 @@ class Emulator(EmulatorBase):
         Yields:
             str: Path to emulator executable
         """
-        if 'HD-MultiInstanceManager.exe' in exe:
-            yield exe.replace('HD-MultiInstanceManager.exe', 'HD-Player.exe')
-            yield exe.replace('HD-MultiInstanceManager.exe', 'Bluestacks.exe')
-        elif 'MultiPlayerManager.exe' in exe:
-            yield exe.replace('MultiPlayerManager.exe', 'Nox.exe')
-        elif 'dnmultiplayer.exe' in exe:
-            yield exe.replace('dnmultiplayer.exe', 'dnplayer.exe')
-        elif 'NemuMultiPlayer.exe' in exe:
-            yield exe.replace('NemuMultiPlayer.exe', 'NemuPlayer.exe')
-        elif 'MuMuMultiPlayer.exe' in exe:
-            yield exe.replace('MuMuMultiPlayer.exe', 'MuMuPlayer.exe')
-        elif 'MuMuManager.exe' in exe:
-            yield exe.replace('MuMuManager.exe', 'MuMuPlayer.exe')
-        elif 'MEmuConsole.exe' in exe:
-            yield exe.replace('MEmuConsole.exe', 'MEmu.exe')
-        else:
-            yield exe
+        from module.device.platform2.handlers import all_handlers
+
+        for handler in all_handlers():
+            results = handler.multi_to_single(exe)
+            if results:
+                yield from results
+                return
+        yield exe
 
     @staticmethod
     def single_to_console(exe: str):
@@ -169,21 +125,13 @@ class Emulator(EmulatorBase):
         Returns:
             str: Path to emulator console
         """
-        if 'MuMuPlayer.exe' in exe:
-            return exe.replace('MuMuPlayer.exe', 'MuMuManager.exe')
-         # MuMuPlayer12 5.0
-        elif 'MuMuNxMain.exe' in exe:
-            return exe.replace('MuMuNxMain.exe', 'MuMuManager.exe')
-        elif 'LDPlayer.exe' in exe:
-            return exe.replace('LDPlayer.exe', 'ldconsole.exe')
-        elif 'dnplayer.exe' in exe:
-            return exe.replace('dnplayer.exe', 'ldconsole.exe')
-        elif 'Bluestacks.exe' in exe:
-            return exe.replace('Bluestacks.exe', 'bsconsole.exe')
-        elif 'MEmu.exe' in exe:
-            return exe.replace('MEmu.exe', 'memuc.exe')
-        else:
-            return exe
+        from module.device.platform2.handlers import all_handlers
+
+        for handler in all_handlers():
+            result = handler.single_to_console(exe)
+            if result is not None:
+                return result
+        return exe
 
     @staticmethod
     def vbox_file_to_serial(file: str) -> str:
@@ -211,149 +159,22 @@ class Emulator(EmulatorBase):
         Yields:
             EmulatorInstance: Emulator instances found in this emulator
         """
-        if self == Emulator.NoxPlayerFamily:
-            # ./BignoxVMS/{name}/{name}.vbox
-            for folder in self.list_folder('./BignoxVMS', is_dir=True):
-                for file in iter_folder(folder, ext='.vbox'):
-                    serial = Emulator.vbox_file_to_serial(file)
-                    if serial:
-                        yield EmulatorInstance(
-                            serial=serial,
-                            name=os.path.basename(folder),
-                            path=self.path,
-                        )
-        elif self == Emulator.BlueStacks5:
-            # Get UserDefinedDir, where BlueStacks stores data
-            folder = None
-            try:
-                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\BlueStacks_nxt") as reg:
-                    folder = winreg.QueryValueEx(reg, 'UserDefinedDir')[0]
-            except FileNotFoundError:
-                pass
-            try:
-                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\BlueStacks_nxt_cn") as reg:
-                    folder = winreg.QueryValueEx(reg, 'UserDefinedDir')[0]
-            except FileNotFoundError:
-                pass
-            if not folder:
-                return
-            # Read {UserDefinedDir}/bluestacks.conf
-            try:
-                with open(self.abspath('./bluestacks.conf', folder), encoding='utf-8') as f:
-                    content = f.read()
-            except FileNotFoundError:
-                return
-            # bst.instance.Nougat64.adb_port="5555"
-            emulators = re.findall(r'bst.instance.(\w+).status.adb_port="(\d+)"', content)
-            for emulator in emulators:
-                yield EmulatorInstance(
-                    serial=f'127.0.0.1:{emulator[1]}',
-                    name=emulator[0],
-                    path=self.path,
-                )
-        elif self == Emulator.BlueStacks4:
-            # ../Engine/Android
-            regex = re.compile(r'^Android')
-            for folder in self.list_folder('../Engine', is_dir=True):
-                folder = os.path.basename(folder)
-                res = regex.match(folder)
-                if not res:
-                    continue
-                # Serial from BlueStacks4 are not static, they get increased on every emulator launch
-                # Assume all use 127.0.0.1:5555
-                yield EmulatorInstance(
-                    serial=f'127.0.0.1:5555',
-                    name=folder,
-                    path=self.path
-                )
-        elif self == Emulator.LDPlayerFamily:
-            # ./vms/leidian0
-            regex = re.compile(r'^leidian(\d+)$')
-            for folder in self.list_folder('./vms', is_dir=True):
-                folder = os.path.basename(folder)
-                res = regex.match(folder)
-                if not res:
-                    continue
-                # LDPlayer has no forward port config in .vbox file
-                # Ports are auto increase, 5555, 5557, 5559, etc
-                port = int(res.group(1)) * 2 + 5555
-                yield EmulatorInstance(
-                    serial=f'127.0.0.1:{port}',
-                    name=folder,
-                    path=self.path
-                )
-        elif self == Emulator.MuMuPlayer:
-            # MuMu has no multi instances, on 7555 only
-            yield EmulatorInstance(
-                serial='127.0.0.1:7555',
-                name='',
-                path=self.path,
-            )
-        elif self == Emulator.MuMuPlayerX:
-            # vms/nemu-12.0-x64-default
-            for folder in self.list_folder('../vms', is_dir=True):
-                for file in iter_folder(folder, ext='.nemu'):
-                    serial = Emulator.vbox_file_to_serial(file)
-                    if serial:
-                        yield EmulatorInstance(
-                            serial=serial,
-                            name=os.path.basename(folder),
-                            path=self.path,
-                        )
-        elif self == Emulator.MuMuPlayer12:
-            # vms/MuMuPlayer-12.0-0
-            for folder in self.list_folder('../vms', is_dir=True):
-                for file in iter_folder(folder, ext='.nemu'):
-                    serial = Emulator.vbox_file_to_serial(file)
-                    name = os.path.basename(folder)
-                    if serial:
-                        yield EmulatorInstance(
-                            serial=serial,
-                            name=name,
-                            path=self.path,
-                        )
-                    # Fix for MuMu12 v4.0.4, default instance of which has no forward record in vbox config
-                    else:
-                        instance = EmulatorInstance(
-                            serial=serial,
-                            name=name,
-                            path=self.path,
-                        )
-                        if instance.MuMuPlayer12_id:
-                            instance.serial = f'127.0.0.1:{16384 + 32 * instance.MuMuPlayer12_id}'
-                            yield instance
-        elif self == Emulator.MEmuPlayer:
-            # ./MemuHyperv VMs/{name}/{name}.memu
-            for folder in self.list_folder('./MemuHyperv VMs', is_dir=True):
-                for file in iter_folder(folder, ext='.memu'):
-                    serial = Emulator.vbox_file_to_serial(file)
-                    if serial:
-                        yield EmulatorInstance(
-                            serial=serial,
-                            name=os.path.basename(folder),
-                            path=self.path,
-                        )
+        from module.device.platform2.handlers import get_handler
+
+        handler = get_handler(self.type)
+        if handler is not None:
+            yield from handler.iter_instances(self)
 
     def iter_adb_binaries(self) -> t.Iterable[str]:
         """
         Yields:
             str: Filepath to adb binaries found in this emulator
         """
-        if self == Emulator.NoxPlayerFamily:
-            exe = self.abspath('./nox_adb.exe')
-            if os.path.exists(exe):
-                yield exe
-        if self == Emulator.MuMuPlayerFamily:
-            # From MuMu9\emulator\nemu9\EmulatorShell
-            # to MuMu9\emulator\nemu9\vmonitor\bin\adb_server.exe
-            exe = self.abspath('../vmonitor/bin/adb_server.exe')
-            if os.path.exists(exe):
-                yield exe
+        from module.device.platform2.handlers import get_handler
 
-        # All emulators have adb.exe
-        exe = self.abspath('./adb.exe')
-        if os.path.exists(exe):
-            yield exe
+        handler = get_handler(self.type)
+        if handler is not None:
+            yield from handler.iter_adb_binaries(self)
 
 
 class EmulatorManager(EmulatorManagerBase):
