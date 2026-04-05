@@ -40,12 +40,12 @@ class TaskRunState:
 
 
 @dataclass
-class TodayLogCache:
-    day: str
-    path: Path
-    position: int = 0
-    signature: tuple[int, int] = (0, 0)
-    lines: list[str] = field(default_factory=list)
+class RuntimeState:
+    saw_start_boundary: bool = False
+    pre_start_first: datetime | None = None
+    region_last: datetime | None = None
+    session_start: datetime | None = None
+    total_duration: float = 0.0
 
 
 @dataclass
@@ -57,13 +57,14 @@ class HistoricalStatsCacheEntry:
 class LogStatsParser:
     def __init__(self) -> None:
         self.summary: dict[str, dict[str, Any]] = {}
+        self.runtime = RuntimeState()
         self._pending_task_name: str | None = None
         self._pending_task_start_name: str | None = None
         self._pending_battle_start = False
         self._active_task: TaskRunState | None = None
         self._active_battle: BattleState | None = None
 
-    def parse_lines(self, lines: list[str]) -> dict[str, Any]:
+    def consume_lines(self, lines: list[str]) -> None:
         index = 0
         total = len(lines)
         while index < total:
@@ -83,12 +84,17 @@ class LogStatsParser:
             self._consume_regular_line(line)
             index += 1
 
-        self._close_active_battle()
-        self._close_active_task()
+    def snapshot(self, script_name: str = "", tail_lines: list[str] | None = None) -> dict[str, Any]:
+        parser = copy.deepcopy(self)
+        if tail_lines:
+            parser.consume_lines(tail_lines)
+        parser._close_active_battle()
+        parser._close_active_task()
 
-        tasks = self._build_tasks_payload()
+        tasks = parser._build_tasks_payload()
         return {
-            "total_runtime_seconds": self._calculate_total_runtime(lines),
+            "script_name": script_name,
+            "total_runtime_seconds": parser._current_total_runtime(),
             "total_task_run_count": sum(task["run_count"] for task in tasks.values()),
             "total_battle_count": sum(
                 0 if task["battle"] is None else int(task["battle"]["count"])
@@ -96,6 +102,12 @@ class LogStatsParser:
             ),
             "tasks": tasks,
         }
+
+    @classmethod
+    def parse_lines(cls, lines: list[str], script_name: str = "") -> dict[str, Any]:
+        parser = cls()
+        parser.consume_lines(lines)
+        return parser.snapshot(script_name=script_name)
 
     @staticmethod
     def _is_task_boundary(lines: list[str], index: int) -> bool:
@@ -130,10 +142,29 @@ class LogStatsParser:
         self._close_active_battle()
         self._close_active_task()
         if title.upper() == _START_TITLE:
+            self._handle_start_boundary()
             self._pending_task_start_name = None
             return
         self._pending_task_start_name = self._pending_task_name or title
         self._pending_task_name = None
+
+    def _handle_start_boundary(self) -> None:
+        runtime = self.runtime
+        if not runtime.saw_start_boundary:
+            runtime.saw_start_boundary = True
+            runtime.total_duration = self._append_duration(
+                runtime.total_duration,
+                runtime.pre_start_first,
+                runtime.region_last,
+            )
+        else:
+            runtime.total_duration = self._append_duration(
+                runtime.total_duration,
+                runtime.session_start,
+                runtime.region_last,
+            )
+        runtime.session_start = None
+        runtime.region_last = None
 
     def _handle_battle_boundary(self) -> None:
         self._close_active_battle()
@@ -149,6 +180,8 @@ class LogStatsParser:
         if ts is None:
             return
 
+        self._consume_runtime_timestamp(ts)
+
         if self._pending_task_start_name:
             self._active_task = TaskRunState(name=self._pending_task_start_name, start_time=ts, last_time=ts)
             self._pending_task_start_name = None
@@ -160,6 +193,16 @@ class LogStatsParser:
             self._pending_battle_start = False
         elif self._active_battle is not None:
             self._active_battle.last_time = ts
+
+    def _consume_runtime_timestamp(self, ts: datetime) -> None:
+        runtime = self.runtime
+        runtime.region_last = ts
+        if not runtime.saw_start_boundary:
+            if runtime.pre_start_first is None:
+                runtime.pre_start_first = ts
+            return
+        if runtime.session_start is None:
+            runtime.session_start = ts
 
     def _close_active_battle(self) -> None:
         if self._active_task is None or self._active_battle is None:
@@ -239,6 +282,14 @@ class LogStatsParser:
             }
         return cleaned_tasks
 
+    def _current_total_runtime(self) -> float:
+        runtime = self.runtime
+        if runtime.saw_start_boundary:
+            total_duration = self._append_duration(runtime.total_duration, runtime.session_start, runtime.region_last)
+        else:
+            total_duration = self._append_duration(0.0, runtime.pre_start_first, runtime.region_last)
+        return round(total_duration, 3)
+
     @staticmethod
     def _build_battle_payload(count: int, total_duration_seconds: float) -> dict[str, Any] | None:
         if count <= 0:
@@ -248,52 +299,22 @@ class LogStatsParser:
             "avg_duration_seconds": round(total_duration_seconds / count, 3),
         }
 
-    @classmethod
-    def _calculate_total_runtime(cls, lines: list[str]) -> float:
-        saw_start_boundary = False
-        pre_start_first: datetime | None = None
-        region_last: datetime | None = None
-        session_start: datetime | None = None
-        total_duration = 0.0
-        index = 0
-        total = len(lines)
-
-        while index < total:
-            if cls._is_task_boundary(lines, index):
-                title = cls._extract_boundary_title(lines[index + 1])
-                if title.upper() == _START_TITLE:
-                    if not saw_start_boundary:
-                        saw_start_boundary = True
-                        total_duration = cls._append_duration(total_duration, pre_start_first, region_last)
-                    else:
-                        total_duration = cls._append_duration(total_duration, session_start, region_last)
-                    session_start = None
-                    region_last = None
-                    index += 3
-                    continue
-
-            ts = cls._extract_timestamp(lines[index])
-            if ts is not None:
-                region_last = ts
-                if not saw_start_boundary:
-                    if pre_start_first is None:
-                        pre_start_first = ts
-                elif session_start is None:
-                    session_start = ts
-            index += 1
-
-        if saw_start_boundary:
-            total_duration = cls._append_duration(total_duration, session_start, region_last)
-        else:
-            total_duration = cls._append_duration(0.0, pre_start_first, region_last)
-
-        return round(total_duration, 3)
-
     @staticmethod
     def _append_duration(total_duration: float, start_time: datetime | None, end_time: datetime | None) -> float:
         if start_time is None or end_time is None or end_time < start_time:
             return total_duration
         return round(total_duration + (end_time - start_time).total_seconds(), 3)
+
+
+@dataclass
+class TodayLogCache:
+    day: str
+    path: Path
+    position: int = 0
+    signature: tuple[int, int] = (0, 0)
+    parser: LogStatsParser = field(default_factory=LogStatsParser)
+    tail_lines: list[str] = field(default_factory=list)
+    snapshot: dict[str, Any] = field(default_factory=dict)
 
 
 class LogStatsService:
@@ -374,14 +395,8 @@ class LogStatsService:
         return payload
 
     def _build_today_stats(self, script_name: str) -> dict[str, Any]:
-        today_file = self._today_log_path(script_name)
         cache = self._refresh_today_cache(script_name)
-        if not today_file.exists() and (cache is None or not cache.lines):
-            return self._empty_stats(script_name)
-        lines = cache.lines if cache is not None else []
-        payload = self._parse_lines(lines)
-        payload["script_name"] = script_name
-        return payload
+        return copy.deepcopy(cache.snapshot)
 
     def _cleanup_historical_cache(self) -> None:
         now = datetime.now()
@@ -425,15 +440,13 @@ class LogStatsService:
         }
 
     def _parse_log_file(self, path: Path) -> dict[str, Any]:
+        script_name = self._extract_script_name_from_path(path)
         if not path.exists():
-            return self._empty_stats(path.stem.split("_", 1)[1] if "_" in path.stem else path.stem)
+            return self._empty_stats(script_name)
 
         with path.open("r", encoding="utf-8", errors="ignore") as file:
             lines = file.readlines()
-        payload = self._parse_lines(lines)
-        script_name = self._extract_script_name_from_path(path)
-        payload["script_name"] = script_name
-        return payload
+        return self._parse_lines(lines, script_name=script_name)
 
     @staticmethod
     def _extract_script_name_from_path(path: Path) -> str:
@@ -441,11 +454,10 @@ class LogStatsService:
         return parts[1] if len(parts) == 2 else path.stem
 
     @staticmethod
-    def _parse_lines(lines: list[str]) -> dict[str, Any]:
-        parser = LogStatsParser()
-        payload = parser.parse_lines(lines)
+    def _parse_lines(lines: list[str], script_name: str = "") -> dict[str, Any]:
+        payload = LogStatsParser.parse_lines(lines, script_name=script_name)
         return {
-            "script_name": "",
+            "script_name": payload.get("script_name", script_name),
             "total_runtime_seconds": round(float(payload.get("total_runtime_seconds", 0.0)), 3),
             "total_task_run_count": int(payload.get("total_task_run_count", 0)),
             "total_battle_count": int(payload.get("total_battle_count", 0)),
@@ -466,7 +478,7 @@ class LogStatsService:
     def _today_log_path(self, script_name: str) -> Path:
         return self._log_path(script_name, date.today())
 
-    def _refresh_today_cache(self, script_name: str) -> TodayLogCache | None:
+    def _refresh_today_cache(self, script_name: str) -> TodayLogCache:
         today = date.today().isoformat()
         today_file = self._today_log_path(script_name)
         cache = self._today_cache.get(script_name)
@@ -475,7 +487,7 @@ class LogStatsService:
             cache = None
 
         if not today_file.exists():
-            empty_cache = TodayLogCache(day=today, path=today_file)
+            empty_cache = self._new_today_cache(today, today_file, script_name)
             self._today_cache[script_name] = empty_cache
             return empty_cache
 
@@ -490,7 +502,7 @@ class LogStatsService:
             or stat.st_size < cache.position
         )
         if should_reset:
-            cache = TodayLogCache(day=today, path=today_file)
+            cache = self._new_today_cache(today, today_file, script_name)
 
         with today_file.open("r", encoding="utf-8", errors="ignore") as file:
             if cache.position > 0:
@@ -498,13 +510,44 @@ class LogStatsService:
             new_lines = file.readlines()
             cache.position = file.tell()
 
-        if should_reset:
-            cache.lines = new_lines
-        else:
-            cache.lines.extend(new_lines)
+        merged_lines = cache.tail_lines + new_lines
+        confirmed_lines, cache.tail_lines = self._split_confirmed_lines(merged_lines)
+        if confirmed_lines:
+            cache.parser.consume_lines(confirmed_lines)
+
         cache.signature = signature
+        cache.snapshot = cache.parser.snapshot(script_name=script_name, tail_lines=cache.tail_lines)
         self._today_cache[script_name] = cache
         return cache
+
+    def _new_today_cache(self, today: str, today_file: Path, script_name: str) -> TodayLogCache:
+        return TodayLogCache(
+            day=today,
+            path=today_file,
+            snapshot=self._empty_stats(script_name),
+        )
+
+    @staticmethod
+    def _split_confirmed_lines(lines: list[str]) -> tuple[list[str], list[str]]:
+        if not lines:
+            return [], []
+
+        if len(lines) >= 3 and LogStatsParser._is_task_boundary(lines, len(lines) - 3):
+            return lines, []
+
+        tail_size = 0
+        if _EQ_LINE_RE.match(lines[-1].strip()):
+            tail_size = 1
+        if (
+            len(lines) >= 2
+            and _EQ_LINE_RE.match(lines[-2].strip())
+            and _TITLE_LINE_RE.match(lines[-1].strip())
+        ):
+            tail_size = 2
+
+        if tail_size <= 0:
+            return lines, []
+        return lines[:-tail_size], lines[-tail_size:]
 
     @staticmethod
     def _empty_stats(script_name: str) -> dict[str, Any]:
