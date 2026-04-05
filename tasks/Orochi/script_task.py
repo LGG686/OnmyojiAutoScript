@@ -76,7 +76,7 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
         logger.info('Enter orochi')
         while True:
             self.screenshot()
-            if self.appear(self.I_FORM_TEAM):
+            if self.appear(self.I_FORM_TEAM) or self.appear(self.I_SHI_RECORDS):
                 return True
             if self.appear_then_click(self.I_OROCHI, interval=1):
                 continue
@@ -112,16 +112,6 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
                     return True
                 if self.appear_then_click(self.I_OROCHI_LOCK, interval=1):
                     continue
-
-
-
-
-
-
-
-
-
-
 
     def run_leader(self):
         logger.info('Start run leader')
