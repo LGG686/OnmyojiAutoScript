@@ -145,13 +145,13 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
         logger.hr(f'Start run climb type PASS', 1)
         self.click(self.I_TO_BATTLE_MAIN)
         switch_souled = False
-        click_ticket, no_tickets = 0, random.randint(3, 5)
+        click_ticket, no_tickets = 0, random.randint(4, 6)
         click_fire, no_fire = 0, random.randint(3, 5)
         already_passed = False
         while True:
             self.screenshot()
             self.put_status()
-            if click_ticket > no_tickets:
+            if self.appear(self.I_RM_NO_TICKET, interval=2) or click_ticket > no_tickets:
                 logger.warning(f'Click ticket {click_ticket} times, no tickets left')
                 break
             if click_fire > no_fire:
@@ -248,8 +248,9 @@ class ScriptTask(StateMachine, GameUi, BaseActivity, SwitchSoul, ActivityShikiga
                 click_fire += 1
                 self.run_general_battle(config=self.get_general_battle_conf())
                 continue
-            if self.appear(self.I_CHECK_BATTLE_MAIN, interval=3):  # 扔门票骰子
+            if self.appear(self.I_CHECK_BATTLE_MAIN, interval=3.5):  # 扔门票骰子
                 self.click(self.I_CHECK_BATTLE_MAIN)
+                self.device.click_record_clear()
                 click_ticket += 1
                 click_fire = 0
                 continue

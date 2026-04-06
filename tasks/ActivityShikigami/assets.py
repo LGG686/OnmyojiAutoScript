@@ -57,6 +57,8 @@ class ActivityShikigamiAssets:
 	I_RM_THROW_EQUAL = RuleImage(roi_front=(350,355,51,75), roi_back=(277,307,189,186), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_rm_throw_equal.png")
 	#  
 	I_RM_BOSS = RuleImage(roi_front=(595,75,95,44), roi_back=(569,61,149,75), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_rm_boss.png")
+	#  
+	I_RM_NO_TICKET = RuleImage(roi_front=(356,113,95,44), roi_back=(322,82,167,102), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/as_rm_no_ticket.png")
 
 
 	# Ocr Rule Assets

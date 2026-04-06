@@ -88,5 +88,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": ""
+  },
+  {
+    "itemName": "rm_no_ticket",
+    "imageName": "as_rm_no_ticket.png",
+    "roiFront": "356,113,95,44",
+    "roiBack": "322,82,167,102",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
   }
 ]
