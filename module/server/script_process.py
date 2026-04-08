@@ -10,11 +10,13 @@ from module.logger import logger
 from module.server.config_manager import ConfigManager
 from module.server.script_websocket import ScriptWSManager
 
+
 class ScriptState(int, Enum):
     INACTIVE = 0
     RUNNING = 1
     WARNING = 2
     UPDATING = 3
+
 
 class ScriptProcess(ScriptWSManager):
 
@@ -28,8 +30,18 @@ class ScriptProcess(ScriptWSManager):
         self.state: ScriptState = ScriptState.INACTIVE
         self._process = None
 
-
-
+    @staticmethod
+    def _extract_log_dedup_key(log: str) -> str | None:
+        text = str(log).strip()
+        if not text:
+            return None
+        parts = str(log).split('|', 2)
+        if len(parts) != 3:
+            return None
+        level, timestamp, message = [part.strip() for part in parts]
+        if not level or not timestamp or not message:
+            return None
+        return message
 
     async def start(self):
         self.state = ScriptState.RUNNING
@@ -89,6 +101,7 @@ class ScriptProcess(ScriptWSManager):
 
     async def coroutine_broadcast_log(self):
         try:
+            previous_log_key = None  # 缓存上一条正文日志，用于相邻重复去重
             while 1:
                 if self.state == ScriptState.INACTIVE:
                     await sleep(1)
@@ -99,9 +112,15 @@ class ScriptProcess(ScriptWSManager):
                         await sleep(0.3)
                         continue
                     log = self.log_pipe_out.recv()
-                    if not log:
-                        await sleep(0.5)
+                    if not str(log).strip():
                         continue
+                    current_log_key = self._extract_log_dedup_key(log)
+                    if current_log_key is not None:
+                        if current_log_key == previous_log_key:
+                            continue
+                        previous_log_key = current_log_key
+                    else:
+                        previous_log_key = None
                     await self.broadcast_log(log)
                 except EOFError as e:
                     await sleep(0.5)
@@ -155,5 +174,3 @@ if __name__ == '__main__':
     from time import sleep
     sleep(10)
     logger.info(p._process.exitcode)
-
-
