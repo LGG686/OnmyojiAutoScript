@@ -27,6 +27,8 @@ class GameUiAssets:
 	# Image Rule Assets
 	# 商店弹窗红色关闭 
 	I_AD_CLOSE_RED = RuleImage(roi_front=(993,130,33,36), roi_back=(953,91,215,121), threshold=0.8, method="Template matching", file="./tasks/GameUi/additional/additional_ad_close_red.png")
+	# 下载拓展包弹窗(新) 
+	I_NEW_DLC_CLOSE = RuleImage(roi_front=(417,441,139,57), roi_back=(299,356,354,262), threshold=0.8, method="Template matching", file="./tasks/GameUi/additional/additional_new_dlc_close.png")
 
 
 	# Image Rule Assets

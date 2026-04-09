@@ -7,5 +7,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "商店弹窗红色关闭"
+  },
+  {
+    "itemName": "new_dlc_close",
+    "imageName": "additional_new_dlc_close.png",
+    "roiFront": "417,441,139,57",
+    "roiBack": "299,356,354,262",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "下载拓展包弹窗(新)"
   }
 ]
