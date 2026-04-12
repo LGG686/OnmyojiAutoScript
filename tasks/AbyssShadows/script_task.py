@@ -775,9 +775,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
         target_time = getattr(as_time, f'abyss_shadows_{now.weekday()}', None)
         if target_time is None:  # 不在周五/六/日
             return False
-        target_dt = datetime.combine(now.date(), target_time)
-        # 是否在1小时之内
-        return target_dt <= now < (target_dt + timedelta(hours=1))
+        return True
 
 
 if __name__ == "__main__":
