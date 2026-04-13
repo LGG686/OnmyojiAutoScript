@@ -20,7 +20,8 @@ main_costume_model = {
         'I_MAIN_GOTO_EXPLORATION': f'I_MAIN_GOTO_EXPLORATION_{i}',
         'I_MAIN_GOTO_SUMMON': f'I_MAIN_GOTO_SUMMON_{i}',
         'I_MAIN_GOTO_TOWN': f'I_MAIN_GOTO_TOWN_{i}',
-        'I_PET_HOUSE': f'I_PET_HOUSE_{i}'
+        'I_PET_HOUSE': f'I_PET_HOUSE_{i}',
+        'I_KSITIGARBHA': f'I_KSITIGARBHA_{i}',
     } for i in range(1, 15)
 }
 
@@ -108,8 +109,12 @@ class CostumeBase:
             return
         logger.info(f'Switch main costume to {main_type}')
         costume_assets = CostumeAssets()
-        for key, value in main_costume_model[main_type].items():
-            assert_value: RuleImage = getattr(costume_assets, value)
+        model = main_costume_model.get(main_type, {})
+        for key, value in model.items():
+            assert_value = getattr(costume_assets, value, None)
+            if assert_value is None:
+                # 尚未采集完成的资产，跳过
+                continue
             self.replace_img(key, assert_value)
 
     def check_costume_carpbanner(self, carpbanner_type: CarpBannerType):
