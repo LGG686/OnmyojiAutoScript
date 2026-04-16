@@ -1,36 +1,9 @@
 [
   {
-    "itemName": "shi_grown",
-    "imageName": "realm_shi_grown.png",
-    "roiFront": "595,291,35,38",
-    "roiBack": "530,220,202,267",
-    "method": "Multi-scale template matching",
-    "threshold": 0.6,
-    "description": "育成"
-  },
-  {
-    "itemName": "shi_card",
-    "imageName": "realm_shi_card.png",
-    "roiFront": "891,300,31,55",
-    "roiBack": "823,210,252,297",
-    "method": "Multi-scale template matching",
-    "threshold": 0.6,
-    "description": "结界卡"
-  },
-  {
-    "itemName": "shi_defense",
-    "imageName": "realm_shi_defense.png",
-    "roiFront": "303,308,34,52",
-    "roiBack": "178,209,261,274",
-    "method": "Template matching",
-    "threshold": 0.7,
-    "description": "description"
-  },
-  {
     "itemName": "card_exp",
     "imageName": "realm_card_exp.png",
     "roiFront": "889,151,57,54",
-    "roiBack": "829,33,231,257",
+    "roiBack": "829,33,349,303",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "收取经验（没有满的图）"
@@ -106,5 +79,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "种树活动关闭标识"
+  },
+  {
+    "itemName": "check_guild_card",
+    "imageName": "realm_check_guild_card.png",
+    "roiFront": "67,93,50,86",
+    "roiBack": "28,61,149,209",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "寮结界卡界面"
   }
 ]

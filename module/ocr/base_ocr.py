@@ -201,7 +201,6 @@ class BaseCor:
                                                                           OcrMode.QUANTITY]:
             logger.warning(
                 f'[{self.name}] Score {score:.2f} is low, but result "{result}" contains a digit. Accepting it.')
-            print(f'能保留')
         else:
             result = ""
         # after proces

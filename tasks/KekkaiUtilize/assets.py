@@ -37,14 +37,8 @@ class KekkaiUtilizeAssets:
 
 
 	# Image Rule Assets
-	# 育成 
-	I_SHI_GROWN = RuleImage(roi_front=(595,291,35,38), roi_back=(530,220,202,267), threshold=0.6, method="Multi-scale template matching", file="./tasks/KekkaiUtilize/realm/realm_shi_grown.png")
-	# 结界卡 
-	I_SHI_CARD = RuleImage(roi_front=(891,300,31,55), roi_back=(823,210,252,297), threshold=0.6, method="Multi-scale template matching", file="./tasks/KekkaiUtilize/realm/realm_shi_card.png")
-	# description 
-	I_SHI_DEFENSE = RuleImage(roi_front=(303,308,34,52), roi_back=(178,209,261,274), threshold=0.7, method="Template matching", file="./tasks/KekkaiUtilize/realm/realm_shi_defense.png")
 	# 收取经验（没有满的图） 
-	I_CARD_EXP = RuleImage(roi_front=(889,151,57,54), roi_back=(829,33,231,257), threshold=0.8, method="Template matching", file="./tasks/KekkaiUtilize/realm/realm_card_exp.png")
+	I_CARD_EXP = RuleImage(roi_front=(889,151,57,54), roi_back=(829,33,349,303), threshold=0.8, method="Template matching", file="./tasks/KekkaiUtilize/realm/realm_card_exp.png")
 	# 收取体力（没有满） 
 	I_BOX_AP = RuleImage(roi_front=(815,435,57,51), roi_back=(744,336,395,216), threshold=0.7, method="Template matching", file="./tasks/KekkaiUtilize/realm/realm_box_ap.png")
 	# 收取盒子的经验（没有满） 
@@ -61,6 +55,15 @@ class KekkaiUtilizeAssets:
 	I_BOX_EXP_MAX = RuleImage(roi_front=(889,430,61,64), roi_back=(796,326,405,330), threshold=0.7, method="Template matching", file="./tasks/KekkaiUtilize/realm/realm_box_exp_max.png")
 	# 种树活动关闭标识 
 	I_PLANT_TREE_CLOSE = RuleImage(roi_front=(777,91,36,34), roi_back=(711,52,169,125), threshold=0.8, method="Template matching", file="./tasks/KekkaiUtilize/realm/realm_plant_tree_close.png")
+	# 寮结界卡界面 
+	I_CHECK_GUILD_CARD = RuleImage(roi_front=(67,93,50,86), roi_back=(28,61,149,209), threshold=0.8, method="Template matching", file="./tasks/KekkaiUtilize/realm/realm_check_guild_card.png")
+
+
+	# Ocr Rule Assets
+	# 式神育成 
+	O_R_SHIKIGAMI = RuleOcr(roi=(556,174,191,437), area=(556,174,191,437), mode="Full", method="Default", keyword="式神", name="r_shikigami")
+	# 结界卡 
+	O_R_REALM = RuleOcr(roi=(802,158,291,442), area=(802,158,291,442), mode="Full", method="Default", keyword="结界", name="r_realm")
 
 
 	# Click Rule Assets

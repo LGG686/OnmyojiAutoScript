@@ -10,11 +10,6 @@
   "skill_mode": "技能本模式",
   "costume_shikigami_6": "月下火舞",
   "costume_shikigami_7": "赤溟幽界",
-  "costume_carpbanner_type": "鲤鱼旗皮肤",
-  "costume_carpbanner_default": "吉鲤游风",
-  "costume_carpbanner_1": "无垢莲台",
-  "costume_carpbanner_2": "萤灯月夜",
-  "costume_carpbanner_type_help": "多数结界通用",
   "costume_battle_10": "流焰蝶舞",
   "costume_battle_11": "辰烁奇夜",
   "enable_courtyard_affairs": "庭院事务",
@@ -60,5 +55,6 @@
   "alone": "单刷",
   "wild": "野队",
   "thirteen_switch": "十三层御魂配置",
-  "thirteen_switch_help": "虚无"
+  "thirteen_switch_help": "虚无",
+  "costume_realm_type_help": "除下列结界皮肤外全适配:\n雪峰祭台/见世山廊/千祝缘庭/创世圣所/云华灵境/彩云瑶音/碧落桑烟/命运之海\n除下列鲤鱼旗皮肤外全适配:\n达摩迎福/琉鲤迎旗"
 }

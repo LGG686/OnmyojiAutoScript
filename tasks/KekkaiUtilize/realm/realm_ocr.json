@@ -1,0 +1,20 @@
+[
+  {
+    "itemName": "r_shikigami",
+    "roiFront": "556,174,191,437",
+    "roiBack": "556,174,191,437",
+    "mode": "Full",
+    "method": "Default",
+    "keyword": "式神",
+    "description": "式神育成"
+  },
+  {
+    "itemName": "r_realm",
+    "roiFront": "802,158,291,442",
+    "roiBack": "802,158,291,442",
+    "mode": "Full",
+    "method": "Default",
+    "keyword": "结界",
+    "description": "结界卡"
+  }
+]

@@ -103,7 +103,7 @@
     "imageName": "tp_tp_soul_1.png",
     "roiFront": "248,501,34,37",
     "roiBack": "165,389,929,168",
-    "method": "Template matching",
+    "method": "Multi-scale template matching",
     "threshold": 0.8,
     "description": "点击随机御魂"
   },

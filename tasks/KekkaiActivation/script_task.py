@@ -15,7 +15,7 @@ from module.atom.image import RuleImage
 from module.base.utils import point2str
 from module.logger import logger
 from module.exception import TaskEnd, GameStuckError
-from tasks.KekkaiUtilize.page import page_guild_realm, page_guild_realm_growth
+from tasks.KekkaiUtilize.page import page_guild_realm, page_guild_realm_growth, page_guild_card
 
 from tasks.KekkaiUtilize.script_task import ScriptTask as KU
 from tasks.KekkaiUtilize.utils import CardClass
@@ -40,19 +40,10 @@ class ScriptTask(KU, KekkaiActivationAssets):
         self.harvest_card()
         # 开始挂卡
         self.run_activation(con)
-        while 1:
-            # 关闭到结界界面
-            self.screenshot()
-            if self.appear(self.I_REALM_SHIN):
-                break
-            if self.appear(self.I_SHI_GROWN):
-                break
-            if self.appear_then_click(self.I_UI_BACK_RED, interval=1):
-                continue
+        self.goto_page(page_guild_realm)
 
         if con.exchange_max:
             self.check_max_lv(con.shikigami_class)
-        # self.back_guild()
         self.goto_page(page_main)
 
         raise TaskEnd('KekkaiActivation')
@@ -99,7 +90,7 @@ class ScriptTask(KU, KekkaiActivationAssets):
         :return: 挂卡成功（）返回True，失败(时间没到提前来了)返回False
         退出的时候还是在挂卡界面而不是结界界面
         """
-        self.goto_cards()
+        self.goto_page(page_guild_card)
         # 太诡异了 为什么有这么长的动画, 那么长的动画先休息一会
         logger.hr('Start activation')
         time.sleep(0.5)
@@ -143,22 +134,6 @@ class ScriptTask(KU, KekkaiActivationAssets):
             if not card_status and not card_effect:
                 logger.info('Card is not selected also not using')
                 self.screening_card(_config.card_type)
-
-    def goto_cards(self):
-        """
-        寮结界,前往挂卡界面
-        :return:
-        """
-        while 1:
-            self.screenshot()
-
-            if self.appear(self.I_A_CHECK_CARD):
-                break
-            if self.appear(self.I_A_AUTO_INVITE):
-                break
-            if self.appear_then_click(self.I_SHI_CARD, interval=1):
-                continue
-        logger.info('Enter card page')
 
     def check_card_status(self, screenshot=False) -> bool:
         """
