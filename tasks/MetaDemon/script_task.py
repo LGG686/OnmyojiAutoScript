@@ -175,7 +175,7 @@ class ScriptTask(GeneralBattle, SwitchSoul, GameUi, MetaDemonAssets):
                 click_cnt = 0  # 清空点击标志
                 continue
             if self.appear(self.I_MD_SYNTHESIS_EMPTY, interval=0.8):  # 有空位
-                empty_list = self.I_MD_SYNTHESIS_EMPTY.match_all(self.device.image)
+                empty_list = self.I_MD_SYNTHESIS_EMPTY.match_all(self.device.image, frame_id=self.device.image_frame_id)
                 if len(empty_list) < need_ticket:  # 空位数量小于需要的门票数量->门票不够则退出
                     logger.info(f'{target_boss_ticket} ticket not enough, skip synthesis')
                     break

@@ -6,13 +6,13 @@ from time import sleep
 from typing import List
 
 import re
-import cv2
 from cached_property import cached_property
 
 from module.atom.image import RuleImage
 from module.atom.ocr import RuleOcr
 from module.base.timer import Timer
 from module.exception import TaskEnd
+from module.image.recipes import match_highlight_rule
 from module.logger import logger
 from tasks.Component.Costume.config import MainType
 from tasks.Component.GeneralBattle.config_general_battle import GeneralBattleConfig
@@ -611,36 +611,7 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
 
     # 使用平均亮度检测是否一致
     def appear_highlight(self, rule_image: RuleImage):
-        def compute_region_brightness(img, top_left, width, height):
-            """
-            计算目标区域的平均亮度 (灰度图的平均值)
-            :param img: 目标图像
-            :param top_left: 匹配区域的左上角坐标
-            :param width: 模板宽度
-            :param height: 模板高度
-            :return: 区域亮度均值
-            """
-            # 裁剪出匹配区域
-            region = img[top_left[1]:top_left[1] + height, top_left[0]:top_left[0] + width]
-            # 转为灰度图
-            gray_region = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY)
-            # 计算灰度均值
-            return gray_region.mean()
-
-        src = rule_image.corp(self.device.image)
-        template = rule_image.image
-        result = cv2.matchTemplate(src, template, cv2.TM_CCOEFF_NORMED)
-        _, max_val, _, max_loc = cv2.minMaxLoc(result)
-
-        brightness_src = compute_region_brightness(src, max_loc, template.shape[1], template.shape[0])
-        brightness_template = compute_region_brightness(template, (0, 0), template.shape[1], template.shape[0])
-
-        if max_val > rule_image.threshold and (brightness_src >= brightness_template * rule_image.threshold) and (
-                brightness_src <= brightness_template * (2 - rule_image.threshold)):
-            rule_image.roi_front[0] = max_loc[0] + rule_image.roi_back[0]
-            rule_image.roi_front[1] = max_loc[1] + rule_image.roi_back[1]
-            return True
-        return False
+        return match_highlight_rule(rule_image, self.device.image, frame_id=self.device.image_frame_id)
 
     @cached_property
     def special_main(self) -> bool:
@@ -755,11 +726,5 @@ if __name__ == '__main__':
     c = Config('oas1')
     d = Device(c)
     t = ScriptTask(c, d)
-    # import cv2
-    #
-    # img = cv2.imread(r'E:\2.png')
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    #
-    # res = t.find_wq(img)
 
     t.run()

@@ -9,11 +9,9 @@ import time
 from datetime import timedelta
 from time import sleep
 
-import cv2
 import numpy as np
 from cached_property import cached_property
 from future.backports.datetime import datetime
-from sympy.plotting.intervalmath import interval
 
 from module.atom.click import RuleClick
 from module.atom.gif import RuleGif
@@ -29,11 +27,10 @@ from tasks.Component.SwitchSoul.switch_soul import SwitchSoul
 from tasks.Component.config_base import Time
 from tasks.Dokan.config import Dokan
 from tasks.Dokan.dokan_scene import DokanScene, DokanSceneDetector
-from tasks.Dokan.ex_green_mark import ExtendGreenMark
-from tasks.Dokan.utils import detect_safe_area2
+from module.image.recipes.dokan import detect_safe_area2
+from module.image.recipes.dokan_green_mark import ExtendGreenMark
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.page import page_shikigami_records, page_guild, page_main, random_click
-from tasks.Hyakkiyakou.utils.fast_device import FastDevice
 
 
 class ScriptTask(ExtendGreenMark, GameUi, SwitchSoul, DokanSceneDetector):
@@ -1121,35 +1118,3 @@ class ScriptTask(ExtendGreenMark, GameUi, SwitchSoul, DokanSceneDetector):
         self.stop_green_mark()
         logger.info(f"Win: {win}")
         return win
-
-
-if __name__ == "__main__":
-    from module.config.config import Config
-    from module.device.device import Device
-
-    # config = Config('oas1')
-    # device = Device(config)
-    # t = ScriptTask(config, device)
-    # t.run()
-
-    # test_ocr_locate_dokan_target()
-    # test_anti_detect_random_click()
-    # test_goto_main()
-
-    config = Config('测试')
-    device = Device(config)
-    t = ScriptTask(config, device)
-
-    t.config.dokan.attack_count_config.init_attack_count(t.config.save)
-    img = cv2.imread(r'E:\1.png')
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    t.device.image = img
-    isapear = t.I_RYOU_DOKAN_REMAIN_ATTACK_COUNT_ONE.match(img, threshold=0.8)
-    # isappear=t.appear(t.I_RYOU_DOKAN_REMAIN_ATTACK_COUNT_ONE)
-    t.update_remain_attack_count()
-    t.config.dokan.attack_count_config.set_attack_count(3, t.config.save)
-    t.config.dokan.attack_count_config.del_attack_count(1, t.config.save)
-
-    img = cv2.imread(r'E:\1.png')
-    res = t.I_RYOU_DOKAN_START_CHALLENGE.match(img, threshold=0.8)
-    print(res)

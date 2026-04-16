@@ -458,18 +458,3 @@ class GeneralInvite(BaseTask, BondlingFairylandAssets, GeneralInviteAssets):
 
         return True
 
-
-if __name__ == '__main__':
-    from module.config.config import Config
-    from module.device.device import Device
-    import cv2
-
-    c = Config('du')
-    d = Device(c)
-    t = GeneralInvite(c, d)
-
-    # t.run_invite(c.orochi.invite_config, is_first=True)
-    t.screenshot()
-    print(t.appear(t.I_FIRE, threshold=0.8))
-
-

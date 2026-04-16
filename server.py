@@ -27,6 +27,7 @@ else:
 import threading
 
 from module.logger import logger
+from module.image.rpc import ensure_image_server_ready, shutdown_image_server
 from module.server.setting import State
 from module.ocr.rpc import ensure_ocr_server_started, shutdown_ocr_server
 
@@ -80,6 +81,7 @@ def fun(ev: threading.Event):
     logger.attr("Port", port)
     logger.attr("Reload", ev is not None)
 
+    ensure_image_server_ready()
     ensure_ocr_server_started()
 
     try:
@@ -88,6 +90,7 @@ def fun(ev: threading.Event):
                     port=port,
                     factory=True)
     finally:
+        shutdown_image_server()
         shutdown_ocr_server()
 
 

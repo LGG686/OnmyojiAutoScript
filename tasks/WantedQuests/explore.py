@@ -89,7 +89,7 @@ class WQExplore(BaseExploration, HighLight):
                 # 向后拉,寻找怪
                 if search_fail_cnt >= 4:
                     search_fail_cnt = 0
-                    if self._match_end.stable(self.device.image):
+                    if self._match_end.stable(self.device.image, frame_id=self.device.image_frame_id):
                         _cnt_exploration += 1
                         self.quit_explore()
                         continue

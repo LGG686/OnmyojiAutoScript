@@ -2,6 +2,7 @@
 # @author runhey
 # github https://github.com/runhey
 import json
+import multiprocessing
 import re
 import shutil
 import threading
@@ -10,6 +11,7 @@ import uuid
 import base64
 from dataclasses import dataclass
 from pathlib import Path
+from queue import Empty as QueueEmpty
 from typing import Any
 
 import cv2
@@ -19,8 +21,6 @@ from filelock import FileLock
 from dev_tools.assets_extract import AssetsExtractor
 from dev_tools.assets_test import detect_image_detail, detect_ocr_detail
 from module.config.atomicwrites import atomic_write
-from module.config.config import Config
-from module.device.device import Device
 from module.logger import logger
 from module.server.config_manager import ConfigManager
 from module.server.annotator_rule_schema import (
@@ -32,6 +32,7 @@ from module.server.annotator_rule_schema import (
     merge_list_meta_with_defaults,
     merge_rule_with_defaults,
 )
+from module.server.tool_capture_worker import run_annotator_capture_worker
 
 PROJECT_ROOT = Path.cwd().resolve()
 TASKS_ROOT = (PROJECT_ROOT / "tasks").resolve()
@@ -48,7 +49,10 @@ ALLOWED_SWIPE_MODE = set(field_options("swipe", "mode"))
 SESSION_IDLE_TIMEOUT_SECONDS = 10 * 60
 SESSION_SWEEP_INTERVAL_SECONDS = 30
 EMULATOR_CAPTURE_MAX_RETRIES = 3
-EMULATOR_CAPTURE_RETRY_BACKOFF_SECONDS = 1.0
+EMULATOR_CAPTURE_PROCESS_JOIN_TIMEOUT_SECONDS = 2.5
+EMULATOR_CAPTURE_COMMAND_TIMEOUT_SECONDS = 5.0
+
+_EMULATOR_CAPTURE_CONTEXT = multiprocessing.get_context("spawn")
 
 
 class AnnotatorError(Exception):
@@ -86,17 +90,99 @@ class EmulatorCaptureSession:
         self.config_name = ""
         self.frame_rate = 2
         self.error = ""
-        self._thread: threading.Thread | None = None
-        self._stop_event = threading.Event()
+        self._process: multiprocessing.Process | None = None
+        self._state_queue = None
+        self._frame_queue = None
+        self._command_queue = None
+        self._response_queue = None
         self._frame_lock = threading.Lock()
-        self._latest_frame = None
         self._latest_jpeg: bytes | None = None
         self._updated_at = 0.0
         self._retry_count = 0
         self._max_retries = EMULATOR_CAPTURE_MAX_RETRIES
         self._last_error_at = 0.0
 
+    def _drain_status_queue(self) -> None:
+        if self._state_queue is None:
+            return
+        while True:
+            try:
+                payload = self._state_queue.get_nowait()
+            except QueueEmpty:
+                break
+
+            with self._frame_lock:
+                if "state" in payload:
+                    self.state = str(payload["state"])
+                if "error" in payload:
+                    self.error = str(payload["error"] or "")
+                if "retry_count" in payload:
+                    self._retry_count = int(payload["retry_count"])
+                if "max_retries" in payload:
+                    self._max_retries = int(payload["max_retries"])
+                if "last_error_at" in payload:
+                    self._last_error_at = float(payload["last_error_at"] or 0.0)
+
+    def _drain_frame_queue(self) -> None:
+        if self._frame_queue is None:
+            return
+        while True:
+            try:
+                payload = self._frame_queue.get_nowait()
+            except QueueEmpty:
+                break
+
+            jpeg = payload.get("jpeg")
+            if not jpeg:
+                continue
+
+            with self._frame_lock:
+                self._latest_jpeg = bytes(jpeg)
+                self._updated_at = float(payload.get("updated_at") or time.time())
+                self._retry_count = 0
+                self.error = ""
+                self.state = "running"
+
+    def _sync_process_state(self) -> None:
+        process = self._process
+        if process is None or process.is_alive():
+            return
+
+        with self._frame_lock:
+            if self.state in {"stopped", "error"}:
+                return
+            if process.exitcode in (None, 0):
+                self.state = "stopped"
+                return
+            self.state = "error"
+            self._last_error_at = time.time()
+            if not self.error:
+                self.error = f"模拟器采集进程异常退出({process.exitcode})"
+
+    def _drain_updates(self) -> None:
+        self._drain_status_queue()
+        self._drain_frame_queue()
+        self._sync_process_state()
+
+    def _create_ipc(self) -> None:
+        self._state_queue = _EMULATOR_CAPTURE_CONTEXT.Queue()
+        self._frame_queue = _EMULATOR_CAPTURE_CONTEXT.Queue(maxsize=1)
+        self._command_queue = _EMULATOR_CAPTURE_CONTEXT.Queue()
+        self._response_queue = _EMULATOR_CAPTURE_CONTEXT.Queue()
+
+    def _dispose_ipc(self) -> None:
+        for name in ("_state_queue", "_frame_queue", "_command_queue", "_response_queue"):
+            queue = getattr(self, name)
+            if queue is None:
+                continue
+            try:
+                queue.close()
+            except Exception:
+                pass
+            setattr(self, name, None)
+
     def status(self) -> dict[str, Any]:
+        self._drain_updates()
         with self._frame_lock:
             return {
                 "state": self.state,
@@ -120,141 +206,63 @@ class EmulatorCaptureSession:
             self._updated_at = 0.0
             self._retry_count = 0
             self._last_error_at = 0.0
-            self._latest_frame = None
             self._latest_jpeg = None
-        self._stop_event.clear()
-        self._thread = threading.Thread(target=self._run, daemon=True, name=f"annotator_capture_{self.session_id}")
-        self._thread.start()
+        self._create_ipc()
+        self._process = _EMULATOR_CAPTURE_CONTEXT.Process(
+            target=run_annotator_capture_worker,
+            args=(
+                self.session_id,
+                self.config_name,
+                self.frame_rate,
+                self._state_queue,
+                self._frame_queue,
+                self._command_queue,
+                self._response_queue,
+            ),
+            name=f"annotator_capture_{self.session_id}",
+            daemon=True,
+        )
+        self._process.start()
         return self.frame_rate
 
     def stop(self, clear_error: bool = False) -> None:
-        self._stop_event.set()
-        thread = self._thread
-        if thread and thread.is_alive():
-            thread.join(timeout=2.5)
-        self._thread = None
+        process = self._process
+        if process and process.is_alive() and self._command_queue is not None:
+            try:
+                self._command_queue.put_nowait({"type": "stop"})
+            except Exception:
+                pass
+
+        if process and process.is_alive():
+            process.join(timeout=EMULATOR_CAPTURE_PROCESS_JOIN_TIMEOUT_SECONDS)
+            if process.is_alive():
+                process.terminate()
+                process.join(timeout=1.0)
+
+        self._drain_updates()
+        self._process = None
+        self._dispose_ipc()
         with self._frame_lock:
             self.state = "stopped"
             self._retry_count = 0
+            self._latest_jpeg = None
+            self._updated_at = 0.0
             if clear_error:
                 self.error = ""
                 self._last_error_at = 0.0
 
-    def _build_device(self, config: Config, interval: float) -> Device:
-        device = Device(config=config)
-        device.disable_stuck_detection()
-        device.screenshot_interval_set(interval)
-        logger.info(
-            f"[annotator] emulator device ready, session={self.session_id}, "
-            f"config={self.config_name}, interval={interval:.3f}"
-        )
-        return device
-
-    @staticmethod
-    def _release_device(device: Device | None) -> None:
-        if device is None:
-            return
-        try:
-            device.release_during_wait()
-        except Exception:
-            pass
-
-    @staticmethod
-    def _format_error_message(error: Exception) -> str:
-        text = str(error).strip()
-        if text:
-            return text
-        return error.__class__.__name__
-
-    def _mark_capture_failure(self, stage: str, error: Exception) -> tuple[bool, int, str]:
-        message = self._format_error_message(error)
-        with self._frame_lock:
-            self.error = message
-            self._last_error_at = time.time()
-            self._retry_count += 1
-            attempt = self._retry_count
-            should_retry = attempt <= self._max_retries and not self._stop_event.is_set()
-            self.state = "starting" if should_retry else "error"
-        if should_retry:
-            logger.warning(
-                f"[annotator] emulator capture retry, session={self.session_id}, config={self.config_name}, "
-                f"stage={stage}, attempt={attempt}/{self._max_retries}, error={message}"
-            )
-        else:
-            logger.error(
-                f"[annotator] emulator capture failed, session={self.session_id}, config={self.config_name}, "
-                f"stage={stage}, attempt={attempt}/{self._max_retries}, error={message}"
-            )
-        return should_retry, attempt, message
-
-    def _run(self) -> None:
-        device: Device | None = None
-        interval = max(0.1, 1.0 / float(self.frame_rate))
-        try:
-            config = Config(config_name=self.config_name)
-            while not self._stop_event.is_set():
-                if device is None:
-                    try:
-                        device = self._build_device(config, interval)
-                        with self._frame_lock:
-                            self.state = "running"
-                    except Exception as e:
-                        should_retry, attempt, _ = self._mark_capture_failure("connect", e)
-                        if not should_retry:
-                            break
-                        if self._stop_event.wait(EMULATOR_CAPTURE_RETRY_BACKOFF_SECONDS * attempt):
-                            break
-                        continue
-
-                try:
-                    frame = device.screenshot()
-                except Exception as e:
-                    self._release_device(device)
-                    device = None
-                    should_retry, attempt, _ = self._mark_capture_failure("capture", e)
-                    if not should_retry:
-                        break
-                    if self._stop_event.wait(EMULATOR_CAPTURE_RETRY_BACKOFF_SECONDS * attempt):
-                        break
-                    continue
-
-                frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-                ok, buf = cv2.imencode(".jpg", frame_bgr)
-                if ok:
-                    with self._frame_lock:
-                        self._latest_frame = frame_bgr.copy()
-                        self._latest_jpeg = buf.tobytes()
-                        self._updated_at = time.time()
-                        self._retry_count = 0
-                        self.error = ""
-                        self.state = "running"
-
-                if self._stop_event.wait(interval):
-                    break
-        except Exception:
-            with self._frame_lock:
-                self.state = "error"
-                self._last_error_at = time.time()
-                if not self.error:
-                    self.error = "模拟器采集线程异常退出"
-            logger.error(f"[annotator] emulator capture loop crashed, session={self.session_id}, config={self.config_name}")
-        finally:
-            self._release_device(device)
-            if self.state != "error":
-                with self._frame_lock:
-                    self.state = "stopped"
-
     def latest_jpeg(self) -> bytes | None:
+        self._drain_updates()
         with self._frame_lock:
             if self.state != "running" or self._latest_jpeg is None:
                 return None
             return bytes(self._latest_jpeg)
 
     def capture_latest_frame(self, output_file: Path) -> None:
+        self._drain_updates()
         with self._frame_lock:
             state = self.state
             error = self.error
-            frame = None if self._latest_frame is None else self._latest_frame.copy()
 
         if state != "running":
             if state == "error":
@@ -263,12 +271,44 @@ class EmulatorCaptureSession:
                 raise AnnotatorError("emulator_starting", "模拟器画面尚未就绪，请稍后重试", 409)
             raise AnnotatorError("emulator_not_running", "模拟器画面未启动", 409)
 
-        if frame is None:
-            raise AnnotatorError("no_frame", "当前没有可用帧，无法截图", 400)
+        if self._command_queue is None or self._response_queue is None:
+            raise AnnotatorError("emulator_not_running", "模拟器画面未启动", 409)
 
-        ok = cv2.imwrite(str(output_file), frame)
-        if not ok:
-            raise AnnotatorError("capture_failed", "保存截图失败", 500)
+        request_id = uuid.uuid4().hex
+        try:
+            self._command_queue.put_nowait(
+                {
+                    "type": "capture",
+                    "request_id": request_id,
+                    "output_file": str(output_file.resolve()),
+                }
+            )
+        except Exception as e:
+            raise AnnotatorError("capture_failed", "提交截图请求失败", 500) from e
+
+        deadline = time.time() + EMULATOR_CAPTURE_COMMAND_TIMEOUT_SECONDS
+        while time.time() < deadline:
+            self._drain_updates()
+            wait_seconds = min(0.1, deadline - time.time())
+            if wait_seconds <= 0:
+                break
+            try:
+                response = self._response_queue.get(timeout=wait_seconds)
+            except QueueEmpty:
+                continue
+
+            if str(response.get("request_id", "")) != request_id:
+                continue
+            if response.get("ok"):
+                return
+
+            code = str(response.get("code", "")).strip() or "capture_failed"
+            message = str(response.get("message", "")).strip() or "保存截图失败"
+            status_code = 500 if code == "capture_failed" else 400
+            raise AnnotatorError(code, message, status_code)
+
+        self._drain_updates()
+        raise AnnotatorError("capture_timeout", "保存截图超时", 504)
 
 
 class AnnotatorSession:

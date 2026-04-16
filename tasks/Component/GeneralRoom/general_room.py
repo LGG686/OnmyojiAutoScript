@@ -3,8 +3,6 @@
 # github https://github.com/runhey
 import time
 import random
-import cv2
-import numpy as np
 
 from random import randint
 
@@ -82,8 +80,8 @@ class GeneralRoom(BaseTask, GeneralRoomAssets):
         :return:
         """
         logger.info('Create ensure')
-        appear1 = self.I_CREATE_ENSURE.match(self.device.image)
-        appear2 = self.I_CREATE_ENSURE_2.match(self.device.image)
+        appear1 = self.I_CREATE_ENSURE.match(self.device.image, frame_id=self.device.image_frame_id)
+        appear2 = self.I_CREATE_ENSURE_2.match(self.device.image, frame_id=self.device.image_frame_id)
         target = None
         if appear1:
             target = self.I_CREATE_ENSURE
@@ -147,4 +145,3 @@ class GeneralRoom(BaseTask, GeneralRoomAssets):
                 self.device.click(x=pos[0] + randint(-5, 5), y=pos[1] + randint(-5, 5))
 
         return True
-

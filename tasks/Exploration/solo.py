@@ -70,7 +70,7 @@ class SoloExploration(BaseExploration):
                         if self._config.exploration_config.exploration_level == ExplorationLevel.EXPLORATION_28 and self.appear(self.I_SWIPE_END):
                             self.quit_explore()
                             continue
-                        elif self._config.exploration_config.exploration_level != ExplorationLevel.EXPLORATION_28 and self._match_end.stable(self.device.image, refresh_after_stable=True):
+                        elif self._config.exploration_config.exploration_level != ExplorationLevel.EXPLORATION_28 and self._match_end.stable(self.device.image, refresh_after_stable=True, frame_id=self.device.image_frame_id):
                             self.quit_explore()
                             continue
                         if self.swipe(self.S_SWIPE_BACKGROUND_RIGHT, interval=2):
@@ -212,7 +212,7 @@ class SoloExploration(BaseExploration):
                         self.quit_explore()
                         continue
                     elif self._config.exploration_config.exploration_level != ExplorationLevel.EXPLORATION_28 and self._match_end.stable(
-                            self.device.image, refresh_after_stable=True):
+                            self.device.image, refresh_after_stable=True, frame_id=self.device.image_frame_id):
                         self.quit_explore()
                         continue
                     if self.swipe(self.S_SWIPE_BACKGROUND_RIGHT, interval=2):

@@ -3,8 +3,6 @@
 # github https://github.com/runhey
 import time
 
-import cv2
-import numpy as np
 import random
 import re
 from module.atom.click import RuleClick

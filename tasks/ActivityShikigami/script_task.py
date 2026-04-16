@@ -5,8 +5,6 @@ from cryptography.x509 import OCSPNonce
 from enum import Enum, auto
 from time import sleep
 from datetime import datetime, timedelta
-import cv2
-import numpy as np
 import random
 from tasks.DemonEncounter.data.answer import remove_symbols, Answer
 from tasks.Quiz.debug import Debugger

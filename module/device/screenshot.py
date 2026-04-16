@@ -17,6 +17,7 @@ from module.device.method.droidcast import DroidCast
 from module.device.method.scrcpy import Scrcpy
 from module.device.method.nemu_ipc import NemuIpc
 from module.exception import RequestHumanTakeover, ScriptError
+from module.image.rpc import get_image_client
 from module.logger import logger
 
 
@@ -27,6 +28,7 @@ class Screenshot(Adb, DroidCast, Scrcpy, Window, NemuIpc):
     _screenshot_interval = Timer(0.1)
     _last_save_time = {}
     image: np.ndarray
+    image_frame_id: str | None = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -61,6 +63,8 @@ class Screenshot(Adb, DroidCast, Scrcpy, Window, NemuIpc):
                 self.screenshot_adb  # 第二个参数默认的是screenshot_adb
             )
             self.image = method()
+            frame_info = get_image_client().register_frame(self.image)
+            self.image_frame_id = frame_info["frame_id"]
 
             # if self.config.Emulator_ScreenshotDedithering:
             #     # This will take 40-60ms

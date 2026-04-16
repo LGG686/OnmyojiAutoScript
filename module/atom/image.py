@@ -8,6 +8,7 @@ from numpy import float32, int32, uint8, fromfile
 from pathlib import Path
 
 from module.base.decorator import cached_property
+from module.image.rpc import get_image_client
 from module.logger import logger
 from module.base.utils import is_approx_rectangle
 
@@ -155,6 +156,32 @@ class RuleImage:
         self.roi_front[2] = size[0]
         self.roi_front[3] = size[1]
 
+    def to_service_payload(self) -> dict:
+        file_path = ""
+        if self.file:
+            file_path = str(Path(self.file).resolve())
+        scale_range = None
+        if self.scale_range is not None:
+            scale_range = list(self.scale_range)
+        return {
+            "name": self.name,
+            "file": file_path,
+            "method": self.method,
+            "threshold": float(self.threshold),
+            "roi_front": list(self.roi_front),
+            "roi_back": list(self.roi_back),
+            "scale_range": scale_range,
+            "scale_step": float(self.scale_step),
+        }
+
+    def _apply_match_result(self, result: dict) -> bool:
+        if result.get("matched"):
+            roi_front = result.get("roi_front")
+            if roi_front is not None:
+                self.roi_front = [int(v) for v in roi_front]
+            return True
+        return False
+
     def template_match(self, image: np.array, threshold: float = None) -> bool:
         if threshold is None:
             threshold = self.threshold
@@ -225,24 +252,22 @@ class RuleImage:
             return True
         return False
 
-    def match(self, image: np.array, threshold: float = None) -> bool:
+    def match(self, image: np.array, threshold: float = None, frame_id: str = None) -> bool:
         """
         :param threshold:
         :param image:
         :return:
         """
-        if threshold is None:
-            threshold = self.threshold
+        client = get_image_client()
+        result = client.match_rule(
+            rule_data=self.to_service_payload(),
+            image=image,
+            frame_id=frame_id,
+            threshold=threshold,
+        )
+        return self._apply_match_result(result)
 
-        if self.is_template_match:
-            return self.template_match(image, threshold=threshold)
-        if self.is_multi_scale_template_match:
-            return self.multi_scale_template_match(image, threshold=threshold)
-        if self.is_sift_flann:
-            return self.sift_match(image)
-        raise Exception(f"unknown method {self.method}")
-
-    def match_all(self, image: np.array, threshold: float = None, roi: list = None) -> list[tuple]:
+    def match_all(self, image: np.array, threshold: float = None, roi: list = None, frame_id: str = None) -> list[tuple]:
         """
         区别于match，这个是返回所有的匹配结果
         :param roi:
@@ -252,24 +277,17 @@ class RuleImage:
         """
         if roi is not None:
             self.roi_back = roi
-        if threshold is None:
-            threshold = self.threshold
-        if not self.is_template_match:
-            raise Exception(f"unknown method {self.method}")
-        source = self.corp(image)
-        mat = self.image
-        results = cv2.matchTemplate(source, mat, cv2.TM_CCOEFF_NORMED)
-        locations = np.where(results >= threshold)
-        matches = []
-        for pt in zip(*locations[::-1]):  # (x, y) coordinates
-            score = results[pt[1], pt[0]]
-            # 得分, x, y, w, h
-            x = self.roi_back[0] + pt[0]
-            y = self.roi_back[1] + pt[1]
-            matches.append((score, x, y, mat.shape[1], mat.shape[0]))
-        return matches
+        client = get_image_client()
+        result = client.match_all(
+            rule_data=self.to_service_payload(),
+            image=image,
+            frame_id=frame_id,
+            threshold=threshold,
+            roi=self.roi_back,
+        )
+        return [tuple(item) for item in result.get("matches", [])]
 
-    def match_all_any(self, image: np.array, threshold: float = None, roi: list = None, nms_threshold: float = 0.3) -> list[tuple]:
+    def match_all_any(self, image: np.array, threshold: float = None, roi: list = None, nms_threshold: float = 0.3, frame_id: str = None) -> list[tuple]:
         """
         区别于match，这个是返回所有的匹配结果，去除冗余匹配项（例如：多个框选区域重叠的情况）时使用。
         :param roi:
@@ -279,29 +297,16 @@ class RuleImage:
         """
         if roi is not None:
             self.roi_back = roi
-        if threshold is None:
-            threshold = self.threshold
-        if not self.is_template_match:
-            raise Exception(f"unknown method {self.method}")
-        source = self.corp(image)
-        mat = self.image
-        results = cv2.matchTemplate(source, mat, cv2.TM_CCOEFF_NORMED)
-        locations = np.where(results >= threshold)
-        matches = []
-        for pt in zip(*locations[::-1]):  # (x, y) coordinates
-            score = results[pt[1], pt[0]]
-            # 得分, x, y, w, h
-            x = self.roi_back[0] + pt[0]
-            y = self.roi_back[1] + pt[1]
-            matches.append((score, x, y, mat.shape[1], mat.shape[0]))
-        if len(matches) > 0:
-            scores = np.array([m[0] for m in matches])
-            boxes = np.array([[m[1], m[2], m[3], m[4]] for m in matches])
-            # 使用OpenCV的NMSBoxes
-            indices = cv2.dnn.NMSBoxes(boxes.tolist(), scores.tolist(), score_threshold=threshold, nms_threshold=nms_threshold)
-            filtered_matches = [matches[i] for i in indices]
-            return filtered_matches
-        return matches
+        client = get_image_client()
+        result = client.match_all_any(
+            rule_data=self.to_service_payload(),
+            image=image,
+            frame_id=frame_id,
+            threshold=threshold,
+            roi=self.roi_back,
+            nms_threshold=nms_threshold,
+        )
+        return [tuple(item) for item in result.get("matches", [])]
 
     def coord(self) -> tuple:
         """

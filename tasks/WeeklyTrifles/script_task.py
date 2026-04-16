@@ -230,7 +230,7 @@ class ScriptTask(GameUi, WeeklyTriflesAssets):
                 return
             x_10, _, _, _ = self.O_BA_TIMES.ocr(self.device.image, '10次')
             x_50, _, _, _ = self.O_BA_TIMES.ocr(self.device.image, '50次')
-            self.I_BMT_CHECK.match(self.device.image)
+            self.I_BMT_CHECK.match(self.device.image, frame_id=self.device.image_frame_id)
             x_check, y_check, width_check, height_check = self.I_BMT_CHECK.roi_front
             selected_10 = min(abs(x_10 - x_check), abs(x_50 - x_check)) == abs(x_10 - x_check)
             logger.info(f'Current selected {"10" if selected_10 else "50"} amulet')

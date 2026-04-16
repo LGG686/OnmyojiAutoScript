@@ -177,9 +177,9 @@ class BaseTask(GlobalGameAssets, CostumeBase):
         if isinstance(target, RuleOcr):
             appear = self.ocr_appear(target, interval)
         elif isinstance(target, RuleImage):
-            appear = target.match(self.device.image, threshold=threshold)
+            appear = target.match(self.device.image, threshold=threshold, frame_id=self.device.image_frame_id)
         else:
-            appear = target.match(self.device.image, threshold=threshold)
+            appear = target.match(self.device.image, threshold=threshold, frame_id=self.device.image_frame_id)
 
         if appear and interval:
             self.interval_timer[target.name].reset()
@@ -294,12 +294,13 @@ class BaseTask(GlobalGameAssets, CostumeBase):
             self.maybe_screenshot(skip_first_screenshot)
             skip_first_screenshot = False
             # 当前页面能够匹配到target
-            if target.match(self.device.image, threshold=threshold):
+            if target.match(self.device.image, threshold=threshold, frame_id=self.device.image_frame_id):
                 cur_roi_front = target.roi_front
                 logger.info(f'Current:{cur_roi_front}, pre:{pre_roi_front}')
                 target.roi_back = pre_roi_front
                 # 上一次匹配到的位置还能匹配到target
-                if pre_roi_front is not None and target.match(self.device.image, threshold=threshold):
+                if pre_roi_front is not None and target.match(self.device.image, threshold=threshold,
+                                                              frame_id=self.device.image_frame_id):
                     # 到达稳定时间
                     if stable_timer.reached():
                         logger.info(f'{target.name} position has stabilized')
@@ -338,7 +339,7 @@ class BaseTask(GlobalGameAssets, CostumeBase):
                 self.screenshot()
 
             if target._match_init:
-                if target.match(self.device.image):
+                if target.match(self.device.image, frame_id=self.device.image_frame_id):
                     if timer.reached():
                         break
                 else:
@@ -375,7 +376,7 @@ class BaseTask(GlobalGameAssets, CostumeBase):
                 if not self.interval_timer[rule.name].reached():
                     return False
 
-            stable = rule.stable(self.device.image)
+            stable = rule.stable(self.device.image, frame_id=self.device.image_frame_id)
             if stable:
                 if interval:
                     self.interval_timer[rule.name].reset()
@@ -539,7 +540,7 @@ class BaseTask(GlobalGameAssets, CostumeBase):
         for _ in range(max_swipe):
             self.screenshot()
             if target.is_image:
-                result = target.image_appear(self.device.image, name=name)
+                result = target.image_appear(self.device.image, name=name, frame_id=self.device.image_frame_id)
                 swipe_down = True
             elif target.is_ocr:
                 result = target.ocr_appear(self.device.image, name=name)

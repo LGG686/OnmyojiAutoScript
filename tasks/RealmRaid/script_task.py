@@ -63,7 +63,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RealmRaidAssets):
                         break
                 continue
 
-            target = self.medal_grid.find_anyone(self.device.image)
+            target = self.medal_grid.find_anyone(self.device.image, frame_id=self.device.image_frame_id)
             if target:
                 self.appear_then_click(target, interval=2)  # 点击勋章,但是设置为两秒的间隔，适应不同的模拟器速度
                 is_click = not is_click
@@ -531,4 +531,3 @@ if __name__ == "__main__":
     t = ScriptTask(config, device)
 
     t.run()
-

@@ -10,9 +10,11 @@ from module.gui.context.utils import Utils
 from module.gui.register_type.paint_image import PaintImage
 from module.gui.register_type.rule_file import RuleFile
 from module.gui.fluent_app import FluentApp
+from module.image.rpc import ensure_image_server_ready
 from module.ocr.rpc import ensure_ocr_server_started
 
 if __name__ == "__main__":
+    ensure_image_server_ready()
     ensure_ocr_server_started()
     # 检查是不是以管理员身份运行，脚本启动的其他进程会继承权限
     # 但是貌似有问题的这个函数

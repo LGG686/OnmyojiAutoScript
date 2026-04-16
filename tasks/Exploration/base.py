@@ -271,7 +271,8 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             matches = self.I_NORMAL_BATTLE_BUTTON.match_all(
                 image=self.device.image,
                 threshold=0.9,
-                roi=[roi_back_x, roi_back_y, roi_back_w, roi_back_h]
+                roi=[roi_back_x, roi_back_y, roi_back_w, roi_back_h],
+                frame_id=self.device.image_frame_id,
             )
             if not matches:
                 return None
@@ -385,4 +386,3 @@ if __name__ == "__main__":
         time.sleep(0.2)
     from PIL import Image
     # Image.fromarray(t.device.image.astype(np.uint8)).show()
-

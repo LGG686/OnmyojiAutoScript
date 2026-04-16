@@ -39,6 +39,16 @@ class ConfigModel:
     OcrServerPort: int = 22268
     OcrClientAddress: str = "127.0.0.1:22268"
 
+    # Image
+    StartImageServer: bool = True
+    ImageServerPort: int = 22269
+    ImageClientAddress: str = "127.0.0.1:22269"
+    ImageTemplateCacheExpireSeconds: int = 3600
+    ImageTemplateCacheMaxCount: int = 200
+    ImageFrameCacheExpireSeconds: float = 3.0
+    ImageFrameCacheMaxCount: int = 24
+    ImageServerWorkerCount: int = 0
+
     # Update
     EnableReload: bool = True
     CheckUpdateInterval: int = 5
@@ -165,4 +175,3 @@ class DeployConfig(ConfigModel):
             "and re-open Alas.exe"
         )
         logger.info("Take the screenshot of entire window if you need help")
-

@@ -1,7 +1,6 @@
 # This Python file uses the following encoding: utf-8
 # @author runhey
 # github https://github.com/runhey
-import cv2
 from cached_property import cached_property
 
 from tasks.base_task import BaseTask
@@ -38,21 +37,3 @@ class HyaColor(BaseTask):
         if abs(img_b - b) > offset:
             return False
         return True
-
-
-
-if __name__ == "__main__":
-    import timeit
-    from module.config.config import Config
-    from module.device.device import Device
-
-    c = Config('oas1')
-    d = Device(c)
-    hd = HyaColor(c, d)
-    img = cv2.imread(r'E:\Project\OnmyojiAutoScript\tasks\Hyakkiyakou\temp\20240615T144058\all1718433698934.png')
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    hd.device.image = img
-
-    # print(hd.show_point_color(400, 657))
-    # print(hd.match_color(hd.BUFF_STATE_POS1))
-

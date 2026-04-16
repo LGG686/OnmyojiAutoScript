@@ -5,7 +5,6 @@ import time
 import random
 from time import sleep
 
-import cv2
 from module.base.timer import Timer
 
 from module.base.utils import get_color, color_similar
@@ -532,50 +531,3 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                 break
             if self.appear_then_click(self.I_BUFF, interval=1):
                 continue
-
-
-if __name__ == '__main__':
-    from module.config.config import Config
-    from module.device.device import Device
-
-    c = Config('oas1')
-    d = Device(c)
-    t = GeneralBattle(c, d)
-    self = t
-    # t.check_buff([BuffClass.EXP_50, BuffClass.GOLD_50])
-
-    img = cv2.imread(r"E:\preset3.png")
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    self.device.image = img
-
-
-    def get_unselect_color(tmp1, tmp2, tmp3, size):
-        # 获取未选择分组的颜色，3组之中必定存在两个颜色相似
-        # area 参数格式是（x1,y1,x2,y2）
-        color_1 = get_color(self.device.image,
-                            (tmp1.roi_back[0], tmp1.roi_back[1],
-                             tmp1.roi_back[0] + size[0], tmp1.roi_back[1] + size[1]))
-        color_2 = get_color(self.device.image,
-                            (tmp2.roi_back[0], tmp2.roi_back[1],
-                             tmp2.roi_back[0] + size[0], tmp2.roi_back[1] + size[1]))
-        color_3 = get_color(self.device.image,
-                            (tmp3.roi_back[0], tmp3.roi_back[1],
-                             tmp3.roi_back[0] + size[0], tmp3.roi_back[1] + size[1]))
-
-        if color_similar(color_1, color_2):
-            return color_1
-        if color_similar(color_2, color_3):
-            return color_2
-        return color_3
-
-
-    color_size = [self.C_PRESET_GROUP_1.roi_back[2],
-                  self.C_PRESET_GROUP_1.roi_back[3]]
-    unselected_color = get_unselect_color(self.C_PRESET_GROUP_1, self.C_PRESET_GROUP_2, self.C_PRESET_GROUP_3,
-                                          size=color_size)
-    print("")
-    color_size = [5, 5]
-    unselected_color = get_unselect_color(self.C_PRESET_TEAM_1, self.C_PRESET_TEAM_2, self.C_PRESET_TEAM_3,
-                                          size=color_size
-                                          )
-    print("")

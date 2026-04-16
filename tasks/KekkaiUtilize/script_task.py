@@ -525,7 +525,7 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
             # ------ 步骤1: 截图识别结界卡 ------#
             self.screenshot()
-            cards = self.order_targets.find_everyone(self.device.image)
+            cards = self.order_targets.find_everyone(self.device.image, frame_id=self.device.image_frame_id)
 
             # 处理无卡情况
             if not cards:

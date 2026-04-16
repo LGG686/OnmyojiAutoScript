@@ -3,9 +3,6 @@
 # github https://github.com/runhey
 import time
 
-import cv2
-import numpy as np
-
 from tasks.Component.GeneralBuff.assets import GeneralBuffAssets
 from module.atom.ocr import RuleOcr
 from module.atom.image import RuleImage
@@ -224,7 +221,7 @@ class GeneralBuff(BaseTask, GeneralBuffAssets):
         self.reject_invite()
         self.screenshot()
 
-        if not target.match(self.device.image):
+        if not target.match(self.device.image, frame_id=self.device.image_frame_id):
             logger.warning(f'No {target.name} buff')
             return None
             # logger.info(f'front area: {target.roi_front}')

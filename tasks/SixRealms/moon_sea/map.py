@@ -1,7 +1,4 @@
-import cv2
 import re
-import numpy as np
-from numpy import uint8, fromfile
 from module.logger import logger
 
 from tasks.base_task import BaseTask
@@ -172,4 +169,3 @@ if __name__ == '__main__':
     if match:
         isl_num = int(match.group())
         print(isl_num)
-

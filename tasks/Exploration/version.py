@@ -1,15 +1,13 @@
 # This Python file uses the following encoding: utf-8
 # @author runhey
 # github https://github.com/runhey
-import cv2
-import numpy as np
-
 from pathlib import Path
 from cached_property import cached_property
 
-from module.base.utils import color_similarity_2d, load_image, save_image
 from module.atom.gif import RuleGif
 from module.atom.image import RuleImage
+from module.base.utils import load_image, save_image
+from module.image.operators import highlight_similar_color
 
 from tasks.base_task import BaseTask
 from tasks.Exploration.assets import ExplorationAssets
@@ -18,38 +16,8 @@ from dev_tools.assets_test import detect_image
 
 class Version(BaseTask):
     pass
-
-
-def apply_mask(image, mask):
-    image16 = image.astype(np.uint16)
-    mask16 = mask.astype(np.uint16)
-    mask16 = cv2.merge([mask16, mask16, mask16])
-    image16 = cv2.multiply(image16, mask16)
-    # cv2.multiply(image16, mask16, dst=image16)
-    image16 = cv2.convertScaleAbs(image16, alpha=1 / 255)
-    # cv2.convertScaleAbs(image16, alpha=1 / 255, dst=image16)
-    # Image.fromarray(image16.astype(np.uint8)).show()
-    return image16.astype(np.uint8)
-
 def highlight(image):
-    yuv = cv2.cvtColor(image, cv2.COLOR_RGB2YUV)
-    _, u, _ = cv2.split(yuv)
-    cv2.subtract(128, u, dst=u)
-    cv2.multiply(u, 8, dst=u)
-
-    color = color_similarity_2d(image, color=(255,255,255))
-    hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-    _, _, v = cv2.split(hsv)
-    image = apply_mask(image, u)
-    image = apply_mask(image, color)
-    image = apply_mask(image, v)
-
-    cv2.convertScaleAbs(image, alpha=3, dst=image)
-    cv2.subtract((255, 255, 255, 0), image, dst=image)
-
-    # from PIL import Image
-    # Image.fromarray(image.astype(np.uint8)).show()
-    return image
+    return highlight_similar_color(image, color=(255, 255, 255))
 
 
 class HighlightGif(RuleGif):
@@ -91,5 +59,4 @@ if __name__ == '__main__':
     #
     # t.screenshot()
     # t.appear_then_click(t.TEMPLATE_GIF)
-
 

@@ -392,16 +392,3 @@ class ScriptTask(KU, KekkaiActivationAssets):
         self.appear_then_click(self.I_A_HARVEST_FISH_6)  # 斗鱼6
         self.appear_then_click(self.I_A_HARVEST_MOON_3)  # 太阴3
         self.appear_then_click(self.I_A_HARVEST_FISH_3)  # 斗鱼三
-
-
-if __name__ == "__main__":
-    from module.config.config import Config
-    from module.device.device import Device
-    import cv2
-
-    c = Config('switch')
-    d = Device(c)
-
-    t = ScriptTask(c, d)
-    t.check_card_num()
-    # t.run_activation(t.config.kekkai_activation.activation_config)

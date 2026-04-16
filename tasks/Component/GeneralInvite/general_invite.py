@@ -369,7 +369,7 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
         selected_count = 0
         while not timer.reached():
             self.screenshot()
-            if len(self.I_SELECTED.match_all_any(self.device.image)) >= pre_cnt + 1:
+            if len(self.I_SELECTED.match_all_any(self.device.image, frame_id=self.device.image_frame_id)) >= pre_cnt + 1:
                 selected_count += 1
                 if selected_count >= 2:
                     return True
@@ -386,10 +386,10 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
             return False
         max_retry = 3
         self.screenshot()
-        pre_cnt = len(self.I_SELECTED.match_all_any(self.device.image))
+        pre_cnt = len(self.I_SELECTED.match_all_any(self.device.image, frame_id=self.device.image_frame_id))
         for _ in range(max_retry):
             self.screenshot()
-            if len(self.I_SELECTED.match_all_any(self.device.image)) >= pre_cnt + 1:
+            if len(self.I_SELECTED.match_all_any(self.device.image, frame_id=self.device.image_frame_id)) >= pre_cnt + 1:
                 return True
             rule = self.O_FRIEND_NAME_1
             select_area = self._find_exact_friend_area(rule, name)
@@ -693,15 +693,3 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
             self.exit_room()
 
         return success
-
-
-if __name__ == '__main__':
-    from module.config.config import Config
-    from module.device.device import Device
-    import cv2
-
-    c = Config('oas3')
-    d = Device(c)
-    t = GeneralInvite(c, d)
-
-    t.run_invite(c.orochi.invite_config, is_first=True)

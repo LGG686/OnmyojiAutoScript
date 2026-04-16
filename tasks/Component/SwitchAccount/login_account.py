@@ -1,11 +1,11 @@
 import math
 import time
 
-import cv2
 from module.atom.click import RuleClick
 from module.atom.gif import RuleGif
 from module.atom.image import RuleImage
 from module.atom.ocr import RuleOcr
+from module.image.operators import threshold_bgr_to_inverted_rgb
 from module.logger import logger
 from tasks.Component.SwitchAccount.assets import SwitchAccountAssets
 from tasks.Component.SwitchAccount.switch_account_config import AccountInfo
@@ -39,15 +39,7 @@ class LoginAccount(BaseTask, SwitchAccountAssets):
         lastSvrList: tuple = ()
         while 1:
             self.screenshot()
-            # 灰度图
-            self.device.image = cv2.cvtColor(self.device.image, cv2.COLOR_BGR2GRAY)
-            # ret, self.device.image = cv2.threshold(self.device.image, 200, 255, cv2.THRESH_OTSU)
-            ret, self.device.image = cv2.threshold(self.device.image, 100, 255, cv2.THRESH_BINARY)
-            # self.device.image = cv2.adaptiveThreshold(self.device.image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 25, 10)
-            self.device.image = abs(255 - self.device.image)
-
-            # RGB图
-            self.device.image = cv2.cvtColor(self.device.image, cv2.COLOR_GRAY2RGB)
+            self.device.image = threshold_bgr_to_inverted_rgb(self.device.image, threshold=100)
 
             ocrRes = self.O_SA_SELECT_SVR_SVR_LIST.detect_and_ocr(self.device.image)
             # 受限于图像识别文字准确率,此处对识别结果与实际服务器名字 进行检查 字重合度大于阈值 就认为查找成功

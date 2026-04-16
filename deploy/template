@@ -81,6 +81,34 @@ Deploy:
     # [Default] 127.0.0.1:22268
     OcrClientAddress: 127.0.0.1:22268
 
+  Image:
+    # Run image recognition as a service. This service is mandatory and all image rules use it.
+
+    # Whether to auto start image server when startup
+    # [Default] true
+    StartImageServer: true
+    # Port of image server
+    # [Default] 22269
+    ImageServerPort: 22269
+    # Address of image server for script instances to connect
+    # [Default] 127.0.0.1:22269
+    ImageClientAddress: 127.0.0.1:22269
+    # Template cache expire seconds
+    # [Default] 3600
+    ImageTemplateCacheExpireSeconds: 3600
+    # Template cache max item count
+    # [Default] 200
+    ImageTemplateCacheMaxCount: 200
+    # Frame cache expire seconds
+    # [Default] 3.0
+    ImageFrameCacheExpireSeconds: 3.0
+    # Frame cache max item count
+    # [Default] 24
+    ImageFrameCacheMaxCount: 24
+    # Image server worker count, 0 means auto detect
+    # [Default] 0
+    ImageServerWorkerCount: 0
+
   Update:
     # Use auto update and builtin updater feature
     # This may cause problem https://github.com/LmeSzinc/AzurLaneAutoScript/issues/876
