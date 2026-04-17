@@ -1,0 +1,20 @@
+[
+  {
+    "itemName": "shi_grown_3",
+    "imageName": "cb3_shi_grown_3.png",
+    "roiFront": "600,277,19,34",
+    "roiBack": "519,212,220,281",
+    "method": "Multi-scale template matching",
+    "threshold": 0.6,
+    "description": "育成"
+  },
+  {
+    "itemName": "shi_card_3",
+    "imageName": "cb3_shi_card_3.png",
+    "roiFront": "899,281,21,40",
+    "roiBack": "823,210,252,297",
+    "method": "Multi-scale template matching",
+    "threshold": 0.6,
+    "description": "结界卡"
+  }
+]
