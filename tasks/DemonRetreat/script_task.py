@@ -113,10 +113,7 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, DemonRetreatAssets, AbyssSha
 
             if self.appear(self.I_RANK_LSIT):
                 logger.info("Enter demon_retreat false")
-                sleep(3)
-                if self.appear_then_click(self.I_DEMON_BACK_CHECK, interval=1):
-                    pass
-                sleep(20)
+                return False
             # 超过五次没有进入进入认为失败
             if goto_demon_retreat_num >= 3:
                 break
