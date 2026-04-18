@@ -912,35 +912,34 @@ class ScriptTask(ExtendGreenMark, GameUi, SwitchSoul, DokanSceneDetector):
         @return:
         @rtype:
         """
-        if skip_today:
-            self.set_next_run(task="Dokan", finish=False, success=True, server=True)
-            return
-        # 道馆没有开启
         now = datetime.now()
         run_time: Time = self.config.model.dokan.dokan_config.dokan_run_time
-        run_time = datetime.combine(now.date(), run_time)
+        run_time_dt = datetime.combine(now.date(), run_time)
+        if skip_today:
+            self.set_next_run(task="Dokan", server=False, target=datetime.combine(now.date() + timedelta(days=1), run_time))
+            return
+        # 道馆没有开启
         if not is_dokan_activated:
             # 在服务器时间之前,设置为服务器时间
-            if now < run_time:
-                self.set_next_run(task="Dokan", target=now.replace(hour=run_time.hour, minute=run_time.minute))
+            if now < run_time_dt:
+                self.set_next_run(task="Dokan", server=False, target=run_time_dt)
                 return
-            # 在服务器时间之后,如超过两小时,则直接当作成功;未超过则当作失败
-            if now - run_time > timedelta(hours=1):
-                self.set_next_run(task="Dokan", finish=False, success=True, server=True)
+            # 在服务器时间之后,如超过1小时,则直接当作成功;未超过则当作失败
+            if now - run_time_dt > timedelta(hours=1):
+                self.set_next_run(task="Dokan", server=False, target=datetime.combine(now.date() + timedelta(days=1), run_time))
                 return
             # 时间在道馆开启时间附近，failure_interval后执行
-
-            self.set_next_run(task="Dokan", target=now + self.config.dokan.scheduler.failure_interval)
+            self.set_next_run(task="Dokan", server=False, target=now + self.config.dokan.scheduler.failure_interval)
         # 道馆已开启
         if is_dokan_activated:
             # 如果打两次,当前是第一次,设置为failure_interval后运行
             #   # 本来以为server为False(finish=True,success=False,server=False)就不会变成明天，谁知道还是变成明天
             #   # 逻辑太复杂,不如直接target，简单点
             if self.config.dokan.attack_count_config.remain_attack_count == 1 and self.config.dokan.attack_count_config.daily_attack_count == 2:
-                self.set_next_run(task="Dokan", target=now + self.config.dokan.scheduler.failure_interval)
+                self.set_next_run(task="Dokan", server=False, target=now + self.config.dokan.scheduler.failure_interval)
                 return
             # 其余情况当作成功
-            self.set_next_run(task="Dokan", finish=False, success=True, server=True)
+            self.set_next_run(task="Dokan", server=False, target=datetime.combine(now.date() + timedelta(days=1), run_time))
 
     def position_offset(self, src, offset: tuple):
         return (src[0] + offset[0], src[1] + offset[1]
