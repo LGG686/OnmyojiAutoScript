@@ -105,7 +105,7 @@ class BondlingSwitchSoul(ConfigBase):
 
 
 class BattleConfig(GeneralBattleConfig):
-    hide_fields = dynamic_hide('lock_team_enable', 'preset_enable', 'preset_group', 'preset_team')
+    battle_hide_fields = dynamic_hide('lock_team_enable', 'preset_enable', 'preset_group', 'preset_team')
 
 
 class BondlingFairyland(ConfigBase):

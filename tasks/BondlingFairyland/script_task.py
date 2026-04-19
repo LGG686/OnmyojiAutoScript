@@ -39,8 +39,11 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
         page_result = self.navigator.resolve_page(page_battle_result)
         if page_result is None:
             return
+        logger.info('Update page_battle_result')
         page_result.recognizer = any_of(self.I_BATTLE_FAIL_ABANDON, self.I_CAP_AGAIN, self.I_CAP_SUCCESS,
                                         self.I_CAP_FAILURE, self.I_BATTLE_FAIL, self.I_BATTLE_SUCCESS)
+        # 契灵结算弹窗会叠在战斗页面上，需要更高优先级避免被底层战斗页抢先识别。
+        page_result.priority = 50
 
     def _handle_result(self, runtime: BattleRuntime, once: OnceFlags, cfg: GeneralBattleConfig,
                        buff: Union[BuffClass | list[BuffClass] | None]) -> BattleAction:
