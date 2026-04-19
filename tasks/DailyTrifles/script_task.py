@@ -7,7 +7,7 @@ from datetime import time, datetime, timedelta
 
 from exceptiongroup import catch
 from tasks.Component.config_base import Time
-from tasks.DailyTrifles.page import page_store_gift_room
+from tasks.DailyTrifles.page import page_store_gift_room, page_friends_luck
 from winerror import NOERROR
 
 from tasks.GameUi.game_ui import GameUi
@@ -163,15 +163,7 @@ class ScriptTask(GameUi, Summon, DailyTriflesAssets):
         if self.config.daily_trifles.today_is_done('luck_msg'):
             logger.info('Today is done, skip')
             return
-        self.goto_page(page_friends)
-        while 1:
-            self.screenshot()
-            if self.appear(self.I_LUCK_TITLE):
-                break
-            if self.appear_then_click(self.I_FRIENDSHIP_UP, interval=1):
-                continue
-            if self.ocr_appear_click(self.O_LUCK_MSG, interval=1):
-                continue
+        self.goto_page(page_friends_luck)
         logger.info('Start luck msg')
         check_timer = Timer(2)
         check_timer.start()
@@ -189,7 +181,7 @@ class ScriptTask(GameUi, Summon, DailyTriflesAssets):
                 logger.warning('There is no any luck msg')
                 break
 
-        self.ui_click(self.I_UI_BACK_RED, self.I_CHECK_MAIN)
+        self.goto_page(page_main)
         self.config.daily_trifles.done_record.luck_msg_dt = datetime.now()
 
     def run_store(self):

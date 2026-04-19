@@ -68,6 +68,10 @@
       "costume_sign_type": "costume_sign_default",
       "costume_battle_type": "costume_battle_default"
     },
+    "battle": {
+      "battle_timeout": 420,
+      "on_takeover": "finish"
+    },
     "team_flow": {
       "enable": false,
       "broker": "",
@@ -76,11 +80,6 @@
       "ca": "",
       "username": "",
       "password": ""
-    },
-    "battle": {
-      "enable": true,
-      "on_takeover": "exit",
-      "battle_timeout": 420
     }
   },
   "area_boss": {
@@ -109,7 +108,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -211,7 +210,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -251,7 +250,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -526,7 +525,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -639,7 +638,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -698,7 +697,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -742,7 +741,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -780,7 +779,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -1086,7 +1085,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -1125,7 +1124,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -1162,7 +1161,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -1243,7 +1242,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -1442,7 +1441,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -1574,7 +1573,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -1587,7 +1586,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": true,
       "max_continuous": 0,
       "quick_exit": false
@@ -1629,7 +1628,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
@@ -1725,7 +1724,7 @@
       "green_enable": false,
       "green_mark": "green_left1",
       "random_click_swipt_enable": false,
-      "battle_timeout": null,
+      "battle_timeout": -1,
       "continuous_battle": false,
       "max_continuous": 0,
       "quick_exit": false
