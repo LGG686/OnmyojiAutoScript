@@ -65,7 +65,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, GoryouRealmAssets):
                 if self.appear_then_click(self.I_GR_FIRE, interval=1):
                     pass
                 if not self.appear(self.I_GR_FIRE):
-                    self.run_general_battle(config=con.general_battle_config)
+                    self.run_general_battle(config=con.general_battle_config, exit_matcher=self.I_GR_FIRE)
                     break
 
         self.goto_page(page_main)
@@ -113,4 +113,3 @@ if __name__ == '__main__':
     t.screenshot()
 
     t.run()
-

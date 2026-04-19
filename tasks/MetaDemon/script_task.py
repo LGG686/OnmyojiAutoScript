@@ -12,7 +12,7 @@ from tasks.Component.SwitchSoul.switch_soul import SwitchSoul
 from tasks.GameUi.game_ui import GameUi
 from tasks.MetaDemon.config import MetaDemon, BossType
 from tasks.MetaDemon.assets import MetaDemonAssets
-import tasks.MetaDemon.inner_page as ipages
+import tasks.MetaDemon.page as ipages
 
 from module.logger import logger
 from module.exception import TaskEnd
@@ -77,7 +77,7 @@ class ScriptTask(GeneralBattle, SwitchSoul, GameUi, MetaDemonAssets):
                         self.start_battle()
                 case ipages.page_battle:
                     self.battle_wait(self.conf.general_battle.random_click_swipt_enable)
-                case ipages.page_reward | ipages.page_failed:
+                case ipages.page_reward | ipages.page_battle_result:
                     self.click(ipages.random_click(), interval=0.6)
                 case _:
                     time.sleep(random.uniform(0.7, 1.4))
@@ -338,4 +338,3 @@ if __name__ == '__main__':
     t = ScriptTask(c, d)
 
     t.run()
-

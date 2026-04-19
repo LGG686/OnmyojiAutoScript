@@ -1,5 +1,14 @@
 from tasks.GameUi.assets import GameUiAssets
-from tasks.GameUi.page import Page, page_act_list, page_battle, page_failed, page_main, page_reward, page_shikigami_records, random_click
+from tasks.GameUi.page import (
+    Page,
+    page_act_list,
+    page_battle,
+    page_battle_result,
+    page_main,
+    page_reward,
+    page_shikigami_records,
+    random_click,
+)
 from tasks.GlobalGame.assets import GlobalGameAssets
 from tasks.MetaDemon.assets import MetaDemonAssets
 
@@ -18,4 +27,4 @@ page_meta_demon_boss.connect(page_meta_demon, GlobalGameAssets.I_UI_BACK_YELLOW,
 page_meta_demon.connect(page_meta_demon_boss, MetaDemonAssets.I_MD_CHECK_MAIN_PAGE, key="page_meta_demon->page_meta_demon_boss")
 
 page_reward.connect(page_meta_demon_boss, random_click(), key="page_reward->page_meta_demon_boss")
-page_failed.connect(page_meta_demon_boss, random_click(), key="page_failed->page_meta_demon_boss")
+page_battle_result.connect(page_meta_demon_boss, random_click(), key="page_battle_result->page_meta_demon_boss")

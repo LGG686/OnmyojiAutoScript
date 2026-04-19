@@ -24,6 +24,19 @@ class ScriptTask(GameUi, GeneralBattle, HeroTestAssets, SwitchSoul):
     page_hero_mode: pages.Page  # 当前英杰对应模式界面(经验or技能)
     success: bool = True
 
+    def _battle_exit_matcher(self):
+        match self.conf.herotest.layer:
+            case Layer.YANWU:
+                return self.I_CHECK_HERO1_EXP
+            case Layer.MIJING:
+                return self.I_CHECK_HERO1_SKILL
+            case Layer.CHUANCHENG:
+                return self.I_CHECK_HERO2_EXP
+            case Layer.MENGXU:
+                return self.I_CHECK_HERO2_SKILL
+            case _:
+                return None
+
     def run(self) -> None:
         self.conf = self.config.hero_test
         self.limit_time: timedelta = self.conf.herotest.limit_time
@@ -53,7 +66,10 @@ class ScriptTask(GameUi, GeneralBattle, HeroTestAssets, SwitchSoul):
             entered = self.enter_battle()
             if not entered:
                 break
-            if self.run_general_battle(config=self.conf.general_battle):
+            if self.run_general_battle(
+                config=self.conf.general_battle,
+                exit_matcher=self._battle_exit_matcher(),
+            ):
                 logger.info("General battle success")
         self.close_exp_buff()
         self.set_next_run(task="HeroTest", success=self.success)
@@ -321,4 +337,3 @@ if __name__ == "__main__":
     t = ScriptTask(c, d)
 
     t.check_and_lock_team()
-

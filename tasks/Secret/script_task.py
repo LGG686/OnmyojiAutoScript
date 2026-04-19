@@ -14,7 +14,7 @@ from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.page import page_main, page_secret_zones, page_shikigami_records
 from tasks.Secret.config import SecretConfig, Secret
 from tasks.Secret.assets import SecretAssets
-from tasks.Component.GeneralBattle.general_battle import GeneralBattle
+from tasks.Component.GeneralBattle.general_battle import ExitMatcher, GeneralBattle
 from tasks.Component.GeneralBattle.config_general_battle import GeneralBattleConfig
 from tasks.Component.SwitchSoul.switch_soul import SwitchSoul
 from tasks.Component.GeneralBuff.config_buff import BuffClass
@@ -23,6 +23,9 @@ from tasks.WeeklyTrifles.assets import WeeklyTriflesAssets
 
 class ScriptTask(GameUi, GeneralBattle, SwitchSoul, SecretAssets):
     lay_list = ['壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖', '拾']
+
+    def _exit_matcher(self) -> ExitMatcher:
+        return self.I_SE_FIRE
 
     @cached_property
     def match_layer(self) -> dict:
@@ -97,7 +100,7 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, SecretAssets):
                 if buff is []:
                     buff = None
                 self.click_battle()
-                success = self.run_general_battle(self.battle_config, buff=buff)
+                success = self.run_general_battle(self.battle_config, buff=buff, battle_key="secret")
                 continue
             if not first_battle and layer == 6:
                 # 第六次关闭加成，但是发现没有这个接口。。。！！！居然没有注意到
@@ -109,20 +112,20 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, SecretAssets):
                 if buff is []:
                     buff = None
                 self.click_battle()
-                success = self.run_general_battle(self.battle_config, buff=buff)
+                success = self.run_general_battle(self.battle_config, buff=buff, battle_key="secret")
                 continue
             elif not first_battle and layer == 9 and con.layer_9:
                 self.click_battle()
-                success = self.run_general_battle(self.battle_config)
+                success = self.run_general_battle(self.battle_config, battle_key="secret")
                 continue
             elif not first_battle and layer == 10 and con.layer_10:
                 self.click_battle()
-                success = self.run_general_battle(self.battle_config)
+                success = self.run_general_battle(self.battle_config, battle_key="secret")
                 break
             elif not first_battle:
                 # 其他层
                 self.click_battle()
-                success = self.run_general_battle(self.battle_config)
+                success = self.run_general_battle(self.battle_config, battle_key="secret")
                 continue
 
         self.goto_page(page_main)
@@ -250,6 +253,7 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, SecretAssets):
                 continue
 
     def battle_wait(self, random_click_swipt_enable: bool) -> bool:
+        """TODO: 后续迁移到 GeneralBattle FSM 的 handler 覆盖点。"""
         # 重写
         self.device.stuck_record_add('BATTLE_STATUS_S')
         self.device.click_record_clear()
@@ -297,4 +301,3 @@ if __name__ == '__main__':
 
     t.run()
     # t.find_battle(False)
-

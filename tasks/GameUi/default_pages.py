@@ -25,7 +25,7 @@ from tasks.RyouToppa.assets import RyouToppaAssets
 def random_click(
     low: int | None = None,
     high: int | None = None,
-    ltrb: tuple = (True, False, True, False),
+    ltrb: tuple = (True, True, True, False),
 ) -> Union[RuleClick | list[RuleClick]]:
     """从常用结算点击区域中随机选择安全点击点。
 
@@ -38,7 +38,8 @@ def random_click(
         单个 `RuleClick`，或一个由多个 `RuleClick` 组成的列表。
     """
 
-    click_area_list = [GeneralBattleAssets.C_REWARD_1, GeneralBattleAssets.C_REWARD_2, GeneralBattleAssets.C_REWARD_3]
+    click_area_list = [GeneralBattleAssets.C_RANDOM_LEFT, GeneralBattleAssets.C_RANDOM_TOP,
+                       GeneralBattleAssets.C_RANDOM_RIGHT, GeneralBattleAssets.C_RANDOM_BOTTOM]
     click = random.choice([item for item, enabled in zip(click_area_list, ltrb) if enabled])
     click.name = "SAFE_RANDOM_CLICK"
     if low is None or high is None:
@@ -221,8 +222,46 @@ page_dokan = Page(DokanAssets.I_RYOU_DOKAN_CHECK, category="global")
 page_dokan.add_enter_success_hooks(GeneralBattleAssets.I_EXIT, DokanAssets.I_RYOU_DOKAN_EXIT_ENSURE, GameUiAssets.I_BACK_BLUE)
 page_dokan.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_dokan->page_main")
 
-# 战斗相关页面。
+# 战斗相关页面
+
+
+def handle_battle_page(task) -> bool:
+    """处理进入战斗中页面后的默认 hook。
+
+    Args:
+        task: 当前触发页面 hook 的任务实例。
+
+    Returns:
+        bool: 通用战斗执行结果。
+    """
+    from tasks.Component.GeneralBattle.general_battle import run_task_or_default_general_battle
+    return run_task_or_default_general_battle(task)
+
+
+page_battle_prepare = Page(
+    any_of(
+        GeneralBattleAssets.I_BUFF,
+        GeneralBattleAssets.I_PREPARE_HIGHLIGHT,
+        GeneralBattleAssets.I_PREPARE_DARK,
+        GeneralBattleAssets.I_PRESET,
+        GeneralBattleAssets.I_PRESET_WIT_NUMBER,
+    ),
+    category="global",
+)
+page_battle_prepare.add_enter_success_hooks(handle_battle_page)
+
 page_battle = Page(GeneralBattleAssets.I_BATTLE_INFO, category="global")
+page_battle.add_enter_success_hooks(handle_battle_page)
+
+page_battle_result = Page(
+    any_of(
+        GeneralBattleAssets.I_WIN,
+        GeneralBattleAssets.I_DE_WIN,
+        GeneralBattleAssets.I_FALSE,
+    ),
+    category="global",
+)
+page_battle_result.add_enter_success_hooks(lambda _task: random_click())
 
 page_reward = Page(
     any_of(
@@ -238,6 +277,3 @@ page_reward = Page(
     category="global",
 )
 page_reward.add_enter_success_hooks(lambda _task: random_click())
-
-page_failed = Page(GeneralBattleAssets.I_FALSE, category="global")
-page_failed.add_enter_success_hooks(lambda _task: random_click())

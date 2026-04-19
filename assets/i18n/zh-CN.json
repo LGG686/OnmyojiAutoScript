@@ -57,7 +57,13 @@
   "thirteen_switch": "十三层御魂配置",
   "thirteen_switch_help": "虚无",
   "costume_realm_type_help": "除下列结界皮肤外全适配:\n雪峰祭台/见世山廊/千祝缘庭/创世圣所/云华灵境/彩云瑶音/碧落桑烟/命运之海\n除下列鲤鱼旗皮肤外全适配:\n达摩迎福/琉鲤迎旗",
-  "thirteen_switch_help": "虚无",
   "costume_battle_12": "招财纳福",
-  "costume_shikigami_8": "童梦基地"
+  "costume_shikigami_8": "童梦基地",
+  "finish": "结束",
+  "exit": "退出",
+  "battle": "战斗",
+  "on_takeover": "接管",
+  "on_takeover_help": "退出:立即退出\n结束:等待战斗结束或超时则退出",
+  "battle_timeout": "战斗超时时间",
+  "battle_timeout_global_help": "单位秒"
 }

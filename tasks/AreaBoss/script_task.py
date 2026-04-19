@@ -7,7 +7,7 @@ import random
 import re
 from module.atom.click import RuleClick
 from tasks.base_task import BaseTask
-from tasks.Component.GeneralBattle.general_battle import GeneralBattle
+from tasks.Component.GeneralBattle.general_battle import ExitMatcher, GeneralBattle
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.page import page_area_boss, page_shikigami_records, page_main
 from tasks.Component.SwitchSoul.switch_soul import SwitchSoul
@@ -20,6 +20,9 @@ from typing import List
 
 
 class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
+
+    def _exit_matcher(self) -> ExitMatcher:
+        return self.I_AB_CLOSE_RED
 
     def run(self) -> bool:
         """
@@ -440,4 +443,3 @@ if __name__ == '__main__':
     # t.switchFloor2One()
     # t.switch2Level60()
     t.run()
-

@@ -9,8 +9,9 @@ from module.exception import TaskEnd
 from module.base.timer import Timer
 
 from tasks.GameUi.game_ui import GameUi
+from tasks.GameUi.matcher import any_of
 from tasks.GameUi.page import page_main, page_team, page_shikigami_records
-from tasks.Component.GeneralBattle.general_battle import GeneralBattle
+from tasks.Component.GeneralBattle.general_battle import GeneralBattle, ExitMatcher
 from tasks.Component.GeneralRoom.general_room import GeneralRoom
 from tasks.Component.GeneralInvite.general_invite import GeneralInvite
 from tasks.Component.SwitchSoul.switch_soul import SwitchSoul
@@ -97,29 +98,9 @@ class ScriptTask(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, SwitchSoul):
         self.set_next_run(task='Tako', success=True, finish=False)
         raise TaskEnd('Tako')
 
-    def battle_wait(self, random_click_swipt_enable: bool) -> bool:
-        # 重写
-        self.device.stuck_record_add('BATTLE_STATUS_S')
-        self.device.click_record_clear()
-        # 战斗过程 随机点击和滑动 防封
-        logger.info("Start battle process")
-        while 1:
-            self.screenshot()
-            if self.appear(self.I_WIN) or self.appear(self.I_REWARD):
-                logger.info('Win battle')
-                self.ui_click_until_disappear(self.I_WIN)
-                while 1:
-                    self.screenshot()
-                    if self.appear(self.I_CHECK_MAIN) or self.appear(self.I_CHECK_TEAM):
-                        break
-                    if self.click(self.C_REWARD_2, interval=2):
-                        continue
-                return True
+    def _exit_matcher(self) -> ExitMatcher | None:
+        return any_of(self.I_CHECK_MAIN, self.I_CHECK_TEAM)
 
-            if self.appear(self.I_FALSE):
-                logger.warning('False battle')
-                self.ui_click_until_disappear(self.I_FALSE)
-                return False
 
 if __name__ == '__main__':
     from module.config.config import Config
@@ -130,7 +111,3 @@ if __name__ == '__main__':
     t.screenshot()
 
     t.run()
-
-
-
-

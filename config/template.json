@@ -76,6 +76,11 @@
       "ca": "",
       "username": "",
       "password": ""
+    },
+    "battle": {
+      "enable": true,
+      "on_takeover": "exit",
+      "battle_timeout": 420
     }
   },
   "area_boss": {
@@ -103,7 +108,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul": {
       "enable": false,
@@ -201,7 +210,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul_config": {
       "enable": false,
@@ -237,7 +250,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul_config": {
       "enable": false,
@@ -508,7 +525,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul_config": {
       "enable": false,
@@ -617,7 +638,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul": {
       "enable": false,
@@ -672,7 +697,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul_config": {
       "enable": false,
@@ -712,7 +741,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul": {
       "enable": false,
@@ -746,7 +779,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul_config_1": {
       "enable": false,
@@ -1048,7 +1085,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     }
   },
   "evo_zone": {
@@ -1083,7 +1124,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul_config": {
       "enable": false,
@@ -1116,7 +1161,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul_config": {
       "enable": false,
@@ -1193,7 +1242,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul_config": {
       "enable": false,
@@ -1388,7 +1441,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul": {
       "enable": false,
@@ -1516,7 +1573,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "netherworld_battle_config": {
       "lock_team_enable": false,
@@ -1525,7 +1586,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": true,
+      "max_continuous": 0,
+      "quick_exit": false
     }
   },
   "dokan": {
@@ -1563,7 +1628,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul_config": {
       "enable": false,
@@ -1655,7 +1724,11 @@
       "preset_team": 1,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_click_swipt_enable": false
+      "random_click_swipt_enable": false,
+      "battle_timeout": null,
+      "continuous_battle": false,
+      "max_continuous": 0,
+      "quick_exit": false
     },
     "switch_soul_config": {
       "enable": false,

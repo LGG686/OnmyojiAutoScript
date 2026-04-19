@@ -9,7 +9,7 @@ from tasks.Sougenbi.config import SougenbiConfig, SougenbiClass
 from tasks.Component.GeneralBattle.general_battle import GeneralBattle
 from tasks.Component.SwitchSoul.switch_soul import SwitchSoul
 from tasks.GameUi.game_ui import GameUi
-from tasks.GameUi.page import page_main, page_soul_zones, page_shikigami_records
+from tasks.GameUi.page import any_of, page_main, page_shikigami_records, page_soul_zones
 from module.logger import logger
 from module.exception import TaskEnd
 
@@ -98,7 +98,10 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, SougenbiAssets):
                 if self.appear_then_click(self.I_S_FIRE, interval=1):
                     pass
                 if not self.appear(self.I_S_FIRE):
-                    self.run_general_battle(config=con.general_battle_config)
+                    self.run_general_battle(
+                        config=con.general_battle_config,
+                        exit_matcher=any_of(self.I_S_FIRE, self.I_S_CHECK_SOUGENBI),
+                    )
                     break
         self.goto_page(page_main)
         if s_con.buff_enable:
@@ -132,5 +135,4 @@ if __name__ == '__main__':
 
     t.run()
     # print(t.appear(t.I_S_FOOLERY, threshold=0.97))
-
 

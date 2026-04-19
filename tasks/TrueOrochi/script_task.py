@@ -7,6 +7,7 @@ from datetime import datetime, time
 from module.logger import logger
 from module.exception import TaskEnd, GameStuckError
 from module.base.timer import Timer
+from tasks.GameUi.default_pages import random_click
 
 from tasks.GameUi.game_ui import GameUi
 from tasks.Component.GeneralBattle.general_battle import GeneralBattle
@@ -59,9 +60,6 @@ class ScriptTask(OrochiScriptTask, TrueOrochiAssets):
             count_orochi_ten = 0
             while 1:
                 self.screenshot()
-                # 检查猫咪奖励
-                if self.appear_then_click(self.I_PET_PRESENT, action=self.C_WIN_3, interval=1):
-                    continue
                 if not self.appear(self.I_OROCHI_FIRE):
                     continue
                 if self.check_true_orochi(False):

@@ -14,8 +14,9 @@ from tasks.Component.GeneralInvite.general_invite import GeneralInvite
 from tasks.Component.ReplaceShikigami.replace_shikigami import ReplaceShikigami
 from tasks.Exploration.assets import ExplorationAssets
 from tasks.Exploration.config import ChooseRarity, AutoRotate, AttackNumber, UpType
-from tasks.Component.GeneralBattle.general_battle import GeneralBattle
+from tasks.Component.GeneralBattle.general_battle import GeneralBattle, ExitMatcher
 from tasks.GameUi.game_ui import GameUi
+from tasks.GameUi.matcher import any_of
 from tasks.GameUi.page import page_exploration, page_shikigami_records, page_main
 from tasks.RealmRaid.script_task import ScriptTask as RealmRaidScriptTask
 from tasks.Utils.config_enum import ShikigamiClass
@@ -37,10 +38,11 @@ class Scene(Enum):
     TEAM = 6  # 组队
 
 
-
-
 class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, ReplaceShikigami, SwitchSoul, ExplorationAssets):
     minions_cnt = 0
+
+    def _exit_matcher(self) -> ExitMatcher:
+        return any_of(self.I_E_SETTINGS_BUTTON, self.I_E_AUTO_ROTATE_ON, self.I_E_AUTO_ROTATE_OFF)
 
     @cached_property
     def _config(self):

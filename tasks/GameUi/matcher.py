@@ -3,7 +3,7 @@ from __future__ import annotations
 """页面识别条件组合器。"""
 
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Union
 
 from module.atom.gif import RuleGif
 from module.atom.image import RuleImage
@@ -86,7 +86,7 @@ class NotMatcher(Matcher):
         return not self.child.evaluate(task)
 
 
-def ensure_matcher(target: Matcher | RecognizerLike | Iterable[RecognizerLike] | None) -> Matcher | None:
+def ensure_matcher(target: Union[Matcher | RecognizerLike | Iterable[RecognizerLike] | None]) -> Matcher | None:
     """将任意识别输入规范化为 `Matcher`。
 
     Args:

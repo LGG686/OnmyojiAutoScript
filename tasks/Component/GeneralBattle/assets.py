@@ -11,21 +11,6 @@ class GeneralBattleAssets:
 
 
 	# Click Rule Assets
-	# description 
-	C_WIN_1 = RuleClick(roi_front=(175,102,1054,99), roi_back=(175,102,1054,99), name="win_1")
-	# description 
-	C_WIN_2 = RuleClick(roi_front=(22,112,210,496), roi_back=(22,112,210,496), name="win_2")
-	# description 
-	C_WIN_3 = RuleClick(roi_front=(1059,114,206,468), roi_back=(1059,114,206,468), name="win_3")
-	# description 
-	C_REWARD_1 = RuleClick(roi_front=(606,603,325,87), roi_back=(606,603,325,87), name="reward_1")
-	# description 
-	C_REWARD_2 = RuleClick(roi_front=(25,134,224,472), roi_back=(25,134,224,472), name="reward_2")
-	# description 
-	C_REWARD_3 = RuleClick(roi_front=(1092,156,168,437), roi_back=(1092,156,168,437), name="reward_3")
-
-
-	# Click Rule Assets
 	# 预设队伍1 
 	C_PRESET_TEAM_1 = RuleClick(roi_front=(195,235,465,110), roi_back=(195,235,465,110), name="preset_team_1")
 	# 预设队伍2 
@@ -64,6 +49,16 @@ class GeneralBattleAssets:
 	C_GREEN_MARK_AREA = RuleClick(roi_front=(0,0,1280,720), roi_back=(0,0,1280,720), name="green_mark_area")
 	# 战斗的时候有一定的概率随机点击 
 	C_RANDOM_CLICK = RuleClick(roi_front=(104,79,1050,507), roi_back=(255,65,100,100), name="random_click")
+	# 左边随机点击 
+	C_RANDOM_LEFT = RuleClick(roi_front=(17,84,104,356), roi_back=(17,84,104,356), name="random_left")
+	# 右边随机点击 
+	C_RANDOM_RIGHT = RuleClick(roi_front=(1160,88,104,361), roi_back=(1160,88,104,361), name="random_right")
+	# 上边随机点击 
+	C_RANDOM_TOP = RuleClick(roi_front=(250,58,868,68), roi_back=(250,58,868,68), name="random_top")
+	# 下边随机点击 
+	C_RANDOM_BOTTOM = RuleClick(roi_front=(196,598,581,78), roi_back=(196,598,581,78), name="random_bottom")
+	# 整体随机点击 
+	C_RANDOM_ALL = RuleClick(roi_front=(42,94,1207,543), roi_back=(42,94,1207,543), name="random_all")
 
 
 	# Image Rule Assets

@@ -167,7 +167,7 @@ class GameUi(BaseTask, GameUiAssets):
         self,
         *,
         skip_first_screenshot: bool = True,
-        categories: set[str] | None = None,
+        categories: set[str] = None,
     ) -> Page | None:
         """在给定分类集合内识别当前页面。
 
@@ -325,7 +325,7 @@ class GameUi(BaseTask, GameUiAssets):
         pages[destination.key] = destination
         return pages
 
-    def _build_path(self, current: Page, destination: Page) -> list[Transition] | None:
+    def _build_path(self, current: Page, destination: Page) -> list[Transition]:
         """在允许页面集合内构建最小代价路径。
 
         Args:

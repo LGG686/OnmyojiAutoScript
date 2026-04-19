@@ -102,7 +102,10 @@ class ScriptTask(
             # 点击挑战
             if not is_first:
                 if self.run_invite(config=self._task_config.invite_config):
-                    self.run_general_battle(config=self._task_config.general_battle_config)
+                    self.run_general_battle(
+                        config=self._task_config.general_battle_config,
+                        exit_matcher=self.I_CHECK_TEAM,
+                    )
                 else:
                     # 邀请失败，退出任务
                     logger.warning('Invite failed and exit this eternity_sea task')
@@ -117,7 +120,10 @@ class ScriptTask(
                     break
                 else:
                     is_first = False
-                    self.run_general_battle(config=self._task_config.general_battle_config)
+                    self.run_general_battle(
+                        config=self._task_config.general_battle_config,
+                        exit_matcher=self.I_CHECK_TEAM,
+                    )
 
         # 当结束或者是失败退出循环的时候只有两个UI的可能，在房间或者是在组队界面
         # 如果在房间就退出
@@ -159,7 +165,10 @@ class ScriptTask(
             if self.is_in_room():
                 self.device.stuck_record_clear()
                 if self.wait_battle(wait_time=self._task_config.invite_config.wait_time):
-                    self.run_general_battle(config=self._task_config.general_battle_config)
+                    self.run_general_battle(
+                        config=self._task_config.general_battle_config,
+                        exit_matcher=self.I_CHECK_TEAM,
+                    )
                 else:
                     break
             # 队长秒开的时候，检测是否进入到战斗中
@@ -211,7 +220,8 @@ class ScriptTask(
 
                 if not self.appear(self.I_ETERNITY_SEA_FIRE):
                     self.run_general_battle(
-                        config=self._task_config.general_battle_config
+                        config=self._task_config.general_battle_config,
+                        exit_matcher=self.I_ETERNITY_SEA_FIRE,
                     )
                     break
         return True

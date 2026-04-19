@@ -29,4 +29,6 @@ class Hunt(ConfigBase):
     hunt_time: HuntTime = Field(default_factory=HuntTime)
     hunt_config: HuntConfig = Field(default_factory=HuntConfig)
     kirin_battle_config: HuntGeneralBattleConfig = Field(default_factory=HuntGeneralBattleConfig)
-    netherworld_battle_config: HuntGeneralBattleConfig = Field(default_factory=HuntGeneralBattleConfig)
+    netherworld_battle_config: HuntGeneralBattleConfig = Field(
+        default_factory=lambda: HuntGeneralBattleConfig(continuous_battle=True)
+    )

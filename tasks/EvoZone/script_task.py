@@ -155,7 +155,7 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
                 continue
 
             # 检查猫咪奖励
-            if self.appear_then_click(self.I_PET_PRESENT, action=self.C_WIN_3, interval=1):
+            if self.appear_then_click(self.I_PET_PRESENT, action=self.C_RANDOM_RIGHT, interval=1):
                 continue
 
             if self.current_count >= self.limit_count:
@@ -184,7 +184,10 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
             # 点击挑战
             if not is_first:
                 if self.run_invite(config=self.config.evo_zone.invite_config):
-                    self.run_general_battle(config=self.config.evo_zone.general_battle_config)
+                    self.run_general_battle(
+                        config=self.config.evo_zone.general_battle_config,
+                        exit_matcher=self.I_CHECK_TEAM,
+                    )
                 else:
                     # 邀请失败，退出任务
                     logger.warning('Invite failed and exit this EvoZone task')
@@ -199,7 +202,10 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
                     break
                 else:
                     is_first = False
-                    self.run_general_battle(config=self.config.evo_zone.general_battle_config)
+                    self.run_general_battle(
+                        config=self.config.evo_zone.general_battle_config,
+                        exit_matcher=self.I_CHECK_TEAM,
+                    )
 
         # 当结束或者是失败退出循环的时候只有两个UI的可能，在房间或者是在组队界面
         # 如果在房间就退出
@@ -227,7 +233,7 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
             self.screenshot()
 
             # 检查猫咪奖励
-            if self.appear_then_click(self.I_PET_PRESENT, action=self.C_WIN_3, interval=1):
+            if self.appear_then_click(self.I_PET_PRESENT, action=self.C_RANDOM_RIGHT, interval=1):
                 continue
 
             if self.current_count >= self.limit_count:
@@ -243,7 +249,10 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
             if self.is_in_room():
                 self.device.stuck_record_clear()
                 if self.wait_battle(wait_time=self.config.evo_zone.invite_config.wait_time):
-                    self.run_general_battle(config=self.config.evo_zone.general_battle_config)
+                    self.run_general_battle(
+                        config=self.config.evo_zone.general_battle_config,
+                        exit_matcher=self.I_CHECK_TEAM,
+                    )
                 else:
                     break
             # 队长秒开的时候，检测是否进入到战斗中
@@ -281,7 +290,7 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
             self.screenshot()
 
             # 检查猫咪奖励
-            if self.appear_then_click(self.I_PET_PRESENT, action=self.C_WIN_3, interval=1):
+            if self.appear_then_click(self.I_PET_PRESENT, action=self.C_RANDOM_RIGHT, interval=1):
                 continue
 
             if not is_in_evozone():
@@ -301,7 +310,10 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
                     pass
 
                 if not self.appear(self.I_EVOZONE_FIRE):
-                    self.run_general_battle(config=self.config.evo_zone.general_battle_config)
+                    self.run_general_battle(
+                        config=self.config.evo_zone.general_battle_config,
+                        exit_matcher=self.I_EVOZONE_FIRE,
+                    )
                     break
 
         # 回去
@@ -325,4 +337,3 @@ if __name__ == '__main__':
     # t.check_layer('悲')
 
     from module.base.timer import timer
-

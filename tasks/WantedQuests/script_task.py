@@ -402,7 +402,7 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
         self.ui_click_until_disappear(self.I_WQC_FIRE)
         # 锁定阵容进入战斗
         wq_config = GeneralBattleConfig(lock_team_enable=True)
-        self.run_general_battle(config=wq_config)
+        self.run_general_battle(config=wq_config, exit_matcher=self.I_WQC_FIRE)
         self.wait_until_appear(self.I_WQC_FIRE, wait_time=4)
         self.ui_click_until_disappear(self.I_UI_BACK_RED)
         # 我忘记了打完后是否需要关闭 挑战界面
@@ -428,7 +428,7 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
                         click_count = 0
                         self.device.click_record_clear()
                     continue
-            success = self.run_general_battle(self.battle_config)
+            success = self.run_general_battle(self.battle_config, exit_matcher=self.I_WQSE_FIRE)
         while 1:
             self.screenshot()
             if self.appear(self.I_CHECK_EXPLORATION):
@@ -725,4 +725,3 @@ if __name__ == '__main__':
     t = ScriptTask(c, d)
 
     t.run()
-

@@ -6,7 +6,7 @@ import re
 from cached_property import cached_property
 
 from tasks.base_task import BaseTask
-from tasks.Component.GeneralBattle.general_battle import GeneralBattle
+from tasks.Component.GeneralBattle.general_battle import ExitMatcher, GeneralBattle
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.page import page_realm_raid, page_main, page_shikigami_records
 from tasks.RealmRaid.assets import RealmRaidAssets
@@ -23,6 +23,9 @@ from module.atom.click import RuleClick
 
 class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RealmRaidAssets):
     medal_grid: ImageGrid = None
+
+    def _exit_matcher(self) -> ExitMatcher:
+        return self.I_BACK_RED
 
     def run(self):
         self.run_2()
@@ -95,16 +98,16 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RealmRaidAssets):
         if config.raid_config.raid_mode == RaidMode.NORMAL:
             logger.info(f'Execute round, retreat four attack nine')
             self.medal_fire()
-            self.run_general_battle_back(config.general_battle_config)
+            self.run_general_battle(config=self.build_quick_exit_config(config.general_battle_config))
 
             self.medal_fire()
-            self.run_general_battle_back(config.general_battle_config)
+            self.run_general_battle(config=self.build_quick_exit_config(config.general_battle_config))
 
             self.medal_fire()
-            self.run_general_battle_back(config.general_battle_config)
+            self.run_general_battle(config=self.build_quick_exit_config(config.general_battle_config))
 
             self.medal_fire()
-            self.run_general_battle_back(config.general_battle_config)
+            self.run_general_battle(config=self.build_quick_exit_config(config.general_battle_config))
 
         # 打九次
         for i in range(9):
@@ -183,13 +186,13 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RealmRaidAssets):
                     if not self.fire(index):
                         # 没有成功进入战斗则重新检查票数和其他条件
                         continue
-                    self.run_general_battle_back(con.general_battle_config, exit_four=True)
+                    self.run_general_battle(config=self.build_quick_exit_config(con.general_battle_config))
                     self.fire(index)
-                    self.run_general_battle_back(con.general_battle_config, exit_four=True)
+                    self.run_general_battle(config=self.build_quick_exit_config(con.general_battle_config))
                     self.fire(index)
-                    self.run_general_battle_back(con.general_battle_config, exit_four=True)
+                    self.run_general_battle(config=self.build_quick_exit_config(con.general_battle_config))
                     self.fire(index)
-                    self.run_general_battle_back(con.general_battle_config, exit_four=True)
+                    self.run_general_battle(config=self.build_quick_exit_config(con.general_battle_config))
             elif self.check_medal_is_frog(frog, medal, index):
                 # 如果挑战的这只是呱太的话，就要把锁定改为不锁定
                 con.general_battle_config.lock_team_enable = False

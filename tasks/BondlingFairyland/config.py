@@ -3,27 +3,11 @@
 # github https://github.com/runhey
 from pydantic import BaseModel, Field, field_validator
 from enum import Enum
-from datetime import datetime, time
+from tasks.Component.GeneralBattle.config_general_battle import GeneralBattleConfig
 
 from tasks.Component.config_scheduler import Scheduler
-from tasks.Component.config_base import ConfigBase, DateTime, TimeDelta, Time
-from tasks.BondlingFairyland.config_battle import BattleConfig
-from tasks.Component.GeneralInvite.config_invite import FindMode
-
-
-class InviteNumber(str, Enum):
-    ONE = 'one'
-    TWO = 'two'
-
-
-class InviteConfig(BaseModel):
-
-    invite_number: InviteNumber = Field(default=InviteNumber.ONE, description='invite_number_help')
-    friend_1: str = Field(default='', description='friend_name_help')
-    friend_2: str = Field(default='', description='friend_2_name_help')
-    find_mode: FindMode = Field(default=FindMode.AUTO_FIND, description='find_mode_help')
-    wait_time: Time = Field(default=Time(minute=2), description='wait_time_help')
-    default_invite: bool = Field(default=True, description='default_invite_help')
+from tasks.Component.config_base import ConfigBase, DateTime, TimeDelta, Time, dynamic_hide
+from tasks.Component.GeneralInvite.config_invite import FindMode, InviteConfig
 
 
 class BondlingMode(str, Enum):
@@ -118,6 +102,10 @@ class BondlingSwitchSoul(ConfigBase):
         if group.isdigit() and team.isdigit():
             return 'int', (int(group), int(team))
         return 'str', (group, team)
+
+
+class BattleConfig(GeneralBattleConfig):
+    hide_fields = dynamic_hide('lock_team_enable', 'preset_enable', 'preset_group', 'preset_team')
 
 
 class BondlingFairyland(ConfigBase):
