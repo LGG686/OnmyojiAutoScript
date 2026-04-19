@@ -550,7 +550,6 @@ class GameUi(BaseTask, GameUiAssets):
             当前稳定识别到的页面；识别失败时返回 `None`。
         """
 
-        logger.info("UI get current page")
         return self._detect_current_page(
             skip_first_screenshot=skip_first_screenshot,
             categories=self._default_detect_categories(),
