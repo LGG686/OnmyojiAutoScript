@@ -51,7 +51,7 @@ class GeneralBattleConfig(BaseModel):
     random_click_swipt_enable: bool = Field(default=False, description='random_click_swipt_enable_help')
 
     # 战斗硬超时, None 表示回退到全局战斗接管配置
-    battle_timeout: int | None = Field(default=None, description='battle_timeout_help', ge=1)
+    battle_timeout: int = Field(default=-1, description='battle_timeout_help', ge=-1)
     # 结算后再次回到准备界面时是否自动继续
     continuous_battle: bool = Field(default=False, description='continuous_battle_help')
     # 最大连战次数, 0 表示不限制

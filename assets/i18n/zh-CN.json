@@ -65,5 +65,6 @@
   "on_takeover": "接管",
   "on_takeover_help": "退出:立即退出\n结束:等待战斗结束或超时则退出",
   "battle_timeout": "战斗超时时间",
-  "battle_timeout_global_help": "单位秒"
+  "battle_timeout_global_help": "单位秒",
+  "battle_timeout_help": "单位秒"
 }

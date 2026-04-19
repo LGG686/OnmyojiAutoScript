@@ -21,7 +21,7 @@ class HuntConfig(BaseModel):
 
 
 class HuntGeneralBattleConfig(GeneralBattleConfig):
-    hide_fields = dynamic_hide('lock_team_enable', 'green_enable', 'green_mark')
+    hunt_hide_fields = dynamic_hide('lock_team_enable', 'green_enable', 'green_mark')
 
 
 class Hunt(ConfigBase):

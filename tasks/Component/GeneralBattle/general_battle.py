@@ -190,7 +190,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         Returns:
             int: 本次战斗的超时秒数。
         """
-        if config.battle_timeout is not None:
+        if config.battle_timeout is not None and config.battle_timeout > 0:
             return config.battle_timeout
         global_battle = getattr(getattr(self.config, "global_game", None), "battle", None)
         return getattr(global_battle, "battle_timeout", 420)
@@ -308,7 +308,6 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         if "BATTLE_STATUS_S" in self.device.detect_record:
             return
 
-        logger.info("Re-arm battle stuck guard")
         self.device.stuck_record_add("BATTLE_STATUS_S")
         runtime.long_refresh_timer.reset()
 
