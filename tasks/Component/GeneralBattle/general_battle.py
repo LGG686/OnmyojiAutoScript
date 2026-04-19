@@ -22,6 +22,7 @@ from tasks.Component.GeneralBuff.config_buff import BuffClass
 from tasks.Component.GeneralBuff.general_buff import GeneralBuff
 from tasks.GameUi.common import RecognizerLike, invoke_task_callable
 from tasks.GameUi.matcher import Matcher, ensure_matcher
+from tasks.GameUi.navigator import GameUi
 from tasks.GameUi.page import page_battle, page_battle_prepare, page_battle_result, page_reward
 from tasks.GameUi.page_definition import Page
 
@@ -241,34 +242,6 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         runtime.reward_no_battle_ts = None
         runtime.quick_exit = bool(config.quick_exit)
         runtime.continuous_count = continuous_count
-
-    def _detect_battle_page(self):
-        """检测当前稳定落在哪个战斗相关页面上。
-
-        Returns:
-            Page | None: 识别到的 session 页面对象；未识别到时返回 `None`。
-        """
-        pages = [
-            self.navigator.resolve_page(page_battle_prepare),
-            self.navigator.resolve_page(page_battle),
-            self.navigator.resolve_page(page_battle_result),
-            self.navigator.resolve_page(page_reward),
-        ]
-        pages = [page for page in pages if page is not None and page.category in {"global", self.navigator.task_category}]
-        if not pages:
-            return None
-
-        candidates = [page for page in pages if self._match_page_once(page)]
-        if not candidates:
-            return None
-
-        self.screenshot()
-        for page in candidates:
-            if self._match_page_once(page):
-                self.navigator.current_page = page
-                logger.attr("UI", page.name)
-                return page
-        return None
 
     def _tick_long_battle(self, runtime: BattleRuntime) -> None:
         """按固定周期刷新长战斗卡死保护标记。
@@ -559,7 +532,14 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
             self._tick_timeout(runtime)
             runtime.quick_exit = runtime.quick_exit or bool(config.quick_exit)
 
-            page = self._detect_battle_page()
+            page = GameUi.detect_page_in(
+                self,
+                page_battle_prepare,
+                page_battle,
+                page_battle_result,
+                page_reward,
+                include_global=False,
+            )
             if page is None:
                 action = self._handle_missing_battle_page(runtime, config, resolved_exit_matcher)
                 resolved = self._resolve_action(action)
@@ -602,27 +582,16 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         """
         if skip_first:
             self.screenshot()
-
         if not self.appear(self.I_EXIT):
             return False
-
-        logger.info(f"Click {self.I_EXIT.name}")
-        while 1:
+        while True:
             self.screenshot()
+            if not self.is_in_real_battle(False):
+                return True
+            if self.appear_then_click(self.I_EXIT_ENSURE, interval=0.5):
+                continue
             if self.appear_then_click(self.I_EXIT, interval=1.5):
                 continue
-            if self.appear(self.I_EXIT_ENSURE):
-                break
-
-        while 1:
-            self.screenshot()
-            if self.appear_then_click(self.I_EXIT_ENSURE, interval=1.5):
-                continue
-            if self.appear_then_click(self.I_FALSE, interval=1.5):
-                continue
-            if not self.appear(self.I_EXIT):
-                break
-
         return True
 
     def green_mark(self, enable: bool = False, mark_mode: GreenMarkType = GreenMarkType.GREEN_MAIN):

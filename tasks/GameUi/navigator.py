@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from module.base.decorator import run_once
+
 """GameUi 导航运行时。"""
 
 import heapq
@@ -14,14 +16,14 @@ from module.atom.image import RuleImage
 from module.atom.list import RuleList
 from module.atom.ocr import RuleOcr
 from module.base.timer import Timer
-from module.exception import GamePageUnknownError
+from module.exception import GamePageUnknownError, GameNotRunningError
 from module.logger import logger
 from tasks.ActivityShikigami.assets import ActivityShikigamiAssets
 from tasks.Component.GeneralBattle.assets import GeneralBattleAssets
 from tasks.GameUi.action import ActionSequence, ConditionalAction
 from tasks.GameUi.assets import GameUiAssets
 from tasks.GameUi.common import infer_tasks_category_from_parts, infer_tasks_category_from_path
-from tasks.GameUi.page_definition import Page, Transition
+from tasks.GameUi.page_definition import Page, Transition, sort_pages_by_priority
 from tasks.GameUi.registry import PageRegistry
 from tasks.GameUi.session import NavigatorSession
 from tasks.SixRealms.assets import SixRealmsAssets
@@ -102,17 +104,21 @@ class GameUi(BaseTask, GameUiAssets):
 
         return {"global", self.navigator.task_category, destination.category}
 
-    def _navigation_graph_categories(self, destination: Page) -> set[str]:
+    def _navigation_graph_categories(self, destination: Page, current: Page | None) -> set[str]:
         """获取导航时允许参与建图的分类集合。
 
         Args:
             destination: 目标页面。
+            current: 当前页面。
 
         Returns:
             当前导航允许参与路径规划的页面分类集合。
         """
 
-        return {"global", destination.category}
+        categories = {"global", destination.category}
+        if current is not None:
+            categories.add(current.category)
+        return categories
 
     def _invoke_callable(self, target):
         """调用用户自定义动作函数。
@@ -180,16 +186,26 @@ class GameUi(BaseTask, GameUiAssets):
         """
 
         pages = self.navigator.all_pages(categories)
+        return GameUi._detect_pages(self, pages, skip_first_screenshot=skip_first_screenshot)
+
+    def _detect_pages(
+        self,
+        pages: list[Page],
+        *,
+        skip_first_screenshot: bool = True,
+    ) -> Page | None:
+        """在给定页面集合内识别当前页面。"""
+
         if not pages:
             return None
 
         self.maybe_screenshot(skip_first_screenshot)
-        candidates = [page for page in pages if self._match_page_once(page)]
-        if not candidates:
+        indexed_candidates = [(index, page) for index, page in enumerate(pages) if self._match_page_once(page)]
+        if not indexed_candidates:
             return None
 
         self.screenshot()
-        for page in candidates:
+        for page in sort_pages_by_priority(indexed_candidates):
             if self._match_page_once(page):
                 self.navigator.current_page = page
                 logger.attr("UI", page.name)
@@ -319,7 +335,7 @@ class GameUi(BaseTask, GameUiAssets):
             以页面 key 为索引的允许页面字典。
         """
 
-        pages = {page.key: page for page in self.navigator.all_pages(self._navigation_graph_categories(destination))}
+        pages = {page.key: page for page in self.navigator.all_pages(self._navigation_graph_categories(destination, current))}
         if current is not None:
             pages[current.key] = current
         pages[destination.key] = destination
@@ -507,7 +523,7 @@ class GameUi(BaseTask, GameUiAssets):
         """
 
         current = self.navigator.current_page.name if self.navigator.current_page else "None"
-        allowed_categories = sorted(self._navigation_graph_categories(destination))
+        allowed_categories = sorted(self._navigation_graph_categories(destination, self.navigator.current_page))
         penalties = {
             key: value
             for key, value in sorted(self.navigator.edge_penalties.items(), key=lambda item: item[0])
@@ -540,6 +556,42 @@ class GameUi(BaseTask, GameUiAssets):
             categories=self._default_detect_categories(),
         )
 
+    def pages_in_category(self, category: str) -> list[Page]:
+        """读取当前 session 中指定分类下的所有页面副本。"""
+
+        return self.navigator.all_pages({category})
+
+    def detect_page_in(self, *targets: str | Page, include_global: bool = True) -> Page | None:
+        """在指定分类或显式页面集合内识别当前页面。"""
+
+        category_set = {target for target in targets if isinstance(target, str)}
+        explicit_pages: list[Page] = []
+        for target in targets:
+            if not isinstance(target, Page):
+                continue
+            page = self.navigator.resolve_page(target)
+            if page is None:
+                continue
+            explicit_pages.append(page)
+
+        pages: list[Page] = []
+        if category_set:
+            if include_global:
+                category_set.add("global")
+            pages.extend(self.navigator.all_pages(category_set))
+        elif not explicit_pages and include_global:
+            pages.extend(self.navigator.all_pages({"global"}))
+
+        if explicit_pages:
+            existed = {page.key for page in pages}
+            for page in explicit_pages:
+                if page.key in existed:
+                    continue
+                pages.append(page)
+                existed.add(page.key)
+
+        return GameUi._detect_pages(self, pages, skip_first_screenshot=True)
+
     def close_unknown_pages(self, skip_first_screenshot: bool = True) -> bool:
         """尝试关闭未知页面。
 
@@ -560,6 +612,24 @@ class GameUi(BaseTask, GameUiAssets):
                 self._record_unknown_close_event(f"success:{action_name}")
                 return True
         self._record_unknown_close_event("miss")
+
+        @run_once
+        def app_check():
+            if not self.device.app_is_running():
+                raise GameNotRunningError("Game not running")
+
+        @run_once
+        def minicap_check():
+            if self.config.script.device.control_method == "uiautomator2":
+                self.device.uninstall_minicap()
+
+        @run_once
+        def rotation_check():
+            self.device.get_orientation()
+
+        app_check()
+        minicap_check()
+        rotation_check()
         return False
 
     def goto_page(

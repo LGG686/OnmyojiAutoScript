@@ -8,6 +8,23 @@ from typing import Iterable, Union
 from tasks.GameUi.common import ActionLike, RecognizerLike, infer_category, infer_page_key_and_name
 from tasks.GameUi.matcher import Matcher, ensure_matcher
 from tasks.GameUi.registry import PageRegistry
+from module.logger import logger
+
+
+def _clamp_priority(value: int, page_key: str) -> int:
+    """将页面优先级约束到合法范围。"""
+
+    priority = max(1, min(100, value))
+    if priority != value:
+        logger.warning(f"Page priority out of range: key={page_key}, value={value}, clamped={priority}")
+    return priority
+
+
+def sort_pages_by_priority(indexed_pages: Iterable[tuple[int, "Page"]]) -> list["Page"]:
+    """按优先级降序、注册顺序升序稳定排序页面候选。"""
+
+    ordered_pages = sorted(indexed_pages, key=lambda item: (-item[1].priority, item[0]))
+    return [page for _, page in ordered_pages]
 
 
 @dataclass
@@ -69,6 +86,7 @@ class Page:
         key: str | None = None,
         name: str | None = None,
         category: str | None = None,
+        priority: int = 50,
         cost: float = 1.0,
         register: bool = True,
     ):
@@ -79,6 +97,7 @@ class Page:
             key: 页面唯一标识；为空时根据页面变量名自动推断。
             name: 页面展示名称；为空时根据页面变量名自动推断。
             category: 页面分类；为空时根据文件路径自动推断。
+            priority: 页面识别优先级，范围 1-100。
             cost: 页面代价，供 Dijkstra 路径规划使用。
             register: 是否注册到全局 `PageRegistry`。动态页面应传入 `False`。
         """
@@ -90,6 +109,8 @@ class Page:
         self.name = name or inferred_name
         # 页面所属分类，`tasks/GameUi` 内默认归类为 global。
         self.category = category or infer_category()
+        # 页面识别优先级，越大越先参与复验。
+        self.priority = _clamp_priority(priority, self.key)
         # 页面进入该节点的基础代价。
         self.cost = cost
         # 规范化后的页面识别条件。
@@ -247,6 +268,7 @@ class Page:
             key=self.key,
             name=self.name,
             category=self.category,
+            priority=self.priority,
             cost=self.cost,
             register=False,
         )

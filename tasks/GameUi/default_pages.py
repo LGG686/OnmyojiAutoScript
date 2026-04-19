@@ -222,8 +222,6 @@ page_dokan = Page(DokanAssets.I_RYOU_DOKAN_CHECK, category="global")
 page_dokan.add_enter_success_hooks(GeneralBattleAssets.I_EXIT, DokanAssets.I_RYOU_DOKAN_EXIT_ENSURE, GameUiAssets.I_BACK_BLUE)
 page_dokan.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_dokan->page_main")
 
-# 战斗相关页面
-
 
 def handle_battle_page(task) -> bool:
     """处理进入战斗中页面后的默认 hook。
@@ -238,6 +236,7 @@ def handle_battle_page(task) -> bool:
     return run_task_or_default_general_battle(task)
 
 
+# 战斗相关页面
 page_battle_prepare = Page(
     any_of(
         GeneralBattleAssets.I_BUFF,
@@ -247,10 +246,11 @@ page_battle_prepare = Page(
         GeneralBattleAssets.I_PRESET_WIT_NUMBER,
     ),
     category="global",
+    priority=25
 )
 page_battle_prepare.add_enter_success_hooks(handle_battle_page)
 
-page_battle = Page(GeneralBattleAssets.I_BATTLE_INFO, category="global")
+page_battle = Page(GeneralBattleAssets.I_BATTLE_INFO, category="global", priority=25)
 page_battle.add_enter_success_hooks(handle_battle_page)
 
 page_battle_result = Page(
@@ -260,6 +260,7 @@ page_battle_result = Page(
         GeneralBattleAssets.I_FALSE,
     ),
     category="global",
+    priority=25
 )
 page_battle_result.add_enter_success_hooks(lambda _task: random_click())
 
@@ -275,5 +276,6 @@ page_reward = Page(
         GlobalGameAssets.I_UI_REWARD,
     ),
     category="global",
+    priority=25
 )
 page_reward.add_enter_success_hooks(lambda _task: random_click())

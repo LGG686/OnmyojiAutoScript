@@ -68,7 +68,7 @@ class NavigatorSession:
                 )
         return cloned_pages
 
-    def all_pages(self, categories: set[str] | None = None) -> list[Page]:
+    def all_pages(self, categories: set[str] = None) -> list[Page]:
         """读取当前 session 中允许访问的页面列表。
 
         Args:

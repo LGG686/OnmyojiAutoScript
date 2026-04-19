@@ -39,7 +39,24 @@ page_some_main = Page(SomeTaskAssets.I_CHECK_MAIN)
 - 第一个参数是页面识别条件 `recognizer`
 - 可以直接传 `RuleImage`、`RuleGif`、`RuleOcr`
 - 不显式传 `category` 时，会根据文件路径自动推断
+- `priority` 默认是 `50`，范围 `1-100`，值越大在多页面同时命中时越优先返回
 - `tasks/GameUi` 下定义的页面默认分类为 `global`
+
+### 1.1 页面优先级
+
+```python
+page_result = Page(
+    SomeAssets.I_CHECK_RESULT,
+    priority=70,
+)
+```
+
+说明：
+
+- `priority` 仅影响“多个页面在同一帧同时命中”时的返回顺序
+- 系统会按 `priority` 降序判定；同优先级保持 session 注册顺序稳定
+- 超出 `1-100` 时会自动 clamp，并输出 warning 日志
+- 运行时修改 `session` 页面副本的 `priority`，不会污染全局注册表
 
 ### 2. 识别条件可以组合
 
@@ -150,7 +167,9 @@ page_event.add_enter_success_hooks(
 - `tasks/GameUi` 内定义的页面默认属于 `global`
 - 其他任务的 `page.py` / `inner_page.py` 页面默认按任务目录名归类
 - 导航到目标页面时：
-  构图只使用 `目标页面分类 + global`
+  构图使用 `当前页面分类 + 目标页面分类 + global`
+- 当前页面未知时：
+  构图回退为 `目标页面分类 + global`
 - 识别当前页时：
   使用 `当前任务分类 + 目标页面分类 + global`
 
@@ -158,6 +177,38 @@ page_event.add_enter_success_hooks(
 
 - 全局页面可作为所有任务的公共中转页
 - 不同任务页面不会在同一轮导航中互相污染
+
+## 新公共方法
+
+### `pages_in_category(category)`
+
+```python
+battle_pages = self.pages_in_category("battle")
+```
+
+说明：
+
+- 返回当前 task session 内指定分类的页面副本列表
+- 不会触发截图、识别或任何点击
+- 调用方可以安全修改返回页面的 `priority` / `recognizer`
+
+### `detect_page_in(*targets, include_global=True)`
+
+```python
+self.detect_page_in("battle")
+self.detect_page_in("battle", "exploration")
+self.detect_page_in("battle", include_global=False)
+self.detect_page_in(page_battle_prepare, page_battle_result, include_global=False)
+```
+
+说明：
+
+- `targets` 可以传分类字符串，也可以直接传 `Page`
+- 使用与 `get_current_page()` 相同的“两帧稳定识别”逻辑
+- 默认自动把 `global` 加入识别范围，便于识别意外弹回主页等全局页面
+- 只传 `Page` 时，仅在这些显式页面副本中识别
+- 传 `include_global=False` 时，只在显式给定分类内识别
+- 多个候选同时命中时，同样按 `priority` 降序返回
 
 ## 动态页面怎么写
 
@@ -229,7 +280,7 @@ self.navigator.add_unknown_closer(self.I_CUSTOM_CLOSE)
    - 再做一次两帧稳定确认
    - 成功后触发进入成功 hook，并打印到达日志
 6. 如果当前页不是目标页：
-   - 在 `目标分类 + global` 图中运行 Dijkstra
+   - 在 `当前页分类 + 目标分类 + global` 图中运行 Dijkstra
    - 计算代价 = 页面 cost + 边 cost + 边失败惩罚
 7. 如果能构建路径：
    - 按最小总代价路径执行每一条边
