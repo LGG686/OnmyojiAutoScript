@@ -21,6 +21,7 @@ class HuntConfig(BaseModel):
 
 
 class HuntGeneralBattleConfig(GeneralBattleConfig):
+    battle_timeout: int = Field(default=1200, description='battle_timeout_help')
     hunt_hide_fields = dynamic_hide('lock_team_enable', 'green_enable', 'green_mark')
 
 
