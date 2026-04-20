@@ -33,6 +33,8 @@ class RoomType(str, Enum):
     ETERNITY_SEA = 'eternity_sea'
     # 经验妖怪和金币妖怪
     NORMAL_5 = 'normal_5'
+    # 契灵之境
+    BONDLING_FAIRYLAND = 'bondling_fairyland'
 
 
 class GeneralInvite(BaseTask, GeneralInviteAssets):
@@ -83,33 +85,8 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
                 self.appear_then_click(self.I_GI_EMOJI_1)
                 self.appear_then_click(self.I_GI_EMOJI_2)
 
-            fire = False  # 是否开启挑战
-            # 如果这个房间最多只容纳两个人（意思是只可以邀请一个人），且已经邀请一个人了，那就开启挑战
-            if self.room_type == RoomType.NORMAL_2 and not self.appear(self.I_ADD_2):
-                logger.info('Start challenge and this room can only invite one friend')
-                fire = True
-            # 如果这个房间最多容纳三个人（意思是可以邀请两个人），且设定邀请一个就开启挑战，那就开启挑战
-            elif self.room_type == RoomType.NORMAL_3 and len(config.friend_list_v) == 1 and not self.appear(self.I_ADD_1):
-                logger.info('Start challenge and user only invite one friend')
-                fire = True
-            # 如果这个房间最多容纳三个人（意思是可以邀请两个人），且设定邀请两个就开启挑战，那就开启挑战
-            elif self.room_type == RoomType.NORMAL_3 and len(config.friend_list_v) == 2 and not self.appear(self.I_ADD_2):
-                logger.info('Start challenge and user invite two friends')
-                fire = True
-            # 如果这个房间是五人的，且设定邀请一个就开启挑战，那就开启挑战
-            elif self.room_type == RoomType.NORMAL_5 and len(config.friend_list_v) == 1 and not self.appear(self.I_ADD_5_1):
-                logger.info('Start challenge and user only invite one friend')
-                fire = True
-            # 如果这个房间是五人的，且设定邀请两个就开启挑战，那就开启挑战
-            elif self.room_type == RoomType.NORMAL_5 and len(config.friend_list_v) == 2 and not self.appear(self.I_ADD_5_2):
-                logger.info('Start challenge and user invite two friends')
-                fire = True
-            # 如果是永生之海
-            elif self.room_type == RoomType.ETERNITY_SEA and not self.appear(self.I_ADD_SEA):
-                logger.info('Start challenge and this is lock sea')
-                fire = True
             # 点击挑战
-            if fire:
+            if self.room_check_can_fire(config):
                 self.click_fire()
                 return True
             if self.timer_invite and self.timer_invite.reached():
@@ -120,6 +97,38 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
                     logger.info('Wait for 30s and invite again')
                     self.timer_invite = None
                 self.invite_friends(config)
+
+    def room_check_can_fire(self, config: InviteConfig) -> bool:
+        fire = False  # 是否开启挑战
+        # 如果这个房间最多只容纳两个人（意思是只可以邀请一个人），且已经邀请一个人了，那就开启挑战
+        if self.room_type == RoomType.NORMAL_2 and not self.appear(self.I_ADD_2):
+            logger.info('Start challenge and this room can only invite one friend')
+            fire = True
+        # 如果这个房间最多容纳三个人（意思是可以邀请两个人），且设定邀请一个就开启挑战，那就开启挑战
+        elif self.room_type == RoomType.NORMAL_3 and len(config.friend_list_v) == 1 and not self.appear(self.I_ADD_1):
+            logger.info('Start challenge and user only invite one friend')
+            fire = True
+        # 如果这个房间最多容纳三个人（意思是可以邀请两个人），且设定邀请两个就开启挑战，那就开启挑战
+        elif self.room_type == RoomType.NORMAL_3 and len(config.friend_list_v) == 2 and not self.appear(self.I_ADD_2):
+            logger.info('Start challenge and user invite two friends')
+            fire = True
+        # 如果这个房间是五人的，且设定邀请一个就开启挑战，那就开启挑战
+        elif self.room_type == RoomType.NORMAL_5 and len(config.friend_list_v) == 1 and not self.appear(self.I_ADD_5_1):
+            logger.info('Start challenge and user only invite one friend')
+            fire = True
+        # 如果这个房间是五人的，且设定邀请两个就开启挑战，那就开启挑战
+        elif self.room_type == RoomType.NORMAL_5 and len(config.friend_list_v) == 2 and not self.appear(self.I_ADD_5_2):
+            logger.info('Start challenge and user invite two friends')
+            fire = True
+        # 如果是永生之海
+        elif self.room_type == RoomType.ETERNITY_SEA and not self.appear(self.I_ADD_SEA):
+            logger.info('Start challenge and this is lock sea')
+            fire = True
+        # 契灵之境(两人间但队友在一号位)
+        elif self.room_type == RoomType.BONDLING_FAIRYLAND and not self.appear(self.I_ADD_1):
+            logger.info('Start challenge and this is bondling fairyland')
+            fire = True
+        return fire
 
     def invite_friends(self, config: InviteConfig, open_invite: bool = True, confirm_rule: RuleImage = None) -> bool:
         """
@@ -230,7 +239,7 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
         logger.info(f'Room type: {room_type}')
         return room_type
 
-    def check_room_type(self, image: np.array = None, pre_type: RoomType = None) -> RoomType:
+    def check_room_type(self, image: np.array = None, pre_type: RoomType = None) -> RoomType | None:
         """
         检查房间类型
         :param image:
@@ -263,6 +272,9 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
                 appear = True
             return appear
 
+        def check_bondling_fairyland(img) -> bool:
+            return self.I_ADD_1.match(img) and not self.I_ADD_2.match(img)
+
         room_type = None
         if pre_type is not None:
             match pre_type:
@@ -287,6 +299,9 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
             return room_type
         if room_type is None and check_eternity_sea(image):
             room_type = RoomType.ETERNITY_SEA
+            return room_type
+        if room_type is None and check_bondling_fairyland(image):
+            room_type = RoomType.BONDLING_FAIRYLAND
             return room_type
         return room_type
 
