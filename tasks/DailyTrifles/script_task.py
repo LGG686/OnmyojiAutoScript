@@ -307,12 +307,12 @@ class ScriptTask(GameUi, Summon, DailyTriflesAssets):
             if self.appear_then_click(self.I_HARVEST_MAIL, interval=1.2) or \
                     self.appear_then_click(self.I_HARVEST_MAIL_COPY, interval=1.2):
                 continue
-            if self.appear_then_click(self.I_HARVEST_MAIL_CONFIRM, interval=0.6):
+            if self.appear_then_click(self.I_HARVEST_MAIL_CONFIRM, interval=1):
                 continue
-            if self.appear_then_click(self.I_HARVEST_MAIL_ALL, interval=1.6):
+            if self.appear_then_click(self.I_HARVEST_MAIL_ALL, interval=2):
                 timeout_timer.reset()
                 continue
-            if self.appear_then_click(self.I_READ_ALL_MAIL, interval=1.6):
+            if self.appear_then_click(self.I_READ_ALL_MAIL, interval=3):
                 continue
         self.goto_page(page_main)
         self.config.daily_trifles.done_record.pickup_email_dt = datetime.now()

@@ -61,5 +61,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "好友羁绊提升弹窗"
+  },
+  {
+    "itemName": "close_luck_red",
+    "imageName": "love_close_luck_red.png",
+    "roiFront": "1063,129,30,30",
+    "roiBack": "1010,84,127,128",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "吉闻关闭的红色按钮,必须与好友的关闭按钮进行区分"
   }
 ]

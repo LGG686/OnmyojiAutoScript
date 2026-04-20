@@ -51,11 +51,13 @@ class DailyTriflesAssets:
 	I_LUCK_TITLE = RuleImage(roi_front=(600,52,131,67), roi_back=(600,52,131,67), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/Screenshots_luck_title.png")
 	# 好友羁绊提升弹窗 
 	I_FRIENDSHIP_UP = RuleImage(roi_front=(1147,80,27,28), roi_back=(1147,80,27,28), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/friendship_up.png")
+	# 吉闻关闭的红色按钮,必须与好友的关闭按钮进行区分 
+	I_CLOSE_LUCK_RED = RuleImage(roi_front=(1063,129,30,30), roi_back=(1010,84,127,128), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/love_close_luck_red.png")
 
 
 	# Ocr Rule Assets
-	# 吉闻 
-	O_LUCK_MSG = RuleOcr(roi=(15,38,70,70), area=(15,38,70,70), mode="Single", method="Default", keyword="吉闻", name="luck_msg")
+	#  
+	O_LUCK_MSG = RuleOcr(roi=(15,27,68,61), area=(0,8,100,100), mode="Full", method="Default", keyword="吉闻", name="luck_msg")
 
 
 	# Image Rule Assets

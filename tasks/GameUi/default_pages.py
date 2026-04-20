@@ -179,7 +179,7 @@ page_onmyodo.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_onm
 page_main.connect(page_onmyodo, GameUiAssets.I_MAIN_GOTO_ONMYODO, key="page_main->page_onmyodo")
 
 page_friends = Page(GameUiAssets.I_CHECK_FRIENDS, category="global")
-page_friends.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_friends->page_main")
+page_friends.connect(page_main, GameUiAssets.I_BACK_FRIENDS, key="page_friends->page_main")
 page_main.connect(page_friends, GameUiAssets.I_MAIN_GOTO_FRIENDS, key="page_main->page_friends")
 
 page_daily = Page(GameUiAssets.I_CHECK_DAILY, category="global")
