@@ -170,7 +170,7 @@ page_town.connect(page_hyakkiyakou, GameUiAssets.I_TOWN_GOTO_HYAKKIYAKOU, key="p
 
 # 庭院区域页面。
 page_shikigami_records = Page(GameUiAssets.I_CHECK_RECORDS, category="global")
-page_shikigami_records.add_enter_success_hooks(GameUiAssets.I_AD_DISAPPEAR, GameUiAssets.I_RECORDS_CLOSE)
+page_shikigami_records.add_enter_success_hooks(GameUiAssets.I_AD_DISAPPEAR, GameUiAssets.I_RECORDS_CLOSE, GlobalGameAssets.I_UI_CANCEL_SAMLL)
 page_shikigami_records.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_shikigami_records->page_main")
 page_main.connect(page_shikigami_records, GameUiAssets.I_MAIN_GOTO_SHIKIGAMI_RECORDS, key="page_main->page_shikigami_records")
 
@@ -193,11 +193,11 @@ page_courtyard_affairs.add_leave_failure_hooks(GlobalGameAssets.I_UI_CANCEL_SAML
                                                ActivityShikigamiAssets.I_SKIP_BUTTON, GlobalGameAssets.I_UI_BACK_YELLOW)
 
 page_mall = Page(GameUiAssets.I_CHECK_MALL, category="global")
-page_mall.add_enter_success_hooks(GameUiAssets.I_AD_CLOSE_RED, GameUiAssets.I_DLC_CLOSE)
+page_mall.add_enter_success_hooks(GameUiAssets.I_AD_CLOSE_RED, GameUiAssets.I_DLC_CLOSE, GlobalGameAssets.I_UI_CANCEL_SAMLL)
 page_mall.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_mall->page_main")
 
 page_mall_recommend = Page(GameUiAssets.I_CHECK_MALL_RECOMMEND, category="global")
-page_mall_recommend.add_enter_success_hooks(GameUiAssets.I_AD_CLOSE_RED, GameUiAssets.I_DLC_CLOSE)
+page_mall_recommend.add_enter_success_hooks(GameUiAssets.I_AD_CLOSE_RED, GameUiAssets.I_DLC_CLOSE, GlobalGameAssets.I_UI_CANCEL_SAMLL)
 page_mall_recommend.connect(page_mall, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_mall_recommend->page_mall")
 page_main.connect(page_mall_recommend, GameUiAssets.I_MAIN_GOTO_MALL, key="page_main->page_mall_recommend")
 
