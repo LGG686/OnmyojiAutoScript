@@ -1,12 +1,14 @@
 
 from collections import deque
 from datetime import datetime
+import time
 
 # Patch pkg_resources before importing adbutils and uiautomator2
 from module.device.pkg_resources import get_distribution
 # Just avoid being removed by import optimization
 _ = get_distribution
 
+from module.base.utils import get_color
 from module.device.env import IS_WINDOWS
 from module.base.timer import Timer
 from module.config.utils import get_server_next_update
@@ -243,6 +245,43 @@ class Device(Platform, Screenshot, Control, AppControl):
         super().app_stop()
         self.stuck_record_clear()
         self.click_record_clear()
+
+    def wait_app_start_ready(self, timeout: float = 15.0, interval: float = 0.5) -> None:
+        """
+        在启动app后，等待包名切换成功且画面脱离纯黑状态。
+
+        这里直接调用底层截图方法做静默探测，避免app刚启动时首屏黑场造成成批告警。
+
+        Args:
+            timeout: 最大等待秒数。
+            interval: 每轮探测的间隔秒数。
+        """
+        deadline = time.time() + timeout
+        screenshot_method = self.screenshot_methods.get(
+            self.config.script.device.screenshot_method,
+            self.screenshot_adb
+        )
+
+        while time.time() < deadline:
+            if not self.app_is_running():
+                time.sleep(interval)
+                continue
+
+            try:
+                image = screenshot_method()
+            except Exception as e:
+                logger.info(f'Wait game start ready: screenshot probe failed: {e}')
+                time.sleep(interval)
+                continue
+
+            color = get_color(image, area=(0, 0, 1280, 720))
+            if sum(color) >= 1:
+                logger.info(f'Game start ready, frame color: {color}')
+                return
+
+            time.sleep(interval)
+
+        logger.info('Wait game start ready timeout, continue with login flow')
 
 
 if __name__ == "__main__":

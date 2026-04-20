@@ -215,11 +215,75 @@ class PlatformWindows(PlatformBase, EmulatorManager):
         os.makedirs(os.path.dirname(cls.LIFECYCLE_LOCK_FILE), exist_ok=True)
         return FileLock(cls.LIFECYCLE_LOCK_FILE)
 
+    @classmethod
+    def list_adb_device_status(cls) -> dict[str, str]:
+        """
+        读取当前 ADB 服务中的设备状态列表。
+
+        Returns:
+            dict[str, str]: 键为设备 serial，值为 adb 状态。
+        """
+        host = '127.0.0.1'
+        port = 5037
+        env = os.environ.get('ANDROID_ADB_SERVER_PORT')
+        if env is not None:
+            try:
+                port = int(env)
+            except ValueError:
+                logger.warning(f'Invalid environ variable ANDROID_ADB_SERVER_PORT={env}, using default port')
+
+        devices = {}
+        try:
+            client = AdbClient(host, port)
+            with client._connect() as c:
+                c.send_command('host:devices')
+                c.check_okay()
+                output = c.read_string_block()
+                for line in output.splitlines():
+                    parts = line.strip().split('\t')
+                    if len(parts) != 2:
+                        continue
+                    devices[parts[0]] = parts[1]
+        except Exception as e:
+            logger.info(f'Probe adb devices failed: {e}')
+
+        return devices
+
     def refresh_target_instance(self, reason: str = ''):
         instance = self.refresh_emulator_instance(reason=reason)
         if instance is None:
             logger.error('[emu-instance] target instance not found')
         return instance
+
+    def probe_target_instance_online(self) -> bool | None:
+        """
+        轻量探测当前目标模拟器是否已经在线，避免为判断状态初始化完整设备对象。
+
+        Returns:
+            bool | None:
+                True 表示目标模拟器在线；
+                False 表示目标模拟器不在线；
+                None 表示当前无法准确判断。
+        """
+        from module.device.method.utils import get_serial_pair
+
+        instance = self.emulator_instance
+        if instance is None:
+            logger.warning('Probe target emulator failed: target instance not found')
+            return None
+
+        devices = self.list_adb_device_status()
+        status = devices.get(instance.serial)
+        if status == 'device':
+            return True
+
+        port_serial, emu_serial = get_serial_pair(instance.serial)
+        if port_serial and devices.get(port_serial) == 'device':
+            return True
+        if emu_serial and devices.get(emu_serial) == 'device':
+            return True
+
+        return False
 
     def is_instance_online(self, instance: EmulatorInstance, log_prefix: str = '[emu-start]') -> bool:
         try:

@@ -4,18 +4,16 @@
 
 import zerorpc
 import zmq
-import msgpack
-import random
 import re
 import cv2
 import time
 import os
 import inflection
-import asyncio
 import json
 
 from datetime import date
 import threading
+from module.device.device import Device
 from typing import Callable
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -23,12 +21,8 @@ from cached_property import cached_property
 from pydantic import BaseModel, ValidationError
 from threading import Thread
 from multiprocessing.queues import Queue
-
-
 from module.config.utils import convert_to_underscore
 from module.config.config import Config
-from module.config.config_model import ConfigModel
-from module.device.device import Device
 from module.device.env import IS_WINDOWS
 from module.base.utils import load_module
 from module.base.decorator import del_cached_property
@@ -37,8 +31,7 @@ from module.exception import *
 from module.server.i18n import I18n
 from module.image.rpc import ensure_image_server_ready
 from module.ocr.rpc import ensure_ocr_server_ready
-
-
+from module.script import ScriptRuntimeController
 
 _log_switch_lock = threading.Lock()#线程锁
 
@@ -49,6 +42,7 @@ class Script:
         self.server = None
         self.state_queue: Queue = None
         self._emulator_down = False
+        self.runtime = ScriptRuntimeController(self)
         self.gui_update_task: Callable = None  # 回调函数, gui进程注册当每次config更新任务的时候更新gui的信息
         self.config_name = config_name
         # Skip first restart
@@ -73,7 +67,7 @@ class Script:
             exit(1)
 
     @cached_property
-    def device(self) -> "Device":
+    def device(self) -> Device | None:
         try:
             from module.device.device import Device
             device = Device(config=self.config)
@@ -314,126 +308,9 @@ class Script:
             if task.next_run <= now:
                 return task.command
             # 根据策略执行等待逻辑
-            if not self._handle_wait_during_idle(task.next_run):
+            if not self.runtime.handle_wait_during_idle(task.next_run):
                 # 若等待被打断, 则刷新配置
                 del_cached_property(self, "config")
-
-    def _handle_wait_during_idle(self, next_run: datetime) -> bool:
-        """
-        处理任务空闲期间的行为策略
-        :param next_run: 下一个任务的时间
-        :return: True 表示等待成功完成, False 表示等待被中断
-        """
-        method = self.config.script.optimization.when_task_queue_empty
-        strategy_map = {
-            "close_game": self._wait_close_game,
-            "goto_main": self._wait_goto_main,
-            "close_emulator_or_goto_main": self._wait_close_emulator_or_goto_main,
-            "close_emulator_or_close_game": self._wait_close_emulator_or_close_game,
-        }
-        func = strategy_map.get(method)
-        if func is None:
-            logger.warning(f"Invalid Optimization_WhenTaskQueueEmpty: {method}, fallback to stay_there")
-            func = self._wait_stay_there
-        return func(next_run)
-
-    @staticmethod
-    def _time_to_timedelta(value) -> timedelta:
-        if value is None:
-            return timedelta(0)
-        return timedelta(hours=value.hour, minutes=value.minute, seconds=value.second)
-
-    def _wait_until_with_emulator_preheat(self, next_run: datetime) -> bool:
-        """Wait until next_run; if emulator is down, preheat startup before next task."""
-        if not self._emulator_down:
-            return self.wait_until(next_run)
-
-        startup_lead = self._time_to_timedelta(self.config.script.optimization.emulator_startup_lead_time)
-        wake_time = next_run - startup_lead if startup_lead > timedelta(0) else next_run
-        if wake_time < datetime.now():
-            wake_time = datetime.now()
-
-        if wake_time > datetime.now():
-            logger.info(f"Wait before wake emulator: {wake_time.strftime('%Y-%m-%d %H:%M:%S')}")
-            if not self.wait_until(wake_time):
-                return False
-
-        if self._emulator_down:
-            logger.info("Wake emulator before next task")
-            self.device = Device(self.config)
-            self._emulator_down = False
-
-        if wake_time < next_run:
-            return self.wait_until(next_run)
-        return True
-
-    def _wait_close_game(self, next_run: datetime) -> bool:
-        if self._emulator_down:
-            logger.info("Emulator is down, skip close_game/goto_main action and wait with preheat")
-            return self._wait_until_with_emulator_preheat(next_run)
-
-        close_game_limit_time = self.config.script.optimization.close_game_limit_time
-        close_game_limit = self._time_to_timedelta(close_game_limit_time)
-        if close_game_limit > timedelta(0) and next_run > datetime.now() + close_game_limit:
-            logger.info("Close game during wait")
-            self.device.app_stop()
-            self.device.release_during_wait()
-            if not self.wait_until(next_run):
-                return False
-            self.run("Restart")
-            return True
-
-        logger.info("Goto main page during wait (close_game limit time not reached)")
-        self.device.release_during_wait()
-        if not self.wait_until(next_run):
-            return False
-        return True
-
-    def _wait_goto_main(self, next_run: datetime) -> bool:
-        if self._emulator_down:
-            logger.info("Emulator is down, skip goto_main and wait with preheat")
-            return self._wait_until_with_emulator_preheat(next_run)
-
-        logger.info("Goto main page during wait")
-        self.run("GotoMain")
-        self.device.release_during_wait()
-        return self.wait_until(next_run)
-
-    def _wait_close_emulator_or_goto_main(self, next_run: datetime) -> bool:
-        return self._wait_close_emulator_or(next_run, self._wait_goto_main)
-
-    def _wait_close_emulator_or_close_game(self, next_run: datetime) -> bool:
-        return self._wait_close_emulator_or(next_run, self._wait_close_game)
-
-    def _wait_close_emulator_or(self, next_run: datetime, fallback_waiter: Callable[[datetime], bool]) -> bool:
-        close_emulator_limit_time = self.config.script.optimization.close_emulator_limit_time
-        close_emulator_limit = self._time_to_timedelta(close_emulator_limit_time)
-
-        if close_emulator_limit > timedelta(0) and next_run > datetime.now() + close_emulator_limit:
-            logger.info("Close emulator during wait")
-            if not self._emulator_down:
-                self.device.emulator_stop()
-            else:
-                logger.info("Emulator already closed")
-
-            self._emulator_down = True
-
-            if not self._wait_until_with_emulator_preheat(next_run):
-                return False
-
-            self.run("Restart")
-            return True
-
-        return fallback_waiter(next_run)
-
-    def _wait_stay_there(self, next_run: datetime) -> bool:
-        if self._emulator_down:
-            logger.info("Stay_there during wait (emulator is down, with preheat)")
-            return self._wait_until_with_emulator_preheat(next_run)
-
-        logger.info("Stay_there (no action) during wait")
-        self.device.release_during_wait()
-        return self.wait_until(next_run)
 
     def exception_handler(self, e: Exception, command: str) -> None:
         # 处理御魂溢出
@@ -570,11 +447,7 @@ class Script:
                 del_cached_property(self, 'config')
                 continue
 
-            if self._emulator_down:
-                self.device = Device(self.config)
-                self._emulator_down = False
-            else:
-                _ = self.device
+            self.runtime.prepare_task_execution(task)
 
             # Run
             logger.info(f'Scheduler: Start task `{task}`')

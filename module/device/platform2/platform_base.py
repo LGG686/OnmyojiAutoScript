@@ -78,6 +78,28 @@ class PlatformBase(EmulatorManagerBase):
         del_cached_property(self, 'config_interface')
         return self.emulator_instance
 
+    @classmethod
+    def list_adb_device_status(cls) -> dict[str, str]:
+        """
+        读取当前 ADB 服务中的设备状态列表。
+
+        Returns:
+            dict[str, str]: 键为设备 serial，值为 adb 状态。
+        """
+        return {}
+
+    def probe_target_instance_online(self) -> bool | None:
+        """
+        轻量探测当前目标模拟器是否已经在线。
+
+        Returns:
+            bool | None:
+                True 表示目标模拟器在线；
+                False 表示目标模拟器不在线；
+                None 表示当前平台不支持或无法准确判断。
+        """
+        return None
+
     @cached_property
     def emulator_info(self) -> EmulatorInfo:
         emulator = self.config_interface['emulator']
