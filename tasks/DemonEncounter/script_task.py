@@ -255,6 +255,7 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
         for i in range(1, 5):
             logger.hr(f'Check lantern {i}', 3)
             lantern_type = self.check_lantern(i)
+            self.device.click_record_clear()
             match lantern_type:
                 case LanternClass.BOX:
                     self._box(match_click[i])
