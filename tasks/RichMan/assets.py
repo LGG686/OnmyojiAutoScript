@@ -73,11 +73,11 @@ class RichManAssets:
 
 	# Image Rule Assets
 	# 蓝票 
-	I_CH_BLUE = RuleImage(roi_front=(623,142,145,111), roi_back=(623,142,145,111), threshold=0.8, method="Template matching", file="./tasks/RichMan/mall/charisma/charisma_ch_blue.png")
+	I_CH_BLUE = RuleImage(roi_front=(646,142,91,105), roi_back=(144,106,879,440), threshold=0.8, method="Template matching", file="./tasks/RichMan/mall/charisma/charisma_ch_blue.png")
 	# description 
-	I_CH_BLACK = RuleImage(roi_front=(848,393,141,110), roi_back=(848,393,141,110), threshold=0.8, method="Template matching", file="./tasks/RichMan/mall/charisma/charisma_ch_black.png")
+	I_CH_BLACK = RuleImage(roi_front=(869,396,94,92), roi_back=(139,123,880,428), threshold=0.8, method="Template matching", file="./tasks/RichMan/mall/charisma/charisma_ch_black.png")
 	# 蓝票购买确认 
-	I_CH_CHECK_BLUE = RuleImage(roi_front=(587,243,100,100), roi_back=(587,243,100,100), threshold=0.8, method="Template matching", file="./tasks/RichMan/mall/charisma/charisma_ch_check_blue.png")
+	I_CH_CHECK_BLUE = RuleImage(roi_front=(615,255,45,71), roi_back=(489,173,289,239), threshold=0.8, method="Template matching", file="./tasks/RichMan/mall/charisma/charisma_ch_check_blue.png")
 
 
 	# Image Rule Assets
@@ -199,15 +199,15 @@ class RichManAssets:
 	# Ocr Rule Assets
 	# 左数第一个 
 	O_MALL_RESOURCE_1 = RuleOcr(roi=(202,8,100,43), area=(202,8,100,43), mode="Quantity", method="Default", keyword="", name="mall_resource_1")
-	# 左数第二个
+	# 左数第二个 
 	O_MALL_RESOURCE_2 = RuleOcr(roi=(393,11,86,39), area=(393,11,86,39), mode="Quantity", method="Default", keyword="", name="mall_resource_2")
-	# 左数第二个
+	# 左数第二个 
 	O_MALL_RESOURCE_3 = RuleOcr(roi=(578,11,87,38), area=(578,11,87,38), mode="Quantity", method="Default", keyword="", name="mall_resource_3")
-	# 左数第二个
+	# 左数第二个 
 	O_MALL_RESOURCE_4 = RuleOcr(roi=(765,10,86,38), area=(765,10,86,38), mode="Quantity", method="Default", keyword="", name="mall_resource_4")
-	# 左数第二个
+	# 左数第二个 
 	O_MALL_RESOURCE_5 = RuleOcr(roi=(951,10,83,37), area=(951,10,83,37), mode="Quantity", method="Default", keyword="", name="mall_resource_5")
-	# 左数第二个
+	# 左数第二个 
 	O_MALL_RESOURCE_6 = RuleOcr(roi=(1129,6,100,41), area=(1129,6,100,41), mode="Quantity", method="Default", keyword="", name="mall_resource_6")
 
 
