@@ -85,6 +85,8 @@ class ReplaceShikigamiAssets:
 	I_RS_UR = RuleImage(roi_front=(377,627,49,46), roi_back=(0,265,1072,454), threshold=0.8, method="Template matching", file="./tasks/Component/ReplaceShikigami/rs/rs_rs_ur.png")
 	# description 
 	I_RS_UR_SELECTED = RuleImage(roi_front=(36,620,54,58), roi_back=(14,601,100,100), threshold=0.8, method="Template matching", file="./tasks/Component/ReplaceShikigami/rs/rs_rs_ur_selected.png")
+	#  
+	I_RS_ALL_SELECTED = RuleImage(roi_front=(31,622,62,59), roi_back=(31,622,62,59), threshold=0.8, method="Template matching", file="./tasks/Component/ReplaceShikigami/rs/rs_rs_all_selected.png")
 
 
 	# Image Rule Assets

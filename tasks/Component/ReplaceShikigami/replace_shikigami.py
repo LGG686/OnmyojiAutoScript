@@ -11,8 +11,9 @@ from tasks.Utils.config_enum import ShikigamiClass
 from tasks.Component.ReplaceShikigami.assets import ReplaceShikigamiAssets
 import time
 from module.exception import GameStuckError
-class ReplaceShikigami(BaseTask, ReplaceShikigamiAssets):
 
+
+class ReplaceShikigami(BaseTask, ReplaceShikigamiAssets):
 
     def in_shikigami_growth(self, screenshot=False) -> bool:
         # 判定是否在式神育成界面
@@ -48,14 +49,13 @@ class ReplaceShikigami(BaseTask, ReplaceShikigamiAssets):
         # 选择式神的种类
         while 1:
             self.screenshot()
-
-            if self.appear(check_selected):
+            if self.appear(check_selected, interval=1):
                 break
-            if self.appear(check_click, interval=1):
+            if self.appear(check_click, interval=3):
                 if self.wait_until_pos_stable(check_click, stable_time=0.8, timeout=2.5):
                     self.click(check_click)
                 continue
-            if self.click(self.C_SHIKIGAMI_SWITCH_1, interval=3.5):
+            if self.appear_then_click(self.I_RS_ALL_SELECTED, interval=5):
                 continue
         logger.info('Select shikigami class: %s' % shikigami_class)
 
@@ -136,3 +136,13 @@ class ReplaceShikigami(BaseTask, ReplaceShikigamiAssets):
                 or self.appear(self.I_DETECT_EMPTY_6):
             return True
         return False
+
+
+if __name__ == '__main__':
+    from module.config.config import Config
+    from module.device.device import Device
+
+    c = Config('日常2')
+    d = Device(c)
+    t = ReplaceShikigami(c, d)
+    t.switch_shikigami_class(ShikigamiClass.N)

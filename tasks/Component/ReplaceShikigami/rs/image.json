@@ -160,5 +160,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "description"
+  },
+  {
+    "itemName": "rs_all_selected",
+    "imageName": "rs_rs_all_selected.png",
+    "roiFront": "31,622,62,59",
+    "roiBack": "31,622,62,59",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
   }
 ]
