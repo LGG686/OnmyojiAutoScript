@@ -7,16 +7,22 @@ from module.base.timer import Timer
 
 from tasks.Exploration.base import BaseExploration, Scene
 from tasks.Exploration.config import AutoRotate, UserStatus, ExplorationLevel
+import tasks.Exploration.page as pages
 
 
 class SoloExploration(BaseExploration):
-    INVITE_FLAG_OFF = (157, 109, 83)
-    INVITE_FLAG_ON = (227, 193, 153)
+
+    def before_solo(self):
+        page_exploration = self.navigator.resolve_page(pages.page_exploration)
+        page_exp_entrance = self.navigator.resolve_page(pages.page_exp_entrance)
+        page_exploration.connect(page_exp_entrance, self.open_expect_level, key="page_exploration->page_exp_entrance")
 
     def run_solo(self):
         logger.hr('solo')
         explore_init = False
         search_fail_cnt = 0
+        self.before_solo()
+        self.goto_page(pages.page_exp_main)
         while True:
             self.screenshot()
             scene = self.get_current_scene()
@@ -88,6 +94,7 @@ class SoloExploration(BaseExploration):
         search_fail_cnt = 0
         friend_leave_timer = Timer(5)
         team_log = False
+        self.goto_page(pages.page_exploration)
         while 1:
             self.screenshot()
             scene = self.get_current_scene()
@@ -233,6 +240,7 @@ class SoloExploration(BaseExploration):
         team_log, leader_leave_log = False, False
         self.device.stuck_record_clear()
         self.device.stuck_record_add('PAUSE')
+        self.goto_page(pages.page_exploration)
         while True:
             self.screenshot()
             scene = self.get_current_scene()

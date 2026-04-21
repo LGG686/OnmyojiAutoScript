@@ -13,20 +13,18 @@ from tasks.Component.GeneralRoom.general_room import GeneralRoom
 from tasks.Component.GeneralInvite.general_invite import GeneralInvite
 from tasks.Component.ReplaceShikigami.replace_shikigami import ReplaceShikigami
 from tasks.Exploration.assets import ExplorationAssets
-from tasks.Exploration.config import ChooseRarity, AutoRotate, AttackNumber, UpType
+from tasks.Exploration.config import ChooseRarity, UpType, ExplorationLevel
 from tasks.Component.GeneralBattle.general_battle import GeneralBattle, ExitMatcher
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.matcher import any_of
 from tasks.GameUi.page import page_exploration, page_shikigami_records, page_main
-from tasks.RealmRaid.script_task import ScriptTask as RealmRaidScriptTask
 from tasks.Utils.config_enum import ShikigamiClass
 
 from module.logger import logger
 from module.base.timer import Timer
-from module.exception import RequestHumanTakeover, TaskEnd, GameStuckError
-from module.atom.image_grid import ImageGrid
+from module.exception import TaskEnd, GameStuckError
 from module.atom.animate import RuleAnimate
-from module.base.utils import load_image
+
 
 class Scene(Enum):
     UNKNOWN = 0  #
@@ -105,9 +103,6 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
                 self.exp_100()
             self.close_buff()
 
-        # 探索页面
-        self.goto_page(page_exploration)
-
     def post_process(self):
         self.goto_page(page_main)
         con = self._config.exploration_config
@@ -124,17 +119,22 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
     # 打开指定的章节：
     def open_expect_level(self):
         swipeCount = 0
-        while 1:
-            # 探索的 config
-            explorationConfig = self.config.exploration
-
+        config_exploration_level = self.config.exploration.exploration_config.exploration_level
+        while True:
             # 判断有无目标章节
             self.screenshot()
             # 获取当前章节名
             results = self.O_E_EXPLORATION_LEVEL_NUMBER.detect_and_ocr(self.device.image)
             text1 = [result.ocr_text for result in results]
+            exp_level_enum_list = []
+            for txt in text1:
+                try:
+                    exp_level_enum_list.append(ExplorationLevel(txt))
+                except ValueError as e:
+                    logger.warning(f'convert {txt} failed')
+            sorted(exp_level_enum_list, key=lambda x: x.get_index())  # Sort by index
             # 判断当前章节有无目标章节
-            result = set(text1).intersection({explorationConfig.exploration_config.exploration_level})
+            result = set(text1).intersection({config_exploration_level})
             # 有则跳出检测
             if self.appear(self.I_E_EXPLORATION_CLICK) or result and len(result) > 0:
                 break
@@ -143,7 +143,13 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             if self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=1):
                 continue
             self.device.click_record_clear()
-            self.swipe(self.S_SWIPE_LEVEL_UP)
+            if len(exp_level_enum_list) > 0:
+                min_level = exp_level_enum_list[0]
+                max_level = exp_level_enum_list[-1]
+                if config_exploration_level.get_index() < min_level.get_index():
+                    self.swipe(self.S_SWIPE_LEVEL_UP)
+                elif config_exploration_level.get_index() > max_level.get_index():
+                    self.swipe(self.S_SWIPE_LEVEL_DOWN)
             swipeCount += 1
             debug_info = f"Swiped {swipeCount} times, current exploration level: {text1}"
             logger.info(debug_info)
@@ -151,7 +157,6 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
                 raise GameStuckError(
                     f"Swiped too many times ({swipeCount}), seems stuck in exploration level selection"
                 )
-                return False
             time.sleep(1)
 
         # 选中对应章节
@@ -161,7 +166,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
                 continue
             if self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=1):
                 continue
-            self.O_E_EXPLORATION_LEVEL_NUMBER.keyword = explorationConfig.exploration_config.exploration_level
+            self.O_E_EXPLORATION_LEVEL_NUMBER.keyword = config_exploration_level
             if self.ocr_appear_click(self.O_E_EXPLORATION_LEVEL_NUMBER):
                 self.wait_until_appear(self.I_E_EXPLORATION_CLICK, wait_time=3)
             if self.appear(self.I_E_EXPLORATION_CLICK):
@@ -257,7 +262,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             appear = self.appear(find_flag)
             if not appear:
                 return None
-            logger.info(f'Found up type: {up_type} at  {find_flag.roi_front}')
+            # logger.info(f'Found up type: {up_type} at  {find_flag.roi_front}')
             x, y, _, _ = find_flag.roi_front
             x_center, y_center = find_flag.front_center()
             roi_back_y = max(0, y - 300)
@@ -265,7 +270,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             roi_back_x = max(0, x - 160)
             roi_back_w = min(1280, x + 200) - roi_back_x
             # self.I_NORMAL_BATTLE_BUTTON.roi_back = [roi_back_x, roi_back_y, roi_back_w, roi_back_h]
-            logger.info(f'It will search normal battle button at {roi_back_x, roi_back_y, roi_back_w, roi_back_h}')
+            # logger.info(f'It will search normal battle button at {roi_back_x, roi_back_y, roi_back_w, roi_back_h}')
             matches = self.I_NORMAL_BATTLE_BUTTON.match_all(
                 image=self.device.image,
                 threshold=0.9,
@@ -285,7 +290,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             match = distances[0][1]
             roi_front = list(match[1:])  # x,y,w,h
             self.I_NORMAL_BATTLE_BUTTON.roi_front = roi_front
-            logger.info(f"Found normal battle button at {roi_front}")
+            # logger.info(f"Found normal battle button at {roi_front}")
             return self.I_NORMAL_BATTLE_BUTTON
         if self.appear(self.I_NORMAL_BATTLE_BUTTON):
             return self.I_NORMAL_BATTLE_BUTTON
