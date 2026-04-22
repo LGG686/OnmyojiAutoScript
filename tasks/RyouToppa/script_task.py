@@ -70,7 +70,7 @@ def random_delay(min_value: float = 1.0, max_value: float = 2.0, decimal: int = 
     生成一个指定范围内的随机小数
     """
     random_float_in_range = random.uniform(min_value, max_value)
-    return (round(random_float_in_range, decimal))
+    return round(random_float_in_range, decimal)
 
 
 class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RyouToppaAssets):
@@ -283,35 +283,26 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RyouToppaAssets):
         # 每次进攻前检查区域可用性
         if not self.check_area(index):
             return False
-
         # 正式进攻会设定 2s - 10s 的随机延迟，避免攻击间隔及其相近被检测为脚本。
         if self.config.ryou_toppa.raid_config.random_delay:
             delay = random_delay()
             time.sleep(delay)
-
         rcl = area_map[index].get("rule_click")
-        # # 点击攻击区域，等待攻击按钮出现。
-        # self.ui_click(rcl, stop=RealmRaidAssets.I_FIRE, interval=2)
         # 塔塔开！
         click_failure_count = 0
         while True:
             self.screenshot()
-            if click_failure_count >= 5:
-                logger.warning("Click failure, check your click position")
-                return False
-            if not self.appear(self.I_TOPPA_RECORD, threshold=0.85):
-                time.sleep(1)
-                self.screenshot()
-                if self.appear(self.I_TOPPA_RECORD, threshold=0.85):
-                    continue
+            if self.is_in_battle(False):
                 logger.info("Start attach area [%s]" % str(index + 1))
                 return self.run_general_battle(config=self.config.ryou_toppa.general_battle_config)
-
+            if click_failure_count >= 3:
+                logger.warning("Click failure, check your click position")
+                return False
             if self.appear_then_click(RealmRaidAssets.I_FIRE, interval=2, threshold=0.8):
                 click_failure_count += 1
                 continue
             if self.click(rcl, interval=5):
-                click_failure_count += 1
+                self.device.click_record_clear()
                 continue
 
 
