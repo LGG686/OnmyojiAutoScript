@@ -5,7 +5,7 @@ import random
 from time import sleep
 from datetime import time, datetime, timedelta
 
-from tasks.Component.GeneralBattle.general_battle import BattleAction, GeneralBattle
+from tasks.Component.GeneralBattle.general_battle import BattleAction, GeneralBattle, ExitMatcher
 from tasks.Component.GeneralInvite.general_invite import GeneralInvite
 from tasks.Component.GeneralBuff.general_buff import GeneralBuff
 from tasks.Component.GeneralRoom.general_room import GeneralRoom
@@ -27,7 +27,10 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
         reward_page = self.navigator.resolve_page(page_reward)
         if reward_page is None:
             return
-        reward_page.recognizer = any_of(self.I_GREED_GHOST, self.I_REWARD, self.I_REWARD_GOLD)
+        reward_page.recognizer = any_of(self.I_GREED_GHOST, reward_page.recognizer)
+
+    def _exit_matcher(self) -> ExitMatcher | None:
+        return any_of(self.I_GI_EMOJI_1, self.I_GI_EMOJI_2, self.I_CHECK_EXPLORATION)
 
     def run(self) -> bool:
         # 御魂切换方式一
@@ -181,8 +184,7 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
                 if self.run_invite(config=self.config.orochi.invite_config):
                     self.run_general_battle(
                         config=self.config.orochi.general_battle_config,
-                        battle_key=self._orochi_battle_key(),
-                        exit_matcher=self.I_CHECK_TEAM,
+                        battle_key=self._orochi_battle_key()
                     )
                 else:
                     # 邀请失败，退出任务
@@ -200,8 +202,7 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
                     is_first = False
                     self.run_general_battle(
                         config=self.config.orochi.general_battle_config,
-                        battle_key=self._orochi_battle_key(),
-                        exit_matcher=self.I_CHECK_TEAM,
+                        battle_key=self._orochi_battle_key()
                     )
 
         # 当结束或者是失败退出循环的时候只有两个UI的可能，在房间或者是在组队界面
@@ -247,8 +248,7 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
                 if self.wait_battle(wait_time=self.config.orochi.invite_config.wait_time):
                     self.run_general_battle(
                         config=self.config.orochi.general_battle_config,
-                        battle_key=self._orochi_battle_key(),
-                        exit_matcher=self.I_CHECK_TEAM,
+                        battle_key=self._orochi_battle_key()
                     )
                 else:
                     break
