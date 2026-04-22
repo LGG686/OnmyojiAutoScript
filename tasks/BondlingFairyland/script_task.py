@@ -30,11 +30,9 @@ class BondlingNumberMax(Exception):
 
 class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, BondlingFairylandAssets):
     """ 契灵 """
-    ball_pos_list = [None, None, None, None, None]  # 用于记录每一个位置的球是否出现
-    first_catch = True  # 用于记录是否是第一次捕捉
 
     def _exit_matcher(self) -> ExitMatcher | None:
-        return any_of()
+        return any_of(self.I_BALL_FIRE, self.I_CHECK_BONDLING_FAIRYLAND, self.I_GI_EMOJI_1, self.I_GI_EMOJI_2)
 
     def _register_custom_pages(self) -> None:
         page_result = self.navigator.resolve_page(page_battle_result)
@@ -51,22 +49,18 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
         context.reward_no_battle_ts = None
         bondling_mode = self.config.bondling_fairyland.bondling_config.bondling_mode
         cap_again = bondling_mode in [BondlingMode.MODE3, BondlingMode.MODE4]
+        clicked = False
         if cap_again:
             # 开启连续结契需要重置点击记录(连点10次)
-            self.appear_then_click(self.I_CAP_AGAIN, interval=1)
+            if self.appear_then_click(self.I_CAP_AGAIN, interval=1):
+                clicked = True
             self.device.click_record_clear()
         else:
-            self.appear_then_click(self.I_BATTLE_FAIL_ABANDON, interval=1)
+            if self.appear_then_click(self.I_BATTLE_FAIL_ABANDON, interval=1):
+                clicked = True
         context.is_win = self.appear(self.I_CAP_SUCCESS) or self.appear(self.I_BATTLE_SUCCESS)
-        if context.is_win:
-            if self.appear_then_click(self.I_CAP_SUCCESS, action=random_click(), interval=0.5) or \
-                    self.appear_then_click(self.I_BATTLE_SUCCESS, interval=0.5) or \
-                    self.appear_then_click(self.I_WIN, action=random_click(), interval=0.5):
-                pass
-        else:
-            if self.appear_then_click(self.I_CAP_FAILURE, action=random_click(), interval=0.5) or \
-                    self.appear_then_click(self.I_FALSE, action=random_click(), interval=0.5):
-                pass
+        if not clicked:
+            self.click(random_click(), interval=1.2)
         return BattleAction.CONTINUE
 
     def run(self):
@@ -260,7 +254,8 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
                 else:
                     break
             # 队长秒开的时候，检测是否进入到战斗中
-            elif self.check_take_over_battle(False, config=self.config.bondling_fairyland.battle_config):
+            elif self.is_in_battle(False):
+                self.run_general_battle(self.config.bondling_fairyland.battle_config)
                 wait_timer.reset()
                 # 进入战斗流程
                 self.device.stuck_record_add('BATTLE_STATUS_S')

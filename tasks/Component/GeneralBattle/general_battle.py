@@ -493,7 +493,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         context.reward_no_battle_ts = None
         context.is_win = not self.appear(self.I_FALSE, threshold=0.8)
         logger.info(f"Battle result is {'win' if context.is_win else 'false'}")
-        self.click(random_click(), interval=0.6)
+        self.click(random_click(), interval=1.2)
         return BattleAction.CONTINUE
 
     def _handle_reward(self, context: BattleContext, config: GeneralBattleConfig) -> BattleAction:
@@ -507,7 +507,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
             BattleAction: 当前轮奖励页处理后的动作决策。
         """
         context.reward_no_battle_ts = None
-        self.click(random_click(), interval=0.6)
+        self.click(random_click(), interval=1.2)
         return BattleAction.CONTINUE
 
     def _handle_missing_battle_page(self, context: BattleContext, config: GeneralBattleConfig,
