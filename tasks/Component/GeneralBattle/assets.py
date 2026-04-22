@@ -50,13 +50,13 @@ class GeneralBattleAssets:
 	# 战斗的时候有一定的概率随机点击 
 	C_RANDOM_CLICK = RuleClick(roi_front=(104,79,1050,507), roi_back=(255,65,100,100), name="random_click")
 	# 左边随机点击 
-	C_RANDOM_LEFT = RuleClick(roi_front=(17,84,104,356), roi_back=(17,84,104,356), name="random_left")
+	C_RANDOM_LEFT = RuleClick(roi_front=(17,104,55,370), roi_back=(17,104,55,370), name="random_left")
 	# 右边随机点击 
-	C_RANDOM_RIGHT = RuleClick(roi_front=(1160,88,104,361), roi_back=(1160,88,104,361), name="random_right")
+	C_RANDOM_RIGHT = RuleClick(roi_front=(1185,115,79,388), roi_back=(1185,115,79,388), name="random_right")
 	# 上边随机点击 
 	C_RANDOM_TOP = RuleClick(roi_front=(250,58,868,68), roi_back=(250,58,868,68), name="random_top")
 	# 下边随机点击 
-	C_RANDOM_BOTTOM = RuleClick(roi_front=(196,598,581,78), roi_back=(196,598,581,78), name="random_bottom")
+	C_RANDOM_BOTTOM = RuleClick(roi_front=(462,599,492,78), roi_back=(462,599,492,78), name="random_bottom")
 	# 整体随机点击 
 	C_RANDOM_ALL = RuleClick(roi_front=(42,94,1207,543), roi_back=(42,94,1207,543), name="random_all")
 

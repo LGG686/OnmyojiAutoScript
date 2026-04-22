@@ -62,7 +62,7 @@ class BattleContext:
     last_page: Page | None = None
     # 单次调用内的连战轮次计数；首轮从 1 开始。
     continuous_count: int = 1
-    # 结算结束后暂时识别不到战斗页面时的首个时间戳；用于 2 秒兜底。
+    # 结算结束后暂时识别不到战斗页面时的首个时间戳；用于 x 秒兜底。
     reward_no_battle_ts: float | None = None
     # 当前调用是否已进入快速退出路径；该状态只在本次调用内有效。
     quick_exit: bool = False
@@ -493,12 +493,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         context.reward_no_battle_ts = None
         context.is_win = not self.appear(self.I_FALSE, threshold=0.8)
         logger.info(f"Battle result is {'win' if context.is_win else 'false'}")
-        if context.is_win:
-            if self.appear_then_click(self.I_WIN, action=random_click(), interval=0.5) or \
-                    self.appear_then_click(self.I_DE_WIN, action=random_click(), interval=0.5):
-                pass
-        else:
-            self.appear_then_click(self.I_FALSE, threshold=0.6, interval=0.5)
+        self.click(random_click(), interval=0.6)
         return BattleAction.CONTINUE
 
     def _handle_reward(self, context: BattleContext, config: GeneralBattleConfig) -> BattleAction:
@@ -541,7 +536,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         if context.reward_no_battle_ts is None:
             context.reward_no_battle_ts = time.time()
             return BattleAction.CONTINUE
-        if time.time() - context.reward_no_battle_ts >= 2:
+        if time.time() - context.reward_no_battle_ts >= 2.5:
             return BattleAction.EXIT_WIN if context.is_win else BattleAction.EXIT_LOSE
         return BattleAction.CONTINUE
 
@@ -719,8 +714,8 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
             self.screenshot()
             if not self.appear(self.I_PREPARE_HIGHLIGHT):
                 break
-        self.appear_then_click(self.I_LOCAL)
-        time.sleep(0.3)
+        if self.appear_then_click(self.I_LOCAL):
+            time.sleep(0.3)
         self.device.click(x, y)
 
     def green_mark_name(self, name: str = ''):
