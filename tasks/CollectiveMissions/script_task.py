@@ -36,12 +36,12 @@ class ScriptTask(GameUi, CollectiveMissionsAssets):
         if self.is_finish():
             self.exit()
             self.set_next_run(task='CollectiveMissions', success=True)
-            raise TaskEnd('CollectiveMissions')
+            raise TaskEnd
         self.select_and_update_cur_mission(self.config.collective_missions.missions_config.missions_select)
         if self.current_mission is None:
             self.exit()
             self.set_next_run(task='CollectiveMissions', success=False)
-            raise TaskEnd('CollectiveMissions')
+            raise TaskEnd
         match self.current_mission:
             case MC.FEED:
                 self._feed()  # 喂 N 卡
@@ -51,17 +51,21 @@ class ScriptTask(GameUi, CollectiveMissionsAssets):
                 self._soul()  # 捐御魂
         self.exit()
         self.set_next_run(task='CollectiveMissions', success=True)
-        raise TaskEnd('CollectiveMissions')
+        raise TaskEnd
 
     def select_and_update_cur_mission(self, mission: MC) -> bool:
         """尝试选择对应任务并更新当前任务, 若选择失败(无法切换)则会停留在当前任务
         :return: 成功选择返回True
         """
         pre_mission = ''
-        switch_fail_cnt, max_retry = 0, random.randint(2, 3)
+        switch_fail_cnt, max_retry = 0, random.randint(2, 3)  # 点了没反应, 可能之前已经做了其他任务导致无法切换
+        switch_cnt, max_switch = 0, random.randint(12, 15)  # 尝试最多15次内能中奖找到对应任务
         while True:
             if switch_fail_cnt >= max_retry:
                 logger.warning(f'Cannot switch next mission, stop select and try run')
+                return False
+            if switch_cnt >= max_switch:
+                logger.warning(f'Cannot find target mission: {mission.value}, exit')
                 return False
             self.screenshot()
             # 识别当前任务
@@ -80,6 +84,8 @@ class ScriptTask(GameUi, CollectiveMissionsAssets):
             pre_mission = mission_text
             if self.appear_then_click(self.I_CM_SWITCH, interval=0.6):
                 sleep(random.uniform(0.6, 1.2))
+                switch_cnt += 1
+                self.device.click_record_clear()
 
     def _donate(self):
         """捐材料"""
