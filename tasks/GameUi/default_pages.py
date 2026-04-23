@@ -75,6 +75,7 @@ page_main.connect(page_onmyodo, GameUiAssets.I_MAIN_GOTO_ONMYODO, key="page_main
 
 page_friends = Page(GameUiAssets.I_CHECK_FRIENDS, category="global")
 page_friends.connect(page_main, GameUiAssets.I_BACK_FRIENDS, key="page_friends->page_main")
+page_friends.add_leave_failure_hooks(GlobalGameAssets.I_UI_BACK_RED)
 page_main.connect(page_friends, GameUiAssets.I_MAIN_GOTO_FRIENDS, key="page_main->page_friends")
 
 page_daily = Page(GameUiAssets.I_CHECK_DAILY, category="global")
