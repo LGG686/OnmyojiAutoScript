@@ -229,4 +229,7 @@ async def websocket_endpoint(websocket: WebSocket, script_name: str):
 
     except WebSocketDisconnect:
         logger.warning(f'[{script_name}] websocket disconnect')
+    except Exception as e:
+        logger.warning(f'[{script_name}] websocket error: {e}')
+    finally:
         await script_process.disconnect(websocket)
