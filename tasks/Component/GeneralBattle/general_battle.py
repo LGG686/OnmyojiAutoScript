@@ -626,7 +626,6 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         """
         context.reward_no_battle_ts = None
         context.is_win = not self.appear(self.I_FALSE, threshold=0.8)
-        logger.info(f"Battle result is {'win' if context.is_win else 'false'}")
         self.click(random_click(), interval=0.8)
         self.device.click_record_clear()
         return BattleAction.CONTINUE
@@ -762,6 +761,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                                              page_reward, include_global=False)
                 context.reward_no_battle_ts = None if page else context.reward_no_battle_ts
                 self._ensure_battle_stuck_guard(context, page)
+                self.device.click_record_clear()
                 match page:
                     case None:
                         action = self._handle_missing_battle_page(context, config, resolved_exit_matcher)

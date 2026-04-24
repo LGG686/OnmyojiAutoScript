@@ -36,18 +36,19 @@ class GameUi(BaseTask, GameUiAssets):
 
     # 全局未知页关闭动作，所有任务共享。
     DEFAULT_UNKNOWN_CLOSERS = [
-        BaseTask.I_UI_BACK_RED,
+        GlobalGameAssets.I_UI_BACK_RED,
         GlobalGameAssets.I_CHAT_CLOSE_BUTTON,
         ActivityShikigamiAssets.I_SKIP_BUTTON,
         GeneralBattleAssets.I_CONFIRM,
+        GeneralBattleAssets.I_EXIT_ENSURE,
         GameUiAssets.I_BACK_FRIENDS,
         GameUiAssets.I_BACK_DAILY,
         GameUiAssets.I_REALM_RAID_GOTO_EXPLORATION,
         GameUiAssets.I_SIX_GATES_GOTO_EXPLORATION,
-        BaseTask.I_UI_BACK_YELLOW,
+        GlobalGameAssets.I_UI_BACK_YELLOW,
         SixRealmsAssets.I_EXIT_SIXREALMS,
         ActivityShikigamiAssets.I_RED_EXIT,
-        BaseTask.I_UI_BACK_BLUE,
+        GlobalGameAssets.I_UI_BACK_BLUE,
     ]
 
     def __init__(self, config, device):

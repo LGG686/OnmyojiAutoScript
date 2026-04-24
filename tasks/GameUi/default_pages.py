@@ -102,6 +102,10 @@ page_guild.add_enter_success_hooks(KekkaiUtilizeAssets.I_PLANT_TREE_CLOSE)
 page_guild.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_guild->page_main")
 page_main.connect(page_guild, GameUiAssets.I_MAIN_GOTO_GUILD, key="page_main->page_guild")
 
+page_shirin = Page(GameUiAssets.I_CHECK_SHRIN, category="global")
+page_guild.connect(page_shirin, GameUiAssets.I_GUILD_TO_SHRIN, key="page_guild->page_shirin")
+page_shirin.connect(page_guild, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_shirin->page_guild")
+
 page_team = Page(GameUiAssets.I_CHECK_TEAM, category="global")
 page_team.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_team->page_main")
 page_main.connect(page_team, GameUiAssets.I_MAIN_GOTO_TEAM, key="page_main->page_team")

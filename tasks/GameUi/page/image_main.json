@@ -1,0 +1,20 @@
+[
+  {
+    "itemName": "check_shrin",
+    "imageName": "page_check_shrin.png",
+    "roiFront": "80,92,33,97",
+    "roiBack": "56,73,84,138",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "阴阳寮神社左上角"
+  },
+  {
+    "itemName": "guild_to_shrin",
+    "imageName": "page_guild_to_shrin.png",
+    "roiFront": "877,629,49,53",
+    "roiBack": "840,602,302,113",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "阴阳寮前往神社"
+  }
+]

@@ -51,7 +51,7 @@ class DokanAssets:
 	# 道馆内式神录 
 	I_RYOU_DOKAN_SHIKIGAMI = RuleImage(roi_front=(995,602,77,72), roi_back=(960,580,140,120), threshold=0.8, method="Template matching", file="./tasks/Dokan/res/res_ryou_dokan_shikigami.png")
 	# 优先攻击选项 
-	I_RYOU_DOKAN_ATTACK_PRIORITY = RuleImage(roi_front=(666,672,58,25), roi_back=(666,672,58,25), threshold=0.8, method="Template matching", file="./tasks/Dokan/res/res_ryou_dokan_priority.png")
+	I_RYOU_DOKAN_ATTACK_PRIORITY = RuleImage(roi_front=(767,663,48,27), roi_back=(520,660,557,48), threshold=0.8, method="Template matching", file="./tasks/Dokan/res/res_ryou_dokan_priority.png")
 	# 优先攻击: 见习 
 	I_RYOU_DOKAN_ATTACK_PRIORITY_0 = RuleImage(roi_front=(98,170,94,43), roi_back=(98,170,94,43), threshold=0.8, method="Template matching", file="./tasks/Dokan/res/res_ryou_dokan_priority_0.png")
 	# 优先攻击: 初级 
@@ -149,7 +149,7 @@ class DokanAssets:
 	# 查找道馆时,确认刷新道馆列表按钮 
 	I_REFRESH_ENSURE = RuleImage(roi_front=(0,0,1280,720), roi_back=(0,0,1280,720), threshold=0.8, method="Template matching", file="./tasks/Dokan/res/res_ryou_dokan_refresh_ensure.png")
 	# 查找道馆时,右侧道馆赏金图标,为了定位该图右侧的 赏金金额 
-	I_RIGHTPAD_POINT_BOUNTY = RuleImage(roi_front=(1050,0,230,0), roi_back=(1050,0,230,50), threshold=0.8, method="Template matching", file="./tasks/Dokan/res/res_ryou_dokan_rightpad_point_bounty.png")
+	I_RIGHTPAD_POINT_BOUNTY = RuleImage(roi_front=(1125,103,27,29), roi_back=(1077,0,171,602), threshold=0.8, method="Template matching", file="./tasks/Dokan/res/res_ryou_dokan_rightpad_point_bounty.png")
 	# 寮境中上部的标志 
 	I_RYOU_DOKAN_CENTER_TOP = RuleImage(roi_front=(500,20,300,70), roi_back=(500,20,300,70), threshold=0.8, method="Template matching", file="./tasks/Dokan/res/res_ryou_dokan_center_top.png")
 	# 左上角退出按钮- 

@@ -7,7 +7,7 @@ import re
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from tasks.Component.GeneralBattle.config_general_battle import GeneralBattleConfig
 from tasks.Component.SwitchSoul.switch_soul_config import SwitchSoulConfig
@@ -138,11 +138,20 @@ class DokanConfig(BaseModel):
     find_dokan_refresh_count: int = Field(default=7, description='find_dokan_refresh_count_help')
 
 
+class DokanBattleConfig(GeneralBattleConfig):
+    continuous_battle: bool = True
+
+    @field_validator('continuous_battle', mode='after')
+    @classmethod
+    def validate_continuous_battle(cls, v):
+        return True
+
+
 class Dokan(ConfigBase):
     scheduler: Scheduler = Field(default_factory=Scheduler)
     dokan_config: DokanConfig = Field(default_factory=DokanConfig)
-    dokan_member_battle_conf: GeneralBattleConfig = Field(default_factory=lambda: GeneralBattleConfig(continuous_battle=True))
-    dokan_owner_battle_conf: GeneralBattleConfig = Field(default_factory=lambda: GeneralBattleConfig(continuous_battle=True))
+    dokan_member_battle_conf: DokanBattleConfig = Field(default_factory=DokanBattleConfig)
+    dokan_owner_battle_conf: DokanBattleConfig = Field(default_factory=DokanBattleConfig)
     dokan_member_switch_soul: SwitchSoulConfig = Field(default_factory=SwitchSoulConfig)
     dokan_owner_switch_soul: SwitchSoulConfig = Field(default_factory=SwitchSoulConfig)
     attack_count_config: AttackAccountConfig = Field(default_factory=AttackAccountConfig)

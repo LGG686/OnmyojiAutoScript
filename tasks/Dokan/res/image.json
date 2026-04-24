@@ -47,8 +47,8 @@
   {
     "itemName": "ryou_dokan_attack_priority",
     "imageName": "res_ryou_dokan_priority.png",
-    "roiFront": "666,672,58,25",
-    "roiBack": "666,672,58,25",
+    "roiFront": "767,663,48,27",
+    "roiBack": "520,660,557,48",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "优先攻击选项"
@@ -488,8 +488,8 @@
   {
     "itemName": "rightpad_point_bounty",
     "imageName": "res_ryou_dokan_rightpad_point_bounty.png",
-    "roiFront": "1050,0,230,0",
-    "roiBack": "1050,0,230,50",
+    "roiFront": "1125,103,27,29",
+    "roiBack": "1077,0,171,602",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "查找道馆时,右侧道馆赏金图标,为了定位该图右侧的 赏金金额"
