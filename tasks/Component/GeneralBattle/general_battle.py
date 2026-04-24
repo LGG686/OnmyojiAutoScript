@@ -873,7 +873,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         if name == '':
             logger.warning("Green mark name is empty")
             return
-        timeout_timer = Timer(3).start()
+        timeout_timer = Timer(6).start()
         best = {'name': '', 'x': -1, 'y': -1, 'similarity': 0.0}
         while not timeout_timer.reached():
             self.screenshot()
