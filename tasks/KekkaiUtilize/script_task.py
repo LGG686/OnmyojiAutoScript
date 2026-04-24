@@ -500,8 +500,8 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
             if not cards:
                 miss_count += 1
                 logger.info(f'第{swipe_count}次滑动 | 未检测到结界卡' if swipe_count > 0 else '初始界面 | 未检测到结界卡')
-                # 连续无卡超过阈值则终止
-                if miss_count > CONSEC_MISS:
+                # 连续无卡超过阈值则终止/已经出现空卡也不再滑动
+                if miss_count > CONSEC_MISS or self.appear(self.I_U_EMPTY_CARD):
                     logger.warning(f'⚠️ 连续{miss_count}次 | 未检测到结界卡, 终止流程')
                     return None
                 # 执行滑动操作
@@ -554,6 +554,9 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
                         self.save_image(push_flag=False, wait_time=0, content=message)
                         return True
 
+            if self.appear(self.I_U_EMPTY_CARD):
+                logger.info('Empty card already appeared, exit explore')
+                return None
             # ------ 步骤3: 滑动到下一屏 ------#
             self.perform_swipe_action()
 
