@@ -906,7 +906,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         """
         if not enable:
             logger.info("Preset is disable")
-            return None
+            return
 
         logger.info("Preset is enable")
         timeout_warning = "Switch preset timeout, use current team"
@@ -988,7 +988,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
             self.screenshot()
             if not self.appear(self.I_PRESET_ENSURE):
                 break
-            if self.appear_then_click(self.I_PRESET_ENSURE, threshold=0.8, interval=0.2):
+            if self.appear_then_click(self.I_PRESET_ENSURE, interval=1):
                 continue
         logger.info("Click preset ensure")
 
