@@ -135,20 +135,21 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
             return True
 
         if ultra:
-            if not self.get_difficulty():
-                # 判断是否能切换到极地鬼
-                if not self.appear(self.I_AB_DIFFICULTY_NORMAL) and self.config.area_boss.boss.Attack_60:
+            if not self.get_difficulty():  # 在普界面
+                # 出现了极, 则直接切换到极地鬼
+                if self.appear(self.I_AB_DIFFICULTY_NORMAL):
+                    self.switch_difficulty(True)
+                elif self.config.area_boss.boss.Attack_60:  # 没有出现极则一次没打过, 拉到60级再打
                     self.switch_to_level_60()
-                    if not self.start_fight():
+                    if not self.start_fight():  # 60级没打过退出吧
                         logger.warning("you are so weakness!")
                         self.wait_until_appear(self.I_AB_CLOSE_RED)
                         self.ui_click_until_disappear(self.I_AB_CLOSE_RED, interval=3)
                         return False
-                else:
+                    self.switch_difficulty(True)  # 打过了切换到极
+                else:  # 普通地鬼且没有开启打60级
                     self.ui_click_until_disappear(self.I_AB_CLOSE_RED, interval=3)
                     return False
-                # 切换到 极地鬼
-            self.switch_difficulty(True)
 
             # 调整悬赏层数
             match reward_floor:
