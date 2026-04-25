@@ -45,33 +45,33 @@ class GameUiAssets:
 
 	# Image Rule Assets
 	# 探索界面标识 
-	I_CHECK_EXPLORATION = RuleImage(roi_front=(1146,175,21,22), roi_back=(1146,175,21,22), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_exploration.png")
+	I_CHECK_EXPLORATION = RuleImage(roi_front=(1152,148,21,22), roi_back=(1152,148,21,22), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_exploration.png")
 	# 探索前往觉醒 
-	I_EXPLORATION_GOTO_AWAKE_ZONE = RuleImage(roi_front=(57,628,57,61), roi_back=(33,619,113,79), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_awake_zone.png")
+	I_EXPLORATION_GOTO_AWAKE_ZONE = RuleImage(roi_front=(161,633,47,44), roi_back=(33,619,1150,99), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_awake_zone.png")
 	# 探索前往御魂 
-	I_EXPLORATION_GOTO_SOUL_ZONE = RuleImage(roi_front=(159,633,55,55), roi_back=(138,620,89,75), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_soul_zone.png")
+	I_EXPLORATION_GOTO_SOUL_ZONE = RuleImage(roi_front=(69,633,46,39), roi_back=(33,619,1150,99), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_soul_zone.png")
 	# 探索前往结界突破 
-	I_EXPLORATION_GOTO_REALM_RAID = RuleImage(roi_front=(248,636,67,48), roi_back=(229,612,203,87), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_realm_raid.png")
+	I_EXPLORATION_GOTO_REALM_RAID = RuleImage(roi_front=(354,636,49,38), roi_back=(33,619,1150,99), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_realm_raid.png")
 	# 探索前往御灵 
-	I_EXPLORATION_GOTO_GORYOU_REALM = RuleImage(roi_front=(353,639,47,45), roi_back=(346,626,178,67), threshold=0.7, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_goryou_realm.png")
+	I_EXPLORATION_GOTO_GORYOU_REALM = RuleImage(roi_front=(353,639,47,45), roi_back=(33,619,1150,99), threshold=0.7, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_goryou_realm.png")
 	# 探索前往式神委派 
-	I_EXPLORATION_GOTO_DELEGATION = RuleImage(roi_front=(445,638,60,50), roi_back=(445,638,180,50), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_delegation.png")
+	I_EXPLORATION_GOTO_DELEGATION = RuleImage(roi_front=(448,634,54,39), roi_back=(33,619,1150,99), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_delegation.png")
 	# 探索前往秘闻 
-	I_EXPLORATION_GOTO_SECRET_ZONES = RuleImage(roi_front=(546,628,61,55), roi_back=(524,614,200,87), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_secret_zones.png")
+	I_EXPLORATION_GOTO_SECRET_ZONES = RuleImage(roi_front=(546,635,51,42), roi_back=(33,619,1150,99), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_secret_zones.png")
 	# 探索前往英杰试炼 
-	I_EXPLORATION_GOTO_HERO_TEST = RuleImage(roi_front=(837,630,58,56), roi_back=(7,605,1272,113), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_hero_test.png")
+	I_EXPLORATION_GOTO_HERO_TEST = RuleImage(roi_front=(837,630,58,56), roi_back=(33,619,1150,99), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_hero_test.png")
 	# 探索前往地域鬼王 
-	I_EXPLORATION_GOTO_AREA_BOSS = RuleImage(roi_front=(640,638,51,45), roi_back=(640,638,180,45), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_area_boss.png")
+	I_EXPLORATION_GOTO_AREA_BOSS = RuleImage(roi_front=(642,638,50,38), roi_back=(33,619,1150,99), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_area_boss.png")
 	# 探索前往平安奇谭 
-	I_EXPLORATION_GOTO_HEIAN_KITAN = RuleImage(roi_front=(739,643,52,44), roi_back=(739,643,180,44), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_heian_kitan.png")
+	I_EXPLORATION_GOTO_HEIAN_KITAN = RuleImage(roi_front=(739,643,52,44), roi_back=(33,619,1150,99), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_heian_kitan.png")
 	# 探索前往六道之门 
-	I_EXPLORATION_GOTO_SIX_GATES = RuleImage(roi_front=(840,638,54,48), roi_back=(54,617,961,83), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_six_gates.png")
+	I_EXPLORATION_GOTO_SIX_GATES = RuleImage(roi_front=(840,638,54,48), roi_back=(33,619,1150,99), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_six_gates.png")
 	# 探索前往契灵之境 
-	I_EXPLORATION_GOTO_BONDLING_FAIRYLAND = RuleImage(roi_front=(940,634,52,47), roi_back=(55,621,954,68), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_bondling_fairyland.png")
-	# 觉醒页面标志 
-	I_CHECK_AWAKE = RuleImage(roi_front=(376,565,73,82), roi_back=(376,565,73,82), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_awake.png")
-	# 八岐大蛇页面标志 
-	I_CHECK_SOUL_ZONES = RuleImage(roi_front=(49,186,298,237), roi_back=(49,186,298,237), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_soul_zones.png")
+	I_EXPLORATION_GOTO_BONDLING_FAIRYLAND = RuleImage(roi_front=(940,634,52,47), roi_back=(33,619,1150,99), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_exploration_goto_bondling_fairyland.png")
+	# 觉醒页面标志(必须在下方,觉醒页面有动画加载) 
+	I_CHECK_AWAKE = RuleImage(roi_front=(165,533,39,45), roi_back=(115,521,201,120), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_awake.png")
+	# 八岐大蛇页面标志(同觉醒逻辑back固定刚好等待加载动画) 
+	I_CHECK_SOUL_ZONES = RuleImage(roi_front=(1188,635,48,46), roi_back=(1158,616,103,93), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_soul_zones.png")
 	# 个人突破页面标志 
 	I_CHECK_REALM_RAID = RuleImage(roi_front=(129,632,52,48), roi_back=(66,526,233,188), threshold=0.7, method="Template matching", file="./tasks/GameUi/page/page_check_realm_raid.png")
 	# 英杰试炼页面标志 

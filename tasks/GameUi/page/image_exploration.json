@@ -2,8 +2,8 @@
   {
     "itemName": "check_exploration",
     "imageName": "page_check_exploration.png",
-    "roiFront": "1146,175,21,22",
-    "roiBack": "1146,175,21,22",
+    "roiFront": "1152,148,21,22",
+    "roiBack": "1152,148,21,22",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索界面标识"
@@ -11,8 +11,8 @@
   {
     "itemName": "exploration_goto_awake_zone",
     "imageName": "page_exploration_goto_awake_zone.png",
-    "roiFront": "57,628,57,61",
-    "roiBack": "33,619,113,79",
+    "roiFront": "161,633,47,44",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索前往觉醒"
@@ -20,8 +20,8 @@
   {
     "itemName": "exploration_goto_soul_zone",
     "imageName": "page_exploration_goto_soul_zone.png",
-    "roiFront": "159,633,55,55",
-    "roiBack": "138,620,89,75",
+    "roiFront": "69,633,46,39",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索前往御魂"
@@ -29,8 +29,8 @@
   {
     "itemName": "exploration_goto_realm_raid",
     "imageName": "page_exploration_goto_realm_raid.png",
-    "roiFront": "248,636,67,48",
-    "roiBack": "229,612,203,87",
+    "roiFront": "354,636,49,38",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索前往结界突破"
@@ -39,7 +39,7 @@
     "itemName": "exploration_goto_goryou_realm",
     "imageName": "page_exploration_goto_goryou_realm.png",
     "roiFront": "353,639,47,45",
-    "roiBack": "346,626,178,67",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.7,
     "description": "探索前往御灵"
@@ -47,8 +47,8 @@
   {
     "itemName": "exploration_goto_delegation",
     "imageName": "page_exploration_goto_delegation.png",
-    "roiFront": "445,638,60,50",
-    "roiBack": "445,638,180,50",
+    "roiFront": "448,634,54,39",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索前往式神委派"
@@ -56,8 +56,8 @@
   {
     "itemName": "exploration_goto_secret_zones",
     "imageName": "page_exploration_goto_secret_zones.png",
-    "roiFront": "546,628,61,55",
-    "roiBack": "524,614,200,87",
+    "roiFront": "546,635,51,42",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索前往秘闻"
@@ -66,7 +66,7 @@
     "itemName": "exploration_goto_hero_test",
     "imageName": "page_exploration_goto_hero_test.png",
     "roiFront": "837,630,58,56",
-    "roiBack": "7,605,1272,113",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索前往英杰试炼"
@@ -74,8 +74,8 @@
   {
     "itemName": "exploration_goto_area_boss",
     "imageName": "page_exploration_goto_area_boss.png",
-    "roiFront": "640,638,51,45",
-    "roiBack": "640,638,180,45",
+    "roiFront": "642,638,50,38",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索前往地域鬼王"
@@ -84,7 +84,7 @@
     "itemName": "exploration_goto_heian_kitan",
     "imageName": "page_exploration_goto_heian_kitan.png",
     "roiFront": "739,643,52,44",
-    "roiBack": "739,643,180,44",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索前往平安奇谭"
@@ -93,7 +93,7 @@
     "itemName": "exploration_goto_six_gates",
     "imageName": "page_exploration_goto_six_gates.png",
     "roiFront": "840,638,54,48",
-    "roiBack": "54,617,961,83",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索前往六道之门"
@@ -102,7 +102,7 @@
     "itemName": "exploration_goto_bondling_fairyland",
     "imageName": "page_exploration_goto_bondling_fairyland.png",
     "roiFront": "940,634,52,47",
-    "roiBack": "55,621,954,68",
+    "roiBack": "33,619,1150,99",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索前往契灵之境"
@@ -110,20 +110,20 @@
   {
     "itemName": "check_awake",
     "imageName": "page_check_awake.png",
-    "roiFront": "376,565,73,82",
-    "roiBack": "376,565,73,82",
+    "roiFront": "165,533,39,45",
+    "roiBack": "115,521,201,120",
     "method": "Template matching",
     "threshold": 0.8,
-    "description": "觉醒页面标志"
+    "description": "觉醒页面标志(必须在下方,觉醒页面有动画加载)"
   },
   {
     "itemName": "check_soul_zones",
     "imageName": "page_check_soul_zones.png",
-    "roiFront": "49,186,298,237",
-    "roiBack": "49,186,298,237",
+    "roiFront": "1188,635,48,46",
+    "roiBack": "1158,616,103,93",
     "method": "Template matching",
     "threshold": 0.8,
-    "description": "八岐大蛇页面标志"
+    "description": "八岐大蛇页面标志(同觉醒逻辑back固定刚好等待加载动画)"
   },
   {
     "itemName": "check_realm_raid",
