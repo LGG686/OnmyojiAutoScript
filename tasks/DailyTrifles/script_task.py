@@ -185,6 +185,9 @@ class ScriptTask(GameUi, Summon, DailyTriflesAssets):
         self.config.daily_trifles.done_record.luck_msg_dt = datetime.now()
 
     def run_store(self):
+        if self.check_store_all_done():
+            logger.info('Store all done, skip')
+            return
         self.goto_page(page_mall, confirm_wait=3)
         if self.config.daily_trifles.trifles_config.store_sign:
             self.run_store_sign()
@@ -329,6 +332,14 @@ class ScriptTask(GameUi, Summon, DailyTriflesAssets):
         # 如果时间在20:00-23:59之间则设定时间为次日 12 时
         else:
             self.custom_next_run(task='DailyTrifles', custom_time=Time(12, 0), time_delta=1)
+
+    def check_store_all_done(self) -> bool:
+        """判断商店任务是否都做完了, 做完了则不再进入商店"""
+        if self.config.daily_trifles.trifles_config.store_sign and not self.config.daily_trifles.today_is_done('store_sign'):
+            return False
+        if self.config.daily_trifles.trifles_config.buy_sushi_count > 0 and not self.config.daily_trifles.today_is_done('sushi'):
+            return False
+        return True
 
 
 if __name__ == '__main__':

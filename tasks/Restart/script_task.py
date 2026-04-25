@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 # @author runhey
 # github https://github.com/runhey
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from module.exception import TaskEnd
 from module.logger import logger
@@ -29,12 +29,14 @@ class ScriptTask(BaseTask):
     def app_start(self):
         logger.hr('App start')
         self.device.app_start()
+        self.device.wait_app_start_ready()
         LoginService(config=self.config, device=self.device).app_handle_login()
 
     def app_restart(self):
         logger.hr('App restart')
         self.device.app_stop()
         self.device.app_start()
+        self.device.wait_app_start_ready()
         LoginService(config=self.config, device=self.device).app_handle_login()
         self.set_next_run(task='Restart', success=True, finish=True, server=True)
 

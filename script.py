@@ -447,7 +447,10 @@ class Script:
                 del_cached_property(self, 'config')
                 continue
 
-            self.runtime.prepare_task_execution(task)
+            if not self.runtime.prepare_task_execution(task):
+                logger.warning(f'Runtime preparation for `{task}` failed, reload config and retry scheduling')
+                del_cached_property(self, 'config')
+                continue
 
             # Run
             logger.info(f'Scheduler: Start task `{task}`')

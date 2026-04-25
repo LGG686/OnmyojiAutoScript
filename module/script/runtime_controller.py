@@ -119,36 +119,50 @@ class ScriptRuntimeController:
 
         _ = self.device
 
-    def _start_game_and_login(self) -> None:
+    def _run_restart_recovery(self, reason: str) -> bool:
         """
-        启动游戏并执行登录流程。
+        通过 `Restart` 任务恢复游戏运行环境。
+
+        Args:
+            reason: 触发恢复的原因说明。
+
+        Returns:
+            bool: True 表示恢复成功；False 表示恢复失败。
         """
-        from tasks.Component.Login.service import LoginService
+        logger.info(reason)
+        if not self.script.run('Restart'):
+            logger.warning('Restart task failed during runtime recovery')
+            return False
 
-        logger.info('Start app and handle login')
-        self.device.app_start()
-        self.device.wait_app_start_ready()
-        LoginService(config=self.config, device=self.device).app_handle_login()
+        if not self.device.app_is_running():
+            logger.warning('Game is still not running after Restart recovery')
+            return False
 
-    def _ensure_game_running(self, require_main: bool = False) -> None:
+        return True
+
+    def _ensure_game_running(self, require_main: bool = False) -> bool:
         """
         确保模拟器和游戏都处于运行状态。
 
         Args:
             require_main: 是否要求额外回到游戏主界面。
+
+        Returns:
+            bool: True 表示状态已满足；False 表示恢复失败。
         """
         self._ensure_emulator_running('Wake emulator before ensuring game state')
 
         if not self.device.app_is_running():
-            logger.info('Game is not running, start it now')
-            self._start_game_and_login()
-            return
+            if not self._run_restart_recovery('Game is not running, recover it via Restart'):
+                return False
 
         if require_main:
             logger.info('Ensure game stays at main page during wait')
-            self.script.run('GotoMain')
+            return self.script.run('GotoMain')
 
-    def _ensure_game_closed(self) -> None:
+        return True
+
+    def _ensure_game_closed(self) -> bool:
         """
         确保模拟器已启动，但游戏处于关闭状态。
         """
@@ -156,48 +170,53 @@ class ScriptRuntimeController:
         if self.device.app_is_running():
             logger.info('Ensure game is closed during wait')
             self.device.app_stop()
-            return
+            return True
 
         logger.info('Game is already closed during wait')
+        return True
 
-    def _prepare_idle_goto_main(self) -> None:
+    def _prepare_idle_goto_main(self) -> bool:
         """
         将空闲状态调整为“模拟器开启、游戏运行且位于主界面”。
         """
-        self._ensure_game_running(require_main=True)
+        return self._ensure_game_running(require_main=True)
 
-    def _prepare_idle_close_game(self) -> None:
+    def _prepare_idle_close_game(self) -> bool:
         """
         将空闲状态调整为“模拟器开启、游戏关闭”。
         """
-        self._ensure_game_closed()
+        return self._ensure_game_closed()
 
-    def _prepare_idle_keep_game_running(self) -> None:
+    def _prepare_idle_keep_game_running(self) -> bool:
         """
         将空闲状态调整为“模拟器开启、游戏运行”。
         """
-        self._ensure_game_running(require_main=False)
+        return self._ensure_game_running(require_main=False)
 
-    def prepare_task_execution(self, task: str) -> None:
+    def prepare_task_execution(self, task: str) -> bool:
         """
         在任务真正执行前补齐运行环境。
 
         Args:
             task: 即将执行的任务名，使用调度器中的下划线命名。
+
+        Returns:
+            bool: True 表示运行环境已就绪；False 表示恢复失败，应中断当前轮次。
         """
         self._ensure_emulator_running('Wake emulator before running task')
 
         if task == 'Restart':
-            return
+            return True
 
         if not self.device.app_is_running():
-            logger.info(f'Game is not running before task `{task}`, start it now')
-            self._start_game_and_login()
+            return self._run_restart_recovery(f'Game is not running before task `{task}`, recover it via Restart')
+
+        return True
 
     def _wait_until_with_emulator_preheat(
         self,
         next_run: datetime,
-        on_wake: Callable[[], None] | None = None
+        on_wake: Callable[[], bool] | None = None
     ) -> bool:
         """
         在等待下个任务期间处理模拟器预热。
@@ -223,7 +242,8 @@ class ScriptRuntimeController:
             logger.info('Wake emulator before next task')
             self._ensure_emulator_running()
             if on_wake is not None:
-                on_wake()
+                if not on_wake():
+                    return False
             break
 
         if datetime.now() < next_run:
@@ -265,11 +285,13 @@ class ScriptRuntimeController:
             bool: True 表示等待完成；False 表示等待被配置刷新打断。
         """
         if self._should_close_game_during_wait(next_run):
-            self._prepare_idle_close_game()
+            if not self._prepare_idle_close_game():
+                return False
             self.device.release_during_wait()
             return self.script.wait_until(next_run)
 
-        self._prepare_idle_keep_game_running()
+        if not self._prepare_idle_keep_game_running():
+            return False
         self.device.release_during_wait()
         return self.script.wait_until(next_run)
 
@@ -283,7 +305,8 @@ class ScriptRuntimeController:
         Returns:
             bool: True 表示等待完成；False 表示等待被配置刷新打断。
         """
-        self._prepare_idle_goto_main()
+        if not self._prepare_idle_goto_main():
+            return False
         self.device.release_during_wait()
         return self.script.wait_until(next_run)
 
@@ -323,7 +346,7 @@ class ScriptRuntimeController:
         self,
         next_run: datetime,
         fallback_waiter: Callable[[datetime], bool],
-        on_wake: Callable[[], None]
+        on_wake: Callable[[], bool]
     ) -> bool:
         """
         处理带“关闭模拟器”语义的空闲等待策略。
