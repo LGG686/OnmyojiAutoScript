@@ -243,13 +243,13 @@ class GameUi(BaseTask, GameUiAssets):
             return None
 
         self.maybe_screenshot(skip_first_screenshot)
-        self._prepare_page_rule_image_cache(pages)
+        GameUi._prepare_page_rule_image_cache(self, pages)
         indexed_candidates = [(index, page) for index, page in enumerate(pages) if self.match_page_once(page)]
         if not indexed_candidates:
             return None
 
         self.screenshot()
-        self._prepare_page_rule_image_cache([page for _, page in indexed_candidates])
+        GameUi._prepare_page_rule_image_cache(self, [page for _, page in indexed_candidates])
         for page in sort_pages_by_priority(indexed_candidates):
             if self.match_page_once(page):
                 self.navigator.current_page = page
