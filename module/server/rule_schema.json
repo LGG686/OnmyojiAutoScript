@@ -1,0 +1,61 @@
+{
+  "image": {
+    "fields": {
+      "itemName": {"type": "string", "default": "new"},
+      "imageName": {"type": "string", "auto": true},
+      "method": {"type": "string", "default": "Template matching"},
+      "threshold": {"type": "number", "default": 0.8},
+      "roiFront": {"type": "roi", "default": "0,0,100,100"},
+      "roiBack": {"type": "roi", "default": "0,0,100,100"},
+      "description": {"type": "string", "default": ""}
+    }
+  },
+  "ocr": {
+    "fields": {
+      "itemName": {"type": "string", "default": "new"},
+      "roiFront": {"type": "roi", "default": "0,0,100,100"},
+      "roiBack": {"type": "roi", "default": "0,0,100,100"},
+      "mode": {"type": "enum", "options": ["Single", "Full", "Digit", "DigitCounter", "Duration"], "default": "Single"},
+      "method": {"type": "string", "default": "Default"},
+      "keyword": {"type": "string", "default": ""},
+      "description": {"type": "string", "default": ""}
+    }
+  },
+  "click": {
+    "fields": {
+      "itemName": {"type": "string", "default": "new"},
+      "roiFront": {"type": "roi", "default": "0,0,100,100"},
+      "roiBack": {"type": "roi", "default": "0,0,100,100"},
+      "description": {"type": "string", "default": ""}
+    }
+  },
+  "swipe": {
+    "fields": {
+      "itemName": {"type": "string", "default": "new"},
+      "roiFront": {"type": "roi", "default": "0,0,100,100"},
+      "roiBack": {"type": "roi", "default": "0,0,100,100"},
+      "mode": {"type": "enum", "options": ["default", "vector"], "default": "default"},
+      "description": {"type": "string", "default": ""}
+    }
+  },
+  "long_click": {
+    "fields": {
+      "itemName": {"type": "string", "default": "new"},
+      "roiFront": {"type": "roi", "default": "0,0,100,100"},
+      "roiBack": {"type": "roi", "default": "0,0,100,100"},
+      "duration": {"type": "number", "default": 1000},
+      "description": {"type": "string", "default": ""}
+    }
+  },
+  "list": {
+    "fields": {
+      "itemName": {"type": "string", "default": "new"},
+      "roiFront": {"type": "roi", "default": "0,0,100,100"},
+      "type": {"type": "enum", "options": ["image", "ocr"], "default": "image"},
+      "description": {"type": "string", "default": ""},
+      "direction": {"type": "enum", "options": ["vertical", "horizontal"], "default": "vertical"},
+      "roiBack": {"type": "roi", "default": "0,0,100,100"},
+      "name": {"type": "string", "default": "list_name"}
+    }
+  }
+}

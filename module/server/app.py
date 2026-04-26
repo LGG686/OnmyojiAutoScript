@@ -76,6 +76,9 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
+from module.server.setting import State
+State.init()
+
 def fastapi_app():
     parser = argparse.ArgumentParser(description="OAS web service")
     parser.add_argument(

@@ -1323,7 +1323,7 @@ class AnnotatorManager:
             "generate_status": generate_status,
             "error": generate_error,
             "target_json": str(target_json.relative_to(PROJECT_ROOT).as_posix()),
-            "assets_file": str((task_root / "assets.py").relative_to(PROJECT_ROOT).as_posix()),
+            "assets_path": str((task_root / "assets.py").resolve().as_posix()),
             "rule_count": rule_count,
         }
 
