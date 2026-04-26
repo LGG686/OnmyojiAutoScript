@@ -77,7 +77,11 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 
 from module.server.setting import State
-State.init()
+# Reinitialize MainManager after State init to ensure config loading
+import importlib
+mm_module = importlib.import_module('module.server.main_manager')
+mm_module.mm = mm_module.MainManager()
+
 
 def fastapi_app():
     parser = argparse.ArgumentParser(description="OAS web service")
