@@ -35,6 +35,7 @@ for i in range(1, 13):
         'I_LOCAL': f'I_LOCAL_{i}',
         'I_EXIT': f'I_EXIT_{i}',
         'I_FRIENDS': f'I_FRIENDS_{i}',
+        'I_BATTLE_INFO': f'I_BATTLE_INFO_{i}',
     }
     if i == 8:  # 特殊处理第8项
         entry.update({
