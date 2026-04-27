@@ -78,7 +78,7 @@
   "on_takeover_help": "退出:立即退出\n结束:等待战斗结束或超时则退出",
   "battle_timeout": "战斗超时时间",
   "battle_timeout_global_help": "单位秒",
-  "battle_timeout_help": "单位秒",
+  "battle_timeout_help": "单位秒,-1表示按照全局战斗配置,超时则自动退出对局",
   "same_server": "同区",
   "different_server": "跨区",
   "green_mark_type": "绿标类型",
@@ -92,5 +92,15 @@
   "dokan_owner_switch_soul": "馆主切换御魂配置",
   "costume_battle_13": "登云问翠",
   "costume_battle_default": "简约主题",
-  "costume_shikigami_9": "眠鹿之森"
+  "costume_shikigami_9": "眠鹿之森",
+  "ap_battle_conf": "体力战斗配置",
+  "pass_battle_conf": "门票战斗配置",
+  "boss_battle_conf": "首领战斗配置",
+  "ap100_battle_conf": "100体战斗配置",
+  "pass_limit": "门票爬塔次数限制",
+  "ap_limit": "体力爬塔次数限制",
+  "ap100_limit": "100体爬塔次数限制",
+  "boss_limit": "首领爬塔次数限制",
+  "run_sequence": "运行顺序",
+  "random_sleep": "随机休息"
 }

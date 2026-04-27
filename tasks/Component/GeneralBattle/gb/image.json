@@ -147,7 +147,7 @@
     "itemName": "exit",
     "imageName": "gb_exit.png",
     "roiFront": "14,12,43,41",
-    "roiBack": "14,12,43,41",
+    "roiBack": "0,0,91,83",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "左上角的退出"

@@ -3,15 +3,15 @@
     "itemName": "fire",
     "roiFront": "962,529,308,171",
     "roiBack": "964,530,309,171",
-    "mode": "Single",
+    "mode": "Full",
     "method": "Default",
     "keyword": "挑战",
     "description": "挑战"
   },
   {
     "itemName": "remain_ap",
-    "roiFront": "921,15,95,34",
-    "roiBack": "921,15,95,34",
+    "roiFront": "726,25,95,34",
+    "roiBack": "726,25,95,34",
     "mode": "DigitCounter",
     "method": "Default",
     "keyword": "",
@@ -19,8 +19,8 @@
   },
   {
     "itemName": "remain_pass",
-    "roiFront": "926,18,88,31",
-    "roiBack": "926,18,88,31",
+    "roiFront": "1117,26,88,31",
+    "roiBack": "1117,26,88,31",
     "mode": "DigitCounter",
     "method": "Default",
     "keyword": "",
@@ -64,11 +64,11 @@
   },
   {
     "itemName": "enter_ap100",
-    "roiFront": "73,98,95,32",
-    "roiBack": "5,79,256,108",
+    "roiFront": "67,195,95,32",
+    "roiBack": "5,79,265,284",
     "mode": "Single",
     "method": "Default",
-    "keyword": "将魂试炼",
+    "keyword": "雪山修行",
     "description": "进入100体活动标识"
   }
 ]

@@ -50,7 +50,6 @@ class GameUi(BaseTask, GameUiAssets):
         GameUiAssets.I_SIX_GATES_GOTO_EXPLORATION,
         GlobalGameAssets.I_UI_BACK_YELLOW,
         SixRealmsAssets.I_EXIT_SIXREALMS,
-        ActivityShikigamiAssets.I_RED_EXIT,
         GlobalGameAssets.I_UI_BACK_BLUE,
     ]
 

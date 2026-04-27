@@ -1,21 +1,12 @@
 [
   {
-    "itemName": "shi",
-    "imageName": "as_shi.png",
-    "roiFront": "1183,382,44,25",
+    "itemName": "main_goto_act",
+    "imageName": "as_main_goto_act.png",
+    "roiFront": "1185,303,44,25",
     "roiBack": "1164,134,83,393",
     "method": "Template matching",
     "threshold": 0.7,
-    "description": "进入活动"
-  },
-  {
-    "itemName": "back_green",
-    "imageName": "as_back_green.png",
-    "roiFront": "27,19,34,38",
-    "roiBack": "2,1,170,75",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "左上角返回"
+    "description": "庭院进入活动"
   },
   {
     "itemName": "skip_button",
@@ -27,19 +18,10 @@
     "description": "右上跳过按钮"
   },
   {
-    "itemName": "red_exit",
-    "imageName": "as_red_exit.png",
-    "roiFront": "1162,96,39,38",
-    "roiBack": "939,49,291,166",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "红色退出"
-  },
-  {
     "itemName": "to_battle_main",
     "imageName": "as_to_battle_main.png",
-    "roiFront": "656,334,39,176",
-    "roiBack": "551,278,238,269",
+    "roiFront": "444,223,39,139",
+    "roiBack": "367,166,238,269",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "进入主要的战斗界面"
@@ -47,20 +29,11 @@
   {
     "itemName": "to_battle_boss",
     "imageName": "as_to_battle_boss.png",
-    "roiFront": "863,244,37,136",
-    "roiBack": "816,157,234,327",
+    "roiFront": "1079,186,37,136",
+    "roiBack": "971,91,234,327",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "点击进入boss战斗页面"
-  },
-  {
-    "itemName": "check_battle_main",
-    "imageName": "as_check_battle_main.png",
-    "roiFront": "1149,596,81,77",
-    "roiBack": "865,508,415,203",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "description"
   },
   {
     "itemName": "check_battle_boss",
@@ -74,20 +47,20 @@
   {
     "itemName": "battle_main_to_records",
     "imageName": "as_battle_main_to_records.png",
-    "roiFront": "1016,563,39,42",
-    "roiBack": "674,539,448,142",
+    "roiFront": "1027,557,39,42",
+    "roiBack": "674,539,439,157",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "从main进入到式神录"
   },
   {
-    "itemName": "to_battle_main_2",
-    "imageName": "as_to_battle_main_2.png",
-    "roiFront": "15,94,247,38",
-    "roiBack": "2,68,311,100",
+    "itemName": "as_to_pass",
+    "imageName": "as_as_to_pass.png",
+    "roiFront": "575,267,38,35",
+    "roiBack": "273,141,759,475",
     "method": "Template matching",
     "threshold": 0.65,
-    "description": "description"
+    "description": "进入门票活动的按钮"
   },
   {
     "itemName": "confirm_skip",
@@ -106,5 +79,50 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": ""
+  },
+  {
+    "itemName": "as_check_main_2",
+    "imageName": "as_as_check_main_2.png",
+    "roiFront": "566,10,151,36",
+    "roiBack": "505,0,256,92",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "活动页2标志"
+  },
+  {
+    "itemName": "as_open_eye",
+    "imageName": "as_as_open_eye.png",
+    "roiFront": "1198,300,60,54",
+    "roiBack": "1146,253,134,217",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "打开眼睛按钮"
+  },
+  {
+    "itemName": "as_locate",
+    "imageName": "as_as_locate.png",
+    "roiFront": "1212,394,34,36",
+    "roiBack": "1146,253,134,217",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "活动定位按钮"
+  },
+  {
+    "itemName": "as_close_eye",
+    "imageName": "as_as_close_eye.png",
+    "roiFront": "1197,297,63,57",
+    "roiBack": "1146,253,134,217",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "关闭眼睛按钮"
+  },
+  {
+    "itemName": "to_battle_ap",
+    "imageName": "as_to_battle_ap.png",
+    "roiFront": "825,321,39,139",
+    "roiBack": "720,255,238,269",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "活动主界面进入体力爬塔标志"
   }
 ]

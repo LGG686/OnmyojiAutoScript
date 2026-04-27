@@ -4,7 +4,7 @@
 import random
 import time
 from cached_property import cached_property
-from tasks.ActivityShikigami.page import page_climb_act
+from tasks.ActivityShikigami.page import page_act
 
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.page import page_realm_raid, page_main
@@ -70,7 +70,7 @@ class ScriptTask(GameUi, QuizAssets, ActivityShikigamiAssets, Debugger):
         raise TaskEnd('Quiz')
 
     def enter(self):
-        self.goto_page(page_climb_act)
+        self.goto_page(page_act)
         while True:
             self.screenshot()
             if self.appear(self.I_START):
