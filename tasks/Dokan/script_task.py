@@ -155,6 +155,7 @@ class ScriptTask(GameUi, SwitchSoul, GeneralBattle, DokanAssets):
             self.I_RYOU_DOKAN_FAILED_VOTE_BATTLE_AGAIN,
             self.I_RYOU_DOKAN_TODAY_ATTACK_COUNT,
             self.I_RYOU_DOKAN_REMAIN_ATTACK_COUNT_DONE,
+            self.I_DOKAN_BOSS_WAITING
         ])
         if self.appear(self.I_RYOU_DOKAN_GATHERING):  # 正在集结
             logger.debug(f"Dokan is gathering...")
@@ -163,7 +164,8 @@ class ScriptTask(GameUi, SwitchSoul, GeneralBattle, DokanAssets):
             self.device.click_record_clear()
             self.device.stuck_record_clear()
             return
-        if self.appear(self.I_RYOU_DOKAN_MASTER_BATTLE) and self.appear(self.I_RYOU_DOKAN_START_CHALLENGE):  # 馆主可挑战
+        if not self.appear(self.I_DOKAN_BOSS_WAITING) and self.appear(self.I_RYOU_DOKAN_MASTER_BATTLE) and \
+                self.appear(self.I_RYOU_DOKAN_START_CHALLENGE):  # 馆主可挑战
             count = self.conf.attack_count_config.attack_dokan_master_count()
             first_master_killed = False
             if self._battle_context is not None:

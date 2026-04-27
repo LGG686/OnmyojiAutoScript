@@ -34,9 +34,10 @@ page_dokan.connect(page_dokan_map,
                             success_index=1),
                    key="page_dokan->page_dokan_map")
 page_dokan_map.connect(page_dokan, action=map_enter_dokan, key="page_dokan_map->page_dokan")
-
-page_dokan.connect(page_shikigami_records, DokanAssets.I_RYOU_DOKAN_SHIKIGAMI, key="page_dokan->page_shikigami_records")
-page_shikigami_records.connect(page_dokan, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_shikigami_records->page_dokan", cost=2)
+# 道馆->道馆地图->神社->寮->庭院  导航器会误认为(道馆->式神录->庭院)返回庭院最快, 增加花费可以减少惩罚纠错过程
+page_dokan.connect(page_shikigami_records, DokanAssets.I_RYOU_DOKAN_SHIKIGAMI, key="page_dokan->page_shikigami_records", cost=4)
+# 庭院->寮->神社->道馆地图->道馆  导航器会误认为(庭院->式神录->道馆)进入道馆最快, 同理需要增加花费
+page_shikigami_records.connect(page_dokan, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_shikigami_records->page_dokan", cost=4)
 
 
 def priority_enter_dokan(task) -> bool:
