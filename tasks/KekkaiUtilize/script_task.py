@@ -31,7 +31,6 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
     utilize_add_count = 0
     ap_max_num = 0
     jade_max_num = 0
-    first_utilize = True
 
     def run(self):
         con = self.config.kekkai_utilize.utilize_config
@@ -129,46 +128,37 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
         timer_check = Timer(2)
         timer_check.start()
         click_ap = False
-        while 1:
+        while True:
             self.screenshot()
-
-            # 获得奖励
             if self.ui_reward_appear_click():
                 timer_check.reset()
                 continue
-
             if timer_check.reached():
                 return False
-
             if click_ap and not self.appear(self.I_GUILD_AP) and not self.appear(self.I_UI_REWARD):
                 return True
-
             # 关闭展开的寮活动横幅
             if self.appear_then_click(self.I_GUILD_EXPAND):
                 timer_check.reset()
                 continue
-
             # 资金收取确认
             if self.appear_then_click(self.I_GUILD_ASSETS_RECEIVE, interval=1):
                 time.sleep(1)
                 timer_check.reset()
                 continue
-
             # 收资金
             if self.appear_then_click(self.I_GUILD_ASSETS, interval=1.5, threshold=0.6):
                 timer_check.reset()
                 continue
-
             # 收体力
             if self.appear_then_click(self.I_GUILD_AP, interval=1):
                 # 等待1秒，看到获得奖励
                 time.sleep(1)
-                logger.info('appear_click guild_ap success')
-                if self.ui_reward_appear_click(True):
-                    logger.info('appear_click reward success')
-                    click_ap = True
-                    timer_check.reset()
+                click_ap = True
+                timer_check.reset()
+                self.device.click_record_clear()
                 continue
+        return False
 
     def check_box_ap_or_exp(self, ap_enable: bool = True, exp_enable: bool = True, exp_waste: bool = True) -> bool:
         """
@@ -352,17 +342,17 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
         :return:
         """
         logger.hr('Start utilize')
-        if self.first_utilize:
+        # 不管什么时候进来都要切换刷新列表(同区与跨区保持一致先切换滑动再切换)
+        if friend == SelectFriendList.SAME_SERVER:
+            self.switch_friend_list(SelectFriendList.SAME_SERVER)
             self.swipe(self.S_U_END, interval=3)
-            self.first_utilize = False
-            if friend == SelectFriendList.SAME_SERVER:
-                self.switch_friend_list(SelectFriendList.DIFFERENT_SERVER)
-                self.switch_friend_list(SelectFriendList.SAME_SERVER)
-            else:
-                self.switch_friend_list(SelectFriendList.SAME_SERVER)
-                self.switch_friend_list(SelectFriendList.DIFFERENT_SERVER)
-        else:
-            self.switch_friend_list(friend)
+            self.switch_friend_list(SelectFriendList.DIFFERENT_SERVER)
+            self.switch_friend_list(SelectFriendList.SAME_SERVER)
+        else:  # 跨区必须切换两次, 否则结界卡不刷新到头部
+            self.switch_friend_list(SelectFriendList.DIFFERENT_SERVER)
+            self.swipe(self.S_U_END, interval=3)
+            self.switch_friend_list(SelectFriendList.SAME_SERVER)
+            self.switch_friend_list(SelectFriendList.DIFFERENT_SERVER)
 
         # --------------- 结界卡选择 ---------------
         if not self._select_optimal_resource_card():
@@ -617,12 +607,10 @@ if __name__ == "__main__":
     from module.config.config import Config
     from module.device.device import Device
 
-    c = Config('switch')
+    c = Config('日常1')
     d = Device(c)
     t = ScriptTask(c, d)
-    for i in range(10):
-        t.perform_swipe_action()
-    t.recive_guild_ap_or_assets()
+    t.run_utilize(SelectFriendList.DIFFERENT_SERVER)
     # t.check_utilize_add()
     # t.check_card_num('勾玉', 67)
     # t.screenshot()
