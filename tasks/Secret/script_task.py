@@ -7,11 +7,10 @@ from datetime import datetime
 
 from module.exception import TaskEnd
 from module.logger import logger
-from module.base.timer import Timer
 from module.atom.ocr import RuleOcr
 
 from tasks.GameUi.game_ui import GameUi
-from tasks.GameUi.page import page_main, page_secret_zones, page_shikigami_records
+from tasks.GameUi.page import page_main, page_secret_zones, page_shikigami_records, page_battle_result, any_of
 from tasks.Secret.config import SecretConfig, Secret
 from tasks.Secret.assets import SecretAssets
 from tasks.Component.GeneralBattle.general_battle import ExitMatcher, GeneralBattle
@@ -42,6 +41,10 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, SecretAssets):
         conf = self.config.model.secret.general_battle
         conf.lock_team_enable = False
         return conf
+
+    def before_run(self):
+        battle_result = self.navigator.resolve_page(page_battle_result)
+        battle_result.recognizer = any_of(self.I_SE_BATTLE_WIN, battle_result.recognizer)
 
     def run(self):
         self.check_time()
@@ -252,31 +255,6 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, SecretAssets):
             if self.appear_then_click(self.I_SE_FIRE, interval=1):
                 continue
 
-    def battle_wait(self, random_click_swipt_enable: bool) -> bool:
-        """TODO: 后续迁移到 GeneralBattle FSM 的 handler 覆盖点。"""
-        # 重写
-        self.device.stuck_record_add('BATTLE_STATUS_S')
-        self.device.click_record_clear()
-        # 战斗过程 随机点击和滑动 防封
-        logger.info("Start battle process")
-        while 1:
-            self.screenshot()
-            if self.appear(self.I_SE_BATTLE_WIN):
-                logger.info('Win battle')
-                self.ui_click_until_disappear(self.I_SE_BATTLE_WIN, interval=2)
-                return True
-            if self.appear_then_click(self.I_WIN, interval=1):
-                continue
-            if self.appear(self.I_REWARD):
-                logger.info('Win battle')
-                self.ui_click_until_disappear(self.I_REWARD)
-                return True
-
-            if self.appear(self.I_FALSE):
-                logger.warning('False battle')
-                self.ui_click_until_disappear(self.I_FALSE)
-                return False
-
     def check_time(self) -> None:
         """
         周一早上不能打
@@ -300,4 +278,3 @@ if __name__ == '__main__':
     t.screenshot()
 
     t.run()
-    # t.find_battle(False)
