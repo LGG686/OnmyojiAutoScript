@@ -2,48 +2,48 @@
   "name": "layer_list",
   "direction": "vertical",
   "type": "ocr",
-  "roiBack": "138,130,359,500",
+  "roiBack": "130,124,64,581",
   "description": "这个是觉醒界面选择不同层数的",
   "list": [
     {
       "itemName": "壹",
-      "roiFront": "281,135,39,102"
+      "roiFront": "130,149,64,98"
     },
     {
       "itemName": "贰",
-      "roiFront": "280,253,39,85"
+      "roiFront": "130,149,64,98"
     },
     {
       "itemName": "叁",
-      "roiFront": "283,422,43,93"
+      "roiFront": "130,149,64,98"
     },
     {
       "itemName": "肆",
-      "roiFront": "280,312,44,90"
+      "roiFront": "130,149,64,98"
     },
     {
       "itemName": "伍",
-      "roiFront": "282,425,43,82"
+      "roiFront": "130,149,64,98"
     },
     {
       "itemName": "陆",
-      "roiFront": "275,316,47,89"
+      "roiFront": "130,149,64,98"
     },
     {
       "itemName": "柒",
-      "roiFront": "279,312,48,93"
+      "roiFront": "130,149,64,98"
     },
     {
       "itemName": "捌",
-      "roiFront": "275,203,51,89"
+      "roiFront": "130,149,64,98"
     },
     {
       "itemName": "玖",
-      "roiFront": "278,206,48,81"
+      "roiFront": "130,149,64,98"
     },
     {
       "itemName": "拾",
-      "roiFront": "282,315,45,84"
+      "roiFront": "130,149,64,98"
     }
   ]
 }
