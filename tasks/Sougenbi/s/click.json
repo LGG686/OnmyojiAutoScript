@@ -1,20 +1,20 @@
 [
   {
     "itemName": "c_greed",
-    "roiFront": "172,144,299,100",
-    "roiBack": "172,144,299,100",
-    "description": "description"
+    "roiFront": "96,110,121,37",
+    "roiBack": "96,110,121,37",
+    "description": "贪-位置"
   },
   {
     "itemName": "c_anger",
-    "roiFront": "165,289,307,100",
-    "roiBack": "165,289,307,100",
-    "description": "description"
+    "roiFront": "93,213,121,37",
+    "roiBack": "93,213,121,37",
+    "description": "嗔-位置"
   },
   {
     "itemName": "c_foolery",
-    "roiFront": "166,435,303,100",
-    "roiBack": "166,435,303,100",
-    "description": "description"
+    "roiFront": "95,316,121,37",
+    "roiBack": "95,316,121,37",
+    "description": "痴-位置"
   }
 ]
