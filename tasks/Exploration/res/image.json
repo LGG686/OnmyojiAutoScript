@@ -2,8 +2,8 @@
   {
     "itemName": "e_exploration_open",
     "imageName": "res_e_exploration_open.png",
-    "roiFront": "1077,248,37,80",
-    "roiBack": "1072,242,47,92",
+    "roiFront": "1091,591,82,66",
+    "roiBack": "867,538,339,165",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "进入难度选择界面"
@@ -11,8 +11,8 @@
   {
     "itemName": "e_exploration_click",
     "imageName": "res_e_exploration_click.png",
-    "roiFront": "898,518,96,42",
-    "roiBack": "898,518,96,42",
+    "roiFront": "1090,599,80,47",
+    "roiBack": "867,541,337,157",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索按钮"
@@ -128,8 +128,8 @@
   {
     "itemName": "exploration_title",
     "imageName": "res_exploration_title.png",
-    "roiFront": "1133,124,47,43",
-    "roiBack": "1133,124,47,43",
+    "roiFront": "1143,109,38,40",
+    "roiBack": "1126,92,74,72",
     "method": "Template matching",
     "threshold": 0.7,
     "description": "妖"
@@ -173,7 +173,7 @@
   {
     "itemName": "treasure_box_click",
     "imageName": "res_treasure_box_click.png",
-    "roiFront": "33,476,70,49",
+    "roiFront": "32,363,51,40",
     "roiBack": "2,130,135,406",
     "method": "Template matching",
     "threshold": 0.7,
@@ -200,8 +200,8 @@
   {
     "itemName": "exp_create_team",
     "imageName": "res_exp_create_team.png",
-    "roiFront": "590,514,122,52",
-    "roiBack": "543,490,192,100",
+    "roiFront": "902,599,79,47",
+    "roiBack": "875,560,134,126",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "组队按钮"

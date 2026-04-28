@@ -12,16 +12,10 @@ import tasks.Exploration.page as pages
 
 class SoloExploration(BaseExploration):
 
-    def before_solo(self):
-        page_exploration = self.navigator.resolve_page(pages.page_exploration)
-        page_exp_entrance = self.navigator.resolve_page(pages.page_exp_entrance)
-        page_exploration.connect(page_exp_entrance, self.open_expect_level, key="page_exploration->page_exp_entrance")
-
     def run_solo(self):
         logger.hr('solo')
         explore_init = False
         search_fail_cnt = 0
-        self.before_solo()
         self.goto_page(pages.page_exp_main)
         while True:
             self.screenshot()
@@ -321,6 +315,7 @@ class SoloExploration(BaseExploration):
 
 
 class ScriptTask(SoloExploration):
+
     def run(self):
         logger.hr('exploration')
         self.pre_process()

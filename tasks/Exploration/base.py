@@ -17,8 +17,9 @@ from tasks.Exploration.config import ChooseRarity, UpType, ExplorationLevel
 from tasks.Component.GeneralBattle.general_battle import GeneralBattle, ExitMatcher
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.matcher import any_of
-from tasks.GameUi.page import page_exploration, page_shikigami_records, page_main
+from tasks.GameUi.page import page_shikigami_records, page_main
 from tasks.Utils.config_enum import ShikigamiClass
+import tasks.Exploration.page as pages
 
 from module.logger import logger
 from module.base.timer import Timer
@@ -63,7 +64,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
 
         if self.appear(self.I_CHECK_EXPLORATION) and not self.appear(self.I_E_SETTINGS_BUTTON):
             return Scene.WORLD
-        elif self.appear(self.I_UI_BACK_RED) and self.appear(self.I_E_EXPLORATION_CLICK):
+        elif self.appear(self.I_E_EXPLORATION_CLICK):
             return Scene.ENTRANCE
         elif self.appear(self.I_E_SETTINGS_BUTTON) or self.appear(self.I_E_AUTO_ROTATE_ON) or self.appear(self.I_E_AUTO_ROTATE_OFF):
             return Scene.MAIN
@@ -102,6 +103,9 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             if con.buff_exp_100_click:
                 self.exp_100()
             self.close_buff()
+        page_exploration = self.navigator.resolve_page(pages.page_exploration)
+        page_exp_entrance = self.navigator.resolve_page(pages.page_exp_entrance)
+        page_exploration.connect(page_exp_entrance, self.open_expect_level, key="page_exploration->page_exp_entrance")
 
     def post_process(self):
         self.goto_page(page_main)
@@ -344,7 +348,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
         boss_timer.start()
         while 1:
             self.screenshot()
-            if self.appear(self.I_UI_BACK_RED) and self.appear(self.I_E_EXPLORATION_CLICK):
+            if self.appear(self.I_E_EXPLORATION_CLICK):
                 break
             if boss_timer.reached():
                 # https://github.com/runhey/OnmyojiAutoScript/issues/548

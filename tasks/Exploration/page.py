@@ -12,21 +12,11 @@ from tasks.GlobalGame.assets import GlobalGameAssets
 
 
 # 探索副本入口：复刻原 Scene.ENTRANCE 的 "两个标志都要命中"，避免和 page_exploration 识别条件重叠
-page_exp_entrance = Page(
-    all_of(GlobalGameAssets.I_UI_BACK_RED, ExplorationAssets.I_E_EXPLORATION_CLICK),
-    category="exploration",
-    priority=75,
-)
+page_exp_entrance = Page(ExplorationAssets.I_E_EXPLORATION_CLICK)
 
 # 探索副本主界面：任一设置/轮换按钮可见即可
-page_exp_main = Page(
-    any_of(
-        ExplorationAssets.I_E_SETTINGS_BUTTON,
-        ExplorationAssets.I_E_AUTO_ROTATE_ON,
-        ExplorationAssets.I_E_AUTO_ROTATE_OFF,
-    ),
-    category="exploration",
-)
+page_exp_main = Page(any_of(ExplorationAssets.I_E_SETTINGS_BUTTON, ExplorationAssets.I_E_AUTO_ROTATE_ON,
+                            ExplorationAssets.I_E_AUTO_ROTATE_OFF))
 
 page_exp_main.connect(page_exp_entrance,
                       action=sequence(GlobalGameAssets.I_UI_BACK_YELLOW, ExplorationAssets.I_E_EXIT_CONFIRM),
