@@ -21,12 +21,12 @@ page_act.connect(page_act_ap, ActivityShikigamiAssets.I_TO_BATTLE_AP, key="page_
 page_act_2 = Page(ActivityShikigamiAssets.I_AS_CHECK_MAIN_2)
 page_act_2.add_enter_success_hooks(GlobalGameAssets.I_UI_BACK_RED)
 page_act.connect(page_act_2, ActivityShikigamiAssets.I_TO_BATTLE_MAIN, key="page_act->page_act_2")
-page_act_2.connect(page_act, GeneralBattleAssets.I_EXIT, key="page_act_2->page_act")
+page_act_2.connect(page_act, GlobalGameAssets.I_UI_BACK_CIRCLE, key="page_act_2->page_act")
 # 暗黑爬塔页面
 page_act_dark = Page(ActivityShikigamiAssets.I_AS_CLOSE_EYE, priority=75)
 page_act_dark.add_enter_failure_hooks(GlobalGameAssets.I_UI_BACK_RED)
 page_act_dark.add_enter_success_hooks(ActivityShikigamiAssets.I_AS_LOCATE)
-page_act_dark.connect(page_act, GeneralBattleAssets.I_EXIT, key="page_act_dark->page_act")
+page_act_dark.connect(page_act, GlobalGameAssets.I_UI_BACK_CIRCLE, key="page_act_dark->page_act")
 page_act_2.connect(page_act_dark, ActivityShikigamiAssets.I_AS_OPEN_EYE, key="page_act_2->page_act_dark")
 # 门票爬塔页面
 page_act_pass = Page(ActivityShikigamiAssets.I_CLIMB_MODE_PASS)

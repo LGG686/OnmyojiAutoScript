@@ -64,9 +64,9 @@
   },
   {
     "itemName": "enter_ap100",
-    "roiFront": "67,195,95,32",
-    "roiBack": "5,79,265,284",
-    "mode": "Single",
+    "roiFront": "67,99,92,359",
+    "roiBack": "67,99,92,359",
+    "mode": "Full",
     "method": "Default",
     "keyword": "雪山修行",
     "description": "进入100体活动标识"

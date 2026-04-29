@@ -85,7 +85,7 @@ class ActivityShikigamiAssets:
 	# 100体活动门票检测 
 	O_REMAIN_AP100 = RuleOcr(roi=(922,21,112,39), area=(913,8,131,62), mode="Digit", method="Default", keyword="", name="remain_ap100")
 	# 进入100体活动标识 
-	O_ENTER_AP100 = RuleOcr(roi=(67,195,95,32), area=(5,79,265,284), mode="Single", method="Default", keyword="雪山修行", name="enter_ap100")
+	O_ENTER_AP100 = RuleOcr(roi=(67,99,92,359), area=(67,99,92,359), mode="Full", method="Default", keyword="雪山修行", name="enter_ap100")
 
 
 	# Ocr Rule Assets

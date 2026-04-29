@@ -38,6 +38,7 @@ class StateMachine(BaseTask):
     run_idx: int = 0  # 当前爬塔类型
     _count_map = None
     _pre_tickets_map = None
+    switch_souled: dict[str, bool] = {}
 
     @cached_property
     def conf(self) -> ActivityShikigami:
@@ -121,7 +122,6 @@ class ScriptTask(StateMachine, GameUi, GeneralBattle, SwitchSoul, ActivityShikig
                     logger.warning(f'{climb_type} page is not supported')
                     continue
                 self.goto_page(dest_page)
-                self.switch_soul(self.I_BATTLE_MAIN_TO_RECORDS)
                 cur_battle_conf = getattr(self.conf, f'{climb_type}_battle_conf')
                 if cur_battle_conf is None:
                     logger.warning(f'{climb_type} battle config is not supported')
@@ -148,7 +148,7 @@ class ScriptTask(StateMachine, GameUi, GeneralBattle, SwitchSoul, ActivityShikig
                                 unknown_page_timer.start()
                             if unknown_page_timer.reached():
                                 self.goto_page(dest_page)
-            except LimitCountOut | LimitTimeOut | TicketsNotEnough:
+            except (LimitCountOut, LimitTimeOut, TicketsNotEnough):
                 pass
             finally:
                 self.switch_next()  # 切换下一个爬塔类型
@@ -175,6 +175,7 @@ class ScriptTask(StateMachine, GameUi, GeneralBattle, SwitchSoul, ActivityShikig
         if not self.check_tickets_enough():
             logger.warning(f'No tickets left, wait for next time')
             raise TicketsNotEnough
+        self.switch_soul(self.I_BATTLE_MAIN_TO_RECORDS)
         if self.conf.general_climb.random_sleep:
             random_sleep(probability=0.2)
         if self.enter_battle():
@@ -204,6 +205,9 @@ class ScriptTask(StateMachine, GameUi, GeneralBattle, SwitchSoul, ActivityShikig
                 continue
 
     def switch_soul(self, enter_button: RuleImage):
+        if self.switch_souled.get(self.climb_type, False):
+            return
+        self.switch_souled[self.climb_type] = True
         conf = self.conf.switch_soul_config
         enable_switch = getattr(conf, f"enable_switch_{self.climb_type}", False)
         enable_by_name = getattr(conf, f"enable_switch_{self.climb_type}_by_name", False)
