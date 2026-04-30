@@ -457,7 +457,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RealmRaidAssets):
         self.device.click_record_clear()
         while True:
             self.screenshot()
-            if self.is_in_battle(False):
+            if not self.appear(self.I_RR_PERSON):
                 return True
             if self.appear_then_click(self.I_FIRE, interval=1):
                 continue

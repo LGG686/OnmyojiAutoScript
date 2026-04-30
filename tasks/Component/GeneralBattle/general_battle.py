@@ -566,6 +566,8 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         Returns:
             BattleAction: 当前轮准备页处理后的动作决策。
         """
+        if context.quick_exit:
+            return BattleAction.QUICK_EXIT
         if context.last_page in {page_battle, page_battle_result, page_reward}:
             if not config.continuous_battle:
                 return BattleAction.EXIT_WIN if context.is_win else BattleAction.EXIT_LOSE
@@ -578,15 +580,14 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         if self.appear_then_click(self.I_CONFIRM_CLOSE_DIFF_SOUL, interval=0.6):
             return BattleAction.CONTINUE
 
-        if not context.quick_exit:  # 不退出才执行下列操作
-            self._run_battle_behavior_once(
-                behavior_name="preset",
-                action=lambda: self.switch_preset_team(config.preset_enable, config.preset_group, config.preset_team),
-            )
-            self._run_battle_behavior_once(
-                behavior_name="buff",
-                action=lambda: self.check_and_open_buff(context.buff),
-            )
+        self._run_battle_behavior_once(
+            behavior_name="preset",
+            action=lambda: self.switch_preset_team(config.preset_enable, config.preset_group, config.preset_team),
+        )
+        self._run_battle_behavior_once(
+            behavior_name="buff",
+            action=lambda: self.check_and_open_buff(context.buff),
+        )
         self.appear_then_click(self.I_PREPARE_HIGHLIGHT, interval=0.8)
         return BattleAction.CONTINUE
 
@@ -756,12 +757,10 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                 self.screenshot()
                 self._tick_long_battle(context)
                 self._tick_timeout(context)
-                context.quick_exit = context.quick_exit or bool(config.quick_exit)
                 page = GameUi.detect_page_in(self, page_battle_prepare, page_battle, page_battle_result,
                                              page_reward, include_global=False)
                 context.reward_no_battle_ts = None if page else context.reward_no_battle_ts
                 self._ensure_battle_stuck_guard(context, page)
-                self.device.click_record_clear()
                 match page:
                     case None:
                         action = self._handle_missing_battle_page(context, config, resolved_exit_matcher)
@@ -801,10 +800,15 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
             self.screenshot()
         if not self.appear(self.I_EXIT):
             return False
-        self.ui_click(self.I_EXIT, self.I_EXIT_ENSURE, interval=1.5)
         while True:
             self.screenshot()
-            if self.appear_then_click(self.I_EXIT_ENSURE, interval=1.5):
+            if self.appear(self.I_EXIT_ENSURE):
+                break
+            if self.appear_then_click(self.I_EXIT, interval=1.5):
+                continue
+        while True:
+            self.screenshot()
+            if self.appear_then_click(self.I_EXIT_ENSURE, interval=1):
                 continue
             if self.appear_then_click(self.I_FALSE, interval=1.5):
                 continue
