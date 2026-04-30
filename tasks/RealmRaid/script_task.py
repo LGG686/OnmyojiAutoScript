@@ -446,32 +446,25 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RealmRaidAssets):
             if self.appear_then_click(self.I_FRESH_ENSURE, interval=1):
                 continue
 
-    def fire(self, order: int, max_try: int = 3) -> bool:
+    def fire(self, order: int) -> bool:
         """
         挑战
-        :param max_try: 最大尝试几次, 防止ocr识别出错导致没票了还一直点击
         :param order:  第几个
         :return: 是否点击进攻成功
         """
         click = self.partition[order - 1]
         self.wait_until_appear(self.I_RR_PERSON)
-        click_cnt = 0
-        while 1:
-            if click_cnt >= max_try:
-                logger.warning('Cannot enter fire, retry')
-                return False
+        self.device.click_record_clear()
+        while True:
             self.screenshot()
-            if not self.appear(self.I_RR_PERSON, threshold=0.8):
-                break
-            if self.appear_then_click(self.I_FIRE, interval=0.8):
-                click_cnt += 1
-                self.device.click_record_clear()
+            if self.is_in_battle(False):
+                return True
+            if self.appear_then_click(self.I_FIRE, interval=1):
                 continue
             if self.click(click, interval=2):
-                self.device.click_record_clear()
                 continue
         logger.info(f'Click fire {order} success')
-        return True
+        return False
 
     @cached_property
     def false_roi(self) -> list:
