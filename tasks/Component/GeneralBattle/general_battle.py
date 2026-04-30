@@ -695,6 +695,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         self.current_count += 1
         logger.info(f"Current count: {self.current_count}")
         logger.info(f"Continue battle round: {next_count}")
+        self.device.click_record_clear()
         self._reset_round_context(context, config, continuous_count=next_count)
         return BattleAction.CONTINUE
 
