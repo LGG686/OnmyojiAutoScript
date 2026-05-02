@@ -30,6 +30,7 @@ from tasks.GameUi.registry import PageRegistry
 from tasks.GameUi.session import NavigatorSession
 from tasks.SixRealms.assets import SixRealmsAssets
 from tasks.base_task import BaseTask
+from tasks.GameUi.page import page_collection, page_main
 
 
 class GameUi(BaseTask, GameUiAssets):
@@ -66,6 +67,8 @@ class GameUi(BaseTask, GameUiAssets):
         # 当前任务的导航 session，持有页面快照和运行期状态。
         self.navigator = NavigatorSession(task_category=self._infer_task_category())
         self.navigator.bootstrap(PageRegistry.all())
+        # timestamp of last collection-fallback attempt (seconds since epoch)
+        self._last_collection_fallback_time = 0.0
 
     def _infer_task_category(self) -> str:
         """根据当前任务模块路径推断任务分类。
@@ -574,6 +577,46 @@ class GameUi(BaseTask, GameUiAssets):
         self.navigator.unknown_close_history.append(message)
         self.navigator.unknown_close_history = self.navigator.unknown_close_history[-10:]
 
+    def _recover_main_via_collection(self) -> bool:
+        """当无法识别主界面时，尝试通过进入“收集页”再返回恢复主界面识别。
+
+        返回:
+            bool: 是否成功恢复到主界面。
+        """
+        # 频率限制（60s）
+        if time.time() - (self._last_collection_fallback_time or 0.0) < 60.0:
+            return False
+
+        self.maybe_screenshot()
+
+        # 仅在能看到收集入口时尝试一次原子化进出
+        if not self.appear(GameUiAssets.I_MAIN_GOTO_COLLECTION):
+            return False
+
+        logger.warning("Main page missing — trying collection fallback")
+
+        # 点击进入收集页（使用统一执行器）
+        if not self._execute_action(GameUiAssets.I_MAIN_GOTO_COLLECTION, interval=0.8, skip_first_screenshot=False):
+            self._last_collection_fallback_time = time.time()
+            return False
+
+        coll_page = self.navigator.resolve_page(page_collection)
+        if coll_page is None or not self._wait_for_destination(coll_page, timeout=5.0):
+            self._last_collection_fallback_time = time.time()
+            return False
+
+        # 收集页进入成功后，强制执行该页的收尾 hook，避免被“已进入过同页”去重掉
+        self._run_hooks(coll_page.on_enter_success)
+        self._mark_page_entered(coll_page)
+
+        # 返回主界面
+        self._execute_action(GameUiAssets.I_BACK_Y, interval=0.8, skip_first_screenshot=False)
+        main_page = self.navigator.resolve_page(page_main)
+        ok = main_page is not None and self._wait_for_destination(main_page, timeout=5.0)
+        self._last_collection_fallback_time = time.time()
+        logger.info(f"Collection fallback result: {ok}")
+        return bool(ok)
+
     def _log_navigation_timeout(
         self,
         destination: Page,
@@ -750,6 +793,16 @@ class GameUi(BaseTask, GameUiAssets):
                     f"try close unknown pages: scoped={sorted(self._navigation_detect_categories(destination))}, "
                     f"target={destination.key}"
                 )
+                # 若识别不到主界面，优先尝试一次通过收集页进出恢复（单次原子尝试，受频率限制）
+                try:
+                    if self._recover_main_via_collection():
+                        progress_timer.reset()
+                        last_progress_signature = ("collection_fallback", destination.key)
+                        last_detected_page_key = None
+                        reset_repeated_transition_failures()
+                        continue
+                except Exception:
+                    logger.exception("collection fallback raised")
                 if self.close_unknown_pages(skip_first_screenshot=False):
                     progress_timer.reset()
                     last_progress_signature = ("close_unknown", destination.key)
