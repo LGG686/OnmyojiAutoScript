@@ -111,6 +111,7 @@ page_team.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_team->
 page_main.connect(page_team, GameUiAssets.I_MAIN_GOTO_TEAM, key="page_main->page_team")
 
 page_collection = Page(GameUiAssets.I_CHECK_COLLECTION, category="global")
+page_collection.add_enter_success_hooks(GlobalGameAssets.I_UI_CANCEL_SAMLL)
 page_collection.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_collection->page_main")
 page_main.connect(page_collection, GameUiAssets.I_MAIN_GOTO_COLLECTION, key="page_main->page_collection")
 
