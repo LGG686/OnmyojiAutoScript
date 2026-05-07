@@ -28,7 +28,7 @@ class WQExplore(BaseExploration, HighLight):
         search_fail_cnt = 0
         while 1:
             self.screenshot()
-            if self.appear(self.I_UI_BACK_RED) and self.appear(self.I_E_EXPLORATION_CLICK):
+            if self.get_current_scene(reuse_screenshot=False) == Scene.ENTRANCE:
                 break
             if self.appear_then_click(goto, interval=2):
                 continue
@@ -60,16 +60,6 @@ class WQExplore(BaseExploration, HighLight):
                 continue
             # 探索里面
             elif scene == Scene.MAIN:
-                # if not explore_init:
-                #     count = 0
-                #     while count < 5:
-                #         if self.appear(self.I_E_AUTO_ROTATE_ON):
-                #             break
-                #         if self.appear(self.I_E_AUTO_ROTATE_OFF, interval=1.5):
-                #             self.click(self.I_E_AUTO_ROTATE_OFF)
-                #             count += 1
-                #     explore_init = True
-                #     continue
                 # 小纸人
                 if self.appear(self.I_BATTLE_REWARD):
                     if self.ui_get_reward(self.I_BATTLE_REWARD):

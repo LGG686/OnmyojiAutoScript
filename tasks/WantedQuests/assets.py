@@ -169,6 +169,8 @@ class WantedQuestsAssets:
 	I_WQ_D1111 = RuleImage(roi_front=(20,171,99,105), roi_back=(6,148,150,299), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/wq/wq_wq_d1111.png")
 	# 年兽 
 	I_WQ_NIAN = RuleImage(roi_front=(19,176,100,100), roi_back=(0,153,166,273), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/wq/wq_wq_nian.png")
+	# 当期秘闻的挑战 
+	I_WQSE_SPECIAL_FIRE = RuleImage(roi_front=(1116,555,96,96), roi_back=(1076,525,168,160), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/wq/wq_wqse_special_fire.png")
 
 
 	# Swipe Rule Assets

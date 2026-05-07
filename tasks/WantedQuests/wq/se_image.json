@@ -25,5 +25,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "年兽"
+  },
+  {
+    "itemName": "wqse_special_fire",
+    "imageName": "wq_wqse_special_fire.png",
+    "roiFront": "1116,555,96,96",
+    "roiBack": "1076,525,168,160",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "当期秘闻的挑战"
   }
 ]
