@@ -20,7 +20,7 @@ from tasks.GameUi.page_definition import Page
 from tasks.KekkaiUtilize.assets import KekkaiUtilizeAssets
 from tasks.Restart.assets import RestartAssets
 from tasks.RyouToppa.assets import RyouToppaAssets
-
+from tasks.WantedQuests.assets import WantedQuestsAssets
 
 def random_click(
     low: int | None = None,
@@ -56,12 +56,18 @@ page_login = Page(SwitchAccountAssets.I_CHECK_LOGIN_FORM, category="global")
 page_login.add_enter_success_hooks(handle_login_page)
 
 # 庭院主页。
-page_main = Page(GameUiAssets.I_CHECK_MAIN, category="global")
+page_main = Page(any_of(
+    GameUiAssets.I_CHECK_MAIN, GameUiAssets.I_MAIN_GOTO_TOWN, WantedQuestsAssets.I_WQ_SEAL),
+    category="global")
 page_main.add_enter_success_hooks(
     GameUiAssets.I_AD_CLOSE_RED,
     GlobalGameAssets.I_UI_BACK_RED,
     RestartAssets.I_CANCEL_BATTLE,
     conditional_action(RestartAssets.I_LOGIN_COURTYARD, RestartAssets.C_LOGIN_SCROLL_CLOSE_AREA),
+)
+page_main.with_render_checker(
+    required_icons=(GameUiAssets.I_MAIN_GOTO_EXPLORATION, GameUiAssets.I_MAIN_GOTO_SUMMON, GameUiAssets.I_CHECK_MAIN),
+    refresh_key="page_collection->page_main"
 )
 
 # 庭院区域页面。

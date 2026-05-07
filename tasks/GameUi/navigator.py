@@ -270,6 +270,69 @@ class GameUi(BaseTask, GameUiAssets):
             self.prepare_appear_cache(targets)
 
     @staticmethod
+    def make_render_checker(page_or_icons, max_retries=3, refresh_key=None):
+        """生成页面渲染完整性检查器（模块级函数）。
+        Args:
+            page_or_icons: Page 对象或图标列表。若是 Page，则从中读取 required_icons。
+            max_retries: 最大刷新重试次数。
+            refresh_key: 刷新时的页面路径，格式如 "page_collection->page_main"。
+        Returns:
+            接受 task 参数的函数，适合作为 Page 的 enter_success_hook。
+        """
+
+        if isinstance(page_or_icons, Page):
+            required_icons = getattr(page_or_icons, 'required_icons', [])
+        else:
+            required_icons = page_or_icons
+
+        if refresh_key:
+            page_keys = [k.strip() for k in refresh_key.split('->')]
+
+            def refresh_strategy(task):
+                for key in page_keys:
+                    page = PageRegistry.get(key)
+                    if page:
+                        task.goto_page(page)
+        else:
+            refresh_strategy = None
+
+        def checker(task):
+            if not required_icons:
+                return True
+            if getattr(task, '_render_checking', False):
+                return True
+
+            setattr(task, '_render_checking', True)
+
+            for attempt in range(max_retries):
+                seen = set()
+                for _ in range(10):
+                    task.screenshot()
+                    for icon in required_icons:
+                        if icon not in seen and task.appear(icon):
+                            seen.add(icon)
+                            logger.info(f"Required icon detected: {icon.name} ({len(seen)}/{len(required_icons)})")
+                    if len(seen) == len(required_icons):
+                        setattr(task, '_render_checking', False)
+                        logger.info(f"All required icons rendered: {[i.name for i in required_icons]}")
+                        return True
+                    sleep(0.1)
+
+                if not refresh_strategy or not isinstance(page_or_icons, Page):
+                    break
+                unseen = [i.name for i in required_icons if i not in seen]
+                logger.warning(f"Render incomplete [{attempt+1}/{max_retries}]: {unseen}")
+                refresh_strategy(task)
+                setattr(task, '_render_checking', False)
+                task.goto_page(page_or_icons)
+                setattr(task, '_render_checking', True)
+
+            setattr(task, '_render_checking', False)
+            return True
+
+        return checker
+
+    @staticmethod
     def _action_name(action) -> str:
         """将动作对象转换为便于日志输出的名称。
 

@@ -125,6 +125,8 @@ class Page:
         self.on_leave_success: list[ActionLike] = []
         # 离开当前页面失败后的页面级 hook。
         self.on_leave_failure: list[ActionLike] = []
+        # 页面渲染完整性检查所需的必需图标。
+        self.required_icons: tuple = ()
         if register:
             PageRegistry.register(self)
 
@@ -255,6 +257,28 @@ class Page:
         """追加离开失败 hook。"""
 
         return self.add_hooks("on_leave_failure", *actions)
+
+    def with_render_checker(self, required_icons=None, max_retries=3, refresh_key=None):
+        """配置渲染完整性检查器。
+
+        简化页面定义，自动添加渲染检查 hook。
+
+        Args:
+            required_icons: 必需的图标列表，默认使用 self.required_icons。
+            max_retries: 最大刷新重试次数。
+            refresh_key: 刷新时的页面路径，格式如 "page_collection->page_main"。
+
+        Returns:
+            当前页面对象，便于链式调用。
+        """
+        from tasks.GameUi.navigator import GameUi
+        
+        if required_icons is not None:
+            self.required_icons = required_icons
+        
+        checker = GameUi.make_render_checker(self, max_retries=max_retries, refresh_key=refresh_key)
+        self.add_enter_success_hooks(checker)
+        return self
 
     def clone(self) -> "Page":
         """拷贝一个不注册到全局表的页面副本。
