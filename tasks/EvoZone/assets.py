@@ -12,7 +12,7 @@ class EvoZoneAssets:
 
 	# Image Rule Assets
 	# 火麒麟进入 
-	I_FIRE_KIRIN = RuleImage(roi_front=(104,120,217,406), roi_back=(104,120,217,406), threshold=0.8, method="Template matching", file="./tasks/EvoZone/o/o_fire_kirin.png")
+	I_FIRE_KIRIN = RuleImage(roi_front=(104,120,217,325), roi_back=(104,120,217,325), threshold=0.8, method="Template matching", file="./tasks/EvoZone/o/o_fire_kirin.png")
 	# 组队 
 	I_FORM_TEAM = RuleImage(roi_front=(959,580,100,100), roi_back=(916,572,156,130), threshold=0.8, method="Template matching", file="./tasks/EvoZone/o/o_form_team.png")
 	# description 
@@ -26,11 +26,11 @@ class EvoZoneAssets:
 	# 小小宠物，发现宝藏 
 	I_PET_PRESENT = RuleImage(roi_front=(873,184,62,147), roi_back=(873,184,62,147), threshold=0.8, method="Template matching", file="./tasks/EvoZone/o/o_pet_present.png")
 	# 风麒麟进入 
-	I_WIND_KIRIN = RuleImage(roi_front=(410,116,225,320), roi_back=(410,116,225,320), threshold=0.8, method="Template matching", file="./tasks/EvoZone/o/o_wind_kirin.png")
+	I_WIND_KIRIN = RuleImage(roi_front=(423,116,201,250), roi_back=(423,116,201,250), threshold=0.8, method="Template matching", file="./tasks/EvoZone/o/o_wind_kirin.png")
 	# 水麒麟进入 
-	I_WATER_KIRIN = RuleImage(roi_front=(705,115,224,378), roi_back=(705,115,224,378), threshold=0.8, method="Template matching", file="./tasks/EvoZone/o/o_water_kirin.png")
+	I_WATER_KIRIN = RuleImage(roi_front=(728,115,201,342), roi_back=(728,115,201,342), threshold=0.8, method="Template matching", file="./tasks/EvoZone/o/o_water_kirin.png")
 	# 雷麒麟进入 
-	I_LIGHTNING_KIRIN = RuleImage(roi_front=(1005,99,229,326), roi_back=(1005,99,229,326), threshold=0.8, method="Template matching", file="./tasks/EvoZone/o/o_lightning_kirin.png")
+	I_LIGHTNING_KIRIN = RuleImage(roi_front=(1016,99,218,270), roi_back=(1016,99,218,270), threshold=0.8, method="Template matching", file="./tasks/EvoZone/o/o_lightning_kirin.png")
 
 
 	# List Rule Assets

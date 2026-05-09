@@ -23,7 +23,7 @@ class WantedQuestsAssets:
 	# 挑战券的数量 
 	O_WQ_NUMBER = RuleOcr(roi=(569,13,50,32), area=(569,13,50,32), mode="Digit", method="Default", keyword="", name="wq_number")
 	# 悬赏封印 
-	O_WQ_WANTED = RuleOcr(roi=(9,145,123,381), area=(9,145,123,381), mode="Full", method="Default", keyword="", name="wq_wanted")
+	O_WQ_WANTED = RuleOcr(roi=(15,116,85,401), area=(15,116,85,401), mode="Full", method="Default", keyword="", name="wq_wanted")
 	# Ocr-description 
 	O_WQ_TEXT_1 = RuleOcr(roi=(67,233,52,32), area=(67,233,52,32), mode="Single", method="Default", keyword="封印", name="wq_text_1")
 	# Ocr-description 
@@ -55,16 +55,16 @@ class WantedQuestsAssets:
 	# 怪物名称,如酒吞，阎魔等 
 	O_WQ_MONSTER_TYPE = RuleOcr(roi=(165,215,45,175), area=(165,215,45,175), mode="Full", method="Default", keyword="", name="wq_monster_type")
 	#  
-	O_WQ_TEXT_ALL = RuleOcr(roi=(20,140,110,390), area=(20,140,110,390), mode="Full", method="Default", keyword="", name="wq_text_all")
+	O_WQ_TEXT_ALL = RuleOcr(roi=(12,119,88,393), area=(12,119,88,393), mode="Full", method="Default", keyword="", name="wq_text_all")
 
 
 	# Image Rule Assets
 	# description 
-	I_WQC_LOCK = RuleImage(roi_front=(620,528,27,31), roi_back=(620,528,27,31), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/chanllenge/chanllenge_wqc_lock.png")
+	I_WQC_LOCK = RuleImage(roi_front=(1083,509,27,31), roi_back=(1083,509,27,31), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/chanllenge/chanllenge_wqc_lock.png")
 	# description 
-	I_WQC_UNLOCK = RuleImage(roi_front=(621,527,26,28), roi_back=(621,527,26,28), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/chanllenge/chanllenge_wqc_unlock.png")
+	I_WQC_UNLOCK = RuleImage(roi_front=(1083,510,26,28), roi_back=(1083,510,26,28), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/chanllenge/chanllenge_wqc_unlock.png")
 	# 挑战 
-	I_WQC_FIRE = RuleImage(roi_front=(893,503,123,64), roi_back=(871,485,164,91), threshold=0.7, method="Template matching", file="./tasks/WantedQuests/chanllenge/chanllenge_wqc_fire.png")
+	I_WQC_FIRE = RuleImage(roi_front=(1082,587,97,44), roi_back=(1049,551,169,139), threshold=0.7, method="Template matching", file="./tasks/WantedQuests/chanllenge/chanllenge_wqc_fire.png")
 
 
 	# Image Rule Assets
@@ -170,8 +170,11 @@ class WantedQuestsAssets:
 	I_WQ_TRACE_ONE_CHECK_OPENED = RuleImage(roi_front=(510,175,210,60), roi_back=(510,175,210,60), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/wq/wq_trace_one_check_opened.png")
 	# 庭院悬赏任务界面 单个任务点开后的界面 是否为现世任务标志 
 	I_WQ_TRACE_ONE_REALWORLD = RuleImage(roi_front=(850,470,180,180), roi_back=(850,470,180,180), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/wq/wq_trace_one_realworld.png")
-	# 探索界面,左侧任务列表右上角右下角标志 
-	I_WQ_LIST_TOP_BOTTOM_CHECK = RuleImage(roi_front=(120,125,25,425), roi_back=(120,125,25,425), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/wq/wq_list_top_bottom_check.png")
+
+
+	# Ocr Rule Assets
+	# 检测是否有悬赏封印 
+	O_WQ_LIST_CHECK = RuleOcr(roi=(15,116,85,397), area=(15,116,85,397), mode="Full", method="Default", keyword="封印", name="wq_list_check")
 
 
 	# Image Rule Assets
