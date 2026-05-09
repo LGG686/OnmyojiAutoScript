@@ -89,6 +89,7 @@ class WQExplore(BaseExploration, HighLight):
                     continue
                 # 向后拉,寻找怪
                 if search_fail_timer.reached():
+                    search_fail_timer.reset()
                     if self._match_end.stable(self.device.image, refresh_after_stable=True):
                         _cnt_exploration += 1
                         self.quit_explore()
