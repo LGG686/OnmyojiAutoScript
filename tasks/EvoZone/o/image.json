@@ -2,8 +2,8 @@
   {
     "itemName": "fire_kirin",
     "imageName": "o_fire_kirin.png",
-    "roiFront": "104,120,217,406",
-    "roiBack": "104,120,217,406",
+    "roiFront": "104,120,217,325",
+    "roiBack": "104,120,217,325",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "火麒麟进入"
@@ -65,8 +65,8 @@
   {
     "itemName": "wind_kirin",
     "imageName": "o_wind_kirin.png",
-    "roiFront": "410,116,225,320",
-    "roiBack": "410,116,225,320",
+    "roiFront": "423,116,201,250",
+    "roiBack": "423,116,201,250",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "风麒麟进入"
@@ -74,8 +74,8 @@
   {
     "itemName": "water_kirin",
     "imageName": "o_water_kirin.png",
-    "roiFront": "705,115,224,378",
-    "roiBack": "705,115,224,378",
+    "roiFront": "728,115,201,342",
+    "roiBack": "728,115,201,342",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "水麒麟进入"
@@ -83,8 +83,8 @@
   {
     "itemName": "lightning_kirin",
     "imageName": "o_lightning_kirin.png",
-    "roiFront": "1005,99,229,326",
-    "roiBack": "1005,99,229,326",
+    "roiFront": "1016,99,218,270",
+    "roiBack": "1016,99,218,270",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "雷麒麟进入"
