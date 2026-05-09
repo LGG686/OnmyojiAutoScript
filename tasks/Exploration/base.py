@@ -376,16 +376,15 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
         logger.info('Quit explore')
         boss_timer = Timer(15)
         boss_timer.start()
-        click_yellow_button = 0 #用于保证只点一次左上返回按钮，不要直接触发连点回到主界面
+        # click_yellow_button = 0 #用于保证只点一次左上返回按钮，不要直接触发连点回到主界面
         
         while 1:
             self.screenshot()
             
-            #探索章节标题界面
+            # 探索章节标题界面
             if self.appear(self.I_UI_BACK_RED) and self.appear(self.I_E_EXPLORATION_CLICK):
                 break
-            
-            #探索大世界界面
+            # 探索大世界界面
             if self.appear(self.I_CHECK_EXPLORATION) and not self.appear(self.I_E_SETTINGS_BUTTON):
                 break
   
@@ -403,11 +402,8 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
 
             if self.appear_then_click(self.I_E_EXIT_CONFIRM, interval=0.8):
                 continue
-            
-            if click_yellow_button == 0:
-                if self.appear_then_click(self.I_BACK_YOLLOW, interval=3.5):
-                    click_yellow_button = 1
-                    continue
+            if self.appear_then_click(self.I_BACK_YOLLOW, interval=3.5):
+                continue
             
             if self.appear(self.I_EXPLORATION_TITLE) or self.appear(self.I_CHECK_EXPLORATION):
                 continue

@@ -39,7 +39,7 @@
     "itemName": "wq_box",
     "imageName": "wq_wq_box.png",
     "roiFront": "48,187,43,38",
-    "roiBack": "20,137,100,397",
+    "roiBack": "12,78,108,496",
     "method": "Template matching",
     "threshold": 0.7,
     "description": "奖励宝箱"

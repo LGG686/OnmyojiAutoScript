@@ -147,7 +147,7 @@ class WantedQuestsAssets:
 	# 取消追踪 
 	I_TRACE_DISABLE = RuleImage(roi_front=(1091,586,108,70), roi_back=(1091,586,108,70), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/wq/wq_trace_disable.png")
 	# 奖励宝箱 
-	I_WQ_BOX = RuleImage(roi_front=(48,187,43,38), roi_back=(20,137,100,397), threshold=0.7, method="Template matching", file="./tasks/WantedQuests/wq/wq_wq_box.png")
+	I_WQ_BOX = RuleImage(roi_front=(48,187,43,38), roi_back=(12,78,108,496), threshold=0.7, method="Template matching", file="./tasks/WantedQuests/wq/wq_wq_box.png")
 	# 小号追踪 
 	I_TRACE_TRUE = RuleImage(roi_front=(173,187,28,29), roi_back=(173,187,28,29), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/wq/wq_trace_true.png")
 	# 小号不追踪 
@@ -170,11 +170,6 @@ class WantedQuestsAssets:
 	I_WQ_TRACE_ONE_CHECK_OPENED = RuleImage(roi_front=(510,175,210,60), roi_back=(510,175,210,60), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/wq/wq_trace_one_check_opened.png")
 	# 庭院悬赏任务界面 单个任务点开后的界面 是否为现世任务标志 
 	I_WQ_TRACE_ONE_REALWORLD = RuleImage(roi_front=(850,470,180,180), roi_back=(850,470,180,180), threshold=0.8, method="Template matching", file="./tasks/WantedQuests/wq/wq_trace_one_realworld.png")
-
-
-	# Ocr Rule Assets
-	# 检测是否有悬赏封印 
-	O_WQ_LIST_CHECK = RuleOcr(roi=(15,116,85,397), area=(15,116,85,397), mode="Full", method="Default", keyword="封印", name="wq_list_check")
 
 
 	# Image Rule Assets
