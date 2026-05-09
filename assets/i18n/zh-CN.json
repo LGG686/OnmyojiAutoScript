@@ -106,5 +106,7 @@
   "collect_paper_reward": "是否收取小纸人奖励",
   "collect_paper_reward_help": "关闭则不收取直接退出",
   "OtherWorldTwilight": "彼世逢魔",
-  "other_world_twilight_config": "彼世逢魔配置"
+  "other_world_twilight_config": "彼世逢魔配置",
+  "auto_fill": "智能放入",
+  "auto_fill_help": "开启后使用智能放入寄养式神"
 }
