@@ -29,8 +29,8 @@
   {
     "itemName": "check_exploration",
     "imageName": "page_check_exploration.png",
-    "roiFront": "1103,675,23,20",
-    "roiBack": "1063,643,91,76",
+    "roiFront": "681,12,27,36",
+    "roiBack": "661,0,70,61",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "description"
