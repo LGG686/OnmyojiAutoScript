@@ -46,10 +46,10 @@ class SougenbiAssets:
 
 	# Ocr Rule Assets
 	# Ocr-description 
-	O_S_GREED = RuleOcr(roi=(388,20,63,42), area=(388,20,63,42), mode="Single", method="Default", keyword="", name="s_greed")
+	O_S_GREED = RuleOcr(roi=(588,6,63,42), area=(588,6,63,42), mode="Single", method="Default", keyword="", name="s_greed")
 	# Ocr-description 
-	O_S_ANGER = RuleOcr(roi=(571,18,79,43), area=(571,18,79,43), mode="Digit", method="Default", keyword="", name="s_anger")
+	O_S_ANGER = RuleOcr(roi=(770,7,79,43), area=(770,7,79,43), mode="Digit", method="Default", keyword="", name="s_anger")
 	# Ocr-description 
-	O_S_FOOLERY = RuleOcr(roi=(755,23,68,36), area=(755,23,68,36), mode="Digit", method="Default", keyword="", name="s_foolery")
+	O_S_FOOLERY = RuleOcr(roi=(956,11,68,36), area=(956,11,68,36), mode="Digit", method="Default", keyword="", name="s_foolery")
 
 
