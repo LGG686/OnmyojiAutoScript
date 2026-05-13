@@ -124,10 +124,10 @@ page_travel.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_trav
 page_main.connect(page_travel, GameUiAssets.I_MAIN_GOTO_TRAVEL, key="page_main->page_travel")
 
 # 活动列表页。
-page_act_list = Page(GameUiAssets.I_CHECK_ACT_LIST, category="global")
+page_act_list = Page(GameUiAssets.I_CHECK_ACT_LIST, category="global", priority=25)
 page_act_list.add_enter_success_hooks(GameUiAssets.I_PAPER_DOLL_CLOSE)
 page_main.connect(page_act_list, GameUiAssets.I_ACT_LIST_EXPAND, key="page_main->page_act_list")
-page_act_list.connect(page_main, GlobalGameAssets.I_UI_BACK_RED, key="page_act_list->page_main")
+page_act_list.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_act_list->page_main")
 
 # 召唤页。
 page_summon = Page(GameUiAssets.I_CHECK_SUMMON, category="global")

@@ -928,15 +928,13 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                 break
             if self.appear(self.I_PRESENT_LESS_THAN_5):
                 break
-            if self.appear_then_click(self.I_PRESET, threshold=0.8, interval=1):
+            if self.appear_then_click(self.I_PRESET, interval=1):
                 continue
-            if self.appear_then_click(self.I_PRESET_WIT_NUMBER, threshold=0.8, interval=1):
+            if self.appear_then_click(self.I_PRESET_WIT_NUMBER, interval=1):
                 continue
-            if self.ocr_appear(self.O_PRESET):
-                self.click(self.O_PRESET, interval=1)
+            if self.appear_then_click(self.O_PRESET, interval=1):
                 continue
-            if self.ocr_appear(self.O_PRESET_FULL):
-                self.click(self.O_PRESET_FULL, interval=1)
+            if self.appear_then_click(self.O_PRESET_FULL, interval=1):
                 continue
         logger.info("Click preset button")
 
