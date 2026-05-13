@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 from module.base.decorator import run_once
 from tasks.GlobalGame.assets import GlobalGameAssets
 
@@ -754,6 +755,8 @@ class GameUi(BaseTask, GameUiAssets):
                     last_progress_signature = ("close_unknown", destination.key)
                     last_detected_page_key = None
                     reset_repeated_transition_failures()
+                    # 关掉未知界面后等待页面变化, 防止多次识别到未知界面
+                    time.sleep(random.randrange(0.8, 1.6, 0.1))
                 elif progress_timer.reached():
                     self._log_navigation_timeout(
                         destination,
