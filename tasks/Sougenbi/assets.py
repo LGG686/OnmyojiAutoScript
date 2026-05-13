@@ -47,3 +47,4 @@ class SougenbiAssets:
 	O_S_FOOLERY = RuleOcr(roi=(955,10,68,36), area=(955,10,68,36), mode="Digit", method="Default", keyword="", name="s_foolery")
 
 
+
