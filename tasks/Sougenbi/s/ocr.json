@@ -1,8 +1,8 @@
 [
   {
     "itemName": "s_greed",
-    "roiFront": "388,20,63,42",
-    "roiBack": "388,20,63,42",
+    "roiFront": "588,6,63,42",
+    "roiBack": "588,6,63,42",
     "mode": "Single",
     "method": "Default",
     "keyword": "",
@@ -10,8 +10,8 @@
   },
   {
     "itemName": "s_anger",
-    "roiFront": "571,18,79,43",
-    "roiBack": "571,18,79,43",
+    "roiFront": "770,7,79,43",
+    "roiBack": "770,7,79,43",
     "mode": "Digit",
     "method": "Default",
     "keyword": "",
@@ -19,8 +19,8 @@
   },
   {
     "itemName": "s_foolery",
-    "roiFront": "755,23,68,36",
-    "roiBack": "755,23,68,36",
+    "roiFront": "956,11,68,36",
+    "roiBack": "956,11,68,36",
     "mode": "Digit",
     "method": "Default",
     "keyword": "",
