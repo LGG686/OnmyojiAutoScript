@@ -943,6 +943,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
             tmp = self.C_PRESET_GROUP_1
         color_size = [self.C_PRESET_GROUP_1.roi_back[2], self.C_PRESET_GROUP_1.roi_back[3]]
         unselected_color = (224.9, 208.3, 187.4)
+        logger.info("Select preset group")
         choose_group_timer = Timer(4).start()
         while True:
             if choose_group_timer.reached():
@@ -958,14 +959,13 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                 continue
             break
 
-        logger.info("Select preset group")
-
         time.sleep(0.5)
         tmp = self.__getattribute__("C_PRESET_TEAM_" + str(preset_team))
         if tmp is None:
             tmp = self.C_PRESET_TEAM_1
         color_size = [5, 5]
         unselected_color = (216.8, 185.0, 146.8)
+        logger.info("Select preset team")
         choose_team_timer = Timer(4).start()
         while True:
             if choose_team_timer.reached():
@@ -980,10 +980,8 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                 self.click(tmp, interval=0.2)
                 continue
             break
-
         self.click(tmp)
-        logger.info("Select preset team")
-
+        logger.info("Click preset ensure")
         wait_ensure_timer = Timer(4).start()
         while 1:
             if wait_ensure_timer.reached():
@@ -994,7 +992,6 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                 break
             if self.appear_then_click(self.I_PRESET_ENSURE, interval=1):
                 continue
-        logger.info("Click preset ensure")
 
     def random_click_swipt(self):
         """在战斗过程中执行随机点击或滑动。
@@ -1074,7 +1071,9 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
         if not buff:
             return
         logger.info(f"Open buff {buff}")
-        self.ui_click(self.I_BUFF, self.I_CLOUD, interval=2)
+        if not self.ui_click_until_appear_or_timeout(self.I_BUFF, self.I_CLOUD, interval=2, timeout=5):
+            logger.warning('Cannot open buff, exit')
+            return
         if isinstance(buff, BuffClass):
             buff = [buff]
         match_method = {

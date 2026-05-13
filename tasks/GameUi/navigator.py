@@ -745,11 +745,6 @@ class GameUi(BaseTask, GameUiAssets):
             skip_first_screenshot = False
 
             if current is None:
-                logger.warning(
-                    "Current page detect miss after scoped/full fallback, "
-                    f"try close unknown pages: scoped={sorted(self._navigation_detect_categories(destination))}, "
-                    f"target={destination.key}"
-                )
                 if self.close_unknown_pages(skip_first_screenshot=False):
                     progress_timer.reset()
                     last_progress_signature = ("close_unknown", destination.key)
