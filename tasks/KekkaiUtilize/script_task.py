@@ -168,6 +168,7 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
     def check_box_ap_or_exp(self, ap_enable: bool = True, exp_enable: bool = True, exp_waste: bool = True) -> bool:
         """
         顺路检查盒子
+        :param exp_waste:
         :param ap_enable:
         :param exp_enable:
         :return:
@@ -180,27 +181,21 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
             # 点击盒子
             timer_ap = Timer(6)
             timer_ap.start()
-            while 1:
-                self.screenshot()
-
-                if self.appear(self.I_UI_REWARD):
-                    while 1:
-                        self.screenshot()
-                        if not self.appear(self.I_UI_REWARD):
-                            break
-                        if self.appear_then_click(self.I_UI_REWARD, self.C_UI_REWARD, interval=1, threshold=0.6):
-                            continue
-                    logger.info('Reward box')
-                    break
-
-                if self.appear_then_click(self.I_BOX_AP, interval=1):
-                    continue
-                if self.appear_then_click(self.I_AP_EXTRACT, interval=2):
-                    continue
+            while True:
                 if timer_ap.reached():
                     logger.warning('Extract ap box timeout')
                     break
+                self.screenshot()
+                if self.appear_then_click(self.I_BOX_AP, interval=1):
+                    continue
+                if self.appear(self.I_UI_REWARD):
+                    self.ui_click_until_smt_disappear(self.C_UI_REWARD, self.I_UI_REWARD, interval=1)
+                    logger.info('Reward box')
+                    break
+                if self.appear_then_click(self.I_AP_EXTRACT, interval=2):
+                    continue
             logger.info('Extract AP box finished')
+            self.goto_page(page_guild_realm)
             return True
 
         # 经验盒子
@@ -211,10 +206,22 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
             time_exp = Timer(12)
             time_exp.start()
-            while 1:
+            max_tries = random.randint(2, 3)
+            while True:
+                if time_exp.reached():
+                    logger.warning('Extract exp box timeout')
+                    break
+                if max_tries <= 0:
+                    logger.info('Exp maybe already full, ocr failed, exit')
+                    break
                 self.screenshot()
+                if self.appear_then_click(self.I_BOX_EXP, interval=1) or \
+                        self.appear_then_click(self.I_BOX_EXP_MAX, interval=1):
+                    continue
                 # 如果出现结界皮肤， 表示收取好了
-                if self.appear(self.I_REALM_SHIN) and not self.appear(self.I_BOX_EXP, threshold=0.6):
+                if self.appear(self.I_REALM_SHIN) and not self.appear(self.I_BOX_EXP) and \
+                        not self.appear(self.I_BOX_EXP_MAX):
+                    logger.info('No exp box remained, exit')
                     break
                 # 如果出现收取确认，表明进入到了有满级的
                 if self.appear(self.I_UI_CONFIRM):
@@ -222,44 +229,31 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
                     if not self.appear(self.I_UI_CANCEL):
                         logger.info('No cancel button')
                         continue
-                    if exp_waste:
-                        target_button = self.I_UI_CONFIRM
-                    else:
-                        target_button = self.I_UI_CANCEL
-                    while 1:
-                        self.screenshot()
-                        if not self.appear(target_button):
-                            break
-                        if self.appear_then_click(target_button, interval=1):
-                            continue
+                    target_button = self.I_UI_CONFIRM if exp_waste else self.I_UI_CANCEL
+                    self.ui_click_until_disappear(target_button)
                     break
-
                 if self.appear(self.I_EXP_EXTRACT):
                     # 如果达到今日领取的最大，就不领取了
-                    cur, res, totol = self.O_BOX_EXP.ocr(self.device.image)
-                    if cur == res == totol == 0:
+                    cur, res, total = self.O_BOX_EXP.ocr(self.device.image)
+                    if total <= 0:
+                        logger.warning('Exp box OCR no data, retry')
                         continue
-                    if cur == totol and cur + res == totol:
+                    if cur == total:
                         logger.info('Exp box reach max do not collect')
                         break
-                if self.appear_then_click(self.I_BOX_EXP, threshold=0.6, interval=1):
-                    continue
-                if self.appear_then_click(self.I_EXP_EXTRACT, interval=1):
-                    continue
-
-                if time_exp.reached():
-                    logger.warning('Extract exp box timeout')
-                    break
+                    max_tries -= 1
+                    self.appear_then_click(self.I_EXP_EXTRACT, interval=1)
+            self.goto_page(page_guild_realm)
             return True
 
         self.screenshot()
         box_ap = self.appear(self.I_BOX_AP)
-        box_exp = self.appear(self.I_BOX_EXP, threshold=0.6) or self.appear(self.I_BOX_EXP_MAX, threshold=0.6)
+        box_exp = self.appear(self.I_BOX_EXP) or self.appear(self.I_BOX_EXP_MAX)
         if ap_enable:
             _check_ap_box(box_ap)
         if exp_enable:
             _check_exp_box(box_exp)
-        self.goto_page(page_guild_realm)
+        return True
 
     def check_utilize_harvest(self) -> bool:
         """
