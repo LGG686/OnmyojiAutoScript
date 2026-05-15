@@ -58,12 +58,9 @@ page_login = Page(SwitchAccountAssets.I_CHECK_LOGIN_FORM, category="global")
 page_login.add_enter_success_hooks(handle_login_page)
 
 # 庭院主页。
-page_main = Page(all_of(GameUiAssets.I_CHECK_MAIN, GameUiAssets.I_MAIN_GOTO_SHIKIGAMI_RECORDS,
-                        GameUiAssets.I_MAIN_GOTO_GUILD), category="global")
+page_main = Page(GameUiAssets.I_CHECK_MAIN, category="global")
 page_main.add_enter_success_hooks(
-    GameUiAssets.I_AD_CLOSE_RED,
-    GlobalGameAssets.I_UI_BACK_RED,
-    RestartAssets.I_CANCEL_BATTLE,
+    GameUiAssets.I_AD_CLOSE_RED, GlobalGameAssets.I_UI_BACK_RED, RestartAssets.I_CANCEL_BATTLE,
     conditional_action(RestartAssets.I_LOGIN_COURTYARD, RestartAssets.C_LOGIN_SCROLL_CLOSE_AREA),
 )
 
