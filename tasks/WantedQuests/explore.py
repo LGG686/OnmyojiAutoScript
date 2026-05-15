@@ -17,6 +17,11 @@ class WQExplore(ExplorationScriptTask, HighLight):
     _explor_cnt: int = 0  # 探索次数
     _max_cnt: int = 0  # 探索最大次数
 
+    def _default_detect_categories(self) -> set[str]:
+        categories = super()._default_detect_categories()
+        categories.add("exploration")
+        return categories
+
     def search_up_fight(self, up_type: UpType = None) -> Optional[RuleImage | RuleGif]:
         if self.appear(self.TEMPLATE_GIF):
             self.fire_monster_type = 'wq_normal'
@@ -46,7 +51,7 @@ class WQExplore(ExplorationScriptTask, HighLight):
         self._explor_cnt = 0
         while True:
             self.screenshot()
-            if pages.page_exp_entrance == self.get_current_page(False):
+            if pages.page_exp_entrance == self.get_current_page():
                 break
             if self.appear_then_click(goto, interval=2):
                 continue
