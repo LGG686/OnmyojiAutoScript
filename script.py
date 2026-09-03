@@ -2,6 +2,7 @@
 # @author runhey
 # github https://github.com/runhey
 
+from functools import wraps
 import zerorpc
 import zmq
 import msgpack
@@ -28,6 +29,8 @@ from multiprocessing.queues import Queue
 from module.config.utils import convert_to_underscore
 from module.config.config import Config
 from module.config.config_model import ConfigModel
+from module.config.instance_guard import InstanceGuard
+from module.config.anti_ban import AntiBanGuard
 from module.device.device import Device
 from module.device.env import IS_WINDOWS
 from module.base.utils import load_module
@@ -35,6 +38,7 @@ from module.base.decorator import del_cached_property
 from module.logger import logger
 from module.exception import *
 from module.server.i18n import I18n
+from module.ocr.rpc import ensure_ocr_server_started
 
 
 
@@ -46,6 +50,7 @@ class Script:
         logger.hr('Start', level=0)
         self.server = None
         self.state_queue: Queue = None
+        self._emulator_down = False
         self.gui_update_task: Callable = None  # 回调函数, gui进程注册当每次config更新任务的时候更新gui的信息
         self.config_name = config_name
         # Skip first restart
@@ -55,6 +60,9 @@ class Script:
         self.failure_record = {}
         # 运行loop的线程
         self.loop_thread: Thread = None
+        # 跨进程排队管理器（仅在 queue_mode=True 时初始化）
+        self.instance_guard: InstanceGuard = None
+        self.anti_ban_guard: AntiBanGuard = AntiBanGuard()
 
     @cached_property
     def config(self) -> "Config":
@@ -273,6 +281,19 @@ class Script:
             result[key] = item
         return json.dumps(result)
 
+    def _release_token_before_wait(func):
+        @wraps(func)
+        def wrapper(self, future):
+            if self.instance_guard and self.instance_guard.should_release(
+                pending_task=self.config.pending_task,
+                waiting_task=self.config.waiting_task,
+                idle_threshold_minutes=self.config.script.optimization.queue_idle_threshold
+            ):
+                self.instance_guard.release()
+            return func(self, future)
+        return wrapper
+
+    @_release_token_before_wait
     def wait_until(self, future):
         """
         Wait until a specific time.
@@ -310,6 +331,12 @@ class Script:
             if self.state_queue:
                 self.state_queue.put({"schedule": self.config.get_schedule_data()})
             now = datetime.now()
+            antiban_wake = self.anti_ban_guard.wake_time(now, self.config.script.anti_ban)
+            if antiban_wake is not None:
+                task.next_run = max(task.next_run, antiban_wake)
+            if not self._try_acquire_queue_token():
+                del_cached_property(self, "config")
+                continue
             # 任务时间到了返回任务名称
             if task.next_run <= now:
                 return task.command
@@ -317,6 +344,58 @@ class Script:
             if not self._handle_wait_during_idle(task.next_run):
                 # 若等待被打断, 则刷新配置
                 del_cached_property(self, "config")
+
+    def _try_acquire_queue_token(self) -> bool:
+        """
+        尝试获取排队执行权。
+        如果排队模式未启用，返回 True。
+        如果排队模式启用但未能获取到执行权，进入等待循环直到获取成功或配置变更。
+
+        Returns:
+            True: 获取得执行权，可以执行任务
+            False: 等待被配置变更打断，调用方应重新加载配置后重试
+        """
+        # 是否开启排队模式
+        if not self.config.script.optimization.queue_mode:
+            if self.instance_guard:
+                self.instance_guard.remove_from_queue()
+                self.instance_guard = None
+            return True
+
+        # 懒加载instance_guard
+        if self.instance_guard is None:
+            try:
+                self.instance_guard = InstanceGuard(self.config_name)
+                logger.info(f"[Queue] Queue mode enabled for '{self.config_name}'")
+            except Exception:
+                self.instance_guard = None
+                return True
+
+        # 尝试获取执行权
+        if self.instance_guard.try_acquire():
+            return True
+
+        # 执行权获取失败，关闭模拟器并进入等待循环
+        logger.info(f"[Queue] '{self.config_name}' waiting for execution token...")
+        if (self.config.script.optimization.when_task_queue_empty == 'close_game'
+                and not self._emulator_down
+                and 'device' in self.__dict__):
+            try:
+                self.device.emulator_stop()
+                self._emulator_down = True
+                logger.info(f"[Queue] Emulator closed during queue wait")
+            except Exception:
+                pass
+        self.config.start_watching()
+        while True:
+            time.sleep(30)
+
+            if self.config.should_reload():
+                logger.info(f"[Queue] Config changed, re-evaluating")
+                return False
+
+            if self.instance_guard.try_acquire():
+                return True
 
     def _handle_wait_during_idle(self, next_run: datetime) -> bool:
         """
@@ -330,27 +409,118 @@ class Script:
             "goto_main": self._wait_goto_main,
         }
         func = strategy_map.get(method)
-        if not func:
+        if func is None:
             logger.warning(f"Invalid Optimization_WhenTaskQueueEmpty: {method}, fallback to stay_there")
             func = self._wait_stay_there
         return func(next_run)
 
+    @staticmethod
+    def _time_to_timedelta(value) -> timedelta:
+        if value is None:
+            return timedelta(0)
+        return timedelta(hours=value.hour, minutes=value.minute, seconds=value.second)
+
+    def _wait_until_with_emulator_preheat(self, next_run: datetime) -> bool:
+        """Wait until next_run; if emulator is down, preheat startup before next task."""
+        if not self._emulator_down:
+            return self.wait_until(next_run)
+
+        startup_lead = self._time_to_timedelta(self.config.script.optimization.emulator_startup_lead_time)
+        now = datetime.now()
+        wake_time = next_run - startup_lead if startup_lead > timedelta(0) else next_run
+        if wake_time < now:
+            wake_time = now
+
+        now = datetime.now()
+        if wake_time > now:
+            logger.info(f"Wait before wake emulator: {wake_time.strftime('%Y-%m-%d %H:%M:%S')}")
+            if not self.wait_until(wake_time):
+                return False
+
+        if self._emulator_down:
+            logger.info("Wake emulator before next task")
+            if not self._try_acquire_queue_token():
+                return False
+            self.device = Device(self.config)
+            self._emulator_down = False
+
+        if wake_time < next_run:
+            return self.wait_until(next_run)
+        return True
+
     def _wait_close_game(self, next_run: datetime) -> bool:
-        logger.info("Close game during wait")
-        self.device.app_stop()
+        if self._emulator_down:
+            logger.info("Emulator is down, skip close_game/goto_main action and wait with preheat")
+            return self._wait_until_with_emulator_preheat(next_run)
+
+        close_game_wait_duration = self.config.script.optimization.close_game_wait_duration
+        close_game_wait = self._time_to_timedelta(close_game_wait_duration)
+        close_emulator_wait_duration = self.config.script.optimization.close_emulator_wait_duration
+        close_emulator_wait = self._time_to_timedelta(close_emulator_wait_duration)
+
+        if close_emulator_wait > timedelta(0) and next_run > datetime.now() + close_emulator_wait:
+            logger.info("Close emulator during wait")
+            self.device.emulator_stop()
+            self._emulator_down = True
+
+            if not self._wait_until_with_emulator_preheat(next_run):
+                return False
+
+            self.run("Restart")
+            return True
+
+        if close_game_wait <= timedelta(0):
+            logger.info("Close game during wait")
+            self.device.app_stop()
+            self.device.release_during_wait()
+            if not self.wait_until(next_run):
+                return False
+            self.run("Restart")
+            return True
+
+        if next_run > datetime.now() + close_game_wait:
+            logger.info("Close game during wait")
+            self.device.app_stop()
+            self.device.release_during_wait()
+            if not self.wait_until(next_run):
+                return False
+            self.run("Restart")
+            return True
+
+        logger.info("Wait without closing game (close_game wait duration not reached)")
         self.device.release_during_wait()
         if not self.wait_until(next_run):
             return False
-        self.run("Restart")
         return True
 
     def _wait_goto_main(self, next_run: datetime) -> bool:
+        if self._emulator_down:
+            logger.info("Emulator is down, skip goto_main and wait with preheat")
+            return self._wait_until_with_emulator_preheat(next_run)
+
+        close_emulator_wait_duration = self.config.script.optimization.close_emulator_wait_duration
+        close_emulator_wait = self._time_to_timedelta(close_emulator_wait_duration)
+        if close_emulator_wait > timedelta(0) and next_run > datetime.now() + close_emulator_wait:
+            logger.info("Close emulator during wait")
+            self.device.emulator_stop()
+            self._emulator_down = True
+
+            if not self._wait_until_with_emulator_preheat(next_run):
+                return False
+
+            self.run("Restart")
+            return True
+
         logger.info("Goto main page during wait")
         self.run("GotoMain")
         self.device.release_during_wait()
         return self.wait_until(next_run)
 
     def _wait_stay_there(self, next_run: datetime) -> bool:
+        if self._emulator_down:
+            logger.info("Stay_there during wait (emulator is down, with preheat)")
+            return self._wait_until_with_emulator_preheat(next_run)
+
         logger.info("Stay_there (no action) during wait")
         self.device.release_during_wait()
         return self.wait_until(next_run)
@@ -374,6 +544,19 @@ class Script:
         """
         if command == 'start' or command == 'goto_main':
             logger.error(f'Invalid command `{command}`')
+
+        if not self._try_acquire_queue_token():
+            return False
+
+        if self.instance_guard and self.instance_guard.token_lost:
+            logger.warning(f'Token lost, stopping emulator and rejoining queue')
+            try:
+                self.device.emulator_stop()
+            except Exception:
+                pass
+            self._emulator_down = True
+            self.instance_guard.release()
+            return False
 
         try:
             self.device.screenshot()
@@ -447,6 +630,7 @@ class Script:
         start_day = date.today()
         logger.info(f'Start scheduler loop: {self.config_name}')
         self.config.model.running_task = ''
+        self.anti_ban_guard.reset()
 
         # Update GUI 防呆, 读取设置并立刻显示后台模拟器到前台
         if not self.config.script.device.run_background_only and IS_WINDOWS:
@@ -483,7 +667,6 @@ class Script:
 
             # Get task
             task = self.get_next_task()
-            _ = self.device
             # Skip first restart
             if self.is_first_task and task == 'Restart':
                 logger.info('Skip task `Restart` at scheduler start')
@@ -491,16 +674,24 @@ class Script:
                 del_cached_property(self, 'config')
                 continue
 
+            if self._emulator_down:
+                self.device = Device(self.config)
+                self._emulator_down = False
+            else:
+                _ = self.device
+
             # Run
             logger.info(f'Scheduler: Start task `{task}`')
             self.device.stuck_record_clear()
             self.device.click_record_clear()
             logger.hr(task, level=0)
             self.config.model.running_task = task
+            _task_start = datetime.now()
             success = self.run(inflection.camelize(task))
             self.config.model.running_task = ''
             logger.info(f'Scheduler: End task `{task}`')
             self.is_first_task = False
+            self.anti_ban_guard.record_active((datetime.now() - _task_start).total_seconds())
 
             # Check failures
             # failed = deep_get(self.failure_record, keys=task, default=0)
@@ -547,5 +738,6 @@ class Script:
 
 
 if __name__ == "__main__":
+    ensure_ocr_server_started()
     script = Script("oas1")
     script.loop()

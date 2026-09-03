@@ -282,14 +282,21 @@ class GameUi(BaseTask, GameUiAssets):
             # 跳转页面
             max_wait_timer = Timer(6).start()
             logger.info(f'Wait appear and operate {button} on {current_page}')
+            max_attempts_per_button = 3  # 每个按钮最多尝试 3 次
+            attempts_list = [0] * len(button) if isinstance(button, list) else None
             while not max_wait_timer.reached():
                 if timeout_timer.reached():
                     return False
                 if isinstance(button, list):
-                    exec_operates = [self.appear_then_operate(btn, interval=0.8, skip_first_screenshot=False)
-                                     for btn in button]
-                    if exec_operates[0]:  # 只要第一个成功就跳出
-                        break
+                    for idx, btn in enumerate(button):
+                        if attempts_list[idx] >= max_attempts_per_button:
+                            continue
+                        attempt =  self.appear_then_operate(btn, interval=0.8, skip_first_screenshot=False)
+                        if attempt:
+                            attempts_list[idx] += 1
+                        # 只要第一个成功就跳出
+                        if attempt and idx == 0:
+                            break
                 if self.appear_then_operate(button, interval=0.8, skip_first_screenshot=False):
                     break
             else:
@@ -316,8 +323,16 @@ class GameUi(BaseTask, GameUiAssets):
         if not page.additional:
             return
         for btn in page.additional:
+            # 支持反向条件操作: [条件元素, 操作元素, True]。不出现条件图片时点击另一个区域。
+            if isinstance(btn, list) and len(btn) == 3 and btn[2] is True:
+                condition, action, invert = btn
+                self.maybe_screenshot(skip_first_screenshot)
+                if not self.appear(condition):
+                    if self.appear_then_operate(action, interval=interval, skip_first_screenshot=False):
+                        logger.info(f'Page {page} additional invert conditional not {condition} -> {action} executed')
+                        skip_first_screenshot = False
             # 支持复合条件操作: [条件元素, 操作元素]。出现条件图片时点击另一个区域。
-            if isinstance(btn, list) and len(btn) == 2:
+            elif isinstance(btn, list) and len(btn) == 2:
                 condition, action = btn
                 self.maybe_screenshot(skip_first_screenshot)
                 if self.appear(condition):
@@ -353,9 +368,13 @@ class GameUi(BaseTask, GameUiAssets):
 if __name__ == '__main__':
     from module.config.config import Config
     from module.device.device import Device
+    from tasks.GameUi.page import page_guild
 
-    c = Config('oas2')
+    c = Config('oas1')
     d = Device(c)
     game = GameUi(config=c, device=d)
-    game.ui_get_current_page()
-    game.ui_goto(page_main)
+    for i in range(10):
+        game.ui_get_current_page()
+        game.ui_goto(page_guild)
+        game.ui_get_current_page()
+        game.ui_goto(page_main)

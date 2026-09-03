@@ -20,9 +20,9 @@ class GeneralInviteAssets:
 	# description 
 	I_FIRE = RuleImage(roi_front=(1179,602,81,74), roi_back=(1179,602,81,74), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_fire.png")
 	# 锁定阵容的图片 
-	I_LOCK = RuleImage(roi_front=(29,644,29,32), roi_back=(29,644,29,32), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_lock.png")
+	I_LOCK = RuleImage(roi_front=(49,645,29,32), roi_back=(29,633,287,61), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_lock.png")
 	# 还没有锁定阵容 
-	I_UNLOCK = RuleImage(roi_front=(30,647,23,30), roi_back=(30,647,23,30), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_unlock.png")
+	I_UNLOCK = RuleImage(roi_front=(31,647,23,27), roi_back=(26,633,285,57), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_unlock.png")
 	# 如果是到时间会退出房间，这个右边显示一个匹配的图片 
 	I_MATCHING = RuleImage(roi_front=(51,574,52,114), roi_back=(51,574,52,114), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_matching.png")
 	# 永生之海挑战（还未有队友的图片） 
@@ -54,7 +54,7 @@ class GeneralInviteAssets:
 	# description 
 	I_FLAG_1_OFF = RuleImage(roi_front=(353,126,58,22), roi_back=(353,126,58,22), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_off.png")
 	# description 
-	I_FLAG_2_ON = RuleImage(roi_front=(471,128,54,18), roi_back=(471,128,54,18), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_on.png")
+	I_FLAG_2_ON = RuleImage(roi_front=(472,82,32,11), roi_back=(454,74,56,26), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_on.png")
 	# description 
 	I_FLAG_2_OFF = RuleImage(roi_front=(469,127,58,21), roi_back=(469,127,58,21), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_off.png")
 	# description 
@@ -84,7 +84,7 @@ class GeneralInviteAssets:
 	# 勾选 默认邀请 
 	I_I_DEFAULT = RuleImage(roi_front=(541,342,41,39), roi_back=(541,342,41,39), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_i_default.png")
 	# description 
-	I_GI_CANCEL = RuleImage(roi_front=(438,407,171,55), roi_back=(438,407,171,55), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_gi_cancel.png")
+	I_GI_CANCEL = RuleImage(roi_front=(438,407,171,55), roi_back=(438,407,171,55), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_cancel.png")
 	# 队长邀请 确定 
 	I_GI_SURE = RuleImage(roi_front=(670,402,175,60), roi_back=(670,402,175,60), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_gi_sure.png")
 	# 所有的组队界面都有加成 
@@ -95,6 +95,8 @@ class GeneralInviteAssets:
 	I_BACK_YELLOW_SEA = RuleImage(roi_front=(31,16,42,42), roi_back=(31,16,42,42), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_back_yellow_sea.png")
 	# 识别到寄养邀请 
 	I_I_ACCEPT_JY = RuleImage(roi_front=(248,258,46,25), roi_back=(231,205,75,326), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_i_accept_jy.png")
+	# 房间左下角发言按钮(永生之海房间无表情按钮, 用此图识别) 
+	I_GI_SPEAK = RuleImage(roi_front=(23,503,82,85), roi_back=(23,503,82,85), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_gi_speak.png")
 
 
 	# Image Rule Assets
@@ -105,7 +107,7 @@ class GeneralInviteAssets:
 	# 判断是不是在庭院界面 
 	I_GI_HOME = RuleImage(roi_front=(361,34,34,46), roi_back=(361,34,34,46), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_gi_home.png")
 	# 判断是不是在探索界面 
-	I_GI_EXPLORE = RuleImage(roi_front=(1138,119,41,48), roi_back=(1138,119,41,48), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_gi_explore.png")
+	I_GI_EXPLORE = RuleImage(roi_front=(690,16,28,28), roi_back=(688,8,33,46), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_gi_explore.png")
 
 
 	# Ocr Rule Assets

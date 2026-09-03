@@ -23,6 +23,21 @@ from typing import List
 
 class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
 
+    def _get_dynamic_boss_count(self) -> int:
+        """
+        从地域鬼王主界面 OCR 声望值，动态决定可挑战次数
+        :return: 可挑战鬼王数量 (1/2/3)
+        """
+        self.screenshot()
+        rep = self.O_AB_REPUTATION.ocr_digit(self.device.image)
+        logger.info(f"Area boss reputation: {rep}")
+        if rep >= 10000:
+            return 3
+        elif rep >= 2000:
+            return 2
+        else:
+            return 1
+
     def run(self) -> bool:
         """
         运行脚本
@@ -59,14 +74,17 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
         else:
             self.switch_to_famous()
 
-        if con.boss_number - boss_fought == 3:
+        # 动态获取可挑战次数
+        dynamic_count = self._get_dynamic_boss_count()
+        available = dynamic_count - boss_fought
+        if available >= 3:
             self.boss_fight(self.I_BATTLE_1)
             self.boss_fight(self.I_BATTLE_2)
             self.boss_fight(self.I_BATTLE_3)
-        elif con.boss_number - boss_fought == 2:
+        elif available == 2:
             self.boss_fight(self.I_BATTLE_1)
             self.boss_fight(self.I_BATTLE_2)
-        elif con.boss_number - boss_fought == 1:
+        elif available == 1:
             self.boss_fight(self.I_BATTLE_1)
         # 退出
         self.go_back()
@@ -126,14 +144,12 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
         self.wait_until_appear(self.I_AB_CLOSE_RED)
         self.ui_click(self.I_AB_CLOSE_RED, self.I_FILTER)
 
-    def boss_fight(self, battle: RuleImage, ultra: bool = False, fileter_open: bool = True) -> bool:
+    def boss_fight(self, battle: RuleImage, fileter_open: bool = True) -> bool:
         """
             完成挑战一个鬼王的全流程
             从打开筛选界面开始 到关闭鬼王详情界面结束
         @param battle: 挑战按钮,鬼王头像也可,只要点击能进入详情界面
         @type battle:
-        @param ultra: 是否需要切换到极地鬼
-        @type ultra:
         @return:    True        挑战成功
                     False       挑战失败
         @rtype:
@@ -147,30 +163,24 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
 
         # 如果已经打过该BOSS,直接跳过不打了
         if self.is_group_ranked():
+            logger.warning("There is no boss could be challenged")
             self.ui_click_until_disappear(self.I_AB_CLOSE_RED, interval=3)
             return True
 
-        if ultra:
-            if not self.get_difficulty():
-                # 判断是否能切换到极地鬼
-                if not self.appear(self.I_AB_DIFFICULTY_NORMAL) and self.config.area_boss.boss.Attack_60:
-                    self.switch_to_level_60()
-                    if not self.start_fight():
-                        logger.warning("you are so weakness!")
-                        self.wait_until_appear(self.I_AB_CLOSE_RED)
-                        self.ui_click_until_disappear(self.I_AB_CLOSE_RED, interval=3)
-                        return False
-                else:
-                    self.ui_click_until_disappear(self.I_AB_CLOSE_RED, interval=3)
-                    return False
-                # 切换到 极地鬼
-            self.switch_difficulty(True)
+        # 根据 reward_floor 决定模式
+        if reward_floor in (AreaBossFloor.ONE, AreaBossFloor.TEN):
+            # 极模式分支
+            if self.setup_ultra(reward_floor):
+                pass
+        elif reward_floor == AreaBossFloor.NORMAL_LV60:
+            # 普通模式-拉到60级
+            self.setup_normal()
+            self.switch_to_level_60()
+        elif reward_floor == AreaBossFloor.NORMAL_LV1:
+            # 普通模式-保持1级
+            self.setup_normal()
+        # DEFAULT: 不更改，直接打
 
-            # 调整悬赏层数
-            match reward_floor:
-                case AreaBossFloor.ONE: self.switch_to_floor_1()
-                case AreaBossFloor.TEN: self.switch_to_floor_10()
-                case AreaBossFloor.DEFAULT: logger.info("Not change floor")
         result = True
         if not self.start_fight():
             result = False
@@ -188,8 +198,43 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
                 break
 
         return self.run_general_battle(self.config.area_boss.general_battle)
-    
+
+    def setup_ultra(self, floor: AreaBossFloor = AreaBossFloor.ONE) -> bool:
+        # 确定进入鬼王界面
+        self.wait_until_appear(self.I_AB_CLOSE_RED)
+        # 尝试切换
+        if not self.get_difficulty():
+            # 如果可以切换，直接切换
+            if self.appear(self.I_AB_DIFFICULTY_NORMAL):
+                self.switch_difficulty(True)
+            else:
+                logger.warning("Cannot switch difficulty")
+                return False
+        # 调整极地鬼层数
+        match floor:
+            case AreaBossFloor.ONE:
+                self.switch_to_floor_1()
+            case AreaBossFloor.TEN:
+                self.switch_to_floor_10()
+        return True
+
+    def setup_normal(self) -> bool:
+        """
+        确保当前为普通地鬼模式
+        :return: True 成功（已处于普通模式），False 失败
+        """
+        self.wait_until_appear(self.I_AB_CLOSE_RED)
+        if self.get_difficulty():
+            # 当前是极地鬼，需要切回普通
+            if self.appear(self.I_AB_DIFFICULTY_JI):
+                self.switch_difficulty(False)
+            else:
+                logger.warning("Cannot switch to normal difficulty")
+                return False
+        return True
+
     def switch_to_level_60(self):
+        logger.info("Switch to level 60")
         while 1:
             self.screenshot()
             if self.appear(self.I_AB_LEVEL_60):
@@ -197,7 +242,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
             if self.appear(self.I_AB_LEVEL_HANDLE):
                 x, y = self.I_AB_LEVEL_HANDLE.front_center()
                 self.S_AB_LEVEL_RIGHT.roi_front = (x, y, 10, 10)
-                self.swipe(self.S_AB_LEVEL_RIGHT)
+                self.swipe(self.S_AB_LEVEL_RIGHT, interval=3)
 
     def get_difficulty(self) -> bool:
         """
@@ -265,7 +310,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
             return False
         # 不需要打开筛选界面说明直接找到了目标boss, 直接挑战
         if not need_open_filter:
-            return self.boss_fight(photo, True, fileter_open=False)
+            return self.boss_fight(photo, fileter_open=False)
         # 滑动到最顶层
         logger.info("Swipe to top")
         for i in range(random.randint(1, 3)):
@@ -275,7 +320,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
             self.open_filter()
             name = self.get_bossName(PHOTO)
             if self.check_common_chars(str(name), boss_name):
-                return self.boss_fight(PHOTO, True, fileter_open=False)
+                return self.boss_fight(PHOTO, fileter_open=False)
             self.ui_click_until_disappear(self.I_AB_CLOSE_RED)
         # 倒数一和二
         for i in range(random.randint(1, 3)):
@@ -284,7 +329,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
             self.open_filter()
             name = self.get_bossName(PHOTO)
             if self.check_common_chars(str(name), boss_name):
-                return self.boss_fight(PHOTO, True, fileter_open=False)
+                return self.boss_fight(PHOTO, fileter_open=False)
             self.ui_click_until_disappear(self.I_AB_CLOSE_RED)
         self.ui_click_until_disappear(self.I_AB_CLOSE_RED)
 
@@ -383,18 +428,21 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AreaBossAssets):
                     False       打开失败
         @rtype:
         """
-        try_num = 3 if try_num <= 0 else try_num
-
-        while try_num > 0:
-            self.click(battle, interval=3)
-            if self.wait_until_appear(self.I_AB_CLOSE_RED, wait_time=3):
-                break
-            try_num -= 1
-        # 打开鬼王详情界面失败,直接返回
-        self.screenshot()
-        if self.appear(self.I_AB_CLOSE_RED):
-            return True
-        return False
+        try_count = 0
+        while 1:
+            self.screenshot()
+            if self.appear(self.I_AB_CLOSE_RED) and self.appear(self.I_FIRE):
+                self.screenshot()
+                if not self.appear(self.I_FIRE):
+                    continue
+                return True
+            if try_count >= try_num:
+                logger.warning(f"Cannot boss_detail, try {try_count} times")
+                return False
+            if self.click(battle, interval=3):
+                try_count += 1
+                continue
+        return True
 
     def is_group_ranked(self):
         """

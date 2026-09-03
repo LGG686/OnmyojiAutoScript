@@ -29,13 +29,15 @@ class HuntAssets:
 	I_KIRIN_GATHER = RuleImage(roi_front=(28,480,75,64), roi_back=(28,480,75,64), threshold=0.8, method="Template matching", file="./tasks/Hunt/kirin/kirin_kirin_gather.png")
 	# 麒麟已挑战 
 	I_KIRIN_END = RuleImage(roi_front=(1126,601,104,44), roi_back=(1126,601,104,44), threshold=0.8, method="Template matching", file="./tasks/Hunt/kirin/kirin_kirin_end.png")
+	# 寮管理开启挑战 
+	I_KIRIN_START_CHALLAGE = RuleImage(roi_front=(1141,576,80,98), roi_back=(1092,545,172,166), threshold=0.7, method="Template matching", file="./tasks/Hunt/kirin/kirin_kirin_start_challage.png")
 
 
 	# Image Rule Assets
 	# 点击阴界之门 
 	I_NW = RuleImage(roi_front=(1060,602,100,100), roi_back=(1060,602,100,100), threshold=0.8, method="Template matching", file="./tasks/Hunt/netherworld/netherworld_nw.png")
 	# 点击挑战 
-	I_NW_CHALLAGE = RuleImage(roi_front=(306,590,171,63), roi_back=(306,590,171,63), threshold=0.8, method="Template matching", file="./tasks/Hunt/netherworld/netherworld_nw_challage.png")
+	I_NW_CHALLAGE = RuleImage(roi_front=(306,590,171,63), roi_back=(306,590,171,63), threshold=0.7, method="Template matching", file="./tasks/Hunt/netherworld/netherworld_nw_challage.png")
 	# 今日已挑战 
 	I_NW_DONE = RuleImage(roi_front=(308,600,156,41), roi_back=(308,600,156,41), threshold=0.9, method="Template matching", file="./tasks/Hunt/netherworld/netherworld_nw_done.png")
 

@@ -159,6 +159,9 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RyouToppaAssets):
         area_index = 0
         success = True
         while 1:
+            self.screenshot()
+            if not self.appear(self.I_TOPPA_RECORD, threshold=0.6):
+                continue
             # 设置长任务标志,用来寻找寮突可进攻的目标
             self.device.stuck_record_add('PREPARE_BEFORE_BATTLE')
             if not self.has_ticket():
@@ -183,9 +186,9 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RyouToppaAssets):
                 continue
 
 
-        # 回 page_main 失败
-        # self.ui_current = page_ryou_toppa
-        # self.ui_goto(page_main)
+        # 回 page_main
+        self.ui_get_current_page()
+        self.ui_goto(page_main)
         if success:
             self.set_next_run(task='RyouToppa', finish=True, server=True, success=True)
         else:
@@ -319,6 +322,8 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RyouToppaAssets):
                 click_failure_count += 1
                 continue
             if self.click(rcl, interval=5):
+                # https://github.com/runhey/OnmyojiAutoScript/issues/1748
+                time.sleep(random.uniform(0, 0.3))
                 click_failure_count += 1
                 continue
 

@@ -56,11 +56,17 @@ class HighlightGif(RuleGif):
     def pre_process(self, image):
         return highlight(image)
 
+    def match_with_multi_scale(self, image, threshold=None, scale_range=(0.8, 1.1, 0.05)):
+        return self.search_with_multi_scale(image, threshold=threshold, scale_range=scale_range)[0]
+
+    def match_origin(self, image, threshold: float = None) -> bool:
+        return self.search(image, threshold=threshold)[0]
+
 
 class HighLight(BaseTask, ExplorationAssets):
 
     @cached_property
-    def TEMPLATE_GIF(self) -> RuleGif:
+    def TEMPLATE_GIF(self) -> HighlightGif:
         return HighlightGif(
             targets=[
                 self.I_LIGHT1, self.I_LIGHT2, self.I_LIGHT3, self.I_LIGHT4, self.I_LIGHT5,
@@ -75,21 +81,23 @@ if __name__ == '__main__':
     # image = highlight(image)
     # save_image(image, r'C:\Users\萌萌哒\Desktop\1345.png')
     #
-    IMAGE_FILE = r"C:\Users\萌萌哒\Desktop\QQ20240818-163854.png"
-    image = load_image(IMAGE_FILE)
-    from tasks.Exploration.assets import ExplorationAssets
-    targe = ExplorationAssets.I_UP_COIN
-    print(targe.test_match(image))
+    # IMAGE_FILE = r"C:\Users\萌萌哒\Desktop\QQ20240818-163854.png"
+    # image = load_image(IMAGE_FILE)
+    # from tasks.Exploration.assets import ExplorationAssets
+    # targe = ExplorationAssets.I_UP_COIN
+    # print(targe.test_match(image))
 
-    # from dev_tools.get_images import GetAnimation
-    # from module.config.config import Config
-    # from module.device.device import Device
-    # c = Config('oas1')
-    # d = Device(c)
-    # t = HighLight(c, d)
+    from dev_tools.get_images import GetAnimation
+    from module.logger import logger
+    from module.config.config import Config
+    from module.device.device import Device
+    c = Config('oas1')
+    d = Device(c)
+    t = HighLight(c, d)
     # t.screenshot()
     #
-    # t.screenshot()
-    # t.appear_then_click(t.TEMPLATE_GIF)
+    for i in range(10):
+        t.screenshot()
+        logger.info(t.appear(t.TEMPLATE_GIF))
 
 

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from module.config.utils import write_file
 from module.logger import logger
+from module.ocr.rpc import shutdown_ocr_server
 from module.server.main_manager import MainManager
 from module.server.updater import Updater
 from module.server.i18n import I18n
@@ -46,6 +47,7 @@ async def notify_test(setting: str, title: str, content: str):
 
 @home_app.get('/kill_server')
 async def kill_server():
+    shutdown_ocr_server()
     MainManager.signal_kill_server = True
     return 'success'
 
@@ -94,3 +96,14 @@ async def additional_translate() -> dict:
     except Exception as e:
         logger.error(e)
     return {}
+
+
+@home_app.get('/export_diagnostic')
+async def export_diagnostic(config_name: str = ''):
+    from module.server.diagnostic import build_diagnostic_zip
+    try:
+        zip_path = build_diagnostic_zip(config_name)
+        return {'success': True, 'path': str(zip_path)}
+    except Exception as e:
+        logger.exception(e)
+        return {'success': False, 'path': '', 'error': str(e)}

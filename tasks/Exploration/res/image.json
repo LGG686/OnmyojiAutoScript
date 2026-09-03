@@ -11,8 +11,8 @@
   {
     "itemName": "e_exploration_click",
     "imageName": "res_e_exploration_click.png",
-    "roiFront": "898,518,96,42",
-    "roiBack": "898,518,96,42",
+    "roiFront": "1076,601,96,42",
+    "roiBack": "939,555,307,127",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索按钮"
@@ -173,17 +173,17 @@
   {
     "itemName": "treasure_box_click",
     "imageName": "res_treasure_box_click.png",
-    "roiFront": "33,476,70,49",
-    "roiBack": "2,130,135,406",
+    "roiFront": "31,543,27,24",
+    "roiBack": "11,520,378,65",
     "method": "Template matching",
-    "threshold": 0.7,
+    "threshold": 0.65,
     "description": "宝箱"
   },
   {
     "itemName": "swipe_end",
     "imageName": "res_swipe_end.png",
-    "roiFront": "994,234,119,100",
-    "roiBack": "968,196,311,165",
+    "roiFront": "1213,79,66,265",
+    "roiBack": "1213,79,66,265",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "困28滚动到最后"
@@ -200,8 +200,8 @@
   {
     "itemName": "exp_create_team",
     "imageName": "res_exp_create_team.png",
-    "roiFront": "590,514,122,52",
-    "roiBack": "543,490,192,100",
+    "roiFront": "894,599,96,50",
+    "roiBack": "855,546,189,151",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "组队按钮"
@@ -214,5 +214,32 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "创建确认"
+  },
+  {
+    "itemName": "exp_arrow_right",
+    "imageName": "res_exp_arrow_right.png",
+    "roiFront": "1240,117,24,21",
+    "roiBack": "1178,74,100,100",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "箭头，收纳"
+  },
+  {
+    "itemName": "exp_arrow_left",
+    "imageName": "res_exp_arrow_left.png",
+    "roiFront": "1244,115,18,26",
+    "roiBack": "1178,78,100,100",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "箭头，打开"
+  },
+  {
+    "itemName": "team_emoji_fight",
+    "imageName": "res_team_emoji_fight.png",
+    "roiFront": "38,405,37,37",
+    "roiBack": "18,386,74,75",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "战斗中的队友标识"
   }
 ]

@@ -15,11 +15,12 @@ from tasks.Component.GeneralBattle.assets import GeneralBattleAssets
 from tasks.Component.GeneralBattle.config_general_battle import GreenMarkType, GeneralBattleConfig
 from tasks.Component.GeneralBuff.config_buff import BuffClass
 from tasks.Component.GeneralBuff.general_buff import GeneralBuff
+from tasks.Component.GeneralBattle.battle_wait import BattleWait
 
 from module.logger import logger
 
 
-class GeneralBattle(GeneralBuff, GeneralBattleAssets):
+class GeneralBattle(BattleWait, GeneralBuff, GeneralBattleAssets):
     """
     使用这个通用的战斗必须要求这个任务的config有config_general_battle
     """
@@ -73,7 +74,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                     continue
                 continue
             # 未知界面, 既不是准备界面也不是战斗界面
-            logger.info('Wait for preparation page')
+            # logger.info('Wait for preparation page')  # 这玩意刷屏
             sleep(random.uniform(0.4, 0.8))
         return False
 
@@ -218,10 +219,11 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                 if not self.appear(self.I_FALSE, threshold=0.6):
                     return False
         # 最后保证能点击 获得奖励
-        if not self.wait_until_appear(self.I_REWARD):
-            # 有些的战斗没有下面的奖励，所以直接返回
-            logger.info("There is no reward, Exit battle")
-            return win
+        if not self.wait_until_appear(self.I_REWARD, wait_time=10):
+            if not self.appear(self.I_STATISTICS):
+                # 有些的战斗没有下面的奖励，所以直接返回
+                logger.info("There is no reward, Exit battle")
+                return win
         logger.info("Get reward")
         while 1:
             self.screenshot()
@@ -237,8 +239,10 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                 # self.appear_then_click(self.I_REWARD_SOUL_6, action=action_click, interval=1.5)
                 ):
                 continue
+            if self._hook_special_reward():
+                continue
             if (not self.appear(self.I_REWARD) and
-                not self.appear(self.I_REWARD_GOLD)#  and
+                not self.appear(self.I_REWARD_GOLD)  # and
                 # not self.appear(self.I_REWARD_STATISTICS) and
                 # not self.appear(self.I_REWARD_PURPLE_SNAKE_SKIN) and
                 # not self.appear(self.I_REWARD_GOLD_SNAKE_SKIN) and
@@ -249,6 +253,69 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                 break
 
         return win
+
+    def battle_wait_v2(self, random_click_swipt_enable: bool) -> bool:
+        """
+        第二版战斗等待，参考 Orochi 和 Secret 的优化版本。
+        :return: 胜利返回 True，失败返回 False
+        """
+        # 统一点击名称，防止 GameTooManyClickError 误报
+        self.C_REWARD_1.name, self.C_REWARD_2.name, self.C_REWARD_3.name = 'C_REWARD', 'C_REWARD', 'C_REWARD'
+        self.device.stuck_record_add('BATTLE_STATUS_S')
+        self.device.click_record_clear()
+
+        logger.info("Start battle process")
+        while 1:
+            self.screenshot()
+            # 出现赢的鼓，点击直到消失
+            if self.appear_then_click(self.I_WIN, interval=0.8):
+                continue
+            # 逢魔胜利图
+            if self.appear(self.I_DE_WIN):
+                self.ui_click_until_disappear(self.I_DE_WIN)
+                continue
+            if self.appear(self.I_FALSE, threshold=0.8):
+                logger.warning('False battle')
+                self.ui_click_until_disappear(self.I_FALSE)
+                return False
+            appear_ghost, appear_reward, appear_gold = (
+                self.appear(self.I_GREED_GHOST),
+                self.appear(self.I_REWARD),
+                self.appear(self.I_REWARD_GOLD)
+            )
+            if appear_ghost or appear_reward or appear_gold:
+                logger.info('Win battle')
+                timer = Timer(20).start()
+                while 1:
+                    self.screenshot()
+
+                    _appear_ghost, _appear_reward, _appear_gold = (
+                        self.appear(self.I_GREED_GHOST, threshold=0.6),
+                        self.appear(self.I_REWARD),
+                        self.appear(self.I_REWARD_GOLD)
+                    )
+                    # logger.info(f'_appear_ghost: {_appear_ghost} _appear_reward: {_appear_reward} _appear_gold: {_appear_gold}')
+                    if any([_appear_ghost, _appear_reward, _appear_gold]):
+                        action_click = random.choice([self.C_REWARD_1, self.C_REWARD_2, self.C_REWARD_3])
+                        self.click(action_click, interval=1.5)
+                    else:
+                        logger.info('Battle done')
+                        return True
+                    if self._hook_special_reward():
+                        continue
+                    if timer.reached_and_reset():
+                        logger.warning('battle ')
+                        break
+            # 随机滑动
+            if random_click_swipt_enable:
+                self.random_click_swipt()
+        return False
+
+    def _hook_special_reward(self) -> bool:
+        """
+        For overwrite https://github.com/runhey/OnmyojiAutoScript/issues/1580
+        """
+        return False
 
     def green_mark(self, enable: bool = False, mark_mode: GreenMarkType = GreenMarkType.GREEN_MAIN):
         """
@@ -389,13 +456,17 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
 
         # 点击预设确认
         self.wait_until_appear(self.I_PRESET_ENSURE, wait_time=1)
+        click_timer = Timer(10).start()
         while 1:
             self.screenshot()
+            if click_timer.reached():
+                logger.warning("Switch preset failure")
             if not self.appear(self.I_PRESET_ENSURE):
                 break
-            if self.appear_then_click(self.I_PRESET_ENSURE, threshold=0.8, interval=0.2):
+            if self.appear_then_click(self.I_PRESET_ENSURE, threshold=0.8, interval=1):
                 continue
         logger.info("Click preset ensure")
+        return None
 
     def random_click_swipt(self):
         if 0 <= random.randint(0, 500) <= 3:  # 百分之4的概率

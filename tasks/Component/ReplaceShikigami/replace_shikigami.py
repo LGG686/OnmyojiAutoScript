@@ -52,9 +52,14 @@ class ReplaceShikigami(BaseTask, ReplaceShikigamiAssets):
             if self.appear(check_selected):
                 break
             if self.appear(check_click, interval=1):
-                if self.wait_until_pos_stable(check_click, stable_time=0.8, timeout=2.5):
-                    self.click(check_click)
+                if not (self.wait_until_pos_stable(check_click, stable_time=1.5, timeout=3.5)
+                        and self.appear(check_click)):
+                    continue
+                if self.appear(check_selected):
+                    break
+                self.click(check_click, interval=2)
                 continue
+            self.wait_animate_stable(rule=self.C_SHIKIGAMI_SWITCH_1, interval=0.8)
             if self.click(self.C_SHIKIGAMI_SWITCH_1, interval=3.5):
                 continue
         logger.info('Select shikigami class: %s' % shikigami_class)
@@ -112,6 +117,9 @@ class ReplaceShikigami(BaseTask, ReplaceShikigamiAssets):
                 clicked = False  # 点击了确认, 恢复选式神的操作
                 continue
 
+            # 是否育成候补式神按钮
+            if self.appear_then_click(self.I_UI_CONFIRM, interval=1) or self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=1):
+                continue
             # 与下方点击第7个式神操作互斥, 防止确认按钮还没有出现被下方取消掉
             if not clicked and self.click(click_match, interval=1.5):
                 clicked = True

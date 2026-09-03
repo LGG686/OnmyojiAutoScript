@@ -57,13 +57,22 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
     def _match_end(self):
         return RuleAnimate(self.I_SWIPE_END)
 
+    def is_swipe_unchanged(self, before_image, after_image, threshold: float = 20) -> bool:
+        # 对比滑屏前后同一块区域，变化很小说明地图大概率没有移动，已经滑到尽头。
+        swipe_check_roi = (1216, 86, 64, 225)
+        before = self.I_SWIPE_END.corp(before_image, swipe_check_roi)
+        after = self.I_SWIPE_END.corp(after_image, swipe_check_roi)
+        diff = np.mean(np.abs(before.astype(np.int16) - after.astype(np.int16)))
+        logger.info(f'Swipe end area diff: {diff:.2f}')
+        return diff <= threshold
+
     def get_current_scene(self, reuse_screenshot: bool = True) -> Scene:
         if not reuse_screenshot:
             self.screenshot()
 
         if self.appear(self.I_CHECK_EXPLORATION) and not self.appear(self.I_E_SETTINGS_BUTTON):
             return Scene.WORLD
-        elif self.appear(self.I_UI_BACK_RED) and self.appear(self.I_E_EXPLORATION_CLICK):
+        elif self.appear(self.I_E_EXPLORATION_CLICK):
             return Scene.ENTRANCE
         elif self.appear(self.I_E_SETTINGS_BUTTON) or self.appear(self.I_E_AUTO_ROTATE_ON) or self.appear(self.I_E_AUTO_ROTATE_OFF):
             return Scene.MAIN
@@ -139,6 +148,8 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             # 获取当前章节名
             results = self.O_E_EXPLORATION_LEVEL_NUMBER.detect_and_ocr(self.device.image)
             text1 = [result.ocr_text for result in results]
+            # https://github.com/runhey/OnmyojiAutoScript/issues/1540
+            text1 = [text.replace("名", "第").replace("书", "第") for text in text1]
             # 判断当前章节有无目标章节
             result = set(text1).intersection({explorationConfig.exploration_config.exploration_level})
             # 有则跳出检测
@@ -153,11 +164,10 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             swipeCount += 1
             debug_info = f"Swiped {swipeCount} times, current exploration level: {text1}"
             logger.info(debug_info)
-            if swipeCount >= 25:
+            if swipeCount >= 15:
                 raise GameStuckError(
                     f"Swiped too many times ({swipeCount}), seems stuck in exploration level selection"
                 )
-                return False
             time.sleep(1)
 
         # 选中对应章节
@@ -197,7 +207,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             logger.warning('Opening settings failed due to now in battle')
             return
         cu, res, total = self.O_E_ALTERNATE_NUMBER.ocr(self.device.image)
-        if cu >= 10:
+        if cu >= 40:
             logger.info("Alternate number is enough")
             self.ui_click_until_disappear(self.I_E_SURE_BUTTON)
             return
@@ -356,7 +366,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
         logger.info("RealmRaid and Exploration  set_next_run !")
         next_run = datetime.now() + con_scrolls.scrolls_cd
         self.set_next_run(task='Exploration', success=False, finish=False, target=next_run)
-        self.set_next_run(task='RealmRaid', success=False, finish=False, target=datetime.now())
+        self.set_next_run(task='RealmRaid', success=False, finish=False, server=False, target=datetime.now())
         self.set_next_run(task='MemoryScrolls', success=False, finish=False, target=datetime.now())
         raise TaskEnd
 
@@ -376,16 +386,15 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
         logger.info('Quit explore')
         boss_timer = Timer(15)
         boss_timer.start()
-        click_yellow_button = 0 #用于保证只点一次左上返回按钮，不要直接触发连点回到主界面
+        # click_yellow_button = 0 #用于保证只点一次左上返回按钮，不要直接触发连点回到主界面
         
         while 1:
             self.screenshot()
             
-            #探索章节标题界面
-            if self.appear(self.I_UI_BACK_RED) and self.appear(self.I_E_EXPLORATION_CLICK):
+            # 探索章节标题界面
+            if self.appear(self.I_UI_BACK_YELLOW) and self.appear(self.I_E_EXPLORATION_CLICK):
                 break
-            
-            #探索大世界界面
+            # 探索大世界界面
             if self.appear(self.I_CHECK_EXPLORATION) and not self.appear(self.I_E_SETTINGS_BUTTON):
                 break
   
@@ -403,14 +412,18 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
 
             if self.appear_then_click(self.I_E_EXIT_CONFIRM, interval=0.8):
                 continue
-            
-            if click_yellow_button == 0:
-                if self.appear_then_click(self.I_BACK_YOLLOW, interval=3.5):
-                    click_yellow_button = 1
-                    continue
+            if self.appear_then_click(self.I_BACK_YOLLOW, interval=3.5):
+                continue
             
             if self.appear(self.I_EXPLORATION_TITLE) or self.appear(self.I_CHECK_EXPLORATION):
                 continue
+
+    def _hook_special_reward(self) -> bool:
+        if self.appear(self.I_STATISTICS) and not self.appear(self.I_REWARD) and not self.appear(self.I_WIN):
+            if self.appear_then_click(self.I_CONFIRM_CLOSE_DIFF_SOUL):
+                return True
+            self.click(self.C_RANDOM_CLICK, interval=1.5)
+        return False
 
     def fire(self, button) -> bool:
         self.ui_click_until_disappear(button, interval=3)
@@ -424,6 +437,22 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
         self.run_general_battle(self._config.general_battle_config)
         self.minions_cnt += 1
         return True
+
+    def wait_world_stable(self) -> bool:
+        """
+        # 打开右边箭头 and https://github.com/runhey/OnmyojiAutoScript/pull/1589/
+        https://github.com/runhey/OnmyojiAutoScript/issues/1588
+        @return:
+        """
+        while 1:
+            scene = self.get_current_scene(reuse_screenshot=False)
+            if scene == Scene.WORLD and self.appear(self.I_EXP_ARROW_RIGHT):
+                return True
+            if scene == Scene.ENTRANCE:
+                logger.warning('World scene unstable, possibly transient frame after paper doll collection')
+                return False
+            if self.appear_then_click(self.I_EXP_ARROW_LEFT, interval=2):
+                continue
 
 
 if __name__ == "__main__":
@@ -439,10 +468,8 @@ if __name__ == "__main__":
     # image = load_image(IMAGE_FILE)
     # t.device.image = image
     while 1:
-    # print(t.search_up_fight(UpType.EXP))
+        # print(t.search_up_fight(UpType.EXP))
         t.screenshot()
-        print(t.I_UP_DARUMA.test_match(t.device.image))
-        time.sleep(0.2)
+        print(t.get_current_scene())
     from PIL import Image
     # Image.fromarray(t.device.image.astype(np.uint8)).show()
-

@@ -27,15 +27,6 @@
     "description": "一键收取"
   },
   {
-    "itemName": "luck_msg",
-    "imageName": "Screenshots_luck_msg.png",
-    "roiFront": "22,47,46,27",
-    "roiBack": "22,47,46,27",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "吉闻"
-  },
-  {
     "itemName": "one_click_bless",
     "imageName": "Screenshots_one_click_bless.png",
     "roiFront": "1115,500,93,33",
@@ -70,5 +61,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "好友羁绊提升弹窗"
+  },
+  {
+    "itemName": "friend_tab",
+    "imageName": "love_friend_tab.png",
+    "roiFront": "143,95,97,49",
+    "roiBack": "119,82,151,70",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
   }
 ]

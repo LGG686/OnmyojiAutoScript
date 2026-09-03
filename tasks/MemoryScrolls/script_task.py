@@ -10,6 +10,7 @@ from datetime import timedelta, datetime
 
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.page import page_summon
+from tasks.GlobalGame.assets import GlobalGameAssets
 from tasks.MemoryScrolls.assets import MemoryScrollsAssets
 from tasks.MemoryScrolls.config import ScrollNumber
 
@@ -61,11 +62,15 @@ class ScriptTask(GameUi, MemoryScrollsAssets):
                 logger.info('Small Memory Scrolls fragments reached 50, planning tomorrow exploration')
                 # 安排下次探索
                 self.custom_next_run(task='Exploration', custom_time=self.config.memory_scrolls.memory_scrolls_finish.next_exploration_time, time_delta=1)
+            else:
+                logger.warning('Small Memory Scrolls fragments not reached 50, task failed')
+                self.set_next_run(task='MemoryScrolls', success=False)
+                raise TaskEnd
             self.ui_click_until_smt_disappear(self.I_MS_FRAGMENT_S, stop=self.I_MS_FRAGMENT_S_VERIFICATION, interval=1.5)
         # 进入指定分卷
         self.goto_scroll(con)
-        # 返回召唤界面，目前只发现此种返回按键
-        self.ui_click_until_disappear(self.I_MS_BACK, interval=1)
+        # 返回召唤界面
+        self.ui_click_until_disappear(GlobalGameAssets.I_UI_BACK_YELLOW, interval=1)
         logger.info('Return to Summon page')
     
     def goto_scroll(self, con):
@@ -75,8 +80,7 @@ class ScriptTask(GameUi, MemoryScrollsAssets):
         """
         while 1:
             self.screenshot()
-            # 暂时用手动截取叉号，后续替换为通用图片
-            if self.appear(self.I_MS_CLOSE):
+            if self.appear(GlobalGameAssets.I_UI_BACK_RED):
                 logger.info('Entered Memory Scrolls contribution page')
                 break
             match con.scroll_number:
@@ -122,7 +126,7 @@ class ScriptTask(GameUi, MemoryScrollsAssets):
                 # next_run=datetime.now() + timedelta(days=1)
                 # self.set_next_run(task='Exploration', success=False, finish=False, target=next_run)
         # 返回绘卷主界面
-        self.ui_click_until_disappear(self.I_MS_CLOSE, interval=1)
+        self.ui_click_until_disappear(GlobalGameAssets.I_UI_BACK_RED, interval=1)
         logger.info('Closed Memory Scrolls contribution page')
     
     def contribute_memoryscrolls(self):

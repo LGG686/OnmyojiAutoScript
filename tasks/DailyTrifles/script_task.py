@@ -162,7 +162,7 @@ class ScriptTask(GameUi, Summon, DailyTriflesAssets):
                 break
             if self.appear_then_click(self.I_FRIENDSHIP_UP, interval=1):
                 continue
-            if self.appear_then_click(self.I_LUCK_MSG, interval=1):
+            if self.ocr_appear_click(self.O_LUCK_MSG, interval=1):
                 continue
         logger.info('Start luck msg')
         check_timer = Timer(2)
@@ -193,6 +193,8 @@ class ScriptTask(GameUi, Summon, DailyTriflesAssets):
             if self.appear_then_click(self.I_FRIENDSHIP_UP, interval=1):
                 continue
             if self.appear_then_click(self.I_L_FRIENDS, interval=1):
+                continue
+            if self.appear_then_click(self.I_FRIEND_TAB, interval=3):
                 continue
         logger.info('Start friend love')
         check_timer = Timer(2)
@@ -307,4 +309,4 @@ if __name__ == '__main__':
     d = Device(c)
     t = ScriptTask(c, d)
 
-    t.check_time()
+    t.run_friend_love()

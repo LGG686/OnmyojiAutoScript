@@ -86,9 +86,28 @@ class ScriptTask(OrochiScriptTask, TrueOrochiAssets):
             # 如果还没有真蛇，那么就退出
             self.check_times(battle)
             raise TaskEnd('TrueOrochi')
-        # 如果有真蛇，那么就开始战斗
+
+        # 如果有真蛇，开始第一次战斗
+        self.run_true_orochi_battle()
+        self.check_times(True)
+
+        # 检查是否还有真蛇入口，支持存储两次
+        self.ui_get_current_page()
+        self.ui_goto(page_soul_zones)
+        self.orochi_enter()
+        sleep(0.5)
+        if conf.current_success < 2 and self.check_true_orochi(True):
+            battle = True
+            logger.info('Find another true orochi entry, continue')
+            self.run_true_orochi_battle()
+            self.check_times(battle)
+
+        raise TaskEnd('TrueOrochi')
+
+    def run_true_orochi_battle(self):
+        """执行一次真蛇战斗"""
+        conf = self.config.true_orochi.true_orochi_config
         logger.hr('True Orochi Battle')
-        conf.current_success += 1
         while 1:
             self.screenshot()
             if self.appear(self.I_ST_CREATE_ROOM):
@@ -166,8 +185,6 @@ class ScriptTask(OrochiScriptTask, TrueOrochiAssets):
             sleep(0.5)
 
         logger.info("Battle process end")
-        self.check_times(battle)
-        raise TaskEnd('TrueOrochi')
 
     def check_true_orochi(self, screenshot=False) -> bool:
         """
@@ -181,26 +198,27 @@ class ScriptTask(OrochiScriptTask, TrueOrochiAssets):
     def check_times(self, battle: bool):
         """
         后续的次数和时间设置
-        :param battle:
+        :param battle: 本次是否挑战了真蛇
         :param current_success: 这周的成功次数
         :return:
         """
         now = datetime.now()
         now_year, now_week_number, now_weekday = now.isocalendar()
         if battle:
+            # 只有真正打过才加一次数
+            logger.info('Add current_success by 1')
+            self.config.true_orochi.true_orochi_config.current_success += 1
+            self.config.true_orochi.true_orochi_config.current_success = min(2, self.config.true_orochi.true_orochi_config.current_success)
             next_run = now + self.config.true_orochi.scheduler.success_interval
         else:
+            logger.info('Battle skipped or not found True Orochi')
             next_run = now + self.config.true_orochi.scheduler.failure_interval
         next_run_year, next_run_week_number, next_run_weekday = next_run.isocalendar()
         # 如果下次运行的时间是下一周，那么就重置成功次数
         if now_week_number != next_run_week_number:
             logger.info('Reset current_success')
             self.config.true_orochi.true_orochi_config.current_success = 0
-        else:
-            # 如果不是下一周，那么就加一
-            logger.info('Add current_success by 1')
-            self.config.true_orochi.true_orochi_config.current_success += 1
-            self.config.true_orochi.true_orochi_config.current_success = min(2, self.config.true_orochi.true_orochi_config.current_success)
+
         self.config.save()
         self.set_next_run(task='TrueOrochi', target=next_run)
         # self.set_next_run('TrueOrochi', finish=True, success=True)
@@ -219,4 +237,3 @@ if __name__ == '__main__':
     t.screenshot()
 
     t.run()
-

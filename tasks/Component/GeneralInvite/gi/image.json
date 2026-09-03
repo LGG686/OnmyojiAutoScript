@@ -38,8 +38,8 @@
   {
     "itemName": "lock",
     "imageName": "gi_lock.png",
-    "roiFront": "29,644,29,32",
-    "roiBack": "29,644,29,32",
+    "roiFront": "49,645,29,32",
+    "roiBack": "29,633,287,61",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "锁定阵容的图片"
@@ -47,8 +47,8 @@
   {
     "itemName": "unlock",
     "imageName": "gi_unlock.png",
-    "roiFront": "30,647,23,30",
-    "roiBack": "30,647,23,30",
+    "roiFront": "31,647,23,27",
+    "roiBack": "26,633,285,57",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "还没有锁定阵容"
@@ -191,8 +191,8 @@
   {
     "itemName": "flag_2_on",
     "imageName": "gi_flag_2_on.png",
-    "roiFront": "471,128,54,18",
-    "roiBack": "471,128,54,18",
+    "roiFront": "472,82,32,11",
+    "roiBack": "454,74,56,26",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "description"
@@ -325,7 +325,7 @@
   },
   {
     "itemName": "gi_cancel",
-    "imageName": "gi_gi_cancel.png",
+    "imageName": "gi_cancel.png",
     "roiFront": "438,407,171,55",
     "roiBack": "438,407,171,55",
     "method": "Template matching",
@@ -376,5 +376,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "识别到寄养邀请"
+  },
+  {
+    "itemName": "gi_speak",
+    "imageName": "gi_gi_speak.png",
+    "roiFront": "23,503,82,85",
+    "roiBack": "23,503,82,85",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "房间左下角发言按钮(永生之海房间无表情按钮, 用此图识别)"
   }
 ]

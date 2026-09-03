@@ -11,8 +11,8 @@
   {
     "itemName": "side_check_special",
     "imageName": "navbar_side_check_special.png",
-    "roiFront": "155,8,42,42",
-    "roiBack": "155,8,42,42",
+    "roiFront": "0,0,26,34",
+    "roiBack": "1075,0,100,100",
     "method": "Template matching",
     "threshold": 0.7,
     "description": "特殊"
@@ -39,7 +39,7 @@
     "itemName": "side_sure_friends",
     "imageName": "navbar_side_sure_friends.png",
     "roiFront": "1190,287,43,52",
-    "roiBack": "1163,258,93,126",
+    "roiBack": "1159,258,97,296",
     "method": "Template matching",
     "threshold": 0.7,
     "description": "友情点"

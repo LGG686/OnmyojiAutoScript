@@ -28,7 +28,9 @@
       "combat_screenshot_interval": 1.0,
       "task_hoarding_duration": 0,
       "when_task_queue_empty": "goto_main",
-      "schedule_rule": "Filter"
+      "schedule_rule": "Filter",
+      "queue_mode": false,
+      "queue_idle_threshold": 10
     }
   },
   "restart": {
@@ -98,9 +100,8 @@
     "boss": {
       "boss_number": 3,
       "boss_reward": false,
-      "reward_floor": "一星",
-      "use_collect": false,
-      "Attack_60": false
+      "reward_floor": "不更改",
+      "use_collect": false
     },
     "general_battle": {
       "lock_team_enable": false,

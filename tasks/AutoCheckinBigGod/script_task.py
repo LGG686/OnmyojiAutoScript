@@ -141,7 +141,7 @@ class ScriptTask(BaseTask):
 
         if not rewards:
             logger.info('没有可领取的礼包')
-            self._cleanup()
+            self._cleanup(restore_game=True)
             self.set_next_run('AutoCheckinBigGod', success=True, finish=True)
             raise TaskEnd('AutoCheckinBigGod')
 
@@ -154,13 +154,13 @@ class ScriptTask(BaseTask):
             time.sleep(0.5)
 
         logger.info(f'完成! 成功领取 {success_count}/{len(rewards)} 个礼包')
-        self._cleanup()
+        self._cleanup(restore_game=True)
         self.set_next_run('AutoCheckinBigGod', success=True, finish=True)
         raise TaskEnd('AutoCheckinBigGod')
 
     # ======================== 清理 ========================
 
-    def _cleanup(self):
+    def _cleanup(self, restore_game=False):
         logger.info('清理：关闭大神APP和Frida Server...')
         try:
             if self._frida_session is not None:
@@ -177,6 +177,13 @@ class ScriptTask(BaseTask):
             self._adb_shell(['su -c "killall frida-server"'])
         except Exception:
             pass
+
+        if restore_game:
+            try:
+                self.device.app_start()
+                logger.info('已返回阴阳师前台')
+            except Exception as e:
+                logger.warning(f'返回阴阳师失败: {e}')
 
     # ======================== ADB 操作 ========================
 
@@ -832,12 +839,19 @@ Java.perform(function() {{
         return None
 
     def _get_device_id(self, pid):
-        """通过 Frida 获取 DeviceId"""
+        """通过 Frida 获取 DeviceId，失败时使用UDID作为备选"""
         script = """
 Java.perform(function() {
     try {
         var YXFDeviceInfo = Java.use('com.netease.gl.glbase.build.YXFDeviceInfo');
-        console.log('GL_DEVICEID:' + YXFDeviceInfo.getDeviceId());
+        var id = YXFDeviceInfo.getDeviceId();
+        if (id && typeof id === 'string' && id != 'unknown') console.log('GL_DEVICEID:' + id);
+    } catch(e) {}
+    try {
+        var ctx = Java.use('android.app.ActivityThread').currentApplication().getApplicationContext();
+        var sp = ctx.getSharedPreferences('gl_user_info', 0);
+        var deviceId = sp.getString('deviceId', '');
+        if (deviceId && deviceId != 'unknown') console.log('GL_DEVICEID:' + deviceId);
     } catch(e) {}
     console.log('__DONE__');
 });
@@ -846,7 +860,18 @@ Java.perform(function() {
         if output:
             for line in output.split('\n'):
                 if 'GL_DEVICEID:' in line:
-                    return line.split('GL_DEVICEID:')[1].strip()
+                    device_id = line.split('GL_DEVICEID:')[1].strip()
+                    if device_id and device_id != 'unknown' and not device_id.startswith('Java.Field'):
+                        return device_id
+        
+        try:
+            udid = self._adb_shell(['settings', 'get', 'secure', 'android_id'])
+            if udid and udid != 'unknown':
+                logger.info(f'使用UDID作为DeviceId')
+                return udid
+        except Exception:
+            pass
+        
         return None
 
     def _login_by_urs_token(self, pid, urs_creds):
@@ -1113,3 +1138,10 @@ Java.perform(function() {
             logger.error(f'  领取异常: {title} - {e}')
 
         return False
+if __name__ == "__main__":
+    from module.config.config import Config
+    from module.device.device import Device
+    config = Config('oas1')
+    device = Device(config)
+    t = ScriptTask(config, device)
+    t.run()

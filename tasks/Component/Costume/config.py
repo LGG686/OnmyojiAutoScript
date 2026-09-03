@@ -21,6 +21,7 @@ class MainType(str, Enum):
     COSTUME_MAIN_12 = 'costume_main_12'  # 龙吟溯玉
     COSTUME_MAIN_13 = 'costume_main_13'  # 云景阆苑
     COSTUME_MAIN_14 = 'costume_main_14'  # 雪月华庭
+    COSTUME_MAIN_15 = 'costume_main_15'  # 茨心乐园
 
 # 结界皮肤
 class RealmType(str, Enum):
@@ -48,6 +49,9 @@ class ShikigamiType(str, Enum):
     COSTUME_SHIKIGAMI_6 = 'costume_shikigami_6'  # 月下火舞
     COSTUME_SHIKIGAMI_7 = 'costume_shikigami_7'  # 赤溟幽界
     COSTUME_SHIKIGAMI_8 = 'costume_shikigami_8'  # 童梦基地
+    COSTUME_SHIKIGAMI_9 = 'costume_shikigami_9'  # 鹿眠之森
+    COSTUME_SHIKIGAMI_10 = 'costume_shikigami_10'  # 今宵胧明
+    COSTUME_SHIKIGAMI_11 = 'costume_shikigami_11'  # 花札幕台
 
 # 签到主题
 class SignType(str, Enum):
@@ -68,6 +72,8 @@ class BattleType(str, Enum):
     COSTUME_BATTLE_10 = 'costume_battle_10'  # 流焰蝶舞
     COSTUME_BATTLE_11 = 'costume_battle_11'  # 辰烁奇夜
     COSTUME_BATTLE_12 = 'costume_battle_12'  # 招财纳福
+    COSTUME_BATTLE_13 = 'costume_battle_13'  # 登云问翠
+    COSTUME_BATTLE_14 = 'costume_battle_14'  # 茸茨跃动
 
 
 
@@ -87,7 +93,6 @@ class CostumeConfig(BaseModel):
         if v and v not in RealmType._value2member_map_:
             return RealmType.COSTUME_REALM_DEFAULT
         return v
-
 
 
 

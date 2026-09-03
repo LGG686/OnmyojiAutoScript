@@ -4,6 +4,8 @@ import random
 
 import traceback
 from module.atom.click import RuleClick
+from tasks.BondlingFairyland.assets import BondlingFairylandAssets
+from tasks.Duel.assets import DuelAssets
 from tasks.GlobalGame.assets import GlobalGameAssets as GGA
 from tasks.GameUi.assets import GameUiAssets as G
 from tasks.KekkaiUtilize.assets import KekkaiUtilizeAssets
@@ -53,7 +55,8 @@ page_login = Page(G.I_CHECK_LOGIN_FORM)
 # Main Home 主页
 page_main = Page(G.I_CHECK_MAIN)
 page_main.additional = [G.I_AD_CLOSE_RED, G.I_BACK_FRIENDS, RestartAssets.I_CANCEL_BATTLE,
-                        [RestartAssets.I_LOGIN_COURTYARD, RestartAssets.C_LOGIN_SCROLL_CLOSE_AREA]]
+                            GGA.I_CHAT_CLOSE_BUTTON, G.I_CLOSE_CHAT_WINDOW,
+                            [G.I_MAIN_GOTO_SHIKIGAMI_RECORDS, RestartAssets.C_LOGIN_SCROLL_CLOSE_AREA, True]]
 # 召唤summon
 page_summon = Page(G.I_CHECK_SUMMON)
 page_summon.link(button=G.I_SUMMON_GOTO_MAIN, destination=page_main)
@@ -110,7 +113,7 @@ page_six_gates = Page(G.I_CHECK_SIX_GATES)
 page_six_gates.link(button=G.I_SIX_GATES_GOTO_EXPLORATION, destination=page_exploration)
 page_exploration.link(button=G.I_EXPLORATION_GOTO_SIX_GATES, destination=page_six_gates)
 # 契灵之境 bondling fairyland
-page_bondling_fairyland = Page(G.I_CHECK_BONDLING_FAIRYLAND)
+page_bondling_fairyland = Page(BondlingFairylandAssets.I_BALL_AREA)
 page_bondling_fairyland.link(button=G.I_BACK_YOLLOW, destination=page_exploration)
 page_exploration.link(button=G.I_EXPLORATION_GOTO_BONDLING_FAIRYLAND, destination=page_bondling_fairyland)
 # 英杰试炼 hero test
@@ -121,12 +124,17 @@ page_exploration.link(button=G.I_EXPLORATION_GOTO_HERO_TEST, destination=page_he
 # ************************************* 町中部分 *****************************************#
 # 斗技 duel
 page_duel = Page(G.I_CHECK_DUEL)
+page_duel.additional = [DuelAssets.I_D_TRY]
 page_duel.link(button=G.I_BACK_YOLLOW, destination=page_town)
 page_town.link(button=G.I_TOWN_GOTO_DUEL, destination=page_duel)
 # 逢魔之时 demon_encounter
 page_demon_encounter = Page(G.I_CHECK_DEMON_ENCOUNTER)
 page_demon_encounter.link(button=G.I_BACK_YOLLOW, destination=page_town)
 page_town.link(button=G.I_TOWN_GOTO_DEMON_ENCOUNTER, destination=page_demon_encounter)
+# 逢魔之时现世逢魔 demon_encounter_realworld
+page_demon_encounter_realworld = Page(G.I_CHECK_DEMON_ENCOUNTER_REALWORLD)
+page_demon_encounter_realworld.link(button=G.I_BACK_YOLLOW, destination=page_demon_encounter)
+page_demon_encounter.link(button=G.I_DEMON_ENCOUNTER_REALWORLD_GOTO, destination=page_demon_encounter_realworld)
 # 狩猎战 hunt
 page_hunt = Page(G.I_CHECK_HUNT)
 page_hunt.link(button=G.I_BACK_YOLLOW, destination=page_town)
@@ -151,7 +159,7 @@ page_town.link(button=G.I_TOWN_GOTO_HYAKKIYAKOU, destination=page_hyakkiyakou)
 # ************************************* 庭院部分 *****************************************#
 # 式神录 shikigami_records
 page_shikigami_records = Page(G.I_CHECK_RECORDS)
-page_shikigami_records.additional = [G.I_AD_DISAPPEAR, G.I_RECORDS_CLOSE]
+page_shikigami_records.additional = [G.I_AD_DISAPPEAR, G.I_RECORDS_CLOSE, GGA.I_UI_CANCEL_SAMLL]
 page_shikigami_records.link(button=G.I_BACK_Y, destination=page_main)
 page_main.link(button=G.I_MAIN_GOTO_SHIKIGAMI_RECORDS, destination=page_shikigami_records)
 # 阴阳术 onmyodo
@@ -171,12 +179,12 @@ from tasks.DailyTrifles.assets import DailyTriflesAssets
 
 # 商店 mall
 page_mall = Page(check_button=[G.I_CHECK_MALL, DailyTriflesAssets.I_ROOM_GIFT])
-page_mall.additional = [G.I_AD_CLOSE_RED, G.I_BACK_Y, G.I_DLC_CLOSE]
+page_mall.additional = [G.I_AD_CLOSE_RED, GGA.I_UI_CANCEL_SAMLL, G.I_BACK_Y]
 page_mall.link(button=G.I_BACK_YOLLOW, destination=page_main)
 page_main.link(button=G.I_MAIN_GOTO_MALL, destination=page_mall)
 # 阴阳寮 guild
 page_guild = Page(G.I_CHECK_GUILD)
-page_guild.additional = [KekkaiUtilizeAssets.I_PLANT_TREE_CLOSE]
+page_guild.additional = [KekkaiUtilizeAssets.I_PLANT_TREE_CLOSE, G.I_CLOSE_CHAT_WINDOW]
 page_guild.link(button=G.I_BACK_Y, destination=page_main)
 page_main.link(button=G.I_MAIN_GOTO_GUILD, destination=page_guild)
 # 组队 team
@@ -185,6 +193,7 @@ page_team.link(button=G.I_BACK_Y, destination=page_main)
 page_main.link(button=G.I_MAIN_GOTO_TEAM, destination=page_team)
 # 收集 collection
 page_collection = Page(G.I_CHECK_COLLECTION)
+page_collection.additional = [GGA.I_UI_CANCEL_SAMLL]
 page_collection.link(button=G.I_BACK_Y, destination=page_main)
 page_main.link(button=G.I_MAIN_GOTO_COLLECTION, destination=page_collection)
 # 珍旅居

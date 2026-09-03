@@ -42,7 +42,9 @@ class ScriptTask(GameUi, SoulsTidyAssets):
                 continue
             if self.appear_then_click(self.I_ST_SOULS, interval=1):
                 continue
-            if self.click(self.C_ST_DETAIL, interval=1.5):
+            if self.appear_then_click(self.I_ST_SOULS_CLOSE, interval=1):
+                continue
+            if self.click(self.C_ST_DETAIL, interval=2):
                 continue
         # 御魂超过上限的提示
         self.ocr_appear_click(self.O_ST_OVERFLOW)
@@ -124,7 +126,8 @@ class ScriptTask(GameUi, SoulsTidyAssets):
             logger.info('Sort by level')
             # 开始奉纳
             while 1:
-                if self.wait_until_appear(self.I_ST_SOUL_STACK, wait_time=2):
+                if (self.wait_until_appear(self.I_ST_SOUL_STACK, wait_time=2) or
+                        self.wait_until_appear(self.I_ST_SOUL_STACK_1, wait_time=2)):
                     # 方式1. 御魂堆叠奉纳
                     logger.info('Soul stack')
                 else:
@@ -171,6 +174,16 @@ class ScriptTask(GameUi, SoulsTidyAssets):
                     if self.appear(self.I_ST_GOD_PRESENT):
                         logger.info('God present appear')
                         self.click(self.C_ST_GOD_PRSENT, interval=2)
+                        continue
+                    elif self.appear(self.I_ST_LUCK):
+                        # 出现吉运
+                        logger.info('luck appear')
+                        self.click(self.C_ST_SOUL_OFFERING_REWARD, interval=2)
+                        continue
+                    elif self.appear(self.I_ST_SMALL_LUCK):
+                        # 出现小吉运
+                        logger.info('small luck appear')
+                        self.click(self.C_ST_SOUL_OFFERING_REWARD, interval=2)
                         continue
                     if self.appear_then_click(self.I_ST_DONATE, interval=5.5):
                         self.wait_until_appear(self.I_ST_GOLD, True, wait_time=5)
