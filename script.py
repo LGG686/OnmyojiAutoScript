@@ -36,6 +36,7 @@ from module.ocr.rpc import (
     set_ocr_logging_enabled,
     set_ocr_low_spec_mode,
     set_ocr_model_size,
+    get_ocr_client,
 )
 from module.script import ScriptRuntimeController, ScriptRuntimeDecision
 from tasks.Restart.server_update import delay_pending_tasks_for_server_update, is_server_update_window
@@ -73,6 +74,9 @@ class Script:
         # 低配模式与普通模式统一使用现有 PaddleOCR medium 模型，
         # 避免小模型降低关键文字的识别稳定性。
         set_ocr_model_size('medium')
+        self.resource_precache_enable = bool(
+            self.config.script.device.resource_precache_enable
+        )
         if self.low_spec_mode:
             logger.info(
                 'Low spec mode enabled: frame cache=10s, '
@@ -554,6 +558,14 @@ class Script:
             logger.set_file_logger(self.config_name, do_cleanup=True)
         start_day = date.today()
         logger.info(f'Start scheduler loop: {self.config_name}')
+        if self.resource_precache_enable:
+            logger.info('Resource precache enabled: warming up OCR model')
+            try:
+                get_ocr_client().warmup()
+            except Exception as exc:
+                logger.exception(exc)
+                raise ScriptError('OCR model resource precache failed') from exc
+            logger.info('Resource precache completed; scheduler tasks can start')
         self.config.model.running_task = ''
         self._active_seconds_today = 0
         self._active_date = date.today()

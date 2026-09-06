@@ -329,6 +329,14 @@ window_background >>> DroidCast_raw >  ADB_nc >> DroidCast > uiautomator2 ~= ADB
         <source>low_spec_mode_help</source>
         <translation>默认关闭。开启后截图帧保留 10 秒，OCR 改用小模型，并将图像对比阈值统一降低 0.1。修改后需停止当前运行的脚本，再重新启动脚本生效。</translation>
     </message>
+	<message>
+        <source>Resource Precache Enable</source>
+        <translation>预缓存</translation>
+    </message>
+	<message>
+        <source>resource_precache_enable_help</source>
+        <translation>默认关闭。开启后，脚本启动时会先将当前使用的 PaddleOCR 中模型加载到 OCR 服务内存，预缓存完成后才开始执行任务。修改后需停止当前运行的脚本，再重新启动脚本生效。</translation>
+    </message>
 	<message><source>Error</source><translation>出错</translation></message>
 	<message><source>Handle Error</source><translation>启用异常处理</translation></message>
 	<message><source>handle_error_help</source><translation>处理部分异常，运行出错时撤退</translation></message>

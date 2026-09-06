@@ -4,6 +4,8 @@
   "save_ocr_log_help": "默认关闭；开启后保存OCR输入图片和文字识别结果，用于调试识别问题",
   "low_spec_mode": "低配模式",
   "low_spec_mode_help": "默认关闭。开启后截图帧保留10秒，OCR仍使用PaddleOCR中模型，OCR请求超时提高到30秒并启用短期结果缓存，图像对比阈值保持不变。修改后需停止当前运行的脚本，再重新启动脚本生效。",
+  "resource_precache_enable": "预缓存",
+  "resource_precache_enable_help": "默认关闭。开启后，脚本启动时会先将当前使用的PaddleOCR中模型加载到OCR服务内存，预缓存完成后才开始执行任务。修改后需停止当前运行的脚本，再重新启动脚本生效。",
   "continuous_task_rest_enable": "休息模式",
   "continuous_task_rest_enable_help": "开启后，脚本在未进入任务等待状态的情况下连续执行达到随机间隔时，会暂停2至20分钟后再继续调度。功能独立于低配模式。",
   "continuous_task_rest_interval": "连续任务休息间隔（分钟）",

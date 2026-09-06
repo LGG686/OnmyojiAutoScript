@@ -84,6 +84,11 @@ class Device(BaseModel):
         default='60,120',
         description='continuous_task_rest_interval_help',
     )
+    # 启动时先将当前使用的OCR模型加载到服务内存
+    resource_precache_enable: bool = Field(
+        default=False,
+        description='resource_precache_enable_help',
+    )
 
 
 if __name__ == '__main__':

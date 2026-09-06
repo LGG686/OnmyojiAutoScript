@@ -419,12 +419,13 @@ class OcrRuntime:
         self._scheduler.shutdown()
         return True
 
-    def warmup(self) -> bool:
+    def warmup(self, model_size: str = "medium") -> bool:
         """Load the model on the worker before accepting RPC requests."""
-        logger.info("Warming up OCR worker model")
-        future = self._scheduler.submit(self._get_model)
+        model_size = _normalize_model_size(model_size)
+        logger.info(f"Warming up OCR worker model: size={model_size}")
+        future = self._scheduler.submit(self._get_model, model_size)
         future.result()
-        logger.info("OCR worker model warmup completed")
+        logger.info(f"OCR worker model warmup completed: size={model_size}")
         return True
 
     def _run_request(self, func, *args, **kwargs):
@@ -775,6 +776,10 @@ class ModelProxy:
 
     def get_server_info(self) -> dict[str, Any]:
         return self.client.get_server_info()
+
+    def warmup(self) -> bool:
+        """要求OCR服务预加载当前脚本配置使用的模型。"""
+        return bool(self._call_with_timeout_retry('warmup', self.model_size))
 
     def ocr_single_line(self, image: np.ndarray):
         payload = pickle.dumps(image, protocol=4)
