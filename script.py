@@ -27,6 +27,7 @@ from module.config.config import Config
 from module.device.env import IS_WINDOWS
 from module.base.utils import load_module
 from module.base.decorator import del_cached_property
+from module.atom.scatter import RuleScatter
 from module.logger import logger
 from module.exception import *
 from module.server.i18n import I18n
@@ -620,7 +621,11 @@ class Script:
             logger.hr(task, level=0)
             self.config.model.running_task = task
             _task_start = datetime.now()
-            success = self.run(inflection.camelize(task))
+            RuleScatter.begin_task(task)
+            try:
+                success = self.run(inflection.camelize(task))
+            finally:
+                RuleScatter.end_task(task)
             self.config.model.running_task = ''
             logger.info(f'Scheduler: End task `{task}`')
             self.is_first_task = False
