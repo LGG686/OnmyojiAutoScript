@@ -1163,6 +1163,7 @@ class ChessHandOperationsMixin:
         if self.equip_hakuzosu_protect_after_deploy(verified_names):
             equipped.append(self.HAKUZOSU_PROTECT_NAME)
         repeated_attempts = {}
+        target_failures = Counter()
         for _ in range(self.SOUL_EQUIP_SAFETY_LIMIT):
             if not self._is_preparation_mode():
                 logger.debug(
@@ -1246,8 +1247,38 @@ class ChessHandOperationsMixin:
                     f'->{hand_counts_after[selected["name"]]}, '
                     f'attempt={attempts}/2'
                 )
+                target_failures[target_name] += 1
+                _, soul_1, soul_2 = self._shikigami_attributes(target_name)
+                if (
+                    target_failures[target_name] >= 2
+                    and (soul_1 is None or soul_2 is None)
+                    and self._is_preparation_mode()
+                ):
+                    # 只撤销已失效的站位记录，式神携带属性随式神保留。
+                    deployed_names = set(
+                        getattr(self, '_board_lineup_names', set())
+                    )
+                    deployed_names.discard(target_name)
+                    self._board_lineup_names = deployed_names
+                    actual_positions = dict(
+                        getattr(self, '_board_actual_positions', {})
+                    )
+                    actual_positions.pop(target_name, None)
+                    self._board_actual_positions = actual_positions
+                    player_positions = set(
+                        getattr(self, '_player_deployed_positions', set())
+                    )
+                    player_positions.discard(set_index)
+                    self._player_deployed_positions = player_positions
+                    verified_names.discard(target_name)
+                    logger.warning(
+                        f'Chess 式神已被转移，标记为未上阵: '
+                        f'name={target_name}, set={set_index}, '
+                        f'御魂装配失败次数={target_failures[target_name]}'
+                    )
                 continue
 
+            target_failures.pop(target_name, None)
             if not self._record_shikigami_soul(
                 target_name,
                 selected['name'],

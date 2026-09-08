@@ -559,6 +559,7 @@ class ScriptTask(
     def _restart_chess_game_from_result(self) -> bool:
         """推进到排名页并点击“再来一局”；回到大厅时返回 False。"""
         logger.debug('Chess result flow: restart from rank page')
+        self._chess_share_advancing = False
         deadline = time.monotonic() + self.CHESS_EXIT_TIMEOUT
         exit_clicked = False
         share_seen = False
@@ -569,6 +570,12 @@ class ScriptTask(
         while time.monotonic() < deadline:
             self.device.stuck_record_clear()
             self.screenshot()
+
+            if self._advance_chess_result_stage():
+                exit_clicked = True
+                share_seen = True
+                time.sleep(self.CHESS_EXIT_SCREENSHOT_INTERVAL)
+                continue
 
             if self.appear(self.I_RESTART_AGAIN):
                 for attempt in range(
@@ -626,7 +633,7 @@ class ScriptTask(
                     exit_clicked = True
                     time.sleep(self.CHESS_EXIT_SCREENSHOT_INTERVAL)
                     continue
-                if self.appear(self.I_CHESS_SHARE):
+                if self.appear(ChessAssets.I_SHARE):
                     exit_clicked = True
                     share_seen = True
                     continue
@@ -642,12 +649,12 @@ class ScriptTask(
                 time.sleep(self.CHESS_EXIT_SCREENSHOT_INTERVAL)
                 continue
 
-            if not share_seen and self.appear(self.I_CHESS_SHARE):
+            if not share_seen and self.appear(ChessAssets.I_SHARE):
                 share_seen = True
 
             now = time.monotonic()
             if share_seen and now >= next_safe_click_at:
-                self.click(self.C_RANDOM_LEFT)
+                self.click(ChessAssets.C_C_REWARD_RANDOM_CLICK, interval=1.5)
                 safe_clicks += 1
                 next_safe_click_at = now + 1.5
             time.sleep(self.CHESS_EXIT_SCREENSHOT_INTERVAL)

@@ -335,7 +335,8 @@ page_chess_result = Page(
     any_of(
         GameUiAssets.I_CHESS_EXIT_TO_LOBBY,
         GameUiAssets.I_CHESS_EXIT_TO_LOBBY_2,
-        GameUiAssets.I_CHESS_SHARE,
+        ChessAssets.I_REWARD_CHESS,
+        ChessAssets.I_SHARE,
         GameUiAssets.I_CHECK_CHESS_RANK,
         GameUiAssets.I_CHESS_RANK_GOTO_LOBBY,
     ),

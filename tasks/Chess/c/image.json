@@ -214,5 +214,23 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": ""
+  },
+  {
+    "itemName": "reward_chess",
+    "imageName": "c_reward_chess.png",
+    "roiFront": "485,227,310,44",
+    "roiBack": "480,222,320,54",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
+  },
+  {
+    "itemName": "share",
+    "imageName": "c_share.png",
+    "roiFront": "1159,579,65,66",
+    "roiBack": "1147,568,85,86",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
   }
 ]
