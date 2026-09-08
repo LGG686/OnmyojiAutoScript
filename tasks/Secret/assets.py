@@ -1,5 +1,6 @@
 from module.atom.image import RuleImage
 from module.atom.click import RuleClick
+from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
 from module.atom.swipe import RuleSwipe
 from module.atom.ocr import RuleOcr
@@ -23,7 +24,7 @@ class SecretAssets:
 	# 排行 
 	I_SE_PLACEMENT = RuleImage(roi_front=(1013,570,50,48), roi_back=(996,555,79,81), threshold=0.8, method="Template matching", file="./tasks/Secret/se/se_se_placement.png")
 	# 勾玉 
-	I_SE_JADE = RuleImage(roi_front=(305,208,28,33), roi_back=(305,208,28,33), threshold=0.8, method="Template matching", file="./tasks/Secret/se/se_se_jade.png")
+	I_SE_JADE = RuleImage(roi_front=(305,208,28,33), roi_back=(192,127,365,516), threshold=0.8, method="Template matching", file="./tasks/Secret/se/se_se_jade.png")
 	# 最后一个的勾玉 
 	I_SE_JADE_LAST = RuleImage(roi_front=(302,565,37,40), roi_back=(302,565,37,40), threshold=0.8, method="Template matching", file="./tasks/Secret/se/se_se_jade_last.png")
 	# 战斗赢 
@@ -36,7 +37,7 @@ class SecretAssets:
 	# 未通关 
 	O_SE_NO_PASS = RuleOcr(roi=(428,151,262,248), area=(428,151,262,248), mode="Full", method="Default", keyword="未通关", name="se_no_pass")
 	# 第一个位置的层数 
-	O_SE_LAYER_1 = RuleOcr(roi=(210,138,43,89), area=(210,138,43,89), mode="Single", method="Default", keyword="", name="se_layer_1")
+	O_SE_LAYER_1 = RuleOcr(roi=(210,150,44,39), area=(210,150,44,39), mode="Single", method="Default", keyword="", name="se_layer_1")
 	# Ocr-description 
 	O_SE_LAYER_10 = RuleOcr(roi=(210,507,34,34), area=(210,507,34,34), mode="Single", method="Default", keyword="拾", name="se_layer_10")
 	# Ocr-description 
@@ -46,9 +47,9 @@ class SecretAssets:
 	# 后面的时候识别为通关的 
 	O_SE_NO_PASS_LAST = RuleOcr(roi=(429,381,180,234), area=(429,381,180,234), mode="Full", method="Default", keyword="未通关", name="se_no_pass_last")
 	# 勾玉 
-	O_SE_JADE = RuleOcr(roi=(327,216,22,49), area=(327,216,22,49), mode="Digit", method="Default", keyword="", name="se_jade")
+	O_SE_JADE = RuleOcr(roi=(321,228,37,37), area=(321,228,37,37), mode="Digit", method="Default", keyword="", name="se_jade")
 	# 金币 
-	O_SE_GOLD = RuleOcr(roi=(363,212,47,49), area=(363,212,47,49), mode="Digit", method="Default", keyword="", name="se_gold")
+	O_SE_GOLD = RuleOcr(roi=(360,225,52,39), area=(360,225,52,39), mode="Digit", method="Default", keyword="", name="se_gold")
 	# 总耗时 
 	O_SE_TOTAL_TIME = RuleOcr(roi=(289,650,149,38), area=(289,650,149,38), mode="Single", method="Default", keyword="", name="se_total_time")
 

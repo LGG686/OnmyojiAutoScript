@@ -2,6 +2,7 @@
 # @author runhey
 # github https://github.com/runhey
 import json
+import math
 import multiprocessing
 import re
 import shutil
@@ -723,6 +724,83 @@ class AnnotatorManager:
             ]
         )
 
+    @staticmethod
+    def _polygon_segments_intersect(a, b, c, d) -> bool:
+        def orientation(p, q, r):
+            value = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+            if value == 0:
+                return 0
+            return 1 if value > 0 else 2
+
+        def on_segment(p, q, r):
+            return (
+                min(p[0], r[0]) <= q[0] <= max(p[0], r[0])
+                and min(p[1], r[1]) <= q[1] <= max(p[1], r[1])
+            )
+
+        o1 = orientation(a, b, c)
+        o2 = orientation(a, b, d)
+        o3 = orientation(c, d, a)
+        o4 = orientation(c, d, b)
+        if o1 != o2 and o3 != o4:
+            return True
+        return (
+            (o1 == 0 and on_segment(a, c, b))
+            or (o2 == 0 and on_segment(a, d, b))
+            or (o3 == 0 and on_segment(c, a, d))
+            or (o4 == 0 and on_segment(c, b, d))
+        )
+
+    @staticmethod
+    def _parse_scatter_polygon(value: Any) -> list[list[int]]:
+        """校验截图工具提交的点击多边形，并转换为像素整数坐标。"""
+        if not isinstance(value, (list, tuple)) or len(value) < 3:
+            raise AnnotatorError("invalid_polygon", "多边形至少需要三个顶点", 400)
+
+        points: list[list[int]] = []
+        for point in value:
+            if not isinstance(point, (list, tuple)) or len(point) != 2:
+                raise AnnotatorError("invalid_polygon", "多边形顶点必须是 [x, y]", 400)
+            try:
+                x, y = float(point[0]), float(point[1])
+            except (TypeError, ValueError) as exc:
+                raise AnnotatorError("invalid_polygon", "多边形顶点必须是数字", 400) from exc
+            if not math.isfinite(x) or not math.isfinite(y):
+                raise AnnotatorError("invalid_polygon", "多边形顶点必须是有限数字", 400)
+            points.append([round(x), round(y)])
+
+        if len({tuple(point) for point in points}) < 3:
+            raise AnnotatorError("invalid_polygon", "多边形至少需要三个不同顶点", 400)
+        if any(points[index] == points[(index + 1) % len(points)] for index in range(len(points))):
+            raise AnnotatorError("invalid_polygon", "多边形不能包含连续重复顶点", 400)
+        for first_index in range(len(points)):
+            first_next = (first_index + 1) % len(points)
+            for second_index in range(first_index + 1, len(points)):
+                second_next = (second_index + 1) % len(points)
+                if first_index == second_next or first_next == second_index:
+                    continue
+                if AnnotatorManager._polygon_segments_intersect(
+                    points[first_index],
+                    points[first_next],
+                    points[second_index],
+                    points[second_next],
+                ):
+                    raise AnnotatorError("invalid_polygon", "多边形边线不能相交", 400)
+        area_twice = sum(
+            points[index][0] * points[(index + 1) % len(points)][1]
+            - points[(index + 1) % len(points)][0] * points[index][1]
+            for index in range(len(points))
+        )
+        if area_twice == 0:
+            raise AnnotatorError("invalid_polygon", "多边形面积必须大于 0", 400)
+        return points
+
+    @staticmethod
+    def _polygon_bounding_roi(points: list[list[int]]) -> str:
+        xs = [point[0] for point in points]
+        ys = [point[1] for point in points]
+        return f"{min(xs)},{min(ys)},{max(xs) - min(xs) + 1},{max(ys) - min(ys) + 1}"
+
     def _normalize_image_rules(self, rules: list[dict[str, Any]]) -> list[dict[str, Any]]:
         normalized: list[dict[str, Any]] = []
         for index, rule in enumerate(rules):
@@ -781,14 +859,29 @@ class AnnotatorManager:
             item_name = str(rule.get("itemName", "")).strip()
             if not item_name:
                 raise AnnotatorError("invalid_rule", f"第 {index + 1} 条点击规则缺少 itemName", 400)
-            normalized.append(
-                {
-                    "itemName": item_name,
-                    "roiFront": self._parse_roi(str(rule.get("roiFront", ""))),
-                    "roiBack": self._parse_roi(str(rule.get("roiBack", ""))),
-                    "description": str(rule.get("description", "")).strip(),
-                }
-            )
+            normalized.append({
+                "itemName": item_name,
+                "roiFront": self._parse_roi(str(rule.get("roiFront", ""))),
+                "roiBack": self._parse_roi(str(rule.get("roiBack", ""))),
+                "description": str(rule.get("description", "")).strip(),
+            })
+        return normalized
+
+    def _normalize_scatter_rules(self, rules: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        normalized: list[dict[str, Any]] = []
+        for index, rule in enumerate(rules):
+            item_name = str(rule.get("itemName", "")).strip()
+            if not item_name:
+                raise AnnotatorError("invalid_rule", f"第 {index + 1} 条散点规则缺少 itemName", 400)
+            polygon = self._parse_scatter_polygon(rule.get("polygon"))
+            bounding_roi = self._polygon_bounding_roi(polygon)
+            normalized.append({
+                "itemName": item_name,
+                "roiFront": bounding_roi,
+                "roiBack": bounding_roi,
+                "polygon": polygon,
+                "description": str(rule.get("description", "")).strip(),
+            })
         return normalized
 
     def _normalize_swipe_rules(self, rules: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1023,6 +1116,8 @@ class AnnotatorManager:
                 return "long_click"
             if "mode" in item:
                 return "swipe"
+            if "polygon" in item:
+                return "scatter"
             return "click"
         return "unknown"
 
@@ -1091,6 +1186,16 @@ class AnnotatorManager:
                             "itemName": str(item.get("itemName", "")),
                             "roiFront": str(item.get("roiFront", "0,0,100,100")),
                             "roiBack": str(item.get("roiBack", "0,0,100,100")),
+                            "description": str(item.get("description", "")),
+                        }
+                    )
+                elif rule_type == "scatter":
+                    rules.append(
+                        {
+                            "itemName": str(item.get("itemName", "")),
+                            "roiFront": str(item.get("roiFront", "0,0,100,100")),
+                            "roiBack": str(item.get("roiBack", "0,0,100,100")),
+                            "polygon": item.get("polygon", []),
                             "description": str(item.get("description", "")),
                         }
                     )
@@ -1371,6 +1476,8 @@ class AnnotatorManager:
             payload = self._normalize_ocr_rules(rules) if rules else []
         elif rule_type == "click":
             payload = self._normalize_click_rules(rules) if rules else []
+        elif rule_type == "scatter":
+            payload = self._normalize_scatter_rules(rules) if rules else []
         elif rule_type == "swipe":
             payload = self._normalize_swipe_rules(rules) if rules else []
         elif rule_type == "long_click":

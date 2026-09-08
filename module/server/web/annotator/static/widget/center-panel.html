@@ -5,6 +5,10 @@
       <div id="imageStage" class="image-stage">
         <img id="mainImage" alt="标注图片" />
         <div id="noImagePlaceholder" class="no-image">空</div>
+        <svg id="polygonOverlay" class="polygon-overlay hidden" aria-label="多边形点击区域">
+          <polygon id="polygonPath" class="polygon-path"></polygon>
+          <g id="polygonVertices"></g>
+        </svg>
         <div id="roiBack" class="roi roi-back">
           <span class="tag">Back</span>
           <span class="resize-handle resize-handle-nw" data-resize-dir="nw"></span>
@@ -24,6 +28,15 @@
       </div>
     </div>
   </div>
+  <div id="polygonToolbar" class="polygon-toolbar hidden">
+    <button id="polygonPenBtn" type="button">钢笔多边形</button>
+    <button id="polygonFinishBtn" type="button">完成绘制</button>
+    <button id="polygonClearBtn" type="button">清除多边形</button>
+    <button id="polygonContinueBtn" type="button">节点绘制</button>
+    <button id="polygonSelectBtn" type="button">选择节点</button>
+    <button id="polygonUndoBtn" type="button">撤销节点</button>
+    <span id="polygonHint">点击画布依次落点，至少三个顶点后完成。</span>
+  </div>
   <div class="roi-values">
     <label>roiFront<input id="roiFrontValue" type="text"></label>
     <label>roiBack<input id="roiBackValue" type="text"></label>
@@ -37,4 +50,3 @@
     <pre id="outputLog" class="output-log"></pre>
   </section>
 </section>
-

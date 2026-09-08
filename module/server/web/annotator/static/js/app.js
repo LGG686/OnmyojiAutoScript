@@ -48,6 +48,11 @@
     testOverlayActive: false,
     testRoiFront: "",
     testRoiBack: "",
+    polygonDrawing: false,
+    polygonContinueDrawing: false,
+    polygonSelecting: false,
+    polygonSelectedIndex: -1,
+    polygonDragPointerId: null,
 
     imagePreviewCache: new Map(),
     activeRuleImageExists: false,
@@ -96,6 +101,17 @@
     roiBackValue: document.getElementById("roiBackValue"),
     testRoiFront: document.getElementById("testRoiFront"),
     testRoiBack: document.getElementById("testRoiBack"),
+    polygonOverlay: document.getElementById("polygonOverlay"),
+    polygonPath: document.getElementById("polygonPath"),
+    polygonVertices: document.getElementById("polygonVertices"),
+    polygonToolbar: document.getElementById("polygonToolbar"),
+    polygonPenBtn: document.getElementById("polygonPenBtn"),
+    polygonFinishBtn: document.getElementById("polygonFinishBtn"),
+    polygonClearBtn: document.getElementById("polygonClearBtn"),
+    polygonContinueBtn: document.getElementById("polygonContinueBtn"),
+    polygonSelectBtn: document.getElementById("polygonSelectBtn"),
+    polygonUndoBtn: document.getElementById("polygonUndoBtn"),
+    polygonHint: document.getElementById("polygonHint"),
     outputLog: document.getElementById("outputLog"),
     clearOutputBtn: document.getElementById("clearOutputBtn"),
 
@@ -637,6 +653,7 @@
     if (state.ruleType === "list") {
       return state.listMeta.type || "image";
     }
+
     return state.ruleType;
   }
 
@@ -745,6 +762,394 @@
     return `${Math.round(x)},${Math.round(y)},${Math.max(1, Math.round(w))},${Math.max(1, Math.round(h))}`;
   }
 
+  function isScatterRule() {
+    const rule = getCurrentRule();
+    return Boolean(rule && state.ruleType === "scatter");
+  }
+
+  function getPolygonPoints(rule = getCurrentRule()) {
+    if (!rule || !Array.isArray(rule.polygon)) {
+      return [];
+    }
+    return rule.polygon
+      .filter((point) => Array.isArray(point) && point.length === 2)
+      .map((point) => [Number(point[0]), Number(point[1])])
+      .filter(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
+  }
+
+  function setPolygonBoundingRoi(rule) {
+    const points = getPolygonPoints(rule);
+    if (points.length < 1) {
+      return;
+    }
+    const xs = points.map(([x]) => x);
+    const ys = points.map(([, y]) => y);
+    rule.roiFront = formatRoiFromNumbers(
+      Math.min(...xs),
+      Math.min(...ys),
+      Math.max(...xs) - Math.min(...xs) + 1,
+      Math.max(...ys) - Math.min(...ys) + 1,
+    );
+    rule.roiBack = rule.roiFront;
+    el.roiFrontValue.value = rule.roiFront;
+    el.roiBackValue.value = rule.roiBack;
+  }
+
+  function stagePointToNatural(event) {
+    const viewport = getRoiViewport();
+    const rect = el.imageStage.getBoundingClientRect();
+    const stageX = event.clientX - rect.left;
+    const stageY = event.clientY - rect.top;
+    if (
+      stageX < viewport.left || stageX > viewport.left + viewport.width
+      || stageY < viewport.top || stageY > viewport.top + viewport.height
+    ) {
+      return null;
+    }
+    return [
+      Math.round(stageToNaturalX(stageX, viewport)),
+      Math.round(stageToNaturalY(stageY, viewport)),
+    ];
+  }
+
+  function renderPolygonCanvas() {
+    const showToolbar = state.ruleType === "scatter";
+    const polygonMode = isScatterRule();
+    el.polygonToolbar.classList.toggle("hidden", !showToolbar);
+    el.polygonOverlay.classList.toggle("hidden", !polygonMode);
+    el.roiFront.classList.toggle("hidden", polygonMode || !el.mainImage.src);
+    el.roiBack.classList.toggle("hidden", polygonMode || !el.mainImage.src);
+    el.roiFrontValue.readOnly = polygonMode;
+    el.roiBackValue.readOnly = polygonMode;
+
+    const stageSize = getStageSize();
+    el.polygonOverlay.setAttribute(
+      "viewBox",
+      `0 0 ${stageSize.width} ${stageSize.height}`,
+    );
+    el.polygonOverlay.setAttribute("preserveAspectRatio", "none");
+
+    if (!polygonMode) {
+      el.polygonPath.setAttribute("points", "");
+      el.polygonVertices.replaceChildren();
+      el.polygonPenBtn.classList.remove("active");
+      el.polygonContinueBtn.classList.remove("active");
+      el.polygonSelectBtn.classList.remove("active");
+      el.polygonFinishBtn.disabled = true;
+      el.polygonContinueBtn.disabled = true;
+      el.polygonSelectBtn.disabled = true;
+      el.polygonUndoBtn.disabled = true;
+      el.polygonHint.textContent = "选择“钢笔多边形”后在画布上依次落点。";
+      return;
+    }
+
+    const viewport = getRoiViewport();
+    const stagePoints = getPolygonPoints().map(([x, y]) => [
+      naturalToStageX(x, viewport),
+      naturalToStageY(y, viewport),
+    ]);
+    el.polygonPath.setAttribute(
+      "points",
+      stagePoints.map(([x, y]) => `${Math.round(x)},${Math.round(y)}`).join(" "),
+    );
+    el.polygonVertices.replaceChildren();
+    for (const [index, [x, y]] of stagePoints.entries()) {
+      const vertex = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      const classes = ["polygon-vertex"];
+      if (index === state.polygonSelectedIndex) {
+        classes.push("selected");
+        if (state.polygonDragPointerId !== null) {
+          classes.push("dragging");
+        }
+      }
+      vertex.setAttribute("class", classes.join(" "));
+      vertex.dataset.polygonIndex = String(index);
+      vertex.setAttribute("cx", String(Math.round(x)));
+      vertex.setAttribute("cy", String(Math.round(y)));
+      vertex.setAttribute("r", "6");
+      el.polygonVertices.appendChild(vertex);
+    }
+
+    const pointCount = stagePoints.length;
+    el.polygonPenBtn.classList.toggle(
+      "active",
+      state.polygonDrawing && !state.polygonContinueDrawing,
+    );
+    el.polygonContinueBtn.classList.toggle(
+      "active",
+      state.polygonDrawing && state.polygonContinueDrawing,
+    );
+    el.polygonSelectBtn.classList.toggle("active", state.polygonSelecting);
+    el.polygonFinishBtn.disabled = pointCount < 3 || !state.polygonDrawing;
+    el.polygonContinueBtn.disabled = pointCount < 1;
+    el.polygonSelectBtn.disabled = pointCount < 1;
+    el.polygonUndoBtn.disabled = pointCount < 1;
+    if (state.polygonDrawing) {
+      el.polygonHint.textContent = state.polygonContinueDrawing
+        ? `已接续 ${pointCount} 个节点；下次点击将追加新节点。`
+        : `已落 ${pointCount} 点；继续点击画布添加下一个节点。`;
+    } else if (state.polygonSelecting) {
+      el.polygonHint.textContent = state.polygonSelectedIndex >= 0
+        ? `已选中第 ${state.polygonSelectedIndex + 1} 个节点，可拖动调整。`
+        : "点击节点可拖动调整；点击边线可在该位置插入新节点。";
+    } else {
+      el.polygonHint.textContent = `已保存 ${pointCount} 个顶点；可选择节点调整或重新绘制。`;
+    }
+  }
+
+  function beginPolygonDrawing() {
+    const rule = getCurrentRule();
+    if (!rule || state.ruleType !== "scatter") {
+      return;
+    }
+    rule.polygon = [];
+    state.polygonDrawing = true;
+    state.polygonContinueDrawing = false;
+    state.polygonSelecting = false;
+    state.polygonSelectedIndex = -1;
+    state.polygonDragPointerId = null;
+    markDirty();
+    renderPolygonCanvas();
+  }
+
+  function finishPolygonDrawing() {
+    const rule = getCurrentRule();
+    if (!isScatterRule() || getPolygonPoints(rule).length < 3) {
+      showMessage("多边形至少需要三个顶点", "error");
+      return;
+    }
+    state.polygonDrawing = false;
+    state.polygonContinueDrawing = false;
+    state.polygonSelecting = false;
+    state.polygonSelectedIndex = -1;
+    state.polygonDragPointerId = null;
+    setPolygonBoundingRoi(rule);
+    markDirty();
+    renderPolygonCanvas();
+  }
+
+  function clearPolygonDrawing() {
+    const rule = getCurrentRule();
+    if (!rule || state.ruleType !== "scatter") {
+      return;
+    }
+    rule.polygon = [];
+    state.polygonDrawing = true;
+    state.polygonContinueDrawing = false;
+    state.polygonSelecting = false;
+    state.polygonSelectedIndex = -1;
+    state.polygonDragPointerId = null;
+    markDirty();
+    renderPolygonCanvas();
+  }
+
+  function continuePolygonDrawing() {
+    if (!isScatterRule() || getPolygonPoints().length < 1) {
+      showMessage("当前没有可继续绘制的多边形节点", "error");
+      return;
+    }
+    state.polygonDrawing = true;
+    state.polygonContinueDrawing = true;
+    state.polygonSelecting = false;
+    state.polygonSelectedIndex = -1;
+    state.polygonDragPointerId = null;
+    renderPolygonCanvas();
+  }
+
+  function selectPolygonNode() {
+    if (!isScatterRule() || getPolygonPoints().length < 1) {
+      showMessage("当前没有可选择的多边形节点", "error");
+      return;
+    }
+    state.polygonSelecting = !state.polygonSelecting;
+    state.polygonDrawing = false;
+    state.polygonContinueDrawing = false;
+    state.polygonSelectedIndex = -1;
+    state.polygonDragPointerId = null;
+    renderPolygonCanvas();
+  }
+
+  function undoPolygonNode() {
+    const rule = getCurrentRule();
+    const points = getPolygonPoints(rule);
+    if (!isScatterRule() || points.length < 1) {
+      return;
+    }
+    points.pop();
+    rule.polygon = points;
+    state.polygonDrawing = true;
+    state.polygonContinueDrawing = true;
+    state.polygonSelecting = false;
+    state.polygonSelectedIndex = -1;
+    state.polygonDragPointerId = null;
+    if (points.length > 0) {
+      setPolygonBoundingRoi(rule);
+    }
+    markDirty();
+    renderPolygonCanvas();
+  }
+
+  function addPolygonPoint(event) {
+    if (!isScatterRule() || !state.polygonDrawing) {
+      return;
+    }
+    event.preventDefault();
+    const point = stagePointToNatural(event);
+    if (!point) {
+      return;
+    }
+    const rule = getCurrentRule();
+    rule.polygon = getPolygonPoints(rule);
+    if (rule.polygon.length >= 3) {
+      const viewport = getRoiViewport();
+      const rect = el.imageStage.getBoundingClientRect();
+      const firstX = naturalToStageX(rule.polygon[0][0], viewport);
+      const firstY = naturalToStageY(rule.polygon[0][1], viewport);
+      if (Math.hypot(event.clientX - rect.left - firstX, event.clientY - rect.top - firstY) <= 10) {
+        finishPolygonDrawing();
+        return;
+      }
+    }
+    rule.polygon.push(point);
+    setPolygonBoundingRoi(rule);
+    markDirty();
+    renderPolygonCanvas();
+  }
+
+  function findPolygonSegmentAtPointer(event, tolerance = 10) {
+    const points = getPolygonPoints();
+    if (points.length < 2) {
+      return null;
+    }
+
+    const viewport = getRoiViewport();
+    const rect = el.imageStage.getBoundingClientRect();
+    const pointerX = event.clientX - rect.left;
+    const pointerY = event.clientY - rect.top;
+    let nearest = null;
+
+    for (let index = 0; index < points.length; index += 1) {
+      const nextIndex = (index + 1) % points.length;
+      const [startNaturalX, startNaturalY] = points[index];
+      const [endNaturalX, endNaturalY] = points[nextIndex];
+      const startX = naturalToStageX(startNaturalX, viewport);
+      const startY = naturalToStageY(startNaturalY, viewport);
+      const endX = naturalToStageX(endNaturalX, viewport);
+      const endY = naturalToStageY(endNaturalY, viewport);
+      const deltaX = endX - startX;
+      const deltaY = endY - startY;
+      const lengthSquared = deltaX * deltaX + deltaY * deltaY;
+      if (lengthSquared <= Number.EPSILON) {
+        continue;
+      }
+
+      const ratio = Math.max(0, Math.min(1,
+        ((pointerX - startX) * deltaX + (pointerY - startY) * deltaY)
+        / lengthSquared,
+      ));
+      const projectedX = startX + ratio * deltaX;
+      const projectedY = startY + ratio * deltaY;
+      const distance = Math.hypot(pointerX - projectedX, pointerY - projectedY);
+      if (distance > tolerance || (nearest && distance >= nearest.distance)) {
+        continue;
+      }
+
+      nearest = {
+        distance,
+        insertIndex: index + 1,
+        point: [
+          Math.round(startNaturalX + ratio * (endNaturalX - startNaturalX)),
+          Math.round(startNaturalY + ratio * (endNaturalY - startNaturalY)),
+        ],
+      };
+    }
+    return nearest;
+  }
+
+  function handlePolygonPointerDown(event) {
+    if (!isScatterRule()) {
+      return;
+    }
+    if (!state.polygonSelecting) {
+      addPolygonPoint(event);
+      return;
+    }
+
+    const vertex = event.target.closest
+      ? event.target.closest(".polygon-vertex")
+      : null;
+    if (!vertex) {
+      const segment = findPolygonSegmentAtPointer(event);
+      if (!segment) {
+        state.polygonSelectedIndex = -1;
+        renderPolygonCanvas();
+        return;
+      }
+
+      event.preventDefault();
+      const rule = getCurrentRule();
+      const points = getPolygonPoints(rule);
+      points.splice(segment.insertIndex, 0, segment.point);
+      rule.polygon = points;
+      state.polygonSelectedIndex = segment.insertIndex;
+      state.polygonDragPointerId = event.pointerId;
+      el.imageStage.setPointerCapture(event.pointerId);
+      setPolygonBoundingRoi(rule);
+      markDirty();
+      renderPolygonCanvas();
+      return;
+    }
+
+    const index = Number.parseInt(vertex.dataset.polygonIndex || "-1", 10);
+    if (!Number.isInteger(index) || index < 0) {
+      return;
+    }
+    event.preventDefault();
+    state.polygonSelectedIndex = index;
+    state.polygonDragPointerId = event.pointerId;
+    el.imageStage.setPointerCapture(event.pointerId);
+    renderPolygonCanvas();
+  }
+
+  function dragPolygonNode(event) {
+    if (
+      state.polygonDragPointerId === null
+      || event.pointerId !== state.polygonDragPointerId
+      || state.polygonSelectedIndex < 0
+    ) {
+      return;
+    }
+    event.preventDefault();
+    const point = stagePointToNatural(event);
+    if (!point) {
+      return;
+    }
+    const rule = getCurrentRule();
+    const points = getPolygonPoints(rule);
+    if (state.polygonSelectedIndex >= points.length) {
+      return;
+    }
+    points[state.polygonSelectedIndex] = point;
+    rule.polygon = points;
+    setPolygonBoundingRoi(rule);
+    markDirty();
+    renderPolygonCanvas();
+  }
+
+  function finishPolygonNodeDrag(event) {
+    if (
+      state.polygonDragPointerId === null
+      || event.pointerId !== state.polygonDragPointerId
+    ) {
+      return;
+    }
+    if (el.imageStage.hasPointerCapture(event.pointerId)) {
+      el.imageStage.releasePointerCapture(event.pointerId);
+    }
+    state.polygonDragPointerId = null;
+    renderPolygonCanvas();
+  }
+
   function applyBoxFromRoi(box, roiText) {
     const viewport = getRoiViewport();
     const [x, y, w, h] = parseRoi(roiText);
@@ -831,6 +1236,7 @@
       el.testRoiFront.classList.add("hidden");
       el.testRoiBack.classList.add("hidden");
       updateRoiViewport();
+      renderPolygonCanvas();
       return;
     }
     el.mainImage.src = url;
@@ -838,6 +1244,7 @@
     el.roiFront.classList.remove("hidden");
     el.roiBack.classList.remove("hidden");
     renderTestOverlay();
+    renderPolygonCanvas();
   }
 
   function updateSelectedImageCount() {
@@ -1179,15 +1586,18 @@
     const front = boxToRoi(el.roiFront);
     const back = boxToRoi(el.roiBack);
 
-    rule.roiFront = front;
-    if (state.ruleType === "list") {
-      state.listMeta.roiBack = back;
+    if (isScatterRule()) {
+      setPolygonBoundingRoi(rule);
     } else {
-      rule.roiBack = back;
+      rule.roiFront = front;
+      el.roiFrontValue.value = front;
+      if (state.ruleType === "list") {
+        state.listMeta.roiBack = back;
+      } else {
+        rule.roiBack = back;
+      }
+      el.roiBackValue.value = back;
     }
-
-    el.roiFrontValue.value = front;
-    el.roiBackValue.value = back;
     markDirty();
   }
 
@@ -1270,6 +1680,7 @@
       clampBox(el.roiFront);
       clampBox(el.roiBack);
       renderTestOverlay();
+      renderPolygonCanvas();
       return;
     }
     const front = rule.roiFront || "0,0,100,100";
@@ -1279,6 +1690,7 @@
     clampBox(el.roiFront);
     clampBox(el.roiBack);
     renderTestOverlay();
+    renderPolygonCanvas();
   }
 
   function setupRoiBox(box) {
@@ -1419,6 +1831,9 @@
     if (type === "list") {
       delete rule.description;
     }
+    if (type === "scatter") {
+      rule.polygon = [];
+    }
     return rule;
   }
 
@@ -1439,7 +1854,12 @@
   }
 
   function cloneRules(rules) {
-    return (rules || []).map((rule) => ({ ...rule }));
+    return (rules || []).map((rule) => ({
+      ...rule,
+      polygon: Array.isArray(rule.polygon)
+        ? rule.polygon.map((point) => Array.isArray(point) ? [...point] : point)
+        : rule.polygon,
+    }));
   }
 
   function updateFieldVisibility() {
@@ -1773,6 +2193,12 @@
 
     fillListMetaForm();
     updateFieldVisibility();
+    state.polygonDrawing = state.ruleType === "scatter" && getPolygonPoints(rule).length < 3;
+    state.polygonContinueDrawing = state.polygonDrawing && getPolygonPoints(rule).length > 0;
+    state.polygonSelecting = false;
+    state.polygonSelectedIndex = -1;
+    state.polygonDragPointerId = null;
+    renderPolygonCanvas();
   }
 
   function updateRuleFromForm(changedField = "") {
@@ -2178,6 +2604,13 @@
 
     syncRoiToRule();
 
+    if (state.ruleType === "scatter") {
+      for (const rule of state.rules) {
+        if (getPolygonPoints(rule).length < 3) {
+          throw new Error(`散点规则 ${rule.itemName || "unnamed"} 的多边形至少需要三个顶点`);
+        }
+      }
+    }
 
     const rules = state.rules.map((rule) => {
       const cleaned = { ...rule };
@@ -2719,6 +3152,29 @@
     el.captureBtn.addEventListener("click", withError(captureEmulatorFrame));
 
     el.mainImage.addEventListener("load", adjustStageByImage);
+    // 由 ROI 画布本身接收钢笔事件，避免空 SVG 在不同浏览器中的
+    // hit-test 行为导致无法落点。
+    el.imageStage.addEventListener("pointerdown", handlePolygonPointerDown);
+    el.imageStage.addEventListener("pointermove", dragPolygonNode);
+    el.imageStage.addEventListener("pointerup", finishPolygonNodeDrag);
+    el.imageStage.addEventListener("pointercancel", finishPolygonNodeDrag);
+    el.polygonPenBtn.addEventListener("click", beginPolygonDrawing);
+    el.polygonFinishBtn.addEventListener("click", finishPolygonDrawing);
+    el.polygonClearBtn.addEventListener("click", clearPolygonDrawing);
+    el.polygonContinueBtn.addEventListener("click", continuePolygonDrawing);
+    el.polygonSelectBtn.addEventListener("click", selectPolygonNode);
+    el.polygonUndoBtn.addEventListener("click", undoPolygonNode);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && state.polygonDrawing) {
+        finishPolygonDrawing();
+      } else if (event.key === "Escape" && state.polygonSelecting) {
+        state.polygonSelecting = false;
+        state.polygonContinueDrawing = false;
+        state.polygonSelectedIndex = -1;
+        state.polygonDragPointerId = null;
+        renderPolygonCanvas();
+      }
+    });
 
     const applyFrontInput = () => applyRoiInputToRule("front");
     const applyBackInput = () => applyRoiInputToRule("back");

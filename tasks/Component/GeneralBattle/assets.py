@@ -1,5 +1,6 @@
 from module.atom.image import RuleImage
 from module.atom.click import RuleClick
+from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
 from module.atom.swipe import RuleSwipe
 from module.atom.ocr import RuleOcr
@@ -59,37 +60,37 @@ class GeneralBattleAssets:
 	C_RANDOM_BOTTOM = RuleClick(roi_front=(462,599,492,78), roi_back=(462,599,492,78), name="random_bottom")
 	# 整体随机点击 
 	C_RANDOM_ALL = RuleClick(roi_front=(42,94,1207,543), roi_back=(42,94,1207,543), name="random_all")
-	#
+	#  
 	C_RANDOM_1 = RuleClick(roi_front=(1166,562,100,151), roi_back=(1166,562,100,151), name="random_1")
-	#
+	#  
 	C_RANDOM_2 = RuleClick(roi_front=(1179,378,100,151), roi_back=(1179,378,100,151), name="random_2")
-	#
+	#  
 	C_RANDOM_3 = RuleClick(roi_front=(1177,275,100,151), roi_back=(1177,275,100,151), name="random_3")
-	#
+	#  
 	C_RANDOM_4 = RuleClick(roi_front=(1043,628,134,87), roi_back=(1043,628,134,87), name="random_4")
-	#
+	#  
 	C_RANDOM_5 = RuleClick(roi_front=(874,626,134,87), roi_back=(874,626,134,87), name="random_5")
-	#
+	#  
 	C_RANDOM_6 = RuleClick(roi_front=(1176,70,100,151), roi_back=(1176,70,100,151), name="random_6")
-	#
+	#  
 	C_RANDOM_7 = RuleClick(roi_front=(1083,44,140,103), roi_back=(1083,44,140,103), name="random_7")
-	#
+	#  
 	C_RANDOM_8 = RuleClick(roi_front=(912,46,140,103), roi_back=(912,46,140,103), name="random_8")
-	#
+	#  
 	C_RANDOM_9 = RuleClick(roi_front=(566,655,188,59), roi_back=(566,655,188,59), name="random_9")
-	#
+	#  
 	C_RANDOM_10 = RuleClick(roi_front=(6,117,91,132), roi_back=(6,117,91,132), name="random_10")
-	#
+	#  
 	C_RANDOM_11 = RuleClick(roi_front=(0,295,55,192), roi_back=(0,295,55,192), name="random_11")
-	#
+	#  
 	C_RANDOM_12 = RuleClick(roi_front=(0,439,100,151), roi_back=(0,439,100,151), name="random_12")
-	#
+	#  
 	C_RANDOM_13 = RuleClick(roi_front=(238,685,182,34), roi_back=(238,685,182,34), name="random_13")
-	#
+	#  
 	C_RANDOM_14 = RuleClick(roi_front=(668,50,141,102), roi_back=(668,50,141,102), name="random_14")
-	#
+	#  
 	C_RANDOM_15 = RuleClick(roi_front=(13,619,99,94), roi_back=(13,619,99,94), name="random_15")
-	#
+	#  
 	C_RANDOM_16 = RuleClick(roi_front=(89,684,123,35), roi_back=(89,684,123,35), name="random_16")
 
 
@@ -152,9 +153,9 @@ class GeneralBattleAssets:
 	I_GB_SKIN_CONFIRM = RuleImage(roi_front=(594,447,90,55), roi_back=(594,447,90,55), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralBattle/gb/gb_gb_skin_confirm.png")
 	# 战斗组队退出页面标志 
 	I_GB_CHECK_TEAM_EXIT = RuleImage(roi_front=(507,288,270,54), roi_back=(411,233,452,247), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralBattle/gb/gb_gb_check_team_exit.png")
-	# 时运加成关闭
+	# 时运加成关闭 
 	I_GB_CLOSE_RED = RuleImage(roi_front=(1108,128,45,41), roi_back=(1108,128,45,41), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralBattle/gb/gb_gb_close_red.png")
-	# 御魂溢出
+	# 御魂溢出 
 	I_OVER_GHOST = RuleImage(roi_front=(697,409,89,32), roi_back=(697,409,89,32), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralBattle/gb/gb_over_ghost.png")
 
 
@@ -184,8 +185,15 @@ class GeneralBattleAssets:
 	O_BATTLE_HAND = RuleOcr(roi=(35,644,52,34), area=(0,589,136,129), mode="Single", method="Default", keyword="手动", name="battle_hand")
 
 
+	# Scatter Rule Assets
+	#  
+	C_SAFE_RANDOM_CLICK_AREA = RuleScatter(roi_front=(5,51,1270,667), roi_back=(5,51,1270,667), polygon=[(656, 51), (655, 154), (1186, 151), (1190, 646), (776, 649), (776, 691), (48, 691), (50, 610), (98, 608), (100, 158), (509, 156), (508, 130), (46, 128), (47, 109), (8, 109), (5, 717), (1274, 717), (1271, 51)], name="safe_random_click_area")
+
+
 	# Swipe Rule Assets
 	# description 
 	S_BATTLE_RANDOM_LEFT = RuleSwipe(roi_front=(122,155,480,426), roi_back=(667,147,461,427), mode="default", name="battle_random_left")
 	# description 
 	S_BATTLE_RANDOM_RIGHT = RuleSwipe(roi_front=(719,138,417,392), roi_back=(237,163,387,394), mode="default", name="battle_random_right")
+
+

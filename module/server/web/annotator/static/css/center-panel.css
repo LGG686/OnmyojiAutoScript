@@ -141,6 +141,59 @@
   z-index: 3;
 }
 
+.polygon-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  cursor: crosshair;
+  pointer-events: all;
+  touch-action: none;
+}
+
+.polygon-path {
+  fill: rgba(255, 107, 107, 0.18);
+  stroke: #ff6b6b;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.polygon-vertex {
+  fill: #fff;
+  stroke: #ff6b6b;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  cursor: grab;
+  pointer-events: all;
+}
+
+.polygon-vertex.selected {
+  fill: #ffd166;
+  stroke: #d88900;
+  stroke-width: 3;
+}
+
+.polygon-vertex.dragging {
+  cursor: grabbing;
+}
+
+.polygon-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.polygon-toolbar button.active {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
 .roi .tag {
   position: absolute;
   left: 0;
@@ -295,4 +348,3 @@ html[data-theme="light"] .roi .tag {
     grid-template-columns: 1fr;
   }
 }
-
