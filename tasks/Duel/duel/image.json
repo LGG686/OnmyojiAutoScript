@@ -214,5 +214,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "斗技入口附属消息页"
+  },
+  {
+    "itemName": "white_dog",
+    "imageName": "duel_white_dog.png",
+    "roiFront": "388,327,70,62",
+    "roiBack": "308,254,215,249",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "小白弹窗"
   }
 ]

@@ -76,6 +76,8 @@ class DuelAssets:
 	I_DUEL_CELEB_HONOR = RuleImage(roi_front=(297,633,20,20), roi_back=(172,632,249,26), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_celeb_honor.png")
 	# 斗技入口附属消息页
 	I_DUEL_MAIN_UESLESS_MESSAGE = RuleImage(roi_front=(526,224,222,56), roi_back=(521,219,232,66), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_main_uesless_message.png")
+	# 小白弹窗 
+	I_WHITE_DOG = RuleImage(roi_front=(388,327,70,62), roi_back=(308,254,215,249), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_white_dog.png")
 
 
 	# Ocr Rule Assets
@@ -97,4 +99,3 @@ class DuelAssets:
 	O_D_CELEB_HONOR = RuleOcr(roi=(173,633,227,20), area=(173,633,227,20), mode="DigitCounter", method="Default", keyword="", name="d_celeb_honor")
 	#  
 	O_D_CELEB = RuleOcr(roi=(503,442,250,54), area=(503,442,250,54), mode="Single", method="Default", keyword="", name="d_celeb")
-
