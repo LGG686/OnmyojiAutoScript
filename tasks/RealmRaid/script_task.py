@@ -463,7 +463,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RealmRaidAssets):
         self.wait_until_appear(self.I_FIRE_AGAIN)
         while True:
             self.screenshot()
-            if not self.appear(self.I_FIRE_AGAIN):
+            if self.appear(self.I_EXIT):
                 logger.info(f'Click fire again success')
                 return True
             if self.appear_then_click(self.I_SHOW_AGAIN, interval=2):
