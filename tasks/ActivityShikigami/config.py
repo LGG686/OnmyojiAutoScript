@@ -161,22 +161,33 @@ class GeneralConfig(ConfigBase):
 
     @validator('task_sequence', pre=True, always=True)
     def parse_task_sequence(cls, value):
-        """兼容旧逗号字符串，并将多选结果规范为固定的三个选项。"""
+        """兼容旧版填空字符串和多选列表，统一为现有活动选项。"""
         if value is None:
             values = list(ACTIVITY_EXECUTION_ORDER)
         elif isinstance(value, str):
-            values = value.split(',')
+            values = [value]
         elif isinstance(value, (list, tuple, set)):
             values = value
         else:
             raise ValueError('任务启用项必须为多选列表')
 
+        # 旧版文本框可能使用中文分隔符；部分界面会将整段文本包装成列表。
+        names = []
+        for item in values:
+            if isinstance(item, ActivityTask):
+                names.append(item)
+            else:
+                names.extend(re.split(r'[,，;；\n\r]+', str(item)))
+
         selected = []
-        for raw_name in values:
+        for raw_name in names:
             if isinstance(raw_name, ActivityTask):
                 name = raw_name.value
             else:
-                name = ACTIVITY_NAME_ALIASES.get(str(raw_name).strip().lower())
+                raw_name = str(raw_name).strip()
+                if not raw_name:
+                    continue
+                name = ACTIVITY_NAME_ALIASES.get(raw_name.lower())
             if name is None:
                 raise ValueError(
                     f'任务启用项仅支持 {", ".join(ACTIVITY_EXECUTION_ORDER)}，当前为 {raw_name}'
