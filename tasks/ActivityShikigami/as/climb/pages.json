@@ -2,7 +2,7 @@
   {
     "itemName": "to_battle_main",
     "imageName": "as_to_battle_main.png",
-    "roiFront": "318,179,90,104",
+    "roiFront": "315,204,91,77",
     "roiBack": "287,125,149,201",
     "method": "Template matching",
     "threshold": 0.8,
@@ -11,7 +11,7 @@
   {
     "itemName": "to_battle_boss",
     "imageName": "as_to_battle_boss.png",
-    "roiFront": "125,419,89,91",
+    "roiFront": "125,449,88,58",
     "roiBack": "97,402,145,138",
     "method": "Template matching",
     "threshold": 0.8,

@@ -1,5 +1,6 @@
 from module.atom.image import RuleImage
 from module.atom.click import RuleClick
+from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
 from module.atom.swipe import RuleSwipe
 from module.atom.ocr import RuleOcr
@@ -65,9 +66,9 @@ class ActivityShikigamiAssets:
 
 	# Image Rule Assets
 	# 进入爬塔主界面 
-	I_TO_BATTLE_MAIN = RuleImage(roi_front=(318,179,90,104), roi_back=(287,125,149,201), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/as_to_battle_main.png")
+	I_TO_BATTLE_MAIN = RuleImage(roi_front=(315,204,91,77), roi_back=(287,125,149,201), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/as_to_battle_main.png")
 	# 进入首领战斗页面 
-	I_TO_BATTLE_BOSS = RuleImage(roi_front=(125,419,89,91), roi_back=(97,402,145,138), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/as_to_battle_boss.png")
+	I_TO_BATTLE_BOSS = RuleImage(roi_front=(125,449,88,58), roi_back=(97,402,145,138), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/as_to_battle_boss.png")
 	# 从爬塔主界面进入式神录 
 	I_BATTLE_MAIN_TO_RECORDS = RuleImage(roi_front=(1015,560,39,42), roi_back=(674,539,439,157), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/as_battle_main_to_records.png")
 	# 爬塔主界面标志 
