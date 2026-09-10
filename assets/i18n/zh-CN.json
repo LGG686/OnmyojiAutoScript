@@ -338,5 +338,9 @@
   "min_run_interval_help": "防风控：两次蹭卡运行之间的最小间隔，避免蹭卡过于频繁被服务端标记。设为 0（默认）保持原逻辑（按结界卡剩余时间安排下次）。格式：天 时:分:秒。",
   "costume_shikigami_11": "花札幕台",
   "costume_main_17": "狐栖归处",
-  "costume_shikigami_12": "拾光之窗"
+  "costume_shikigami_12": "拾光之窗",
+  "min_taiko_value": "太鼓最低收益",
+  "min_taiko_value_help": "只蹭勾玉收益不低于此值的太鼓卡（5星59-67，6星67-76），0为不限制",
+  "min_fish_value": "斗鱼最低收益",
+  "min_fish_value_help": "只蹭体力收益不低于此值的斗鱼卡（5星118-134，6星134-151），0为不限制"
 }

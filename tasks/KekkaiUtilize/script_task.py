@@ -38,6 +38,7 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
     utilize_lazy_mode_active = False
     ap_max_num = 0
     jade_max_num = 0
+    utilize_threshold_filtered = False
 
     # 同类型、同星级结界卡的最高奖励。达到最高值后，本轮不再打开同档卡片。
     CARD_TIER_INFO = {
@@ -67,6 +68,7 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
         self.utilize_lazy_mode_active = False
         self.ap_max_num = 0
         self.jade_max_num = 0
+        self.utilize_threshold_filtered = False
         if con.utilize_enable and con.lazy_mode:
             lazy_roll = random.random()
             self.utilize_lazy_mode_active = (
@@ -370,6 +372,12 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
             time.sleep(1)
         time.sleep(0.5)
 
+    @property
+    def _utilize_thresholds(self) -> dict[str, int]:
+        """蹭卡最低收益阈值（太鼓/斗鱼各自独立，0 表示不限制）。"""
+        con = self.config.kekkai_utilize.utilize_config
+        return {'太鼓': con.min_taiko_value, '斗鱼': con.min_fish_value}
+
     @cached_property
     def order_targets(self) -> ImageGrid:
         rule = self.config.kekkai_utilize.utilize_config.utilize_rule
@@ -538,10 +546,16 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
             UtilizeRule.FISH: '斗鱼',
             UtilizeRule.DEFAULT: '太鼓或斗鱼',
         }.get(rule, '目标结界卡')
-        message = (
-            f'{scan_scope}全是当前策略低价值卡，未检测到四星及以上{target_name}，'
-            '任务失败，20分钟后重试'
-        )
+        if self.utilize_threshold_filtered:
+            message = (
+                f'{scan_scope}最优卡收益低于最低收益阈值，'
+                '任务失败，20分钟后重试'
+            )
+        else:
+            message = (
+                f'{scan_scope}全是当前策略低价值卡，未检测到四星及以上{target_name}，'
+                '任务失败，20分钟后重试'
+            )
         logger.error(message)
         self.push_notify(content=message)
         self.set_next_run(
@@ -849,23 +863,41 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
             )
 
             rule = self.config.kekkai_utilize.utilize_config.utilize_rule
-            if rule == UtilizeRule.TAIKO and self.jade_max_num > 0:
+            thresholds = self._utilize_thresholds
+            min_taiko = thresholds['太鼓']
+            min_fish = thresholds['斗鱼']
+            # 各类型先按自己的阈值过滤（0 表示该类型不设阈值）
+            taiko_ok = self.jade_max_num > 0 and (
+                min_taiko <= 0 or self.jade_max_num >= min_taiko
+            )
+            fish_ok = self.ap_max_num > 0 and (
+                min_fish <= 0 or self.ap_max_num >= min_fish
+            )
+            if rule == UtilizeRule.TAIKO and taiko_ok:
                 card_type, card_value = '太鼓', self.jade_max_num
-            elif rule == UtilizeRule.FISH and self.ap_max_num > 0:
+            elif rule == UtilizeRule.FISH and fish_ok:
                 card_type, card_value = '斗鱼', self.ap_max_num
-            elif rule == UtilizeRule.DEFAULT and (
-                self.ap_max_num > 0 or self.jade_max_num > 0
-            ):
+            elif rule == UtilizeRule.DEFAULT and (taiko_ok or fish_ok):
                 ap_as_jade = self.ap_max_num / 1.8
                 logger.info(
                     f'⚖️ 默认换算 | 斗鱼:{self.ap_max_num}体力 ÷ 1.8 '
                     f'= {ap_as_jade:.2f} | 太鼓:{self.jade_max_num}勾玉'
                 )
-                if ap_as_jade >= self.jade_max_num:
+                if fish_ok and (not taiko_ok or ap_as_jade >= self.jade_max_num):
                     card_type, card_value = '斗鱼', self.ap_max_num
                 else:
                     card_type, card_value = '太鼓', self.jade_max_num
             else:
+                if self.ap_max_num > 0 or self.jade_max_num > 0:
+                    # 有卡但都不满足各自阈值（或策略类型无达标卡）
+                    self.utilize_threshold_filtered = True
+                    logger.info(
+                        f'📉 浏览结果未达标 | '
+                        f'太鼓:{self.jade_max_num}(阈值{min_taiko}) '
+                        f'斗鱼:{self.ap_max_num}(阈值{min_fish})，'
+                        '尝试其他好友分组'
+                    )
+                    return None
                 if self.utilize_current_group_has_eligible_card:
                     logger.warning('🔄 检测到四星以上目标，但奖励数值识别失败')
                     return False
@@ -1067,7 +1099,8 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
                 # 解析结界卡类型和数值
                 card_type, card_value = self.check_card_num()
 
-                # 跳过无效结界卡（类型未知或数值异常）
+                # 跳过无效结界卡（类型未知或数值异常），
+                # 无论是否开启阈值都直接跳过，下轮重试再说。
                 if card_type == 'unknown' or card_value <= 0 or card_type not in RESOURCE_CONFIG:
                     logger.info(f'⏭️ 跳过无效卡: {card_type}@{card_value}')
                     continue
