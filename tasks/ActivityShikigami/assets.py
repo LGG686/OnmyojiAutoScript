@@ -44,9 +44,9 @@ class ActivityShikigamiAssets:
 	# 不使用五倍卷 
 	I_FIGHT_PENTA_DISUSE = RuleImage(roi_front=(867,650,31,30), roi_back=(746,629,330,86), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_fight_penta_disuse.png")
 	#  
-	I_CHECK_CLIMB_HARD = RuleImage(roi_front=(398,149,38,155), roi_back=(393,144,48,165), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_check_climb_hard.png")
+	I_CHECK_CLIMB_HARD = RuleImage(roi_front=(615,413,67,67), roi_back=(610,408,77,77), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_check_climb_hard.png")
 	#  
-	I_CHECK_CLIMB_EASY = RuleImage(roi_front=(398,149,38,155), roi_back=(393,144,48,165), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_check_climb_easy.png")
+	I_CHECK_CLIMB_EASY = RuleImage(roi_front=(615,413,67,67), roi_back=(610,408,77,77), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_check_climb_easy.png")
 
 
 	# Ocr Rule Assets
