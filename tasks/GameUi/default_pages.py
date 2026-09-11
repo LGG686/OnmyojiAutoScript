@@ -37,11 +37,14 @@ from tasks.Restart.assets import RestartAssets
 from tasks.RyouToppa.assets import RyouToppaAssets
 
 
-def settlement_random_click() -> RuleClick:
-    """使用 GeneralBattle 的散点安全区域生成结算点击。"""
-    # RuleScatter 的重心在资源加载时生成。这里使用浅拷贝隔离单次
-    # 结算的连点属性，同时沿用本次脚本启动时生成的重心。
-    click = copy(GeneralBattleAssets.C_SAFE_RANDOM_CLICK_AREA)
+def settlement_random_click(area=None) -> RuleClick:
+    """默认按四档权重选择16个椭圆区域；任务可显式指定 scatter 区域。"""
+    if area is None:
+        areas = tuple(getattr(GeneralBattleAssets, f'C_RANDOM_{i}') for i in range(1, 17))
+        # 1–4、5–8、9–12、13–16号区域的单区权重分别为4、3、2、1。
+        area = random.choices(areas, weights=(4,) * 4 + (3,) * 4 + (2,) * 4 + (1,) * 4, k=1)[0]
+    # 浅拷贝隔离单次结算的连点属性；scatter 沿用进入任务时生成的重心。
+    click = copy(area)
     click.name = 'SETTLEMENT_RANDOM_CLICK'
     click.burst_count = 1
     click.burst_interval = (0.1, 0.2)
@@ -76,7 +79,7 @@ def random_click(
 
 
 def reward_random_click() -> RuleClick:
-    """奖励页使用 GeneralBattle 的散点安全区域。"""
+    """奖励页默认使用16个结算区域及中心椭圆正态采样。"""
     return settlement_random_click()
 
 
@@ -497,7 +500,10 @@ page_battle_result = Page(
     category="global",
     priority=25
 )
-page_battle_result.add_enter_success_hooks(lambda _task: settlement_random_click())
+page_battle_result.add_enter_success_hooks(
+    lambda task: task._battle_settlement_click()
+    if hasattr(task, '_battle_settlement_click') else settlement_random_click()
+)
 
 page_reward = Page(
     any_of(

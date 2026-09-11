@@ -16,6 +16,7 @@ from tasks.Exploration.assets import ExplorationAssets
 from tasks.Exploration.config import ChooseRarity, UpType, ExplorationLevel, AutoRotate, UserStatus, Exploration
 from tasks.Component.GeneralBattle.general_battle import GeneralBattle, ExitMatcher, BattleContext, BattleAction
 from tasks.GameUi.game_ui import GameUi
+from tasks.GameUi.default_pages import settlement_random_click
 from tasks.Utils.config_enum import ShikigamiClass
 import tasks.Exploration.page as pages
 
@@ -31,6 +32,9 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
     user_status: UserStatus = UserStatus.ALONE
     wait_start_time: datetime = datetime.now()
     pre_page: pages.Page = None
+
+    def _battle_settlement_click(self):
+        return settlement_random_click(self.C_SAFE_RANDOM_CLICK_AREA_EXP)
 
     def _exit_matcher(self) -> ExitMatcher:
         return pages.any_of(self.I_E_SETTINGS_BUTTON, self.I_E_AUTO_ROTATE_ON, self.I_E_AUTO_ROTATE_OFF)
@@ -51,6 +55,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
         return RuleAnimate(self.I_SWIPE_END)
 
     def pre_process(self):
+        self.C_SAFE_RANDOM_CLICK_AREA_EXP.reset_click_focuses()
         if self._config.switch_soul_config.enable:
             self.goto_page(pages.page_shikigami_records)
             self.run_switch_soul(self._config.switch_soul_config.switch_group_team)

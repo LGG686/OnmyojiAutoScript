@@ -130,7 +130,7 @@ class NormalClimbAct:
                 )
                 continue
             if current_page == pages.page_reward:
-                self.click(pages.reward_random_click(), interval=1.5)
+                self.click(self._battle_settlement_click(), interval=1.5)
                 continue
             if current_page is None:
                 time.sleep(0.5)

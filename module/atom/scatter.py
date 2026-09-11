@@ -51,6 +51,12 @@ class RuleScatter(RuleClick):
         cls._active_task_name = str(task_name)
         cls._active_task_started_at = time.monotonic()
 
+    def reset_click_focuses(self) -> None:
+        """进入专属任务时重新抽取重心，并清空上一轮的长任务倾向。"""
+        self.click_focuses = self._generate_click_focuses()
+        self.click_focus_weights = self._generate_focus_weights()
+        self._task_bias_state = {'generation': -1, 'indices': ()}
+
     @classmethod
     def end_task(cls, task_name: str | None = None) -> None:
         """结束当前调度任务，清除长任务点击倾向。"""

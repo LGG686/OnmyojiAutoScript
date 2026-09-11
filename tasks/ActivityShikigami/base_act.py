@@ -10,6 +10,7 @@ from module.exception import TaskEnd
 from module.logger import logger
 from tasks.ActivityShikigami.assets import ActivityShikigamiAssets
 from tasks.ActivityShikigami.config import ActivityShikigami, BATTLE_TYPES
+from tasks.GameUi.default_pages import settlement_random_click
 from tasks.Component.BaseActivity.base_activity import BaseActivity
 from tasks.Component.GeneralBattle.config_general_battle import GeneralBattleConfig
 from tasks.Component.GeneralBattle.general_battle import BattleAction, BattleContext, GeneralBattle
@@ -53,6 +54,7 @@ class BaseAct(GameUi, GeneralBattle, SwitchSoul, BaseActivity, ActivityShikigami
         return 'ActivityShikigami'
 
     def before_run(self):
+        self.C_SAFE_RANDOM_CLICK_AREA_ACT.reset_click_focuses()
         pages.page_battle_result = self.navigator.resolve_page(pages.page_battle_result)
         pages.page_battle_result.recognizer = pages.any_of(
             self.I_UI_BACK_RED,
@@ -75,6 +77,9 @@ class BaseAct(GameUi, GeneralBattle, SwitchSoul, BaseActivity, ActivityShikigami
 
     def battle_config(self, action_type: str) -> GeneralBattleConfig:
         return getattr(self.conf, f'{action_type}_battle_conf')
+
+    def _battle_settlement_click(self):
+        return settlement_random_click(self.C_SAFE_RANDOM_CLICK_AREA_ACT)
 
     def action_limit(self, action_type: str) -> int:
         return self.conf.general_config.limit_for(action_type)
