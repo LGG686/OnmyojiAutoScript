@@ -22,7 +22,7 @@ from tasks.Component.SwitchSoul.switch_soul import SwitchSoul, switch_parser
 from tasks.GameUi.default_pages import page_battle_result, random_click
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.matcher import any_of
-from tasks.GameUi.page import page_main, page_bondling_fairyland, page_shikigami_records, page_mall
+from tasks.GameUi.page import page_main, page_bondling_fairyland, page_shikigami_records, page_mall, page_mall_recommend
 from tasks.WeeklyPurchase.assets import WeeklyPurchaseAssets
 
 
@@ -146,7 +146,7 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
 
         if cong.bondling_config.check_enable:
             logger.hr('第一步, 检查契忆数量', 2)
-            self.goto_page(page_mall, confirm_wait=2.5)
+            self.goto_page(page_mall_recommend, confirm_wait=2.5, accepted_pages=(page_mall,))
             self.ui_click(self.I_MALL_SCCALES, self.I_MALL_SCCALES_CHECK)
             self.ui_click(self.I_MALL_BONDLINGS_SURE, self.I_MALL_BONDLINGS_ON)
             MAX_COUNT = cong.bondling_config.limit_num

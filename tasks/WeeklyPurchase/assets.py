@@ -1,5 +1,6 @@
 from module.atom.image import RuleImage
 from module.atom.click import RuleClick
+from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
 from module.atom.swipe import RuleSwipe
 from module.atom.ocr import RuleOcr
@@ -173,7 +174,7 @@ class WeeklyPurchaseAssets:
 
 	# Image Rule Assets
 	# 寄售屋 
-	I_MALL_CONSIGNMENT = RuleImage(roi_front=(207,639,56,59), roi_back=(175,610,120,103), threshold=0.8, method="Template matching", file="./tasks/WeeklyPurchase/mall/navbar/navbar_mall_consignment.png")
+	I_MALL_CONSIGNMENT = RuleImage(roi_front=(217,648,46,40), roi_back=(175,610,120,103), threshold=0.8, method="Template matching", file="./tasks/WeeklyPurchase/mall/navbar/navbar_mall_consignment.png")
 	# 寄售屋 
 	I_MALL_CONSIGNMENT_CHECK = RuleImage(roi_front=(12,166,100,390), roi_back=(12,166,100,390), threshold=0.8, method="Template matching", file="./tasks/WeeklyPurchase/mall/navbar/navbar_mall_consignment_check.png")
 	# 密卷屋 
@@ -189,7 +190,7 @@ class WeeklyPurchaseAssets:
 	# 契灵商店 
 	I_MALL_BONDLINGS_CHECK = RuleImage(roi_front=(355,186,34,104), roi_back=(355,186,34,104), threshold=0.8, method="Template matching", file="./tasks/WeeklyPurchase/mall/navbar/navbar_mall_bondlings_check.png")
 	# 杂货铺 
-	I_MALL_SUNDRY = RuleImage(roi_front=(880,646,53,54), roi_back=(834,621,116,90), threshold=0.8, method="Template matching", file="./tasks/WeeklyPurchase/mall/navbar/navbar_mall_sundry.png")
+	I_MALL_SUNDRY = RuleImage(roi_front=(875,646,53,54), roi_back=(834,621,116,90), threshold=0.8, method="Template matching", file="./tasks/WeeklyPurchase/mall/navbar/navbar_mall_sundry.png")
 	# 杂货铺 
 	I_MALL_SUNDRY_CHECK = RuleImage(roi_front=(1101,6,31,44), roi_back=(1035,0,131,58), threshold=0.7, method="Template matching", file="./tasks/WeeklyPurchase/mall/navbar/navbar_mall_sundry_check.png")
 

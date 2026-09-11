@@ -13,7 +13,7 @@ from tasks.Component.config_base import Time
 from tasks.DailyTrifles.page import page_store_gift_room, page_friends_luck, page_guild_wish
 
 from tasks.GameUi.game_ui import GameUi
-from tasks.GameUi.page import page_main, page_summon, page_guild, page_mall, page_friends, page_courtyard_affairs
+from tasks.GameUi.page import page_main, page_summon, page_guild, page_mall, page_mall_recommend, page_friends, page_courtyard_affairs
 from tasks.DailyTrifles.config import DailyTriflesConfig
 from tasks.DailyTrifles.assets import DailyTriflesAssets
 from tasks.Component.Summon.summon import Summon
@@ -360,7 +360,7 @@ class ScriptTask(GameUi, Summon, DailyTriflesAssets):
         if self.check_store_all_done():
             logger.info('Store all done, skip')
             return
-        self.goto_page(page_mall, confirm_wait=3)
+        self.goto_page(page_mall_recommend, confirm_wait=3, accepted_pages=(page_mall,))
         if self.config.daily_trifles.trifles_config.store_sign:
             self.run_store_sign()
         if self.config.daily_trifles.trifles_config.buy_sushi_count > 0:

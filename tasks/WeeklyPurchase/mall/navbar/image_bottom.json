@@ -2,7 +2,7 @@
   {
     "itemName": "mall_consignment",
     "imageName": "navbar_mall_consignment.png",
-    "roiFront": "207,639,56,59",
+    "roiFront": "217,648,46,40",
     "roiBack": "175,610,120,103",
     "method": "Template matching",
     "threshold": 0.8,
@@ -74,7 +74,7 @@
   {
     "itemName": "mall_sundry",
     "imageName": "navbar_mall_sundry.png",
-    "roiFront": "880,646,53,54",
+    "roiFront": "875,646,53,54",
     "roiBack": "834,621,116,90",
     "method": "Template matching",
     "threshold": 0.8,

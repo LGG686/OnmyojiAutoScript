@@ -1,5 +1,6 @@
 from module.atom.image import RuleImage
 from module.atom.click import RuleClick
+from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
 from module.atom.swipe import RuleSwipe
 from module.atom.ocr import RuleOcr
@@ -189,7 +190,7 @@ class GameUiAssets:
 	# 花合战页面标志 
 	I_CHECK_DAILY = RuleImage(roi_front=(28,515,58,62), roi_back=(1,487,154,145), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_daily.png")
 	# 商店页面标志 
-	I_CHECK_MALL = RuleImage(roi_front=(231,455,131,78), roi_back=(201,432,185,121), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_mall.png")
+	I_CHECK_MALL = RuleImage(roi_front=(831,150,41,33), roi_back=(771,76,185,121), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_mall.png")
 	# 商店推荐页面标志 
 	I_CHECK_MALL_RECOMMEND = RuleImage(roi_front=(930,12,42,37), roi_back=(905,0,100,100), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_mall_recommend.png")
 	# 阴阳寮页面标志 

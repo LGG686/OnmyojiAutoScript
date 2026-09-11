@@ -9,14 +9,14 @@ from tasks.WeeklyPurchase.mall.consignment import Consignment
 from tasks.WeeklyPurchase.mall.scales import Scales
 from tasks.WeeklyPurchase.mall.honor import Honor
 from tasks.WeeklyPurchase.mall.bondlings import Bondlings
-from tasks.GameUi.page import page_main, page_mall
+from tasks.GameUi.page import page_main, page_mall, page_mall_recommend
 
 
 class Mall(Medal, Charisma, Honor, Consignment, Scales, Bondlings):
 
     def execute_mall(self):
         logger.hr('Mall', 1)
-        self.goto_page(page_mall, confirm_wait=2.5)
+        self.goto_page(page_mall_recommend, confirm_wait=2.5, accepted_pages=(page_mall,))
 
         # 寄售屋
         self.execute_consignment()
@@ -42,4 +42,3 @@ class Mall(Medal, Charisma, Honor, Consignment, Scales, Bondlings):
 
         # 退出
         self.back_mall()
-
