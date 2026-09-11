@@ -10,6 +10,7 @@ from datetime import datetime
 from future.backports.datetime import timedelta
 from module.exception import TaskEnd, RequestHumanTakeover
 from module.base.timer import Timer
+from module.atom.click import RuleClick
 from module.logger import logger
 from module.config.config import Config
 from module.device.device import Device
@@ -19,6 +20,8 @@ from tasks.AbyssShadows.config import AbyssShadows, EnemyType, AreaType, Code, A
 from tasks.AbyssShadows.page import page_abyss, page_abyss_map, page_shikigami_records
 from tasks.Component.GeneralBattle.general_battle import GeneralBattle
 from tasks.Component.SwitchSoul.switch_soul import SwitchSoul
+from tasks.Component.QuickLoadout.quick_loadout import QuickLoadout
+from tasks.Component.QuickLoadout.config import QuickLoadoutConfig
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.page import page_main
 
@@ -30,7 +33,7 @@ class AbyssShadowsFinished(Exception):
     pass
 
 
-class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
+class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAssets):
     #
     min_count = {
         EnemyType.BOSS: 2,  # 最少首领战斗次数
@@ -556,7 +559,8 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
 
         preset = get_preset(enemy_type)
 
-        if self.config.model.abyss_shadows.process_manage.enable_switch_preset_in_as:
+        if (self.config.model.abyss_shadows.process_manage.enable_switch_preset_in_as
+                and not (self.cur_soul_preset == preset and self.cur_preset == preset)):
             # 首领：每一次都需要更换预设队伍
             if enemy_type == EnemyType.BOSS:
                 logger.info(f"敌人类型 {enemy_type.name} -- [强制] 切换阵容预设到 {preset}")
@@ -681,7 +685,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
         self.switch_preset_team(True, int(tmp[0]), int(tmp[1]))
 
     def switch_soul_in_abyss(self, enemy_type: EnemyType):
-        """从狭间活动页面进入式神录切换御魂（带预设缓存）"""
+        """在狭间内通过 quick_loadout 装配并上阵预设，成功后缓存。"""
         if not self.config.model.abyss_shadows.process_manage.enable_switch_soul_in_as:
             return
 
@@ -719,29 +723,30 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, AbyssShadowsAssets):
             logger.info(f"{enemy_type.name} 的预设 {preset_str} 与当前相同，跳过切换")
             return
 
-        # 直接在狭间页面点击式神录按钮进入式神录
-        self.goto_page(page_shikigami_records)
-
-        # 切换御魂
         try:
-            l = preset_str.split(',')
-            if len(l) != 2:
-                logger.error(f"无效的预设格式: {preset_str}")
-                raise RequestHumanTakeover
-
-            # 执行御魂切换
-            self.run_switch_soul((int(l[0]), int(l[1])))
-
-            # 更新当前御魂预设
+            group, preset = (int(part.strip()) for part in preset_str.split(','))
+            config = QuickLoadoutConfig(
+                enable=True, group_number=group, preset_number=preset,
+            )
+            # 使用入口位置关闭面板：入口位于面板下方，不会点到预设或上阵按钮。
+            dismiss = RuleClick(
+                roi_front=self.I_OPEN_QUICK_LOADOUT.roi_front,
+                roi_back=self.I_OPEN_QUICK_LOADOUT.roi_front,
+                name='abyss_quick_loadout_close',
+            )
+            if not self.run_quick_loadout(
+                config,
+                entry=self.I_OPEN_QUICK_LOADOUT,
+                fight_anchor=self.I_ABYSS_QUICK_LOADOUT_FIGHT,
+                dismiss=dismiss,
+            ):
+                raise RuntimeError('Abyss quick loadout failed')
             self.cur_soul_preset = preset_str
-
-            logger.info(f"成功在狭间中切换至 {enemy_type.name} 预设 {preset_str}")
+            self.cur_preset = preset_str
+            logger.info(f"成功在狭间中装配并上阵 {enemy_type.name} 预设 {preset_str}")
         except Exception as e:
             logger.error(f"御魂切换失败: {e}")
             raise RequestHumanTakeover
-        finally:
-            # 返回狭间活动页面
-            self.goto_page(page_abyss_map)
 
     def check_available(self, item_code: Code):
         # 判断该怪物是否可用
@@ -851,4 +856,3 @@ if __name__ == "__main__":
     t = ScriptTask(config, device)
 
     print(t.get_next_dt(datetime(2026, 4, 5, 21, 20, 0)))
-
