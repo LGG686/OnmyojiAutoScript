@@ -16,5 +16,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索页面"
+  },
+  {
+    "itemName": "exploration_to_main",
+    "imageName": "exploration_to_main.png",
+    "roiFront": "17,17,47,42",
+    "roiBack": "0,0,76,76",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
   }
 ]

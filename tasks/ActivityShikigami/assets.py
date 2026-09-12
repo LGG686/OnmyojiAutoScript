@@ -128,6 +128,8 @@ class ActivityShikigamiAssets:
 	I_TO_EXPLORATION = RuleImage(roi_front=(1028,357,91,65), roi_back=(981,318,183,141), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/exploration/exp_to_exploration.png")
 	# 探索页面 
 	I_EXP_CHECK_EXPLORATION = RuleImage(roi_front=(541,16,193,35), roi_back=(536,11,203,45), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/exploration/exp_check_exploration.png")
+	#  
+	I_EXPLORATION_TO_MAIN = RuleImage(roi_front=(17,17,47,42), roi_back=(0,0,76,76), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/exploration/exploration_to_main.png")
 
 
 	# Click Rule Assets
