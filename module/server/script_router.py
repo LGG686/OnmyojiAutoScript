@@ -268,6 +268,9 @@ async def script_task(script_name: str, task: str):
 async def script_task(script_name: str, task: str, group: str, argument: str, types: str, value):
     try:
         match types:
+            case 'multi_enum':
+                from module.config.multi_select import normalize_multi_select
+                value = normalize_multi_select(value)
             case 'integer':
                 value = int(value)
             case 'number':

@@ -469,6 +469,9 @@ class ConfigModel(ConfigBase):
 
         # 设置参数
         try:
+            # 先验证再写入，防止未经校验的字符串污染多选配置。
+            candidate = group_object.model_validate({**group_object.model_dump(), argument: value})
+            value = getattr(candidate, argument)
             setattr(group_object, argument, value)
             logger.info(f'Set arg {self.config_name}.{task}.{group}.{argument}.{value}')
             self.save()  # 我是没有想到什么方法可以使得属性改变自动保存的
