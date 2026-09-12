@@ -57,7 +57,11 @@ class BaseAct(GameUi, GeneralBattle, SwitchSoul, BaseActivity, ActivityShikigami
         self.C_SAFE_RANDOM_CLICK_AREA_ACT.reset_click_focuses()
         pages.page_battle_result = self.navigator.resolve_page(pages.page_battle_result)
         pages.page_battle_result.recognizer = pages.any_of(
-            self.I_UI_BACK_RED,
+            pages.all_of(
+                lambda task: not task.current_action_type.startswith('exp_')
+                or not task.appear(task.I_EVENT_FIGHT),
+                self.I_UI_BACK_RED,
+            ),
             pages.page_battle_result.recognizer,
         )
 
