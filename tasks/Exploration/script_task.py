@@ -56,6 +56,8 @@ class ScriptTask(BaseExploration):
         pages.page_battle_team_exit.connect(pages.page_exp_entrance, self.I_UI_CONFIRM, key="page_battle_team_exit->page_exp_entrance")
         while True:
             self.screenshot()
+            if self.close_chat_sidebar_first():
+                continue
             current_page = self.get_current_page()
             if current_page is None:
                 time.sleep(0.5)
@@ -73,6 +75,15 @@ class ScriptTask(BaseExploration):
             except InviteFailedException as e:
                 logger.warning(e)
                 break
+
+    def close_chat_sidebar_first(self) -> bool:
+        """黄色返回不存在时，优先关闭误开的聊天侧栏。使用当前截图。"""
+        if self.appear(self.I_UI_BACK_YELLOW):
+            return False
+        if self.appear_then_click(self.I_CHAT_CLOSE_BUTTON, interval=1.5):
+            logger.info('Exploration: close chat sidebar before page detection')
+            return True
+        return False
 
     def run_on_exp_main(self):
         if self.pre_page and self.pre_page != pages.page_exp_main:
