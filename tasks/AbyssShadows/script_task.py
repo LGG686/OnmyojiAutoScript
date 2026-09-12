@@ -516,6 +516,9 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
         # 先获取敌人类型
         enemy_type = item_code.get_enemy_type()
 
+        # 在狭间地图进入式神录装配御魂：精英/副将首次一次，首领每只一次。
+        self.switch_soul_in_abyss(enemy_type)
+
         area = item_code.get_areatype()
 
         if not self.change_area(area):
@@ -529,9 +532,6 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
             # 前往失败，添加进unavailable_list
             self.unavailable_list.append(item_code)
             return False
-
-        # 活动开战且已选中目标后才配置；同一只敌人的重试不重复配置。
-        self.switch_soul_in_abyss(enemy_type)
 
         battle_count = MAX_BATTLE_COUNT
         while battle_count > 0:
@@ -571,33 +571,11 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
 
         preset = get_preset(enemy_type)
 
-        if (self.config.model.abyss_shadows.process_manage.enable_switch_preset_in_as
-                and not (self.cur_soul_preset == preset and self.cur_preset == preset)):
-            # 首领：每一次都需要更换预设队伍
-            if enemy_type == EnemyType.BOSS:
-                logger.info(f"敌人类型 {enemy_type.name} -- [强制] 切换阵容预设到 {preset}")
-                self.switch_preset_team_with_str(preset)
-                self.cur_preset = preset
-                
-            # 精英：只需要切换一次预设队伍
-            elif enemy_type == EnemyType.ELITE:
-                if not self.elite_preset_switched:
-                    logger.info(f"敌人类型 {enemy_type.name} -- 首次切换精英阵容预设到 {preset}")
-                    self.switch_preset_team_with_str(preset)
-                    self.cur_preset = preset
-                    self.elite_preset_switched = True
-                else:
-                    logger.info(f"敌人类型 {enemy_type.name} -- 精英预设队伍已激活，跳过切换预设队伍")
-                    
-            # 副将：只需要切换一次预设队伍
-            elif enemy_type == EnemyType.GENERAL:
-                if not self.general_preset_switched:
-                    logger.info(f"敌人类型 {enemy_type.name} -- 首次切换副将阵容预设到 {preset}")
-                    self.switch_preset_team_with_str(preset)
-                    self.cur_preset = preset
-                    self.general_preset_switched = True
-                else:
-                    logger.info(f"敌人类型 {enemy_type.name} -- 副将预设队伍已激活，跳过切换预设队伍")
+        if self.config.model.abyss_shadows.process_manage.enable_switch_preset_in_as:
+            # 御魂已经在式神录中装配；进入每场对局后只负责上阵对应队伍。
+            logger.info(f"敌人类型 {enemy_type.name} -- 上阵阵容预设 {preset}")
+            self.switch_preset_team_with_str(preset)
+            self.cur_preset = preset
 
         # 点击准备
         _timer_battle = Timer(180)
@@ -697,15 +675,15 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
         self.switch_preset_team(True, int(tmp[0]), int(tmp[1]))
 
     def switch_soul_in_abyss(self, enemy_type: EnemyType):
-        """选中目标后配置：副将/精英各首次一次，首领每只一次。"""
+        """从狭间地图进入式神录装配：副将/精英首次一次，首领每只一次。"""
         if not self.config.model.abyss_shadows.process_manage.enable_switch_soul_in_as:
             return
 
-        logger.info(f"开始在狭间中切换御魂，敌人类型: {enemy_type.name}")
-
         if enemy_type != EnemyType.BOSS and enemy_type in self.quick_loadout_done_types:
-            logger.info(f'{enemy_type.name} 本轮已完成首次 quick loadout，跳过')
+            logger.info(f'{enemy_type.name} 本轮已完成首次御魂装配，后续仅上阵')
             return
+
+        logger.info(f"开始从狭间进入式神录装配御魂，敌人类型: {enemy_type.name}")
 
         # 根据敌人类型获取对应的御魂预设
         preset_str = None
@@ -726,30 +704,53 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
             logger.info(f"{enemy_type.name} 的预设为 -1,-1，跳过御魂切换")
             return
 
+        self.goto_page(page_shikigami_records)
+        try:
+            parts = preset_str.split(',')
+            if len(parts) != 2:
+                raise ValueError(f'无效的预设格式: {preset_str}')
+            self.run_switch_soul((int(parts[0]), int(parts[1])))
+            self.cur_soul_preset = preset_str
+            self.quick_loadout_done_types.add(enemy_type)
+            logger.info(f"成功为 {enemy_type.name} 装配御魂预设 {preset_str}")
+        except Exception as e:
+            logger.error(f"御魂切换失败: {e}")
+            raise RequestHumanTakeover
+        finally:
+            self.goto_page(page_abyss_map)
+
+    def switch_soul_with_quick_loadout_in_abyss(self, enemy_type: EnemyType):
+        """备用：在敌人界面通过 quick loadout 装配并上阵，当前狭间流程不接入。"""
+        if not self.config.model.abyss_shadows.process_manage.enable_switch_soul_in_as:
+            return
+
+        match enemy_type:
+            case EnemyType.BOSS:
+                preset_str = self.config.model.abyss_shadows.process_manage.preset_boss
+            case EnemyType.GENERAL:
+                preset_str = self.config.model.abyss_shadows.process_manage.preset_general
+            case EnemyType.ELITE:
+                preset_str = self.config.model.abyss_shadows.process_manage.preset_elite
+
+        if not preset_str or preset_str == "-1,-1":
+            return
+
         try:
             group, preset = (int(part.strip()) for part in preset_str.split(','))
-            config = QuickLoadoutConfig(
-                enable=True, group_number=group, preset_number=preset,
-            )
-            # 使用入口位置关闭面板：入口位于面板下方，不会点到预设或上阵按钮。
+            config = QuickLoadoutConfig(enable=True, group_number=group, preset_number=preset)
             dismiss = RuleClick(
                 roi_front=self.I_OPEN_QUICK_LOADOUT.roi_front,
                 roi_back=self.I_OPEN_QUICK_LOADOUT.roi_front,
                 name='abyss_quick_loadout_close',
             )
             if not self.run_quick_loadout(
-                config,
-                entry=self.I_OPEN_QUICK_LOADOUT,
-                fight_anchor=self.I_ABYSS_QUICK_LOADOUT_FIGHT,
-                dismiss=dismiss,
-            ):
+                    config,
+                    entry=self.I_OPEN_QUICK_LOADOUT,
+                    fight_anchor=self.I_ABYSS_QUICK_LOADOUT_FIGHT,
+                    dismiss=dismiss):
                 raise RuntimeError('Abyss quick loadout failed')
-            self.cur_soul_preset = preset_str
-            self.cur_preset = preset_str
-            self.quick_loadout_done_types.add(enemy_type)
-            logger.info(f"成功在狭间中装配并上阵 {enemy_type.name} 预设 {preset_str}")
         except Exception as e:
-            logger.error(f"御魂切换失败: {e}")
+            logger.error(f"狭间 quick loadout 失败: {e}")
             raise RequestHumanTakeover
 
     def check_available(self, item_code: Code):
