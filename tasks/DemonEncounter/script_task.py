@@ -260,9 +260,26 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
             3: self.C_DE_3,
             4: self.C_DE_4,
         }
+        lantern_types = self.scan_lantern_types()
+        logger.info(
+            'Lantern map: '
+            + ', '.join(f'{index}={lantern_type.name}'
+                        for index, lantern_type in lantern_types.items())
+        )
         for i in range(1, 5):
             logger.hr(f'Check lantern {i}', 3)
-            lantern_type = self.check_lantern(i)
+            # 前面的事件可能改变右侧灯笼状态，处理前用当前画面复核。
+            self.screenshot()
+            current_type = self.check_lantern(i, screenshot=False)
+            if current_type == LanternClass.EMPTY:
+                lantern_type = LanternClass.EMPTY
+            else:
+                lantern_type = current_type
+                if current_type != lantern_types[i]:
+                    logger.info(
+                        f'Lantern {i} changed: '
+                        f'{lantern_types[i].name} -> {current_type.name}'
+                    )
             self.device.click_record_clear()
             match lantern_type:
                 case LanternClass.BOX:
@@ -281,7 +298,15 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
                     self._boss(match_click[i])
             time.sleep(1)
 
-    def check_lantern(self, index: int = 1):
+    def scan_lantern_types(self):
+        """在同一帧确认四个固定位置，并返回各位置当前类型。"""
+        self.screenshot()
+        return {
+            index: self.check_lantern(index, screenshot=False)
+            for index in range(1, 5)
+        }
+
+    def check_lantern(self, index: int = 1, screenshot: bool = True):
         """
         检查灯笼的类型
         :param index: 四个灯笼，从1开始
@@ -311,9 +336,14 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
         target_find_boss = self.I_DE_FIND_BOSS
         target_empty = match_empty[index]
 
-        # 开始判断
-        self.screenshot()
-        if self.appear(target_box):
+        # 使用同一截图依次分析四个固定位置。空灯笼优先，避免已完成位置
+        # 因其他模板未命中而落入“战斗”兜底。
+        if screenshot:
+            self.screenshot()
+        if self.appear(target_empty):
+            logger.info(f'Lantern {index} is empty')
+            return LanternClass.EMPTY
+        elif self.appear(target_box):
             logger.info(f'Lantern {index} is box')
             return LanternClass.BOX
         elif self.appear(target_letter):
@@ -325,9 +355,6 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
         elif self.appear(target_realm):
             logger.info(f'Lantern {index} is realm')
             return LanternClass.REALM
-        elif self.appear(target_empty):
-            logger.info(f'Lantern {index} is empty')
-            return LanternClass.EMPTY
         elif self.appear(target_find_boss):
             logger.info(f'Lantern {index} is boss')
             return LanternClass.BOSS
@@ -338,12 +365,11 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
 
     def _box(self, target_click):
         box_buy_config = self.config.demon_encounter.box_buy_config
-        while 1:
-            self.screenshot()
-            if self.appear(self.I_JADE_50):
-                break
-            if self.click(target_click, interval=1):
-                continue
+        if not self._enter_lantern_event(
+                target_click,
+                lambda: self.appear(self.I_JADE_50),
+                'box purchase'):
+            return
         while 1:
             self.screenshot()
             if not self.appear(self.I_MYSTERY_AMULET) and not (box_buy_config.box_buy_sushi and self.appear(self.I_SUSHI)):
@@ -388,12 +414,11 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
             logger.info(f'Question: {question}, Answer: {index}')
             return click_match[index]
 
-        while 1:
-            self.screenshot()
-            if self.appear(self.I_LETTER_CLOSE):
-                break
-            if self.click(target_click, interval=1):
-                continue
+        if not self._enter_lantern_event(
+                target_click,
+                lambda: self.appear(self.I_LETTER_CLOSE),
+                'letter'):
+            return
         logger.info('Question answering Start')
         for i in range(1, 4):
             # 还未测试题库无法识别的情况
@@ -425,31 +450,49 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
                 self.click(answer_click, interval=1.5)
             time.sleep(0.5)
 
-    def _battle(self, target_click):
-        while 1:
+    def _enter_lantern_event(self, target_click, predicate, event_name):
+        """灯笼入口仅点击一次；3秒未进入目标界面则跳过当前位置。"""
+        self.click(target_click, interval=0)
+        deadline = time.monotonic() + 3
+        while time.monotonic() < deadline:
             self.screenshot()
-            if not self.appear(self.I_DE_LOCATION):
-                logger.info('Battle Start')
-                break
-            if self.appear(self.I_DE_SMALL_FIRE):
-                # 小鬼王
-                logger.info('Small Boss')
-                while 1:
-                    self.screenshot()
-                    if not self.appear(self.I_DE_SMALL_FIRE):
-                        break
-                    if self.appear_then_click(self.I_DE_SMALL_FIRE, interval=1):
-                        continue
-                break
+            if predicate():
+                logger.info(f'Lantern entered {event_name}')
+                return True
+            time.sleep(0.2)
+        logger.warning(f'Lantern did not enter {event_name} in 3s; mark handled and skip')
+        return False
 
-            if self.click(target_click, interval=1):
-                continue
+    def _battle(self, target_click):
+        if not self._enter_lantern_event(
+                target_click,
+                lambda: not self.appear(self.I_DE_LOCATION)
+                or self.appear(self.I_DE_SMALL_FIRE),
+                'battle'):
+            return
+        if self.appear(self.I_DE_SMALL_FIRE):
+            # 小鬼王
+            logger.info('Small Boss')
+            while 1:
+                self.screenshot()
+                if not self.appear(self.I_DE_SMALL_FIRE):
+                    break
+                if self.appear_then_click(self.I_DE_SMALL_FIRE, interval=1):
+                    continue
+        else:
+            logger.info('Battle Start')
         self.current_count = 0
         if self.run_general_battle():
             logger.info('Battle End')
 
     def _realm(self, target_click):
         # 结界
+        if not self._enter_lantern_event(
+                target_click,
+                lambda: self.appear(self.I_DE_REALM_FIRE)
+                or not self.appear(self.I_DE_LOCATION),
+                'realm'):
+            return
         while 1:
             self.screenshot()
             if not self.appear(self.I_DE_LOCATION):
@@ -458,8 +501,6 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
             if self.appear_then_click(self.I_DE_REALM_FIRE, interval=0.7):
                 continue
 
-            if self.click(target_click, interval=1):
-                continue
         self.current_count = 0
         if self.run_general_battle():
             logger.info('Battle End')
