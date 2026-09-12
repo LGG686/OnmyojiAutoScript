@@ -68,6 +68,9 @@ class NormalClimbAct:
 
     def _run_climb_type(self, action_type: str):
         if action_type == 'pass':
+            # 进入共用爬塔界面，不要求切到门票模式，先统一读取门票。
+            self.goto_page(pages.page_climb_ap, accepted_pages=(pages.page_climb_pass,))
+            remain = self._read_shared_climb_tickets()
             # 困难模式收益优先；任一模式次数为 0 时直接跳过。
             for pass_mode in ('hard', 'easy'):
                 pass_limit = self.conf.general_config.pass_limit_for(pass_mode)
@@ -76,11 +79,22 @@ class NormalClimbAct:
                     continue
                 if self.time_limit_reached():
                     return
+                required = 5 if pass_mode == 'hard' else 1
+                if remain < required:
+                    logger.info(f'Skip pass mode {pass_mode}: tickets={remain}, required={required}')
+                    continue
                 self._run_climb_branch(action_type, pass_mode=pass_mode)
+                # 两种难度共用门票，前一分支消耗后更新余量再筛选下一分支。
+                remain = self._read_shared_climb_tickets()
             self.current_pass_mode = None
             return
 
         self._run_climb_branch(action_type)
+
+    def _read_shared_climb_tickets(self):
+        self.screenshot()
+        return self._update_climb_consumable_count(
+            'pass', self.O_REMAIN_PASS.ocr_digit(self.device.image))
 
     def _run_climb_branch(self, action_type: str, pass_mode: str = None):
         logger.hr(f'Start climb type: {action_type}', 2)
