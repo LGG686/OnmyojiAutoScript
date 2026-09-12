@@ -151,7 +151,7 @@ class BaseAct(GameUi, GeneralBattle, SwitchSoul, BaseActivity, ActivityShikigami
 
         if exit_records:
             self.exit_shikigami_records()
-        elif return_page is not None:
+        if return_page is not None:
             self.goto_page(return_page)
 
     def switch_soul_for_from_courtyard(self, action_type: str):

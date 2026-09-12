@@ -212,6 +212,7 @@ class NormalClimbAct:
             soul_action_type,
             self.I_BATTLE_MAIN_TO_RECORDS,
             return_page=destination,
+            exit_records=True,
         )
         if action_type == 'pass' and self.current_pass_mode is not None:
             # 首次切换御魂返回后重新确认难度，避免页面往返重置选择。
