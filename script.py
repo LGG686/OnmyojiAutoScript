@@ -538,6 +538,8 @@ class Script:
             logger.error(f'Invalid command `{command}`')
 
         self._reset_task_runtime_outcome()
+        from module.atom.click import RuleClick
+        RuleClick.reset_task_points()
         set_ocr_logging_enabled(self.config.global_game.ocr.save_ocr_log)
         try:
             self.device.screenshot()
