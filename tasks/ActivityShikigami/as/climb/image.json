@@ -74,7 +74,7 @@
   {
     "itemName": "act_fire",
     "imageName": "as_act_fire.png",
-    "roiFront": "1135,601,84,45",
+    "roiFront": "1125,578,99,97",
     "roiBack": "1080,530,192,190",
     "method": "Template matching",
     "threshold": 0.8,

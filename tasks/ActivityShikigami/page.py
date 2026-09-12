@@ -161,6 +161,12 @@ page_act.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key='activity->ma
 page_main.connect(page_act, ActivityShikigamiAssets.I_MAIN_GOTO_ACT, key='main->activity')
 
 # 当期爬塔入口中间层。
+page_activity_exploration = Page(ActivityShikigamiAssets.I_EXP_CHECK_EXPLORATION)
+page_act.connect(page_activity_exploration, ActivityShikigamiAssets.I_TO_EXPLORATION,
+                 key='activity->exploration')
+page_activity_exploration.connect(page_act, GlobalGameAssets.I_UI_BACK_YELLOW,
+                                  key='exploration->activity')
+
 page_climb_main = Page(ActivityShikigamiAssets.I_CHECK_CLIMB_MAIN)
 page_climb_main.connect(page_act, GlobalGameAssets.I_UI_BACK_YELLOW, key='climb_main->activity')
 

@@ -8,24 +8,36 @@ import re
 from pydantic import BaseModel, Field, model_validator, validator
 
 from module.logger import logger
+from module.config.multi_select import normalize_multi_select
 from tasks.Component.GeneralBattle.config_general_battle import GeneralBattleConfig
 from tasks.Component.config_base import ConfigBase, Time
 from tasks.Component.config_scheduler import Scheduler
 
 
 class ActivityTask(str, Enum):
+    EXPLORATION = '探索'
     RICH_MAN = '大富翁'
     FAKE_GOD = '伪神'
     CLIMB = '爬塔'
 
 
-ACTIVITY_EXECUTION_ORDER = ('大富翁', '伪神', '爬塔')
+class ExplorationMode(str, Enum):
+    MAIN = '主线'
+    ENCOUNTER = '遭遇战'
+    BRANCH = '支线'
+
+
+ACTIVITY_EXECUTION_ORDER = ('探索', '大富翁', '伪神', '爬塔')
 ACTIVITY_NAME_TO_FIELD = {
     '大富翁': 'rich_man',
     '伪神': 'fakegod',
     '爬塔': 'climb',
+    '探索': 'exploration',
 }
 ACTIVITY_NAME_ALIASES = {
+    '探索': '探索',
+    'exploration': '探索',
+    'exp': '探索',
     'richman': '大富翁',
     'rich_man': '大富翁',
     '大富翁': '大富翁',
@@ -50,6 +62,9 @@ class GeneralConfig(ConfigBase):
         ],
         title='Activity Task Sequence',
         description='activity_task_sequence_help',
+    )
+    exploration_modes: list[ExplorationMode] = Field(
+        default=list(ExplorationMode), description='exploration_modes_help',
     )
     throw_limit: int = Field(default=0, title='Throw Limit', ge=0)
     ap_limit: int = Field(default=0, title='Ap Limit', ge=0)
@@ -136,6 +151,8 @@ class GeneralConfig(ConfigBase):
 
     def activity_enabled(self, activity_name: str) -> bool:
         field = ACTIVITY_NAME_TO_FIELD[activity_name]
+        if field == 'exploration':
+            return bool(self.exploration_modes)
         if field == 'rich_man':
             return self.throw_limit > 0
         if field == 'climb':
@@ -164,12 +181,8 @@ class GeneralConfig(ConfigBase):
         """兼容旧版填空字符串和多选列表，统一为现有活动选项。"""
         if value is None:
             values = list(ACTIVITY_EXECUTION_ORDER)
-        elif isinstance(value, str):
-            values = [value]
-        elif isinstance(value, (list, tuple, set)):
-            values = value
         else:
-            raise ValueError('任务启用项必须为多选列表')
+            values = normalize_multi_select(value)
 
         # 旧版文本框可能使用中文分隔符；部分界面会将整段文本包装成列表。
         names = []
@@ -195,6 +208,10 @@ class GeneralConfig(ConfigBase):
             if name not in selected:
                 selected.append(name)
         return selected
+
+    @validator('exploration_modes', pre=True)
+    def parse_exploration_modes(cls, value):
+        return normalize_multi_select(value)
 
     @validator('limit_time', pre=True, always=True)
     def parse_limit_time(cls, value):
@@ -241,6 +258,11 @@ def check_soul_by_ocr(enable_switch: bool, group_team_name: str, label: str):
 
 
 class SwitchSoulConfig(BaseModel):
+    enable_switch_exp_encounter: bool = Field(default=False)
+    exp_encounter_group_team: str = Field(default='-1,-1', description='switch_group_team_help')
+    enable_switch_exp_encounter_by_name: bool = Field(default=False, description='enable_switch_by_name_help')
+    exp_encounter_group_team_name: str = Field(default='')
+
     enable_switch_rich_man: bool = Field(default=False)
     rich_man_group_team: str = Field(default='-1,-1', description='switch_group_team_help')
     enable_switch_rich_man_by_name: bool = Field(default=False, description='enable_switch_by_name_help')
@@ -272,7 +294,7 @@ class SwitchSoulConfig(BaseModel):
     fakegod_group_team_name: str = Field(default='')
 
     def validate_switch_soul(self):
-        for label in BATTLE_TYPES:
+        for label in ('exp_encounter', *BATTLE_TYPES):
             check_soul_by_number(
                 getattr(self, f'enable_switch_{label}'),
                 getattr(self, f'{label}_group_team'),
@@ -298,6 +320,7 @@ class ActivityShikigami(ConfigBase):
     boss_battle_conf: GeneralBattleConfig = Field(default_factory=GeneralBattleConfig)
     ap100_battle_conf: GeneralBattleConfig = Field(default_factory=GeneralBattleConfig)
     fakegod_battle_conf: GeneralBattleConfig = Field(default_factory=GeneralBattleConfig)
+    exp_encounter_battle_conf: GeneralBattleConfig = Field(default_factory=GeneralBattleConfig)
 
     @model_validator(mode='before')
     @classmethod
@@ -306,6 +329,19 @@ class ActivityShikigami(ConfigBase):
         if not isinstance(data, dict):
             return data
         data = dict(data)
+        old_encounter = data.pop('exp_encounter_soul_config', None)
+        if isinstance(old_encounter, dict):
+            soul = dict(data.get('switch_soul_config') or {})
+            for old_key, new_key in (
+                ('enable', 'enable_switch_exp_encounter'),
+                ('switch_group_team', 'exp_encounter_group_team'),
+                ('enable_switch_by_name', 'enable_switch_exp_encounter_by_name'),
+            ):
+                if old_key in old_encounter:
+                    soul.setdefault(new_key, old_encounter[old_key])
+            soul.setdefault('exp_encounter_group_team_name',
+                            f"{old_encounter.get('group_name', '')},{old_encounter.get('team_name', '')}")
+            data['switch_soul_config'] = soul
         old_climb = data.get('general_climb')
         old_rich_man = data.pop('_legacy_rich_man', None)
         old_fakegod = data.pop('_legacy_fakegod', None)

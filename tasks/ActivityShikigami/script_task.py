@@ -6,16 +6,18 @@ from tasks.ActivityShikigami.activities.fake_god import FakeGodAct
 from tasks.ActivityShikigami.activities.normal import NormalClimbAct
 from tasks.ActivityShikigami.activities.rich_man import RichManAct
 from tasks.ActivityShikigami.base_act import BaseAct
+from tasks.ActivityShikigami.activities.exploration import ExplorationAct
 
 
 ACTIVITY_METHOD_FIELDS = {
     '大富翁': 'run_rich_man',
     '伪神': 'run_fakegod',
     '爬塔': 'run_climb',
+    '探索': 'run_exploration',
 }
 
 
-class ScriptTask(RichManAct, NormalClimbAct, FakeGodAct, BaseAct):
+class ScriptTask(ExplorationAct, RichManAct, NormalClimbAct, FakeGodAct, BaseAct):
 
     def run(self):
         self.before_run()
