@@ -1,5 +1,6 @@
 from module.atom.image import RuleImage
 from module.atom.click import RuleClick
+from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
 from module.atom.swipe import RuleSwipe
 from module.atom.ocr import RuleOcr
@@ -11,8 +12,8 @@ class DemonEncounterAssets:
 
 
 	# Click Rule Assets
-	# description 
-	C_DM_BOSS_CLICK = RuleClick(roi_front=(593,274,100,100), roi_back=(593,274,100,100), name="dm_boss_click")
+	# 地图中央红色首领集结区域
+	C_DM_BOSS_CLICK = RuleClick(roi_front=(591,311,107,94), roi_back=(591,311,107,94), name="dm_boss_click")
 
 
 	# Image Rule Assets
@@ -29,7 +30,7 @@ class DemonEncounterAssets:
 	# 歌姬 
 	I_BOSS_SONGSTRESS = RuleImage(roi_front=(592,323,67,61), roi_back=(592,323,67,61), threshold=0.8, method="Template matching", file="./tasks/DemonEncounter/boss/boss_boss_songstress.png")
 	# 集结挑战 
-	I_BOSS_FIRE = RuleImage(roi_front=(1062,549,100,100), roi_back=(1062,549,100,100), threshold=0.8, method="Template matching", file="./tasks/DemonEncounter/boss/boss_boss_fire.png")
+	I_BOSS_FIRE = RuleImage(roi_front=(1062,549,100,100), roi_back=(1052,539,120,120), threshold=0.8, method="Template matching", file="./tasks/DemonEncounter/boss/boss_boss_fire.png")
 	# description 
 	I_BOSS_CONFIRM = RuleImage(roi_front=(671,400,175,61), roi_back=(671,400,175,61), threshold=0.8, method="Template matching", file="./tasks/DemonEncounter/boss/boss_boss_confirm.png")
 	# 已选中 
@@ -149,5 +150,4 @@ class DemonEncounterAssets:
 	O_LETTER_ANSWER_2 = RuleOcr(roi=(428,350,438,74), area=(428,350,438,74), mode="Single", method="Default", keyword="", name="letter_answer_2")
 	# 回答三 
 	O_LETTER_ANSWER_3 = RuleOcr(roi=(428,439,443,72), area=(428,439,443,72), mode="Single", method="Default", keyword="", name="letter_answer_3")
-
 
