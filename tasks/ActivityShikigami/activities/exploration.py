@@ -52,6 +52,12 @@ class ExplorationAct:
         return super()._handle_missing_battle_page(context, config, exit_matcher)
 
     def _clear_exp_rewards(self):
+        if self.appear(self.I_EVENT_REWARD_CLOSE):
+            # 部分宝箱及战斗结算会额外弹出带关闭按钮的奖励页。
+            self.click(self.I_EVENT_REWARD_CLOSE, interval=0.8)
+            if not self._wait_exp(lambda: not self.appear(self.I_EVENT_REWARD_CLOSE), timeout=5):
+                raise GameStuckError('Exploration reward close button did not disappear')
+            return True
         for marker in (self.I_EVENT_REWARD_REWARD, self.I_SHIKIGAMI_HELP):
             if not self.appear(marker):
                 continue

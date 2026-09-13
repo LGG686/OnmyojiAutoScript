@@ -39,7 +39,7 @@
     "itemName": "event_close",
     "imageName": "exploration_event_close.png",
     "roiFront": "1095,117,42,38",
-    "roiBack": "1084,84,74,80",
+    "roiBack": "1079,94,76,87",
     "method": "Template matching",
     "threshold": 0.8,
     "description": ""
@@ -142,5 +142,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索Boss战斗事件标志"
+  },
+  {
+    "itemName": "event_reward_close",
+    "imageName": "exploration_event_reward_close.png",
+    "roiFront": "1203,140,42,38",
+    "roiBack": "1184,116,76,87",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "探索奖励关闭按钮"
   }
 ]
