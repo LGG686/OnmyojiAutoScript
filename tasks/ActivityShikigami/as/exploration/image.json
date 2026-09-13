@@ -133,5 +133,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "确认跳过剧情"
+  },
+  {
+    "itemName": "event_fight_boss",
+    "imageName": "exploration_event_fight_boss.png",
+    "roiFront": "477,70,222,51",
+    "roiBack": "472,65,232,61",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "探索Boss战斗事件标志"
   }
 ]

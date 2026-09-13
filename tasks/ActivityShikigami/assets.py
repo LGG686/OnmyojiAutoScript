@@ -110,6 +110,8 @@ class ActivityShikigamiAssets:
 	I_EVENT_STORY = RuleImage(roi_front=(1156,32,58,34), roi_back=(1132,14,115,66), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/exploration/exploration_event_story.png")
 	# 确认跳过剧情 
 	I_STORY_SKIP_ENSURE = RuleImage(roi_front=(716,445,117,34), roi_back=(674,426,203,68), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/exploration/exploration_story_skip_ensure.png")
+	# 探索Boss战斗事件标志
+	I_EVENT_FIGHT_BOSS = RuleImage(roi_front=(477,70,222,51), roi_back=(472,65,232,61), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/exploration/exploration_event_fight_boss.png")
 
 
 	# Ocr Rule Assets
@@ -289,5 +291,3 @@ class ActivityShikigamiAssets:
 	I_CHECK_RM_MAIN = RuleImage(roi_front=(148,13,174,47), roi_back=(121,0,227,72), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/richman/rm_check_rm_main.png")
 	#  
 	I_CHECK_RM_RICHMAN = RuleImage(roi_front=(148,13,140,47), roi_back=(121,0,227,72), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/richman/rm_check_rm_richman.png")
-
-

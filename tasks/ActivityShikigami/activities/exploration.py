@@ -15,6 +15,10 @@ import tasks.ActivityShikigami.page as pages
 
 
 class ExplorationAct:
+    def _exp_normal_fight_appear(self):
+        """普通战斗与 Boss 战斗仅事件标题标志不同，后续流程相同。"""
+        return self.appear(self.I_EVENT_FIGHT) or self.appear(self.I_EVENT_FIGHT_BOSS)
+
     def _wait_exp(self, predicate, timeout=10, click=None):
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
@@ -129,7 +133,7 @@ class ExplorationAct:
         entry.burst_count = 1
         self.click(entry, interval=0)
         if self._wait_exp(lambda: self.appear(self.I_EVENT_REWARD)
-                          or self.appear(self.I_EVENT_FIGHT)
+                          or self._exp_normal_fight_appear()
                           or self.appear(self.I_EVENT_STORY), timeout=5):
             return True
         if mode == 'main':
@@ -180,7 +184,7 @@ class ExplorationAct:
                     raise GameStuckError('Chest reward did not appear')
                 self._clear_exp_rewards()
                 return True
-            if self.appear(self.I_EVENT_FIGHT):
+            if self._exp_normal_fight_appear():
                 if mode == 'encounter':
                     self._prepare_exp_encounter()
                 cfg = (self.conf.exp_encounter_battle_conf.model_copy(deep=True)
@@ -194,7 +198,7 @@ class ExplorationAct:
                     exit_matcher=lambda: (
                         (mode == 'encounter' and self.appear(self.I_EVENT_FIGHT))
                         or (self.appear(self.I_EXP_CHECK_EXPLORATION)
-                            and not self.appear(self.I_EVENT_FIGHT)))
+                            and not self._exp_normal_fight_appear()))
                     and not self.appear(self.I_SHIKIGAMI_HELP)
                     and not self.appear(self.I_EVENT_REWARD_REWARD),
                 )
@@ -260,7 +264,7 @@ class ExplorationAct:
         if self._clear_exp_rewards():
             return False
         return (self.appear(self.I_EXP_CHECK_EXPLORATION)
-                and not self.appear(self.I_EVENT_FIGHT)
+                and not self._exp_normal_fight_appear()
                 and not self.appear(self.I_EVENT_REWARD)
                 and not self.appear(self.I_EVENT_STORY)
                 and not self.appear(self.I_STORY_SKIP_ENSURE))
