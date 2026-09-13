@@ -1,7 +1,6 @@
 # This Python file uses the following encoding: utf-8
 # @author runhey
 # github https://github.com/runhey
-import random
 from time import sleep
 from typing import Union
 
@@ -116,13 +115,11 @@ class SwitchSoul(BaseTask, SwitchSoulAssets):
         # 2023.8.5 修改为无反馈的点击切换
         for i in range(2):
             self.click(target_click)
-            if i < 1:
-                sleep(random.uniform(0.5, 1))
+            sleep(0.5)
         # 点击队伍
         target_team = get_team_asset(team)
-        for i in range(2):
-            if i > 0:
-                sleep(random.uniform(0.5, 1))
+        for i in range(3):
+            sleep(0.8)
             self.screenshot()
             if self.appear(self.I_SOU_SWITCH_SURE):
                 while 1:
@@ -251,14 +248,12 @@ class SwitchSoul(BaseTask, SwitchSoulAssets):
         self.O_SS_TEAM_NAME.keyword = teamName
         while 1:
             self.screenshot()
-            if cnt_click >= 2:
+            if cnt_click >= 4:
                 break
             if self.appear_then_click(self.I_SOU_SWITCH_SURE, interval=0.8):
                 continue
             if self.ocr_appear_click_by_rule(self.O_SS_TEAM_NAME, self.I_SOU_CLICK_PRESENT, interval=1.5):
                 cnt_click += 1
-                if cnt_click < 2:
-                    sleep(random.uniform(0.5, 1))
                 continue
         logger.info(f'Switch soul_one group {groupName} team {teamName}')
 
