@@ -1,5 +1,6 @@
 """式神活动探索：关键字入口、宝箱、系统式神战斗及遭遇战。"""
 
+import random
 import time
 
 from module.atom.click import RuleClick
@@ -100,6 +101,7 @@ class ExplorationAct:
                        keyword='', name='activity_exp_list_contents')
         previous_tasks = None
         empty_reads = 0
+        down_swipes = 0
         while True:
             self.screenshot()
             candidates = []
@@ -118,6 +120,9 @@ class ExplorationAct:
                           for item in scan.detect_and_ocr(self.device.image)
                           if str(item.ocr_text).strip())
             logger.info(f'Exploration task list: {tasks}')
+            if down_swipes >= 2:
+                logger.info('Exploration entry not found after 2 downward swipes: mode complete')
+                return False
             if tasks and tasks == previous_tasks:
                 logger.info('Exploration task list unchanged after scrolling: bottom reached')
                 return False
@@ -128,7 +133,8 @@ class ExplorationAct:
             if self.time_limit_reached():
                 raise GameStuckError('Exploration time limit reached while scanning task list')
             self.swipe(down, interval=0)
-            time.sleep(1)
+            down_swipes += 1
+            time.sleep(random.uniform(1, 2))
 
     def _enter_exp_entry(self, mode, rule):
         entry = self._find_exp_entry(rule)
