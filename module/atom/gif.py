@@ -1,8 +1,6 @@
 # This Python file uses the following encoding: utf-8
 # @author runhey
 # github https://github.com/runhey
-import numpy as np
-
 from module.atom.image import RuleImage
 from module.image.rpc import get_image_client
 
@@ -60,8 +58,7 @@ class RuleGif:
 
 
     def coord(self) -> tuple:
-        x, y, w, h = self.roi_front
-        return x + np.random.randint(0, w), y + np.random.randint(0, h)
+        return self.appear_target.coord()
 
     def front_center(self) -> tuple:
         x, y, w, h = self.roi_front

@@ -7,6 +7,7 @@ import numpy as np
 from numpy import float32, int32, uint8, fromfile
 from pathlib import Path
 
+from module.atom.click import RuleClick
 from module.base.decorator import cached_property
 from module.image.rpc import get_image_client
 from module.logger import logger
@@ -310,19 +311,25 @@ class RuleImage:
 
     def coord(self) -> tuple:
         """
-        获取roi_front的随机的点击的坐标
+        通过 RuleClick 获取 roi_front 的点击坐标。
         :return:
         """
-        x, y, w, h = self.roi_front
-        return x + np.random.randint(0, w), y + np.random.randint(0, h)
+        return RuleClick(
+            roi_front=tuple(self.roi_front),
+            roi_back=tuple(self.roi_back),
+            name=self.name,
+        ).coord()
 
     def coord_more(self) -> tuple:
         """
-         获取roi_back的随机的点击的坐标
+        通过 RuleClick 获取 roi_back 的点击坐标。
         :return:
         """
-        x, y, w, h = self.roi_back
-        return x + np.random.randint(0, w), y + np.random.randint(0, h)
+        return RuleClick(
+            roi_front=tuple(self.roi_front),
+            roi_back=tuple(self.roi_back),
+            name=self.name,
+        ).coord_more()
 
     def front_center(self) -> tuple:
         """
