@@ -16,6 +16,8 @@ class ActivityShikigamiAssets:
 	C_CL_SELECT_EASY = RuleClick(roi_front=(1166,171,71,63), roi_back=(1166,171,71,63), name="cl_select_easy")
 	#  
 	C_CL_SELECT_HARD = RuleClick(roi_front=(1121,340,71,63), roi_back=(1121,340,71,63), name="cl_select_hard")
+	#
+	C_RANDOM_CLOSE_AUTOFIGHT = RuleClick(roi_front=(1204,88,76,449), roi_back=(1204,88,76,449), name="random_close_autofight")
 
 
 	# Image Rule Assets
@@ -47,6 +49,10 @@ class ActivityShikigamiAssets:
 	I_CHECK_CLIMB_HARD = RuleImage(roi_front=(615,413,67,67), roi_back=(610,408,77,77), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_check_climb_hard.png")
 	#  
 	I_CHECK_CLIMB_EASY = RuleImage(roi_front=(615,413,67,67), roi_back=(610,408,77,77), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_check_climb_easy.png")
+	#
+	I_USELESS_MESSAGE_CLOSE = RuleImage(roi_front=(1171,95,31,30), roi_back=(1042,68,179,170), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_useless_message_close.png")
+	#
+	I_AUTOFIGHT = RuleImage(roi_front=(533,98,207,46), roi_back=(470,73,330,86), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_autofight.png")
 
 
 	# Ocr Rule Assets
@@ -77,6 +83,11 @@ class ActivityShikigamiAssets:
 	I_TO_BATTLE_CLIMB = RuleImage(roi_front=(68,98,140,33), roi_back=(32,83,247,97), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_to_battle_climb.png")
 	#  
 	I_CHECK_CLIMB_MAIN = RuleImage(roi_front=(151,18,134,40), roi_back=(141,0,157,67), threshold=0.8, method="Template matching", file="./tasks/ActivityShikigami/as/climb/climb_check_climb_main.png")
+
+
+	# Scatter Rule Assets
+	# 开始战斗
+	C_START_FIRE = RuleScatter(roi_front=(1108,573,139,130), roi_back=(1108,573,139,130), polygon=[(1129, 578), (1108, 611), (1111, 659), (1141, 690), (1180, 702), (1222, 683), (1239, 655), (1246, 619), (1232, 587), (1209, 574), (1158, 573)], name="start_fire")
 
 
 	# Image Rule Assets

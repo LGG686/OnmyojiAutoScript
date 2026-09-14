@@ -10,5 +10,11 @@
     "roiFront": "1121,340,71,63",
     "roiBack": "1121,340,71,63",
     "description": ""
+  },
+  {
+    "itemName": "random_close_autofight",
+    "roiFront": "1204,88,76,449",
+    "roiBack": "1204,88,76,449",
+    "description": ""
   }
 ]

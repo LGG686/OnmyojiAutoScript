@@ -124,5 +124,23 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": ""
+  },
+  {
+    "itemName": "useless_message_close",
+    "imageName": "climb_useless_message_close.png",
+    "roiFront": "1171,95,31,30",
+    "roiBack": "1042,68,179,170",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
+  },
+  {
+    "itemName": "autofight",
+    "imageName": "climb_autofight.png",
+    "roiFront": "533,98,207,46",
+    "roiBack": "470,73,330,86",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
   }
 ]

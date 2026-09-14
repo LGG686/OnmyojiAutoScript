@@ -116,6 +116,14 @@ class NormalClimbAct:
                     )
                     return
             self.screenshot()
+            if self.appear_then_click(self.I_USELESS_MESSAGE_CLOSE, interval=1):
+                continue
+            if self.appear_then_click(
+                self.I_AUTOFIGHT,
+                action=self.C_RANDOM_CLOSE_AUTOFIGHT,
+                interval=1,
+            ):
+                continue
             current_page = self.get_current_page()
             if current_page == destination:
                 # 五倍卷只支持普通体力战斗，门票等分支不读取也不切换。
@@ -437,7 +445,13 @@ class NormalClimbAct:
             if self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=1) or \
                     self.appear_then_click(self.I_UI_CONFIRM, interval=1):
                 continue
-            if self.appear_then_click(fire_rule, interval=1):
+            if action_type == 'boss':
+                clicked = self.appear_then_click(fire_rule, interval=1)
+            else:
+                clicked = False
+                if self.appear(self.I_ACT_FIRE, interval=1):
+                    clicked = self.click(self.C_START_FIRE, interval=1)
+            if clicked:
                 self.device.click_record_clear()
                 click_times += 1
                 logger.info(f'Try click fire, remain times[{max_times - click_times}]')
