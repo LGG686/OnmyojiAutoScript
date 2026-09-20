@@ -1,5 +1,6 @@
 from module.atom.image import RuleImage
 from module.atom.click import RuleClick
+from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
 from module.atom.swipe import RuleSwipe
 from module.atom.ocr import RuleOcr
@@ -11,19 +12,19 @@ class DuelAssets:
 
 
 	# Click Rule Assets
-	# 战斗数据 
+	# 战斗数据
 	C_D_BATTLE_DATA = RuleClick(roi_front=(584,279,100,100), roi_back=(584,279,100,100), name="d_battle_data")
-	# 点击第五手上式神位置，获得式神名称 
+	# 点击第五手上式神位置，获得式神名称
 	C_DUEL_CLICK_5 = RuleClick(roi_front=(105,23,52,47), roi_back=(105,23,52,47), name="duel_click_5")
-	#  
+	# 
 	C_DUEL_CLICK_4 = RuleClick(roi_front=(178,23,52,47), roi_back=(178,23,52,47), name="duel_click_4")
-	#  
+	# 
 	C_DUEL_CLICK_3 = RuleClick(roi_front=(251,23,52,47), roi_back=(251,23,52,47), name="duel_click_3")
-	#  
+	# 
 	C_DUEL_CLICK_2 = RuleClick(roi_front=(324,23,52,47), roi_back=(324,23,52,47), name="duel_click_2")
-	#  
+	# 
 	C_DUEL_CLICK_1 = RuleClick(roi_front=(397,23,52,47), roi_back=(397,23,52,47), name="duel_click_1")
-	#  
+	# 
 	C_SELECT_BAN = RuleClick(roi_front=(747,258,123,121), roi_back=(747,258,123,121), name="select_ban")
 
 
@@ -74,10 +75,12 @@ class DuelAssets:
 	I_BAN_ENSURE = RuleImage(roi_front=(1123,578,111,46), roi_back=(1123,578,111,46), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_ban_ensure.png")
 	#  
 	I_DUEL_CELEB_HONOR = RuleImage(roi_front=(297,633,20,20), roi_back=(172,632,249,26), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_celeb_honor.png")
-	# 斗技入口附属消息页
+	# 斗技入口附属消息页 
 	I_DUEL_MAIN_UESLESS_MESSAGE = RuleImage(roi_front=(526,224,222,56), roi_back=(521,219,232,66), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_main_uesless_message.png")
 	# 小白弹窗 
 	I_WHITE_DOG = RuleImage(roi_front=(388,327,70,62), roi_back=(308,254,215,249), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_white_dog.png")
+	# 取消匹配按键 
+	I_EXIT_WAITING = RuleImage(roi_front=(569,587,139,57), roi_back=(564,582,149,67), threshold=0.8, method="Template matching", profile="More", file="./tasks/Duel/duel/duel_exit_waiting.png")
 
 
 	# Ocr Rule Assets
@@ -99,3 +102,5 @@ class DuelAssets:
 	O_D_CELEB_HONOR = RuleOcr(roi=(173,633,227,20), area=(173,633,227,20), mode="DigitCounter", method="Default", keyword="", name="d_celeb_honor")
 	#  
 	O_D_CELEB = RuleOcr(roi=(503,442,250,54), area=(503,442,250,54), mode="Single", method="Default", keyword="", name="d_celeb")
+
+

@@ -1814,7 +1814,8 @@
       "honor_full_exit": false,
       "green_enable": false,
       "green_mark": "green_left1",
-      "random_sleep": false
+      "random_sleep": false,
+      "matchmaking_timeout_seconds": 60
     },
     "duel_celeb_config": {
       "celeb_battle": false,
