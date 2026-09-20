@@ -78,6 +78,7 @@
     "roiBack": "1080,530,192,190",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "More",
     "description": "活动通用挑战图标"
   },
   {
@@ -87,6 +88,7 @@
     "roiBack": "1080,530,192,190",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "More",
     "description": "boss挑战标志"
   },
   {

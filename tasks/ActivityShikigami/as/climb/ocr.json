@@ -1,14 +1,5 @@
 [
   {
-    "itemName": "remain_ap",
-    "roiFront": "1142,14,95,34",
-    "roiBack": "1142,14,95,34",
-    "mode": "Quantity",
-    "method": "Default",
-    "keyword": "",
-    "description": "体力的数量检测"
-  },
-  {
     "itemName": "remain_pass",
     "roiFront": "756,17,88,31",
     "roiBack": "756,17,88,31",
