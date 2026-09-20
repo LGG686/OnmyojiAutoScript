@@ -24,13 +24,13 @@ class GameUiAssets:
 
 
 	# Click Rule Assets
-	#  
+	#
 	C_RANDOM_TOP = RuleClick(roi_front=(344,0,625,113), roi_back=(344,0,625,113), name="random_top")
-	#  
+	#
 	C_RANDOM_DOWN = RuleClick(roi_front=(350,607,625,113), roi_back=(350,607,625,113), name="random_down")
-	#  
+	#
 	C_RANDOM_LEFT = RuleClick(roi_front=(34,169,140,437), roi_back=(34,169,140,437), name="random_left")
-	#  
+	#
 	C_RANDOM_RIGHT = RuleClick(roi_front=(1100,158,140,437), roi_back=(1100,158,140,437), name="random_right")
 
 
@@ -41,8 +41,6 @@ class GameUiAssets:
 	I_ACTIVITY_SKIP = RuleImage(roi_front=(1159,37,51,22), roi_back=(1141,27,86,43), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_activity_skip.png")
 	# 当前活动主界面标志 
 	I_CHECK_ACTIVITY = RuleImage(roi_front=(151,18,164,40), roi_back=(141,0,192,69), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_activity.png")
-	#  
-	I_ACTIVITY_AWARD = RuleImage(roi_front=(475,234,324,40), roi_back=(448,169,372,114), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_activity_award.png")
 	#  
 	I_ACTIVITY_SIGNIN_CLOSE = RuleImage(roi_front=(1100,186,40,32), roi_back=(1072,160,94,85), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_activity_signin_close.png")
 
@@ -148,6 +146,11 @@ class GameUiAssets:
 	I_CHECK_MANTRA_TOWER = RuleImage(roi_front=(348,158,30,106), roi_back=(296,117,165,256), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_mantra_tower.png")
 	# 孔雀国标志 
 	I_CHECK_PEACOCK_KINGDOM = RuleImage(roi_front=(348,158,30,106), roi_back=(296,117,165,256), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_peacock_kingdom.png")
+
+
+	# Image Rule Assets
+	# 阵容助手页
+	I_CHECK_LINEUP_HELPER = RuleImage(roi_front=(90,15,126,50), roi_back=(85,10,136,60), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_lineup_helper.png")
 
 
 	# Image Rule Assets
@@ -262,5 +265,4 @@ class GameUiAssets:
 	# 活动列表页爬塔活动文字 
 	L_ACT_LIST_OCR = RuleList(folder="./tasks/GameUi/page", direction="vertical", mode="ocr", roi_back=(50,123,49,553), size=(45, 69), 
 					 array=["版本"])
-
 
