@@ -1,5 +1,6 @@
 from module.atom.image import RuleImage
 from module.atom.click import RuleClick
+from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
 from module.atom.swipe import RuleSwipe
 from module.atom.ocr import RuleOcr
@@ -11,17 +12,17 @@ class DelegationAssets:
 
 
 	# Click Rule Assets
-	# description 
+	# description
 	C_D_1 = RuleClick(roi_front=(162,496,100,166), roi_back=(162,496,100,166), name="d_1")
-	# description 
+	# description
 	C_D_2 = RuleClick(roi_front=(293,493,100,170), roi_back=(293,493,100,170), name="d_2")
-	# description 
+	# description
 	C_D_3 = RuleClick(roi_front=(427,492,100,170), roi_back=(427,492,100,170), name="d_3")
-	# description 
+	# description
 	C_D_4 = RuleClick(roi_front=(563,493,100,174), roi_back=(563,493,100,174), name="d_4")
-	# description 
+	# description
 	C_D_5 = RuleClick(roi_front=(695,491,100,178), roi_back=(695,491,100,178), name="d_5")
-	#  一键委派所有式神
+	# 
 	C_D_ALL = RuleClick(roi_front=(1097,449,133,39), roi_back=(1090,445,144,48), name="d_all")
 
 
@@ -72,6 +73,6 @@ class DelegationAssets:
 
 	# Ocr Rule Assets
 	# 完成 
-	O_D_DONE = RuleOcr(roi=(675,129,441,517), area=(675,129,441,517), mode="Full", method="Default", keyword="完成", name="d_done")
+	O_D_DONE = RuleOcr(roi=(804,129,311,439), area=(804,129,311,439), mode="Full", method="Default", keyword="完成", name="d_done")
 
 
