@@ -12,12 +12,13 @@ from tasks.Chess.runtime.hand_operations import ChessHandOperationsMixin
 from tasks.Chess.runtime.recognition import ChessRecognitionMixin
 from tasks.Chess.runtime.round_state import ChessRoundStateMixin
 from tasks.Chess.runtime.settings import ChessRuntimeSettings
+from tasks.Chess.runtime.state_loop import ChessStateLoopMixin
 from tasks.Component.GeneralBattle.general_battle import GeneralBattle
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.page import page_chess
 
 
-class ScriptTask(
+class ChessLegacyScriptTask(
     ChessRecognitionMixin,
     ChessHandOperationsMixin,
     ChessRoundStateMixin,
@@ -1031,3 +1032,7 @@ class ScriptTask(
         round_no = self._wait_for_round_start()
         while round_no is not None:
             round_no = self.run_one_round(round_no)
+
+
+class ScriptTask(ChessStateLoopMixin, ChessLegacyScriptTask):
+    """正式 Chess 入口：状态驱动回合循环复用原有执行动作。"""
