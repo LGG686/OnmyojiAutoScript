@@ -943,7 +943,6 @@
         "伪神",
         "爬塔"
       ],
-      "exploration_modes": ["主线", "遭遇战", "支线"],
       "throw_limit": 0,
       "ap_limit": 0,
       "pass_limit": "0",

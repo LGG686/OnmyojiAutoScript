@@ -253,8 +253,6 @@
   "general_config": "通用设置",
   "task_sequence": "任务启用项",
   "activity_task_sequence_help": "勾选执行，顺序：探索 → 大富翁 → 伪神 → 爬塔。",
-  "exploration_modes": "探索模式",
-  "exploration_modes_help": "勾选执行，顺序：主线 → 遭遇战 → 支线。",
   "enable_switch_exp_encounter": "遭遇战切换御魂",
   "exp_encounter_group_team": "遭遇战御魂预设组号,队伍号",
   "enable_switch_exp_encounter_by_name": "遭遇战按名称切换御魂",
