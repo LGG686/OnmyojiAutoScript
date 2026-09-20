@@ -544,7 +544,10 @@ class Script:
         try:
             self.device.screenshot()
             module_name = 'script_task'
-            module_path = str(Path.cwd() / 'tasks' / command / (module_name + '.py'))
+            task_dir = Path.cwd() / 'tasks' / command
+            if command == 'Chess' and self.config_name.casefold() == 'mumu-2':
+                task_dir = task_dir / 'test_branch'
+            module_path = str(task_dir / (module_name + '.py'))
             logger.info(f'module_path: {module_path}, module_name: {module_name}')
             task_module = load_module(module_name, module_path)
             task_module.ScriptTask(config=self.config, device=self.device).run()
