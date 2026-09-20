@@ -8,7 +8,7 @@ import random
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from tasks.GameUi.default_pages import random_click, settlement_random_click
+from tasks.GameUi.default_pages import close_reward_details, random_click, settlement_random_click
 from typing import Callable, Union
 
 from module.atom.gif import RuleGif
@@ -685,6 +685,8 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
             BattleAction: 当前轮奖励页处理后的动作决策。
         """
         context.reward_no_battle_ts = None
+        if close_reward_details(self):
+            return BattleAction.CONTINUE
         # TODO: 部分副本奖励界面不一定是战斗成功, 需要重写
         context.is_win = True
         self.appear_then_click(self.I_OVER_GHOST, interval=0.8)

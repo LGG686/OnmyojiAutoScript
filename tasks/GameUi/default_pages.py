@@ -103,11 +103,19 @@ def reward_random_click() -> RuleClick:
     return settlement_random_click()
 
 
-def detect_relax_page(task) -> bool:
-    """识别闲庭，并让庭院标志接入多皮肤循环检测。"""
-    if not task.appear(task.I_BACK_BROWN):
+def reward_details_visible(task) -> bool:
+    """识别奖励物品详情或御魂详情弹层。"""
+    return (
+        task.appear(GeneralBattleAssets.I_REWARD_PARTICULARS)
+        or task.appear(GeneralBattleAssets.I_REWARD_PARTICULARS_ORCHI)
+    )
+
+
+def close_reward_details(task) -> bool:
+    if not reward_details_visible(task):
         return False
-    return task.appear(task.I_CHECK_MAIN)
+    task.click(random_click(ltrb=(True, False, True, False)), interval=0.8)
+    return True
 
 
 def handle_login_page(task) -> bool:
@@ -210,10 +218,9 @@ page_activity.add_enter_failure_hooks(
 page_activity.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_activity->page_main")
 page_main.connect(page_activity, GameUiAssets.I_MAIN_GOTO_ACTIVITY, key="page_main->page_activity")
 
-# 闲庭仍会命中庭院主页标志，因此使用更高优先级先识别闲庭，再点击左上角返回庭院。
-# I_CHECK_MAIN 必须从任务实例读取，以便失配时触发多庭院皮肤循环识别。
+# 闲庭使用独立设置图标识别，不依赖庭院皮肤；返回后由导航器截图确认到达庭院。
 page_relax = Page(
-    detect_relax_page,
+    GameUiAssets.I_CHECK_MAIN_SET,
     category="global",
     priority=90,
 )
@@ -541,6 +548,7 @@ page_reward = Page(
         GeneralBattleAssets.I_REWARD_SOUL_5,
         GeneralBattleAssets.I_REWARD_SOUL_6,
         GlobalGameAssets.I_UI_REWARD,
+        reward_details_visible,
     ),
     category="global",
     priority=25
@@ -555,6 +563,8 @@ def handle_battle_reward_page(task) -> bool:
     Returns:
         bool: 执行结果
     """
+    if close_reward_details(task):
+        return True
     if task.appear_then_click(GeneralBattleAssets.I_OVER_GHOST, interval=0.8):
         return True
     return task.click(reward_random_click(), interval=0.8)
