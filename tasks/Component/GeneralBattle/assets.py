@@ -12,85 +12,85 @@ class GeneralBattleAssets:
 
 
 	# Click Rule Assets
-	# 预设队伍1 
+	# 预设队伍1
 	C_PRESET_TEAM_1 = RuleClick(roi_front=(195,235,464,44), roi_back=(195,235,465,44), name="preset_team_1")
-	# 预设队伍2 
+	# 预设队伍2
 	C_PRESET_TEAM_2 = RuleClick(roi_front=(195,355,465,44), roi_back=(195,355,465,44), name="preset_team_2")
-	# 预设队伍3 
+	# 预设队伍3
 	C_PRESET_TEAM_3 = RuleClick(roi_front=(195,475,465,44), roi_back=(195,475,465,44), name="preset_team_3")
-	# 预设队伍4 
+	# 预设队伍4
 	C_PRESET_TEAM_4 = RuleClick(roi_front=(195,595,465,35), roi_back=(195,595,465,35), name="preset_team_4")
-	# 预设组1 
+	# 预设组1
 	C_PRESET_GROUP_1 = RuleClick(roi_front=(35,240,25,50), roi_back=(35,240,25,50), name="preset_group_1")
-	# 预设组2 
+	# 预设组2
 	C_PRESET_GROUP_2 = RuleClick(roi_front=(35,305,25,50), roi_back=(35,305,25,50), name="preset_group_2")
-	# 预设组3 
+	# 预设组3
 	C_PRESET_GROUP_3 = RuleClick(roi_front=(35,365,25,50), roi_back=(35,365,25,50), name="preset_group_3")
-	# 预设组4 
+	# 预设组4
 	C_PRESET_GROUP_4 = RuleClick(roi_front=(35,430,25,50), roi_back=(35,430,25,50), name="preset_group_4")
-	# 预设组5 
+	# 预设组5
 	C_PRESET_GROUP_5 = RuleClick(roi_front=(35,495,25,50), roi_back=(35,495,25,50), name="preset_group_5")
-	# 预设组6 
+	# 预设组6
 	C_PRESET_GROUP_6 = RuleClick(roi_front=(35,555,25,50), roi_back=(35,555,25,50), name="preset_group_6")
-	# 预设组7 
+	# 预设组7
 	C_PRESET_GROUP_7 = RuleClick(roi_front=(35,615,25,50), roi_back=(35,615,25,50), name="preset_group_7")
-	# 从左开始第一个绿标 
+	# 从左开始第一个绿标
 	C_GREEN_LEFT_1 = RuleClick(roi_front=(183,506,125,108), roi_back=(183,506,125,108), name="green_left_1")
-	# 从左开始第二个绿标 
+	# 从左开始第二个绿标
 	C_GREEN_LEFT_2 = RuleClick(roi_front=(407,474,100,100), roi_back=(407,474,100,100), name="green_left_2")
-	# 从左开始第三个绿标 
+	# 从左开始第三个绿标
 	C_GREEN_LEFT_3 = RuleClick(roi_front=(608,446,64,44), roi_back=(608,446,64,44), name="green_left_3")
-	# 从左开始第四个绿标 
+	# 从左开始第四个绿标
 	C_GREEN_LEFT_4 = RuleClick(roi_front=(769,475,81,98), roi_back=(769,475,81,98), name="green_left_4")
-	# 从左开始第五个绿标 
+	# 从左开始第五个绿标
 	C_GREEN_LEFT_5 = RuleClick(roi_front=(932,473,132,108), roi_back=(932,473,132,108), name="green_left_5")
-	# 绿标阴阳师 
+	# 绿标阴阳师
 	C_GREEN_MAIN = RuleClick(roi_front=(565,555,104,81), roi_back=(565,555,104,81), name="green_main")
-	# 绿标点击 区域,默认为全屏，需要在代码中更新其区域 
+	# 绿标点击 区域,默认为全屏，需要在代码中更新其区域
 	C_GREEN_MARK_AREA = RuleClick(roi_front=(0,0,1280,720), roi_back=(0,0,1280,720), name="green_mark_area")
-	# 战斗的时候有一定的概率随机点击 
+	# 战斗的时候有一定的概率随机点击
 	C_RANDOM_CLICK = RuleClick(roi_front=(104,79,1050,507), roi_back=(255,65,100,100), name="random_click")
-	# 左边随机点击 
+	# 左边随机点击
 	C_RANDOM_LEFT = RuleClick(roi_front=(17,104,55,370), roi_back=(17,104,55,370), name="random_left")
-	# 右边随机点击 
+	# 右边随机点击
 	C_RANDOM_RIGHT = RuleClick(roi_front=(1185,115,79,388), roi_back=(1185,115,79,388), name="random_right")
-	# 上边随机点击 
+	# 上边随机点击
 	C_RANDOM_TOP = RuleClick(roi_front=(250,58,868,68), roi_back=(250,58,868,68), name="random_top")
-	# 下边随机点击 
+	# 下边随机点击
 	C_RANDOM_BOTTOM = RuleClick(roi_front=(462,599,492,78), roi_back=(462,599,492,78), name="random_bottom")
-	# 整体随机点击 
+	# 整体随机点击
 	C_RANDOM_ALL = RuleClick(roi_front=(42,94,1207,543), roi_back=(42,94,1207,543), name="random_all")
-	#  
+	# 
 	C_RANDOM_1 = RuleClick(roi_front=(1166,562,100,151), roi_back=(1166,562,100,151), name="random_1")
-	#  
+	# 
 	C_RANDOM_2 = RuleClick(roi_front=(1179,378,100,151), roi_back=(1179,378,100,151), name="random_2")
-	#  
+	# 
 	C_RANDOM_3 = RuleClick(roi_front=(1177,275,100,151), roi_back=(1177,275,100,151), name="random_3")
-	#  
+	# 
 	C_RANDOM_4 = RuleClick(roi_front=(1043,628,134,87), roi_back=(1043,628,134,87), name="random_4")
-	#  
+	# 
 	C_RANDOM_5 = RuleClick(roi_front=(874,626,134,87), roi_back=(874,626,134,87), name="random_5")
-	#  
+	# 
 	C_RANDOM_6 = RuleClick(roi_front=(1176,70,100,151), roi_back=(1176,70,100,151), name="random_6")
-	#  
+	# 
 	C_RANDOM_7 = RuleClick(roi_front=(1083,44,140,103), roi_back=(1083,44,140,103), name="random_7")
-	#  
+	# 
 	C_RANDOM_8 = RuleClick(roi_front=(912,46,140,103), roi_back=(912,46,140,103), name="random_8")
-	#  
+	# 
 	C_RANDOM_9 = RuleClick(roi_front=(566,655,188,59), roi_back=(566,655,188,59), name="random_9")
-	#  
+	# 
 	C_RANDOM_10 = RuleClick(roi_front=(6,117,91,132), roi_back=(6,117,91,132), name="random_10")
-	#  
+	# 
 	C_RANDOM_11 = RuleClick(roi_front=(0,295,55,192), roi_back=(0,295,55,192), name="random_11")
-	#  
+	# 
 	C_RANDOM_12 = RuleClick(roi_front=(0,439,100,151), roi_back=(0,439,100,151), name="random_12")
-	#  
+	# 
 	C_RANDOM_13 = RuleClick(roi_front=(238,685,182,34), roi_back=(238,685,182,34), name="random_13")
-	#  
+	# 
 	C_RANDOM_14 = RuleClick(roi_front=(668,50,141,102), roi_back=(668,50,141,102), name="random_14")
-	#  
+	# 
 	C_RANDOM_15 = RuleClick(roi_front=(13,619,99,94), roi_back=(13,619,99,94), name="random_15")
-	#  
+	# 
 	C_RANDOM_16 = RuleClick(roi_front=(89,684,123,35), roi_back=(89,684,123,35), name="random_16")
 
 
@@ -187,9 +187,9 @@ class GeneralBattleAssets:
 
 	# Scatter Rule Assets
 	#  
-	C_SAFE_RANDOM_CLICK_AREA_EXP = RuleScatter(roi_front=(5,39,1270,679), roi_back=(5,39,1270,679), polygon=[(1114, 71), (1116, 95), (1116, 125), (654, 126), (655, 150), (958, 152), (1186, 151), (1202, 207), (1208, 525), (1265, 527), (1262, 704), (1069, 708), (689, 709), (687, 688), (286, 686), (286, 711), (97, 715), (23, 715), (20, 630), (77, 625), (78, 578), (62, 580), (64, 154), (600, 149), (599, 127), (417, 129), (418, 39), (117, 39), (117, 113), (8, 109), (5, 717), (1274, 717), (1269, 180), (1264, 77), (1167, 73)], name="safe_random_click_area_exp")
+	C_SAFE_RANDOM_CLICK_AREA_EXP = RuleScatter(roi_front=(5,63,1270,655), roi_back=(5,63,1270,655), polygon=[(1114, 71), (1116, 95), (1116, 125), (654, 126), (655, 150), (958, 152), (1186, 151), (1202, 207), (1208, 525), (1265, 527), (1262, 704), (1069, 708), (689, 709), (687, 688), (286, 686), (286, 711), (97, 715), (23, 715), (20, 630), (77, 625), (78, 578), (62, 580), (64, 154), (600, 149), (599, 127), (417, 129), (414, 63), (120, 66), (117, 113), (8, 109), (5, 717), (1274, 717), (1269, 180), (1264, 77), (1167, 73)], focus_count=8, functional=False, name="safe_random_click_area_exp")
 	#  
-	C_SAFE_RANDOM_CLICK_AREA_ACT = RuleScatter(roi_front=(0,54,1281,666), roi_back=(0,54,1281,666), polygon=[(1260, 60), (1280, 717), (3, 719), (0, 83), (555, 74), (557, 143), (297, 146), (307, 461), (3, 463), (4, 581), (238, 584), (239, 623), (13, 627), (11, 705), (354, 705), (355, 668), (757, 665), (760, 708), (1173, 712), (1249, 689), (1268, 615), (1268, 521), (918, 501), (916, 147), (726, 146), (727, 54)], name="safe_random_click_area_act")
+	C_SAFE_RANDOM_CLICK_AREA_ACT = RuleScatter(roi_front=(0,54,1281,666), roi_back=(0,54,1281,666), polygon=[(1248, 75), (1264, 102), (1278, 134), (1280, 717), (3, 719), (0, 83), (510, 75), (533, 77), (561, 78), (575, 98), (578, 115), (568, 135), (543, 144), (500, 144), (404, 145), (354, 153), (322, 163), (305, 187), (299, 211), (305, 409), (298, 437), (286, 453), (266, 458), (236, 461), (3, 463), (4, 581), (206, 581), (229, 587), (239, 605), (229, 618), (205, 624), (13, 627), (11, 705), (354, 705), (355, 686), (367, 675), (380, 672), (400, 668), (723, 665), (740, 668), (755, 673), (759, 687), (760, 708), (1102, 709), (1113, 688), (1093, 630), (1105, 584), (1176, 579), (1228, 590), (1248, 584), (1272, 580), (1268, 521), (1000, 514), (974, 506), (943, 494), (928, 470), (927, 433), (916, 193), (910, 176), (896, 161), (881, 152), (868, 147), (772, 146), (755, 146), (738, 139), (728, 126), (726, 109), (727, 81), (730, 63), (744, 54), (765, 54), (1201, 59), (1230, 66)], focus_count=8, functional=False, name="safe_random_click_area_act")
 
 
 	# Swipe Rule Assets
@@ -197,5 +197,4 @@ class GeneralBattleAssets:
 	S_BATTLE_RANDOM_LEFT = RuleSwipe(roi_front=(122,155,480,426), roi_back=(667,147,461,427), mode="default", name="battle_random_left")
 	# description 
 	S_BATTLE_RANDOM_RIGHT = RuleSwipe(roi_front=(719,138,417,392), roi_back=(237,163,387,394), mode="default", name="battle_random_right")
-
 
