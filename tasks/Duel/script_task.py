@@ -144,6 +144,7 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, DuelAssets, SwitchOnmyoji):
                     f'Duel celeb star target reached: '
                     f'{self.current_celeb_star}/{target_star}'
                 )
+                self._weekly_goal_reached = True
                 return False
         else:
             if self.conf.duel_config.honor_full_exit and self.check_honor():
