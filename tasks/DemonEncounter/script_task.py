@@ -396,6 +396,22 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
                 logger.info('Buy one hundred sushi for 50 jade')
                 self.click(self.I_JADE_50)
                 continue
+        # 跳过购买后必须确认弹窗已关闭，残留弹窗会挡住后面的逢魔极/集结入口
+        self._close_box_popup()
+
+    def _close_box_popup(self, timeout=5):
+        """确认宝箱购买弹窗已关闭；未关闭则继续点弹窗外侧直到关掉或超时。"""
+        timer = Timer(timeout).start()
+        while 1:
+            self.screenshot()
+            if not self.appear(self.I_JADE_50):
+                logger.info('Box purchase popup closed')
+                return
+            if timer.reached():
+                logger.warning(f'Box purchase popup still visible after {timeout}s')
+                return
+            logger.info('Box purchase popup still visible, click outside to close')
+            self.click(self.I_DE_FIND, interval=1)
 
     def _mail(self, target_click):
         # 答题
