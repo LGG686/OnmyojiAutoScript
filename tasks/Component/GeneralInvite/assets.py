@@ -1,5 +1,6 @@
 from module.atom.image import RuleImage
 from module.atom.click import RuleClick
+from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
 from module.atom.swipe import RuleSwipe
 from module.atom.ocr import RuleOcr
@@ -97,6 +98,8 @@ class GeneralInviteAssets:
 	I_I_ACCEPT_JY = RuleImage(roi_front=(248,258,46,25), roi_back=(231,205,75,326), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_i_accept_jy.png")
 	# 师徒邀请图标 
 	I_I_ACCEPT_APPRENTICE = RuleImage(roi_front=(115,229,55,45), roi_back=(107,209,69,296), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_i_accept_apprentice.png")
+	# 加载图标 
+	I_I_LOAD = RuleImage(roi_front=(631,346,22,33), roi_back=(549,273,186,161), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_i_load.png")
 
 
 	# Image Rule Assets
