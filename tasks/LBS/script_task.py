@@ -9,13 +9,15 @@ from module.logger import logger
 
 from tasks.Component.GeneralBattle.config_general_battle import GeneralBattleConfig
 from tasks.Component.GeneralBattle.general_battle import GeneralBattle
-from tasks.Component.GeneralInvite.general_invite import GeneralInvite
+from tasks.Component.GeneralInvite.config_invite import InviteConfig
+from tasks.Component.GeneralInvite.general_invite import GeneralInvite, RoomType
 from tasks.Component.GeneralRoom.general_room import GeneralRoom
 from tasks.Component.SwitchSoul.switch_soul import SwitchSoul
 from tasks.GameUi.game_ui import GameUi
 from tasks.GameUi.page import page_main, page_shikigami_records
 from tasks.GlobalGame.assets import GlobalGameAssets
 from tasks.LBS.assets import LBSAssets
+from tasks.LBS.config import LBSMode
 from tasks.LBS.page import page_lbs
 
 
@@ -51,8 +53,11 @@ class ScriptTask(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, SwitchSoul, 
         # 导航直达活动：庭院右栏入口、轮播切换、加载等待全在 main->lbs 边上
         self.goto_page(page_lbs)
 
-        if self.config.lbs.lbs_config.team_match:
+        mode = self.config.lbs.lbs_config.mode
+        if mode == LBSMode.TEAM:
             self._run_team_match(timeout, limit_count)
+        elif mode == LBSMode.DRIVE:
+            self._run_drive_mode(timeout, limit_count)
         else:
             self._run_solo(timeout, limit_count)
 
@@ -105,8 +110,8 @@ class ScriptTask(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, SwitchSoul, 
         while not timeout.reached():
             if self._reach_exit(limit_count):
                 break
-            if self.appear(self.I_LBS_MATCHING):
-                # 排队中：等进房开战
+            if self.appear(self.I_LBS_MATCH_CANCEL):
+                # 排队横幅的X还在 = 还在排队：等进房开战
                 if self._wait_team_battle(battle_config):
                     match_fail = 0
                 continue
@@ -128,7 +133,7 @@ class ScriptTask(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, SwitchSoul, 
         timer = Timer(15).start()
         while not timer.reached():
             self.screenshot()
-            if self.appear(self.I_LBS_MATCHING):
+            if self.appear(self.I_LBS_MATCH_CANCEL):
                 return True
             if self.appear_then_click(GlobalGameAssets.I_UI_CONFIRM, interval=2):
                 continue
@@ -136,6 +141,45 @@ class ScriptTask(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, SwitchSoul, 
                 continue
         logger.warning('Auto match not started')
         return False
+
+    def _run_drive_mode(self, timeout: Timer, limit_count: int):
+        """开车模式：自己不打，纯开公开房等人，有人进来随机延迟后退房，继续开。"""
+        # LBS 是三人房（房主+2），手动指定 room_type，绕开过渡帧识别出 None 被缓存的问题
+        self.room_type = RoomType.NORMAL_3
+        # len=1 → 盯左槽 I_ADD_1：第一人上车就退（名字不参与匹配，仅占位凑长度）
+        invite_config = InviteConfig(friend_list='drive')
+        drives = 0
+        fail_count = 0
+        while not timeout.reached():
+            if drives >= limit_count:
+                logger.info(f'Reach drive limit: {drives}/{limit_count}')
+                break
+            if not self.is_in_room():
+                # 建公开房：点未勾选的「所有人」单选项，直到「所有人」呈勾选态
+                if not self.create_room(create_room_rule=self.I_LBS_TEAM_CHALLENGE,
+                                        ensure_rules=[self.I_LBS_CREATE_ENSURE]):
+                    fail_count += 1
+                    if fail_count >= 3:
+                        logger.warning('Create room failed 3 times in a row, abort')
+                        break
+                    continue
+                self.ensure_public(room_mark=self.I_GI_IN_ROOM,
+                                   public_rules=[self.I_LBS_ENSURE_PUBLIC],
+                                   public_false_rules=[self.I_LBS_ENSURE_PUBLIC_FALSE])
+                self.create_ensure(ensure_rules=[self.I_LBS_CREATE_ENSURE])
+            fail_count = 0
+            # 房内等乘客：通用 room_check_can_fire 判定（三人房第一人上车 = 左槽「+」消失）
+            while 1:
+                if not self.is_in_room():
+                    # 房间没了（倒计时自动开战/解散），回外层重建
+                    break
+                if self.room_check_can_fire(invite_config):
+                    # 有人上车：随机延迟后退房，算开了一趟
+                    sleep(random.uniform(3, 6))
+                    self.exit_room()
+                    drives += 1
+                    logger.info(f'LBS drive count: {drives}/{limit_count}')
+                    break
 
     def _wait_team_battle(self, battle_config: GeneralBattleConfig) -> bool:
         """排队等待：进房等房主开战（房主跑了自己变房主点挑战）。战斗开始返回True。
@@ -177,12 +221,12 @@ class ScriptTask(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, SwitchSoul, 
                     break
                 blank = 0
                 continue
-            if self.appear(self.I_LBS_MATCHING):
+            if self.appear(self.I_LBS_MATCH_CANCEL):
                 # 还在排队
                 if match_timer.reached():
                     logger.warning('LBS match timeout, cancel queue')
                     cancel_timer = Timer(15).start()
-                    while not cancel_timer.reached() and self.appear(self.I_LBS_MATCHING):
+                    while not cancel_timer.reached() and self.appear(self.I_LBS_MATCH_CANCEL):
                         self.appear_then_click(self.I_LBS_MATCH_CANCEL, interval=2)
                         self.appear_then_click(GlobalGameAssets.I_UI_CONFIRM, interval=2)
                         self.screenshot()

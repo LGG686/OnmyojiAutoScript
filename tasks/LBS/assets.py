@@ -18,6 +18,10 @@ class LBSAssets:
 	I_LBS_TEAM_CHALLENGE = RuleImage(roi_front=(1118,614,63,37), roi_back=(900,450,380,270), threshold=0.8, method="Template matching", file="./tasks/LBS/res/lbs_team_challenge.png")
 	# 战斗结算后奖励转换弹窗的确定按钮 
 	I_LBS_SETTLE_CONFIRM = RuleImage(roi_front=(595,450,93,48), roi_back=(412,158,458,473), threshold=0.8, method="Template matching", file="./tasks/LBS/res/lbs_settle_confirm.png")
+	# 队伍公开权限弹窗：已勾选的所有人 
+	I_LBS_ENSURE_PUBLIC = RuleImage(roi_front=(504,264,40,42), roi_back=(504,264,40,42), threshold=0.8, method="Template matching", file="./tasks/LBS/res/lbs_ensure_public.png")
+	# 队伍公开权限弹窗：未勾选的所有人 
+	I_LBS_ENSURE_PUBLIC_FALSE = RuleImage(roi_front=(504,264,40,42), roi_back=(504,264,40,42), threshold=0.8, method="Template matching", file="./tasks/LBS/res/lbs_ensure_public_false.png")
 	# 队伍公开权限弹窗：未勾选的不公开 
 	I_LBS_ENSURE_PRIVATE_FALSE = RuleImage(roi_front=(504,391,43,43), roi_back=(505,391,42,43), threshold=0.8, method="Template matching", file="./tasks/LBS/res/lbs_ensure_private_false.png")
 	# 队伍公开权限弹窗：已勾选的不公开 
@@ -28,9 +32,7 @@ class LBSAssets:
 	I_LBS_MAP_ENTRY = RuleImage(roi_front=(1104,543,101,111), roi_back=(980,440,300,280), threshold=0.8, method="Template matching", file="./tasks/LBS/res/lbs_map_entry.png")
 	# 活动界面右下角寻找队伍按钮（组队模式入口） 
 	I_LBS_FIND_TEAM = RuleImage(roi_front=(973,615,65,35), roi_back=(900,540,280,175), threshold=0.8, method="Template matching", file="./tasks/LBS/res/lbs_find_team.png")
-	# 自动匹配后活动界面顶部的排队横幅（现世之约 前方约有N排队） 
-	I_LBS_MATCHING = RuleImage(roi_front=(320,15,250,70), roi_back=(250,5,800,95), threshold=0.8, method="Template matching", file="./tasks/LBS/res/lbs_matching.png")
-	# 排队横幅右上角X关闭按钮（超时取消排队用） 
+	# 排队横幅右上角X（在=排队中；超时点击取消排队）
 	I_LBS_MATCH_CANCEL = RuleImage(roi_front=(790,10,75,70), roi_back=(250,5,800,95), threshold=0.8, method="Template matching", file="./tasks/LBS/res/lbs_match_cancel.png")
 
 

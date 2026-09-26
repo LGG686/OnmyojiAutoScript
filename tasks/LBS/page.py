@@ -24,6 +24,6 @@ page_lbs_map = Page(LBSAssets.I_LBS_MAP_ENTRY, priority=60)
 
 # 庭院右栏点 LBS 活动入口直达活动主界面
 page_main.connect(page_lbs, LBSAssets.I_LBS_ENTRY, key='main->lbs')
-page_lbs.connect(page_lbs_map, GlobalGameAssets.I_UI_BACK_YELLOW, key='lbs->map')
+page_lbs.connect(page_lbs_map, GlobalGameAssets.I_UI_BACK_RED, key='lbs->map')
 page_lbs_map.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key='lbs_map->main')
 page_lbs_map.connect(page_lbs, LBSAssets.I_LBS_MAP_ENTRY, key='lbs_map->lbs')

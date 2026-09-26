@@ -30,6 +30,26 @@
     "description": "战斗结算后奖励转换弹窗的确定按钮"
   },
   {
+    "itemName": "lbs_ensure_public",
+    "imageName": "lbs_ensure_public.png",
+    "roiFront": "504,264,40,42",
+    "roiBack": "504,264,40,42",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "Default",
+    "description": "队伍公开权限弹窗：已勾选的所有人"
+  },
+  {
+    "itemName": "lbs_ensure_public_false",
+    "imageName": "lbs_ensure_public_false.png",
+    "roiFront": "504,264,40,42",
+    "roiBack": "504,264,40,42",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "Default",
+    "description": "队伍公开权限弹窗：未勾选的所有人"
+  },
+  {
     "itemName": "lbs_ensure_private_false",
     "imageName": "lbs_ensure_private_false.png",
     "roiFront": "504,391,43,43",
@@ -78,16 +98,6 @@
     "threshold": 0.8,
     "profile": "Default",
     "description": "活动界面右下角寻找队伍按钮（组队模式入口）"
-  },
-  {
-    "itemName": "lbs_matching",
-    "imageName": "lbs_matching.png",
-    "roiFront": "320,15,250,70",
-    "roiBack": "250,5,800,95",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "profile": "Default",
-    "description": "自动匹配后活动界面顶部的排队横幅（现世之约 前方约有N排队）"
   },
   {
     "itemName": "lbs_match_cancel",

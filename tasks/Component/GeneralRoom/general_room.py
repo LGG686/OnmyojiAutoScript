@@ -73,22 +73,33 @@ class GeneralRoom(BaseTask, GeneralRoomAssets):
                 return True
         return False
 
-    def ensure_public(self) -> bool:
+    def ensure_public(self, room_mark: RuleImage = None,
+                      public_rules: list[RuleImage] = None,
+                      public_false_rules: list[RuleImage] = None) -> bool:
+        """确认公开房间
+        :param room_mark: 已进入房间的标志；用于处理建房弹窗关闭时的过渡帧
+        :param public_rules: 已勾选「公开」的识别规则；缺省用组件自带资产
+        :param public_false_rules: 未勾选「公开」的识别规则；缺省用组件自带资产
+        :return:
+        """
         logger.info('Ensure public')
+        checked = public_rules if public_rules is not None else [self.I_ENSURE_PUBLIC, self.I_ENSURE_PUBLIC_2]
+        unchecked = public_false_rules if public_false_rules is not None else \
+            [self.I_ENSURE_PUBLIC_FALSE, self.I_ENSURE_PUBLIC_FALSE_2]
         timeout = Timer(15).start()
         while 1:
             self.screenshot()
             if timeout.reached():
                 logger.warning('Ensure public timeout')
                 return False
-            if self.appear(self.I_ENSURE_PUBLIC, threshold=0.7):
+            # 降阈值适配渲染偏差设备；小图标 0.8 太严
+            if any(self.appear(rule, threshold=0.7) for rule in checked):
                 return True
-            if self.appear(self.I_ENSURE_PUBLIC_2, threshold=0.7):
+            if any(self.appear_then_click(rule, interval=1, threshold=0.7) for rule in unchecked):
+                continue
+            if room_mark is not None and self.appear(room_mark):
+                logger.info('Room already created, public ensured')
                 return True
-            if self.appear_then_click(self.I_ENSURE_PUBLIC_FALSE, interval=1, threshold=0.7):
-                continue
-            if self.appear_then_click(self.I_ENSURE_PUBLIC_FALSE_2, interval=1, threshold=0.7):
-                continue
         return False
 
     def create_ensure(self, ensure_rules: list[RuleImage] = None) -> bool:
