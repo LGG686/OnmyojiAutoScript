@@ -63,10 +63,9 @@ class GeneralRoom(BaseTask, GeneralRoomAssets):
             if timeout.reached():
                 logger.warning('Ensure private timeout')
                 return False
-            # 降阈值适配渲染偏差设备；小图标 0.8 太严
-            if any(self.appear(rule, threshold=0.7) for rule in checked):
+            if any(self.appear(rule) for rule in checked):
                 return True
-            if any(self.appear_then_click(rule, interval=1, threshold=0.7) for rule in unchecked):
+            if any(self.appear_then_click(rule, interval=1) for rule in unchecked):
                 continue
             if room_mark is not None and self.appear(room_mark):
                 logger.info('Room already created, private ensured')
@@ -92,10 +91,9 @@ class GeneralRoom(BaseTask, GeneralRoomAssets):
             if timeout.reached():
                 logger.warning('Ensure public timeout')
                 return False
-            # 降阈值适配渲染偏差设备；小图标 0.8 太严
-            if any(self.appear(rule, threshold=0.7) for rule in checked):
+            if any(self.appear(rule) for rule in checked):
                 return True
-            if any(self.appear_then_click(rule, interval=1, threshold=0.7) for rule in unchecked):
+            if any(self.appear_then_click(rule, interval=1) for rule in unchecked):
                 continue
             if room_mark is not None and self.appear(room_mark):
                 logger.info('Room already created, public ensured')
