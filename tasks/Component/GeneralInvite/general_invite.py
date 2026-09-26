@@ -245,9 +245,9 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
             self.screenshot()
             if not self.is_in_room(False):
                 break
-            if self.appear_then_click(self.I_FIRE, interval=1, threshold=0.7):
+            if self.appear_then_click(self.I_FIRE, interval=1):
                 continue
-            if self.appear_then_click(self.I_FIRE_SEA, interval=1, threshold=0.7):
+            if self.appear_then_click(self.I_FIRE_SEA, interval=1):
                 continue
 
     @cached_property

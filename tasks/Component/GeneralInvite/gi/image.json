@@ -35,7 +35,7 @@
     "roiFront": "1179,602,81,74",
     "roiBack": "1179,602,81,74",
     "method": "Template matching",
-    "threshold": 0.8,
+    "threshold": 0.7,
     "profile": "Default",
     "description": "description"
   },
@@ -85,7 +85,7 @@
     "roiFront": "1160,586,100,68",
     "roiBack": "1160,586,100,68",
     "method": "Template matching",
-    "threshold": 0.8,
+    "threshold": 0.7,
     "profile": "Default",
     "description": "description"
   },

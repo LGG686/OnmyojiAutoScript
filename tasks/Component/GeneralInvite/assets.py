@@ -19,7 +19,7 @@ class GeneralInviteAssets:
 	# description 
 	I_FIRE_FAIL = RuleImage(roi_front=(1177,604,81,74), roi_back=(1177,604,81,74), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_fire_fail.png")
 	# description 
-	I_FIRE = RuleImage(roi_front=(1179,602,81,74), roi_back=(1179,602,81,74), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_fire.png")
+	I_FIRE = RuleImage(roi_front=(1179,602,81,74), roi_back=(1179,602,81,74), threshold=0.7, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_fire.png")
 	# 锁定阵容的图片 
 	I_LOCK = RuleImage(roi_front=(29,644,29,32), roi_back=(29,644,29,32), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_lock.png")
 	# 还没有锁定阵容 
@@ -29,7 +29,7 @@ class GeneralInviteAssets:
 	# 永生之海挑战（还未有队友的图片） 
 	I_FIRE_FAIL_SEA = RuleImage(roi_front=(1160,585,100,70), roi_back=(1160,585,100,70), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_fire_fail_sea.png")
 	# description 
-	I_FIRE_SEA = RuleImage(roi_front=(1160,586,100,68), roi_back=(1160,586,100,68), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_fire_sea.png")
+	I_FIRE_SEA = RuleImage(roi_front=(1160,586,100,68), roi_back=(1160,586,100,68), threshold=0.7, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_fire_sea.png")
 	# description 
 	I_LOCK_SEA = RuleImage(roi_front=(781,658,27,28), roi_back=(781,658,27,28), threshold=0.8, method="Template matching", file="./tasks/Component/GeneralInvite/gi/gi_lock_sea.png")
 	# 永生之海 没有锁定队伍的图片 
