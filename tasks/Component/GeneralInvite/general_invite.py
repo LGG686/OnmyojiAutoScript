@@ -233,10 +233,10 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
             if self.appear_then_click(GeneralInviteAssets.I_GI_SURE, interval=0.5):
                 continue
             if not self.appear(GeneralInviteAssets.I_GI_SURE) and self.appear_then_click(self.I_BACK_YELLOW, interval=0.8):
-                self.wait_until_appear(GeneralInviteAssets.I_GI_SURE, wait_time=0.8)
+                self.wait_until_appear(GeneralInviteAssets.I_GI_SURE, wait_time=1.8)
                 continue
             if not self.appear(GeneralInviteAssets.I_GI_SURE) and self.appear_then_click(self.I_BACK_YELLOW_SEA, interval=0.8):
-                self.wait_until_appear(GeneralInviteAssets.I_GI_SURE, wait_time=0.8)
+                self.wait_until_appear(GeneralInviteAssets.I_GI_SURE, wait_time=1.8)
                 continue
         return False
 

@@ -167,6 +167,11 @@ class ScriptTask(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, SwitchSoul, 
                                    public_rules=[self.I_LBS_ENSURE_PUBLIC],
                                    public_false_rules=[self.I_LBS_ENSURE_PUBLIC_FALSE])
                 self.create_ensure(ensure_rules=[self.I_LBS_CREATE_ENSURE])
+                # 等进房渲染完成：创建确认后的过渡帧 is_in_room 为 False，
+                # 立刻回外层会在房内重复点组队挑战（无效），干到 30s 倒计时自动开战
+                enter_timer = Timer(10).start()
+                while not self.is_in_room() and not enter_timer.reached():
+                    pass
             fail_count = 0
             # 房内等乘客：通用 room_check_can_fire 判定（三人房第一人上车 = 左槽「+」消失）
             while 1:
@@ -175,7 +180,7 @@ class ScriptTask(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, SwitchSoul, 
                     break
                 if self.room_check_can_fire(invite_config):
                     # 有人上车：随机延迟后退房，算开了一趟
-                    sleep(random.uniform(3, 6))
+                    sleep(random.uniform(1, 3))
                     self.exit_room()
                     drives += 1
                     logger.info(f'LBS drive count: {drives}/{limit_count}')
