@@ -83,6 +83,34 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
             return
         logger.error(f'Unknown switch soul conf: group[{group}], team[{team}]')
 
+    def _ensure_lantern_popup_closed(self):
+        """确认灯笼弹窗消失且地图稳定后，才允许搜寻首领。"""
+        deadline = time.monotonic() + 5
+        clear_since = None
+        while time.monotonic() < deadline:
+            self.screenshot()
+            if self.appear(self.I_LETTER_CLOSE):
+                self.click(self.I_LETTER_CLOSE, interval=0.8)
+            elif self.appear(self.I_JADE_50):
+                # 点击原有空白关闭区域，也可先收起覆盖宝箱的物品详情。
+                self.click(self.I_DE_FIND, interval=0.8)
+            elif (
+                self.appear(self.I_BOSS_FIRE) or self.appear(self.I_BEST_BOSS_FIRE)
+            ):
+                return
+            elif self.appear(self.I_UI_BACK_RED):
+                self.click(self.I_UI_BACK_RED, interval=0.8)
+            elif self.appear(self.I_DE_BOSS) or self.appear(self.I_DE_BOSS_BEST):
+                if clear_since is None:
+                    clear_since = time.monotonic()
+                if time.monotonic() - clear_since >= 1:
+                    return
+                time.sleep(0.2)
+                continue
+            clear_since = None
+            time.sleep(0.2)
+        raise GameStuckError('Demon encounter lantern popup did not close in 5s')
+
     def execute_boss(self):
         """
         打boss
@@ -94,20 +122,35 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
             search_button = self.I_DE_BOSS_BEST if self.best_demon_enable else self.I_DE_BOSS
             boss_name = 'best boss' if self.best_demon_enable else 'normal boss'
 
-            # 最多重新执行两轮“逢魔/极逢魔 -> 地图中央首领”的完整流程。
-            for search_attempt in range(1, 3):
+            # 三轮搜寻，每轮先确认首领，再点击并验证召集挑战界面。
+            for search_attempt in range(1, 4):
                 self.device.click_record_clear()
+                self._ensure_lantern_popup_closed()
                 self.screenshot()
                 if self.appear(self.I_BOSS_FIRE) or self.appear(self.I_BEST_BOSS_FIRE):
                     return True
                 if not self.appear_then_click(search_button, interval=0):
                     raise GameStuckError(f'Cannot find {boss_name} search button')
-                logger.info(f'Finding {boss_name}, attempt {search_attempt}/2...')
-                time.sleep(1)
+                logger.info(f'Finding {boss_name}, attempt {search_attempt}/3...')
+                boss_rules = (
+                    self.I_BOSS_NAMAZU, self.I_BOSS_SHINKIRO,
+                    self.I_BOSS_ODOKURO, self.I_BOSS_OBOROGURUMA,
+                    self.I_BOSS_TSUCHIGUMO, self.I_BOSS_SONGSTRESS,
+                )
+                deadline = time.monotonic() + 5
+                while time.monotonic() < deadline:
+                    self.screenshot()
+                    if self.appear(self.I_BOSS_FIRE) or self.appear(self.I_BEST_BOSS_FIRE):
+                        return True
+                    if any(self.appear(rule) for rule in boss_rules):
+                        logger.info('Map boss confirmed; click gather area')
+                        break
+                    time.sleep(0.2)
+                else:
+                    logger.warning('Map boss not recognized in 5s; use fallback gather click')
 
-                # 每轮点击地图中央框选的红色“集结”区域至多两次，
-                # 每次等待集结挑战标志5秒。
-                for center_attempt in range(1, 3):
+                # 每轮仅点击一次原有集结区域，成功仍以挑战按钮出现为准。
+                for center_attempt in range(1, 2):
                     self.click(self.C_DM_BOSS_CLICK, interval=0)
                     deadline = time.monotonic() + 5
                     while time.monotonic() < deadline:
@@ -115,13 +158,13 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
                         if self.appear(self.I_BOSS_FIRE) or self.appear(self.I_BEST_BOSS_FIRE):
                             logger.info(
                                 f'{boss_name} gather appeared after center click '
-                                f'{center_attempt}/2'
+                                f'{search_attempt}/3'
                             )
                             return True
                         time.sleep(0.2)
                     logger.warning(
                         f'{boss_name} gather did not appear after center click '
-                        f'{center_attempt}/2'
+                        f'{search_attempt}/3'
                     )
 
                 # 本轮失败，返回逢魔地图，重新点击逢魔/极逢魔进行下一轮搜寻。
@@ -135,7 +178,7 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
                             break
                         time.sleep(0.2)
 
-            raise GameStuckError(f'Cannot enter {boss_name} after 2 search attempts')
+            raise GameStuckError(f'Cannot enter {boss_name} after 3 search attempts')
 
         def enter_boss():
             logger.info('trying to enter boss...')
