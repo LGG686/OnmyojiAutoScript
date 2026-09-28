@@ -361,7 +361,7 @@
   },
   {
     "itemName": "gi_cancel",
-    "imageName": "gi_gi_cancel.png",
+    "imageName": "gi_cancel.png",
     "roiFront": "438,407,171,55",
     "roiBack": "438,407,171,55",
     "method": "Template matching",
@@ -381,7 +381,7 @@
   },
   {
     "itemName": "gi_buff",
-    "imageName": "gi_gi_buff.png",
+    "imageName": "gi_buff.png",
     "roiFront": "794,38,46,42",
     "roiBack": "794,38,46,42",
     "method": "Template matching",
