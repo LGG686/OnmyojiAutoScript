@@ -672,7 +672,8 @@ class ChessLegacyScriptTask(
 
             now = time.monotonic()
             if share_seen and now >= next_safe_click_at:
-                self.click(ChessAssets.C_C_REWARD_RANDOM_CLICK, interval=1.5)
+                from tasks.GameUi.default_pages import random_click
+                self.click(random_click(), interval=1.5)
                 safe_clicks += 1
                 next_safe_click_at = now + 1.5
             time.sleep(self.CHESS_EXIT_SCREENSHOT_INTERVAL)

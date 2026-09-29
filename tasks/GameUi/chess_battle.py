@@ -38,7 +38,8 @@ class ChessBattleNavigationMixin:
         if getattr(self, '_chess_share_advancing', False):
             # 分享标志消失后仍推进未知过渡画面。保持规则名称和点击
             # 记录不变，让设备层的过多点击检查正常生效。
-            self.click(ChessAssets.C_C_REWARD_RANDOM_CLICK, interval=1.5)
+            from tasks.GameUi.default_pages import random_click
+            self.click(random_click(), interval=1.5)
             return True
         return False
 
@@ -155,7 +156,8 @@ class ChessBattleNavigationMixin:
                 return True
 
             safe_clicks += 1
-            self.click(ChessAssets.C_C_REWARD_RANDOM_CLICK, interval=1.5)
+            from tasks.GameUi.default_pages import random_click
+            self.click(random_click(), interval=1.5)
             time.sleep(self.CHESS_EXIT_SCREENSHOT_INTERVAL)
 
         raise GameStuckError('Global Chess: failed to return to lobby after result')

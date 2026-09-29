@@ -45,14 +45,11 @@ HIGH_DENSITY_RANDOM_CLICK_TASKS = frozenset({
 # 依据现有设备日志：这些任务的结算点击量较低，或运行频率极低。
 # 未列出的普通任务也默认按低密度处理，仅高密度任务显式传入 Scatter。
 LOW_DENSITY_RANDOM_CLICK_TASKS = frozenset({
-    'AbyssShadows', 'AreaBoss', 'DailyTrifles', 'Delegation',
+    'AbyssShadows', 'AreaBoss', 'Chess', 'DailyTrifles', 'Delegation',
     'DemonEncounter', 'Dokan', 'Duel', 'GoldYoukai', 'GuildBanquet',
     'Hunt', 'KekkaiUtilize', 'Orochi', 'RealmRaid', 'Restart',
     'WantedQuests', 'WeeklyPurchase',
 })
-
-# 百鬼棋局虽然日志点击量低，但其奖励页有独立安全多边形，不走通用四区域。
-DEDICATED_SCATTER_RANDOM_CLICK_TASKS = frozenset({'Chess'})
 
 
 def settlement_random_click(area=None) -> RuleClick:
