@@ -46,7 +46,7 @@ class FrogBossAssets:
 	# description 
 	I_FROG_BOSS_ENTER = RuleImage(roi_front=(1188,303,36,38), roi_back=(1169,203,78,320), threshold=0.7, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_frog_boss_enter.png")
 	# 休息中 
-	I_FROG_BOSS_REST = RuleImage(roi_front=(510,274,169,64), roi_back=(492,260,220,113), threshold=0.8, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_frog_boss_rest.png")
+	I_FROG_BOSS_REST = RuleImage(roi_front=(627,284,169,64), roi_back=(601,259,220,113), threshold=0.8, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_frog_boss_rest.png")
 	# 竞猜主页面 
 	I_FROG_CHECK = RuleImage(roi_front=(664,31,148,65), roi_back=(551,4,371,145), threshold=0.8, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_frog_check.png")
 	# 进入记录页面 
