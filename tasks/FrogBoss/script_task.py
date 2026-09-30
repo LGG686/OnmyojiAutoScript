@@ -74,12 +74,25 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
         if not self.wait_until_appear(self.I_FROG_CHECK, wait_time=10):
             raise GameStuckError('FrogBoss page not detected after entering activity')
 
+    def _try_next_competition_fallback(self, idle_timer):
+        if not self.appear(self.I_FROG_CHECK):
+            idle_timer.reset()
+            return False
+        if idle_timer.reached() and self.appear_then_click(self.I_NEXT_COMPETITION, interval=1):
+            logger.info('FrogBoss idle for 5 seconds; advance via next-competition fallback')
+            idle_timer.reset()
+            return True
+        return False
+
     def run(self):
         self.enter_frog_boss()
         history_checked = False
+        idle_timer = Timer(5).start()
         # 进入主界面
         while 1:
             self.screenshot()
+            if self._try_next_competition_fallback(idle_timer):
+                continue
 
             if not history_checked and self.config.model.frog_boss.frog_boss_config.strategy_frog == Strategy.Oas:
                 if (self.appear(self.I_FROG_LOG_CHECK) or self.appear(self.I_BETTED)
@@ -87,6 +100,7 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
                         or (self.appear(self.I_BET_LEFT) and self.appear(self.I_BET_RIGHT))):
                     self.record_oas_history_page()
                     history_checked = True
+                    idle_timer.reset()
                     continue
 
             # 已经下注
@@ -103,24 +117,31 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
                 self.detect()
                 while 1:
                     self.screenshot()
+                    if self._try_next_competition_fallback(idle_timer):
+                        continue
                     if self.appear(self.I_BET_LEFT) and self.appear(self.I_BET_RIGHT):
                         break
                     if self.appear_then_click(self.I_BET_SUCCESS_BOX, interval=1):
+                        idle_timer.reset()
                         continue
                     if self.appear_then_click(self.I_REWARD, interval=2):
+                        idle_timer.reset()
                         continue
                     if self.appear_then_click(self.I_NEXT_COMPETITION, interval=4):
+                        idle_timer.reset()
                         continue
                 continue
             # 竞猜失败
             if self.appear(self.I_BET_FAILURE):
                 logger.info('You bet lose')
-                self.ui_click_until_disappear(self.I_NEXT_COMPETITION)
+                if self.ui_click_until_disappear(self.I_NEXT_COMPETITION):
+                    idle_timer.reset()
                 self.detect()
                 continue
             # 正式竞猜
             if self.appear(self.I_BET_LEFT) and self.appear(self.I_BET_RIGHT):
                 self.do_bet()
+                idle_timer.reset()
                 continue
 
         logger.info('FrogBoss end')
