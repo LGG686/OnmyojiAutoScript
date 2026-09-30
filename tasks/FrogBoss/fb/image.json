@@ -122,7 +122,7 @@
   {
     "itemName": "bet_failure",
     "imageName": "fb_bet_failure.png",
-    "roiFront": "591,290,269,72",
+    "roiFront": "625,277,269,72",
     "roiBack": "496,222,447,211",
     "method": "Template matching",
     "threshold": 0.8,
