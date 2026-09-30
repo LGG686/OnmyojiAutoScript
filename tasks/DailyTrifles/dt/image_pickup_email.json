@@ -2,6 +2,7 @@
   {
     "itemName": "harvest_mail",
     "imageName": "dt_harvest_mail.png",
+    "profile": "High",
     "roiFront": "337,505,37,25",
     "roiBack": "38,396,1128,157",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "harvest_mail_copy",
     "imageName": "dt_harvest_mail_copy.png",
+    "profile": "High",
     "roiFront": "257,509,29,21",
     "roiBack": "192,382,928,190",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "harvest_mail_all",
     "imageName": "dt_harvest_mail_all.png",
+    "profile": "High",
     "roiFront": "69,579,80,67",
     "roiBack": "28,551,142,144",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "read_all_mail",
     "imageName": "dt_read_all_mail.png",
+    "profile": "High",
     "roiFront": "180,605,130,35",
     "roiBack": "149,588,182,72",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "harvest_mail_confirm",
     "imageName": "dt_harvest_mail_confirm.png",
+    "profile": "High",
     "roiFront": "687,543,168,64",
     "roiBack": "687,543,168,64",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "dt_harvest_mail_copy2",
     "imageName": "dt_harvest_mail_copy2.png",
+    "profile": "High",
     "roiFront": "1158,18,22,20",
     "roiBack": "1127,0,61,56",
     "method": "Template matching",

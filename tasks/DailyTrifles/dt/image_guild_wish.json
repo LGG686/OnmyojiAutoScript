@@ -2,6 +2,7 @@
   {
     "itemName": "dt_check_guild_wish",
     "imageName": "dt_dt_check_guild_wish.png",
+    "profile": "High",
     "roiFront": "13,569,76,139",
     "roiBack": "0,511,124,209",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "dt_gw_donate",
     "imageName": "dt_dt_gw_donate.png",
+    "profile": "High",
     "roiFront": "839,167,109,49",
     "roiBack": "816,90,301,490",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "dt_gw_swap",
     "imageName": "dt_dt_gw_swap.png",
+    "profile": "High",
     "roiFront": "985,144,109,49",
     "roiBack": "821,87,303,489",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "dt_gw_guild_member_selected",
     "imageName": "dt_dt_gw_guild_member_selected.png",
+    "profile": "High",
     "roiFront": "211,609,126,46",
     "roiBack": "157,597,233,69",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "dt_gw_friend_selected",
     "imageName": "dt_dt_gw_friend_selected.png",
+    "profile": "High",
     "roiFront": "211,609,126,46",
     "roiBack": "157,597,233,69",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "dt_gw_select_guild_member",
     "imageName": "dt_dt_gw_select_guild_member.png",
+    "profile": "High",
     "roiFront": "206,490,126,46",
     "roiBack": "168,477,221,134",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "dt_gw_select_friend",
     "imageName": "dt_dt_gw_select_friend.png",
+    "profile": "High",
     "roiFront": "206,546,126,46",
     "roiBack": "168,477,221,134",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "dt_gw_thanks",
     "imageName": "dt_dt_gw_thanks.png",
+    "profile": "High",
     "roiFront": "714,283,126,46",
     "roiBack": "700,258,155,304",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "dt_gw_thanked",
     "imageName": "dt_dt_gw_thanked.png",
+    "profile": "High",
     "roiFront": "714,283,126,46",
     "roiBack": "700,258,155,304",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "dt_gw_donate_record_red",
     "imageName": "dt_dt_gw_donate_record_red.png",
+    "profile": "High",
     "roiFront": "1116,584,17,22",
     "roiBack": "1037,574,114,103",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "dt_gw_donate_record",
     "imageName": "dt_dt_gw_donate_record.png",
+    "profile": "High",
     "roiFront": "1060,600,57,58",
     "roiBack": "1037,574,114,103",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "dt_gw_donate_record_thanks",
     "imageName": "dt_dt_gw_donate_record_thanks.png",
+    "profile": "High",
     "roiFront": "920,602,54,54",
     "roiBack": "874,570,145,119",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "dt_gw_search_by_swap",
     "imageName": "dt_dt_gw_search_by_swap.png",
+    "profile": "High",
     "roiFront": "170,86,123,42",
     "roiBack": "149,67,181,80",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "dt_gw_search_by_name",
     "imageName": "dt_dt_gw_search_by_name.png",
+    "profile": "High",
     "roiFront": "170,86,123,42",
     "roiBack": "149,67,181,80",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "dt_gw_select_by_name",
     "imageName": "dt_dt_gw_select_by_name.png",
+    "profile": "High",
     "roiFront": "197,150,52,41",
     "roiBack": "153,138,165,106",
     "method": "Template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "dt_gw_select_by_swap",
     "imageName": "dt_dt_gw_select_by_swap.png",
+    "profile": "High",
     "roiFront": "197,196,52,41",
     "roiBack": "153,138,165,106",
     "method": "Template matching",
@@ -146,6 +162,7 @@
   {
     "itemName": "dt_gw_confirm",
     "imageName": "dt_dt_gw_confirm.png",
+    "profile": "High",
     "roiFront": "1030,12,104,48",
     "roiBack": "1016,0,127,71",
     "method": "Template matching",
@@ -155,6 +172,7 @@
   {
     "itemName": "dt_gw_clear_search",
     "imageName": "dt_dt_gw_clear_search.png",
+    "profile": "High",
     "roiFront": "990,92,32,32",
     "roiBack": "958,73,127,71",
     "method": "Template matching",
@@ -164,6 +182,7 @@
   {
     "itemName": "dt_gw_search_empty",
     "imageName": "dt_dt_gw_search_empty.png",
+    "profile": "High",
     "roiFront": "576,172,163,261",
     "roiBack": "513,131,266,384",
     "method": "Template matching",
@@ -173,6 +192,7 @@
   {
     "itemName": "guild_to_wish",
     "imageName": "dt_guild_to_wish.png",
+    "profile": "High",
     "roiFront": "973,630,52,51",
     "roiBack": "833,583,447,137",
     "method": "Template matching",
@@ -182,6 +202,7 @@
   {
     "itemName": "dt_gw_insufficient",
     "imageName": "dt_dt_gw_insufficient.png",
+    "profile": "High",
     "roiFront": "899,401,116,35",
     "roiBack": "834,126,245,460",
     "method": "Template matching",
@@ -191,6 +212,7 @@
   {
     "itemName": "dt_gw_full",
     "imageName": "dt_dt_gw_full.png",
+    "profile": "High",
     "roiFront": "915,120,94,33",
     "roiBack": "894,89,139,492",
     "method": "Template matching",
@@ -200,6 +222,7 @@
   {
     "itemName": "dt_gw_donate_red",
     "imageName": "dt_dt_gw_donate_red.png",
+    "profile": "High",
     "roiFront": "1024,297,14,18",
     "roiBack": "979,275,77,125",
     "method": "Template matching",
@@ -209,6 +232,7 @@
   {
     "itemName": "dt_gw_one_collect",
     "imageName": "dt_dt_gw_one_collect.png",
+    "profile": "High",
     "roiFront": "921,605,51,48",
     "roiBack": "866,557,164,137",
     "method": "Template matching",
@@ -218,6 +242,7 @@
   {
     "itemName": "dt_gw_give",
     "imageName": "dt_dt_gw_give.png",
+    "profile": "High",
     "roiFront": "979,316,44,75",
     "roiBack": "924,160,142,276",
     "method": "Template matching",

@@ -2,6 +2,7 @@
   {
     "itemName": "lighttest",
     "imageName": "highlight_lighttest.png",
+    "profile": "High",
     "roiFront": "550,288,85,82",
     "roiBack": "97,182,1130,409",
     "method": "Multi-scale template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "light1",
     "imageName": "highlight_light1.png",
+    "profile": "High",
     "roiFront": "498,297,86,87",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "light2",
     "imageName": "highlight_light2.png",
+    "profile": "High",
     "roiFront": "497,300,86,82",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "light3",
     "imageName": "highlight_light3.png",
+    "profile": "High",
     "roiFront": "495,301,85,77",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "light4",
     "imageName": "highlight_light4.png",
+    "profile": "High",
     "roiFront": "496,296,85,85",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "light5",
     "imageName": "highlight_light5.png",
+    "profile": "High",
     "roiFront": "494,296,82,86",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "light6",
     "imageName": "highlight_light6.png",
+    "profile": "High",
     "roiFront": "490,295,83,85",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "light7",
     "imageName": "highlight_light7.png",
+    "profile": "High",
     "roiFront": "486,295,84,87",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "light8",
     "imageName": "highlight_light8.png",
+    "profile": "High",
     "roiFront": "485,298,84,81",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "light9",
     "imageName": "highlight_light9.png",
+    "profile": "High",
     "roiFront": "484,295,85,84",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "light10",
     "imageName": "highlight_light10.png",
+    "profile": "High",
     "roiFront": "479,297,84,78",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "light11",
     "imageName": "highlight_light11.png",
+    "profile": "High",
     "roiFront": "479,296,83,82",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "light12",
     "imageName": "highlight_light12.png",
+    "profile": "High",
     "roiFront": "477,290,85,90",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "light13",
     "imageName": "highlight_light13.png",
+    "profile": "High",
     "roiFront": "478,293,82,87",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "light14",
     "imageName": "highlight_light14.png",
+    "profile": "High",
     "roiFront": "474,290,82,87",
     "roiBack": "97,99,1157,492",
     "method": "Multi-scale template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "up_exp",
     "imageName": "highlight_up_exp.png",
+    "profile": "High",
     "roiFront": "471,518,74,71",
     "roiBack": "1,225,1278,410",
     "method": "Sift Flann",
@@ -146,6 +162,7 @@
   {
     "itemName": "up_coin",
     "imageName": "highlight_up_coin.png",
+    "profile": "High",
     "roiFront": "330,529,74,74",
     "roiBack": "1,317,1278,316",
     "method": "Sift Flann",
@@ -155,6 +172,7 @@
   {
     "itemName": "up_daruma",
     "imageName": "highlight_up_daruma.png",
+    "profile": "High",
     "roiFront": "1146,510,80,80",
     "roiBack": "1,265,1278,369",
     "method": "Sift Flann",

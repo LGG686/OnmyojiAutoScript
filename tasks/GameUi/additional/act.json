@@ -2,6 +2,7 @@
   {
     "itemName": "paper_doll_close",
     "imageName": "additional_paper_doll_close.png",
+    "profile": "High",
     "roiFront": "1253,102,25,62",
     "roiBack": "1238,58,40,153",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "act_list_expand",
     "imageName": "additional_act_list_expand.png",
+    "profile": "High",
     "roiFront": "1186,141,40,41",
     "roiBack": "1162,110,92,103",
     "method": "Template matching",

@@ -30,57 +30,57 @@ class DuelAssets:
 
 	# Image Rule Assets
 	# 点击阵容
-	I_D_TEAM = RuleImage(roi_front=(813,288,34,74), roi_back=(785,259,115,119), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_team.png")
+	I_D_TEAM = RuleImage(profile="High", roi_front=(813,288,34,74), roi_back=(785,259,115,119), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_team.png")
 	# 一键切换所有的御魂
-	I_D_TEAM_SWTICH = RuleImage(roi_front=(1082,85,38,41), roi_back=(1082,85,38,41), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_team_swtich.png")
+	I_D_TEAM_SWTICH = RuleImage(profile="High", roi_front=(1082,85,38,41), roi_back=(1082,85,38,41), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_team_swtich.png")
 	# description
-	I_D_BATTLE = RuleImage(roi_front=(1153,573,100,100), roi_back=(1123,537,154,177), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_battle.png")
+	I_D_BATTLE = RuleImage(profile="High", roi_front=(1153,573,100,100), roi_back=(1123,537,154,177), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_battle.png")
 	# 战斗带保护的
-	I_D_BATTLE_PROTECT = RuleImage(roi_front=(1153,578,100,100), roi_back=(1118,553,155,149), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_battle_protect.png")
+	I_D_BATTLE_PROTECT = RuleImage(profile="High", roi_front=(1153,578,100,100), roi_back=(1118,553,155,149), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_battle_protect.png")
 	# 自动上阵
-	I_D_AUTO_ENTRY = RuleImage(roi_front=(23,118,53,54), roi_back=(2,97,93,96), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_auto_entry.png")
+	I_D_AUTO_ENTRY = RuleImage(profile="High", roi_front=(23,118,53,54), roi_back=(2,97,93,96), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_auto_entry.png")
 	# 主界面的感叹号
-	I_D_HELP = RuleImage(roi_front=(783,500,29,30), roi_back=(778,476,49,78), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_help.png")
+	I_D_HELP = RuleImage(profile="High", roi_front=(783,500,29,30), roi_back=(778,476,49,78), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_help.png")
 	# 准备
-	I_D_PREPARE = RuleImage(roi_front=(1127,541,100,100), roi_back=(1127,541,100,100), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_prepare.png")
+	I_D_PREPARE = RuleImage(profile="High", roi_front=(1127,541,100,100), roi_back=(1127,541,100,100), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_prepare.png")
 	# 胜利
-	I_D_VICTORY = RuleImage(roi_front=(433,76,100,100), roi_back=(433,76,100,100), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_victory.png")
+	I_D_VICTORY = RuleImage(profile="High", roi_front=(433,76,100,100), roi_back=(433,76,100,100), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_victory.png")
 	# 失败
-	I_D_FAIL = RuleImage(roi_front=(422,66,100,100), roi_back=(422,66,100,100), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_fail.png")
+	I_D_FAIL = RuleImage(profile="High", roi_front=(422,66,100,100), roi_back=(422,66,100,100), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_fail.png")
 	# 战
-	I_D_WORD_BATTLE = RuleImage(roi_front=(613,41,54,54), roi_back=(600,24,84,85), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_word_battle.png")
+	I_D_WORD_BATTLE = RuleImage(profile="High", roi_front=(613,41,54,54), roi_back=(600,24,84,85), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_word_battle.png")
 	# 名士的星星
-	I_D_CELEB_STAR = RuleImage(roi_front=(646,450,33,37), roi_back=(551,433,185,67), threshold=0.75, method="Template matching", file="./tasks/Duel/duel/duel_d_celeb_star.png")
+	I_D_CELEB_STAR = RuleImage(profile="High", roi_front=(646,450,33,37), roi_back=(551,433,185,67), threshold=0.75, method="Template matching", file="./tasks/Duel/duel/duel_d_celeb_star.png")
 	# 名士专属
-	I_D_CELEB_HONOR = RuleImage(roi_front=(338,641,25,30), roi_back=(199,606,222,76), threshold=0.75, method="Template matching", file="./tasks/Duel/duel/duel_d_celeb_honor.png")
+	I_D_CELEB_HONOR = RuleImage(profile="High", roi_front=(338,641,25,30), roi_back=(199,606,222,76), threshold=0.75, method="Template matching", file="./tasks/Duel/duel/duel_d_celeb_honor.png")
 	# 练
-	I_BATTLE_WITH_TRAIN = RuleImage(roi_front=(1161,588,78,81), roi_back=(1114,547,163,172), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_battle_with_train.png")
+	I_BATTLE_WITH_TRAIN = RuleImage(profile="High", roi_front=(1161,588,78,81), roi_back=(1114,547,163,172), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_battle_with_train.png")
 	# 练2
-	I_BATTLE_WITH_TRAIN2 = RuleImage(roi_front=(1161,588,78,81), roi_back=(1114,547,163,172), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_battle_with_train2.png")
+	I_BATTLE_WITH_TRAIN2 = RuleImage(profile="High", roi_front=(1161,588,78,81), roi_back=(1114,547,163,172), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_battle_with_train2.png")
 	# 斗技模式（普通）
-	I_BATTLE_TYPE_COMMON = RuleImage(roi_front=(439,278,90,88), roi_back=(439,278,90,88), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_battle_type_common.png")
+	I_BATTLE_TYPE_COMMON = RuleImage(profile="High", roi_front=(439,278,90,88), roi_back=(439,278,90,88), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_battle_type_common.png")
 	# 活动的战斗按钮
-	I_D_BATTLE2 = RuleImage(roi_front=(1171,592,69,78), roi_back=(1119,566,154,143), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_battle2.png")
+	I_D_BATTLE2 = RuleImage(profile="High", roi_front=(1171,592,69,78), roi_back=(1119,566,154,143), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_battle2.png")
 	# 禁用
-	I_BAN = RuleImage(roi_front=(1139,565,77,72), roi_back=(1122,545,114,116), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_ban.png")
+	I_BAN = RuleImage(profile="High", roi_front=(1139,565,77,72), roi_back=(1122,545,114,116), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_ban.png")
 	# 左上角的退出
-	I_DUEL_EXIT = RuleImage(roi_front=(14,12,43,41), roi_back=(14,12,43,41), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_exit.png")
+	I_DUEL_EXIT = RuleImage(profile="High", roi_front=(14,12,43,41), roi_back=(14,12,43,41), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_exit.png")
 	# ban选界面
-	I_D_CHECK_BAN = RuleImage(roi_front=(611,36,56,62), roi_back=(590,14,100,100), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_check_ban.png")
+	I_D_CHECK_BAN = RuleImage(profile="High", roi_front=(611,36,56,62), roi_back=(590,14,100,100), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_check_ban.png")
 	# 斗技荣誉图标
-	I_DUEL_HONOR = RuleImage(roi_front=(186,633,20,20), roi_back=(175,631,242,47), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_honor.png")
+	I_DUEL_HONOR = RuleImage(profile="High", roi_front=(186,633,20,20), roi_back=(175,631,242,47), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_honor.png")
 	# 胜利分享
-	I_D_WIN_SHARE = RuleImage(roi_front=(1123,608,82,73), roi_back=(1123,608,82,73), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/d_win_share.png")
+	I_D_WIN_SHARE = RuleImage(profile="High", roi_front=(1123,608,82,73), roi_back=(1123,608,82,73), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/d_win_share.png")
 	#
-	I_BAN_ENSURE = RuleImage(roi_front=(1123,578,111,46), roi_back=(1123,578,111,46), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_ban_ensure.png")
+	I_BAN_ENSURE = RuleImage(profile="High", roi_front=(1123,578,111,46), roi_back=(1123,578,111,46), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_ban_ensure.png")
 	#
-	I_DUEL_CELEB_HONOR = RuleImage(roi_front=(297,633,20,20), roi_back=(172,632,249,26), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_celeb_honor.png")
+	I_DUEL_CELEB_HONOR = RuleImage(profile="High", roi_front=(297,633,20,20), roi_back=(172,632,249,26), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_celeb_honor.png")
 	# 斗技入口附属消息页
-	I_DUEL_MAIN_UESLESS_MESSAGE = RuleImage(roi_front=(526,224,222,56), roi_back=(521,219,232,66), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_main_uesless_message.png")
+	I_DUEL_MAIN_UESLESS_MESSAGE = RuleImage(profile="High", roi_front=(526,224,222,56), roi_back=(521,219,232,66), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_main_uesless_message.png")
 	# 小白弹窗
-	I_WHITE_DOG = RuleImage(roi_front=(388,327,70,62), roi_back=(308,254,215,249), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_white_dog.png")
+	I_WHITE_DOG = RuleImage(profile="High", roi_front=(388,327,70,62), roi_back=(308,254,215,249), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_white_dog.png")
 	# 取消匹配按键
-	I_EXIT_WAITING = RuleImage(roi_front=(569,587,139,57), roi_back=(564,582,149,67), threshold=0.8, method="Template matching", profile="More", file="./tasks/Duel/duel/duel_exit_waiting.png")
+	I_EXIT_WAITING = RuleImage(roi_front=(569,587,139,57), roi_back=(564,582,149,67), threshold=0.8, method="Template matching", profile="High", file="./tasks/Duel/duel/duel_exit_waiting.png")
 
 
 	# Ocr Rule Assets

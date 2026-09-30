@@ -2,6 +2,7 @@
   {
     "itemName": "card_exp",
     "imageName": "realm_card_exp.png",
+    "profile": "High",
     "roiFront": "889,151,57,54",
     "roiBack": "829,33,349,303",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "box_ap",
     "imageName": "realm_box_ap.png",
+    "profile": "High",
     "roiFront": "815,435,57,51",
     "roiBack": "744,336,395,216",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "box_exp",
     "imageName": "realm_box_exp.png",
+    "profile": "High",
     "roiFront": "893,440,42,45",
     "roiBack": "792,334,359,232",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "realm_shin",
     "imageName": "realm_realm_shin.png",
+    "profile": "High",
     "roiFront": "175,460,54,58",
     "roiBack": "22,359,393,328",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "utilize_exp",
     "imageName": "realm_utilize_exp.png",
+    "profile": "High",
     "roiFront": "583,144,58,43",
     "roiBack": "513,43,280,309",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "ap_extract",
     "imageName": "realm_ap_extract.png",
+    "profile": "High",
     "roiFront": "592,501,100,75",
     "roiBack": "592,501,100,75",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "exp_extract",
     "imageName": "realm_exp_extract.png",
+    "profile": "High",
     "roiFront": "592,448,100,73",
     "roiBack": "592,448,100,73",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "box_exp_max",
     "imageName": "realm_box_exp_max.png",
+    "profile": "High",
     "roiFront": "889,430,61,64",
     "roiBack": "796,326,405,330",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "plant_tree_close",
     "imageName": "realm_plant_tree_close.png",
+    "profile": "High",
     "roiFront": "777,91,36,34",
     "roiBack": "711,52,169,125",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "check_guild_card",
     "imageName": "realm_check_guild_card.png",
+    "profile": "High",
     "roiFront": "66,93,49,85",
     "roiBack": "29,61,150,210",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "auto_fill",
     "imageName": "realm_auto_fill.png",
+    "profile": "High",
     "roiFront": "1146,505,47,51",
     "roiBack": "1114,478,115,107",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "remove_all",
     "imageName": "realm_remove_all.png",
+    "profile": "High",
     "roiFront": "1146,505,47,51",
     "roiBack": "1114,478,115,107",
     "method": "Template matching",

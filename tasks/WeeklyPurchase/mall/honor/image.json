@@ -2,6 +2,7 @@
   {
     "itemName": "honor_blue",
     "imageName": "honor_honor_blue.png",
+    "profile": "High",
     "roiFront": "868,152,100,100",
     "roiBack": "154,113,864,476",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "honor_black",
     "imageName": "honor_honor_black.png",
+    "profile": "High",
     "roiFront": "645,406,100,100",
     "roiBack": "145,96,883,491",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "honor_white",
     "imageName": "honor_honor_white.png",
+    "profile": "High",
     "roiFront": "424,399,100,100",
     "roiBack": "155,127,841,388",
     "method": "Template matching",

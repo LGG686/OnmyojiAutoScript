@@ -2,6 +2,7 @@
   {
     "itemName": "feed_heap",
     "imageName": "feed_feed_heap.png",
+    "profile": "High",
     "roiFront": "20,543,42,59",
     "roiBack": "20,543,42,59",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "feed_submit",
     "imageName": "feed_feed_submit.png",
+    "profile": "High",
     "roiFront": "703,340,114,54",
     "roiBack": "703,340,114,54",
     "method": "Template matching",

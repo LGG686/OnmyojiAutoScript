@@ -2,6 +2,7 @@
   {
     "itemName": "ms_land_fire",
     "imageName": "ms_ms_land_fire.png",
+    "profile": "High",
     "roiFront": "289,313,18,26",
     "roiBack": "124,140,1013,515",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "ms_land_chaos",
     "imageName": "ms_ms_land_chaos.png",
+    "profile": "High",
     "roiFront": "650,373,17,20",
     "roiBack": "124,140,1013,515",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "ms_land_star",
     "imageName": "ms_ms_land_star.png",
+    "profile": "High",
     "roiFront": "651,379,17,20",
     "roiBack": "124,140,1013,515",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "ms_land_shop",
     "imageName": "ms_ms_land_shop.png",
+    "profile": "High",
     "roiFront": "650,406,18,26",
     "roiBack": "124,140,1013,515",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "ms_land_mystery",
     "imageName": "ms_ms_land_mystery.png",
+    "profile": "High",
     "roiFront": "651,430,18,26",
     "roiBack": "124,140,1013,515",
     "method": "Template matching",

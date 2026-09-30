@@ -6,7 +6,7 @@
     "roiBack": "785,259,115,119",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "点击阵容"
   },
   {
@@ -16,7 +16,7 @@
     "roiBack": "1082,85,38,41",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "一键切换所有的御魂"
   },
   {
@@ -26,7 +26,7 @@
     "roiBack": "1123,537,154,177",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -36,7 +36,7 @@
     "roiBack": "1118,553,155,149",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "战斗带保护的"
   },
   {
@@ -46,7 +46,7 @@
     "roiBack": "2,97,93,96",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "自动上阵"
   },
   {
@@ -56,7 +56,7 @@
     "roiBack": "778,476,49,78",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "主界面的感叹号"
   },
   {
@@ -66,7 +66,7 @@
     "roiBack": "1127,541,100,100",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "准备"
   },
   {
@@ -76,7 +76,7 @@
     "roiBack": "433,76,100,100",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "胜利"
   },
   {
@@ -86,7 +86,7 @@
     "roiBack": "422,66,100,100",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "失败"
   },
   {
@@ -96,7 +96,7 @@
     "roiBack": "600,24,84,85",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "战"
   },
   {
@@ -106,7 +106,7 @@
     "roiBack": "551,433,185,67",
     "method": "Template matching",
     "threshold": 0.75,
-    "profile": "Default",
+    "profile": "High",
     "description": "名士的星星"
   },
   {
@@ -116,7 +116,7 @@
     "roiBack": "199,606,222,76",
     "method": "Template matching",
     "threshold": 0.75,
-    "profile": "Default",
+    "profile": "High",
     "description": "名士专属"
   },
   {
@@ -126,7 +126,7 @@
     "roiBack": "1114,547,163,172",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "练"
   },
   {
@@ -136,7 +136,7 @@
     "roiBack": "1114,547,163,172",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "练2"
   },
   {
@@ -146,7 +146,7 @@
     "roiBack": "439,278,90,88",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "斗技模式（普通）"
   },
   {
@@ -156,7 +156,7 @@
     "roiBack": "1119,566,154,143",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "活动的战斗按钮"
   },
   {
@@ -166,7 +166,7 @@
     "roiBack": "1122,545,114,116",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "禁用"
   },
   {
@@ -176,7 +176,7 @@
     "roiBack": "14,12,43,41",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "左上角的退出"
   },
   {
@@ -186,7 +186,7 @@
     "roiBack": "590,14,100,100",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "ban选界面"
   },
   {
@@ -196,7 +196,7 @@
     "roiBack": "175,631,242,47",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "斗技荣誉图标"
   },
   {
@@ -206,7 +206,7 @@
     "roiBack": "1123,608,82,73",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "胜利分享"
   },
   {
@@ -216,7 +216,7 @@
     "roiBack": "1123,578,111,46",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": ""
   },
   {
@@ -226,7 +226,7 @@
     "roiBack": "172,632,249,26",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": ""
   },
   {
@@ -236,7 +236,7 @@
     "roiBack": "521,219,232,66",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "斗技入口附属消息页"
   },
   {
@@ -246,7 +246,7 @@
     "roiBack": "308,254,215,249",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "小白弹窗"
   },
   {
@@ -256,7 +256,7 @@
     "roiBack": "564,582,149,67",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "More",
+    "profile": "High",
     "description": "取消匹配按键"
   }
 ]

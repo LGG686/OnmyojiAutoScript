@@ -818,7 +818,7 @@ class AnnotatorManager:
                 raise AnnotatorError("invalid_rule", f"第 {index + 1} 条规则 threshold 非法", 400) from e
             if threshold < 0 or threshold > 1:
                 raise AnnotatorError("invalid_rule", f"第 {index + 1} 条规则 threshold 必须在 0-1", 400)
-            profile = str(rule.get("profile", "Default")).strip() or "Default"
+            profile = str(rule.get("profile", "High")).strip() or "High"
             if profile not in ("Default", "High", "More"):
                 raise AnnotatorError("invalid_rule", f"第 {index + 1} 条图片规则 profile 非法", 400)
             normalized.append(
@@ -1181,7 +1181,7 @@ class AnnotatorManager:
                             "roiBack": str(item.get("roiBack", "0,0,100,100")),
                             "method": str(item.get("method", "Template matching")),
                             "threshold": float(item.get("threshold", 0.8)),
-                            "profile": str(item.get("profile", "Default")),
+                            "profile": str(item.get("profile", "High")),
                             "description": str(item.get("description", "")),
                         }
                     )
@@ -1355,7 +1355,7 @@ class AnnotatorManager:
                 threshold = float(rule.get("threshold", 0.8))
             except (TypeError, ValueError) as e:
                 raise AnnotatorError("invalid_rule", "threshold 非法", 400) from e
-            profile = str(rule.get("profile", "Default")).strip() or "Default"
+            profile = str(rule.get("profile", "High")).strip() or "High"
             if profile not in ("Default", "High", "More"):
                 raise AnnotatorError("invalid_rule", "profile 非法", 400)
             roi_back = self._parse_roi_tuple(str(rule.get("roiBack", "")))

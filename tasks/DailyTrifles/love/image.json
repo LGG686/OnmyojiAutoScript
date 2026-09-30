@@ -2,6 +2,7 @@
   {
     "itemName": "l_friends",
     "imageName": "love_l_friends.png",
+    "profile": "High",
     "roiFront": "67,625,70,72",
     "roiBack": "67,625,70,72",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "l_love",
     "imageName": "love_l_love.png",
+    "profile": "High",
     "roiFront": "123,625,67,72",
     "roiBack": "123,625,67,72",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "l_collect",
     "imageName": "love_l_collect.png",
+    "profile": "High",
     "roiFront": "47,537,129,56",
     "roiBack": "47,537,129,56",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "one_click_bless",
     "imageName": "Screenshots_one_click_bless.png",
+    "profile": "High",
     "roiFront": "1115,500,93,33",
     "roiBack": "1115,500,93,33",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "click_bless",
     "imageName": "Screenshots_click_bless.png",
+    "profile": "High",
     "roiFront": "617,442,92,39",
     "roiBack": "617,442,92,39",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "luck_title",
     "imageName": "Screenshots_luck_title.png",
+    "profile": "High",
     "roiFront": "600,52,131,67",
     "roiBack": "600,52,131,67",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "friendship_up",
     "imageName": "friendship_up.png",
+    "profile": "High",
     "roiFront": "1147,80,27,28",
     "roiBack": "1147,80,27,28",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "close_luck_red",
     "imageName": "love_close_luck_red.png",
+    "profile": "High",
     "roiFront": "1063,129,30,30",
     "roiBack": "1010,84,127,128",
     "method": "Template matching",

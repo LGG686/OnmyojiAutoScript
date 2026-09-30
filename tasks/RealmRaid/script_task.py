@@ -498,7 +498,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RealmRaidAssets):
 
     @cached_property
     def false_image(self):
-        return RuleImage(roi_front=(0 ,0, 63, 32),
+        return RuleImage(profile="High", roi_front=(0 ,0, 63, 32),
                          roi_back=(0, 0, 100, 100),
                          threshold=0.8,
                          method="Template matching",

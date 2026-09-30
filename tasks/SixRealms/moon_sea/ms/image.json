@@ -2,6 +2,7 @@
   {
     "itemName": "mshouzu_select",
     "imageName": "ms_mshouzu_select.png",
+    "profile": "High",
     "roiFront": "544,179,199,438",
     "roiBack": "544,179,199,438",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "mshouzu",
     "imageName": "ms_mshouzu.png",
+    "profile": "High",
     "roiFront": "43,608,73,67",
     "roiBack": "43,608,73,67",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "mstart",
     "imageName": "ms_mstart.png",
+    "profile": "High",
     "roiFront": "1136,575,100,100",
     "roiBack": "1043,527,215,167",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "mstart_confirm",
     "imageName": "ms_mstart_confirm.png",
+    "profile": "High",
     "roiFront": "1136,575,100,100",
     "roiBack": "1080,548,182,150",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "mstart_uncheck",
     "imageName": "ms_mstart_uncheck.png",
+    "profile": "High",
     "roiFront": "543,340,38,40",
     "roiBack": "543,340,38,40",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "mstart_check",
     "imageName": "ms_mstart_check.png",
+    "profile": "High",
     "roiFront": "542,340,39,41",
     "roiBack": "542,340,39,41",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "mskip",
     "imageName": "ms_mskip.png",
+    "profile": "High",
     "roiFront": "1117,28,58,36",
     "roiBack": "1117,28,58,36",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "mconinue",
     "imageName": "ms_mconinue.png",
+    "profile": "High",
     "roiFront": "1121,578,100,100",
     "roiBack": "1121,578,100,100",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "mfirst_skill",
     "imageName": "ms_mfirst_skill.png",
+    "profile": "High",
     "roiFront": "255,577,141,39",
     "roiBack": "206,550,227,100",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "m_store",
     "imageName": "ms_m_store.png",
+    "profile": "High",
     "roiFront": "1124,594,61,57",
     "roiBack": "1103,576,100,100",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "m_store_activity",
     "imageName": "ms_m_store_activity.png",
+    "profile": "High",
     "roiFront": "1121,596,72,57",
     "roiBack": "1107,573,100,100",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "mstart_confirm2",
     "imageName": "ms_mstart_confirm2.png",
+    "profile": "High",
     "roiFront": "1154,581,74,85",
     "roiBack": "1079,535,196,177",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "exit_sixrealms",
     "imageName": "ms_exit_sixrealms.png",
+    "profile": "High",
     "roiFront": "507.5,308,100,100",
     "roiBack": "507.5,308,100,100",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "ms_check_exit_prepare",
     "imageName": "ms_ms_check_exit_prepare.png",
+    "profile": "High",
     "roiFront": "528,288,210,57",
     "roiBack": "436,223,414,249",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "ms_check_open_store",
     "imageName": "ms_ms_check_open_store.png",
+    "profile": "High",
     "roiFront": "441,289,397,58",
     "roiBack": "423,227,437,263",
     "method": "Template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "ms_skill_unlock",
     "imageName": "ms_ms_skill_unlock.png",
+    "profile": "High",
     "roiFront": "538,137,211,50",
     "roiBack": "1029,190,105,152",
     "method": "Template matching",
@@ -146,6 +162,7 @@
   {
     "itemName": "ms_check_map",
     "imageName": "ms_ms_check_map.png",
+    "profile": "High",
     "roiFront": "1119,15,144,230",
     "roiBack": "1088,0,192,286",
     "method": "Template matching",
@@ -155,6 +172,7 @@
   {
     "itemName": "ms_check_main",
     "imageName": "ms_ms_check_main.png",
+    "profile": "High",
     "roiFront": "99,16,97,47",
     "roiBack": "99,16,97,47",
     "method": "Template matching",

@@ -2,6 +2,7 @@
   {
     "itemName": "pk_boss_prepare",
     "imageName": "pk_pk_boss_prepare.png",
+    "profile": "High",
     "roiFront": "852,633,56,59",
     "roiBack": "827,611,100,100",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "pk_boss_unlock",
     "imageName": "pk_pk_boss_unlock.png",
+    "profile": "High",
     "roiFront": "1129,530,20,25",
     "roiBack": "1129,530,20,25",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "pk_boss_lock",
     "imageName": "pk_pk_boss_lock.png",
+    "profile": "High",
     "roiFront": "1129,530,20,25",
     "roiBack": "1129,530,20,25",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "pk_boss_fire",
     "imageName": "pk_pk_boss_fire.png",
+    "profile": "High",
     "roiFront": "1108,592,103,90",
     "roiBack": "1108,592,103,90",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "kp_boss_share",
     "imageName": "pk_kp_boss_share.png",
+    "profile": "High",
     "roiFront": "1161,626,59,62",
     "roiBack": "1142,609,100,100",
     "method": "Template matching",

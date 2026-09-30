@@ -2,6 +2,7 @@
   {
     "itemName": "exit_10",
     "imageName": "battle10_exit_10.png",
+    "profile": "High",
     "roiFront": "16,15,38,36",
     "roiBack": "16,15,38,36",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "friends_10",
     "imageName": "battle10_friends_10.png",
+    "profile": "High",
     "roiFront": "90,14,35,37",
     "roiBack": "90,14,35,37",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "local_10",
     "imageName": "battle10_local_10.png",
+    "profile": "High",
     "roiFront": "29,566,23,26",
     "roiBack": "29,566,23,26",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "battle_info_10",
     "imageName": "battle10_battle_info_10.png",
+    "profile": "High",
     "roiFront": "232,17,33,34",
     "roiBack": "208,0,147,58",
     "method": "Template matching",

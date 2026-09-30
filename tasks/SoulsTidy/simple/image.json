@@ -2,6 +2,7 @@
   {
     "itemName": "st_souls",
     "imageName": "simple_st_souls.png",
+    "profile": "High",
     "roiFront": "1170,226,70,80",
     "roiBack": "1170,226,70,80",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "st_replace",
     "imageName": "simple_st_replace.png",
+    "profile": "High",
     "roiFront": "856,170,100,100",
     "roiBack": "856,170,100,100",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "st_bongna",
     "imageName": "simple_st_bongna.png",
+    "profile": "High",
     "roiFront": "1154,202,77,97",
     "roiBack": "1154,202,77,97",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "st_greed",
     "imageName": "simple_st_greed.png",
+    "profile": "High",
     "roiFront": "1157,611,65,60",
     "roiBack": "1157,611,65,60",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "st_tidy",
     "imageName": "simple_st_tidy.png",
+    "profile": "High",
     "roiFront": "1155,328,74,100",
     "roiBack": "1155,328,74,100",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "st_greed_habit",
     "imageName": "simple_st_greed_habit.png",
+    "profile": "High",
     "roiFront": "817,529,165,61",
     "roiBack": "817,529,165,61",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "st_feed_now",
     "imageName": "simple_st_feed_now.png",
+    "profile": "High",
     "roiFront": "929,593,73,65",
     "roiBack": "929,593,73,65",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "st_unselected",
     "imageName": "simple_st_unselected.png",
+    "profile": "High",
     "roiFront": "542,342,38,37",
     "roiBack": "542,342,38,37",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "st_greed_close",
     "imageName": "simple_st_greed_close.png",
+    "profile": "High",
     "roiFront": "933,211,35,37",
     "roiBack": "933,211,35,37",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "st_cat",
     "imageName": "simple_st_cat.png",
+    "profile": "High",
     "roiFront": "799,269,147,133",
     "roiBack": "799,269,147,133",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "st_donate",
     "imageName": "simple_st_donate.png",
+    "profile": "High",
     "roiFront": "813,628,126,68",
     "roiBack": "813,628,126,68",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "st_god_present",
     "imageName": "simple_st_god_present.png",
+    "profile": "High",
     "roiFront": "578,234,131,73",
     "roiBack": "542,117,204,219",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "st_abandoned_selected",
     "imageName": "simple_st_abandoned_selected.png",
+    "profile": "High",
     "roiFront": "32,112,107,52",
     "roiBack": "15,89,139,87",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "st_level_0",
     "imageName": "simple_st_level_0.png",
+    "profile": "High",
     "roiFront": "85,235,45,30",
     "roiBack": "85,235,45,30",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "st_gold",
     "imageName": "simple_st_gold.png",
+    "profile": "High",
     "roiFront": "170,100,950,500",
     "roiBack": "170,100,950,500",
     "method": "Template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "st_soul_overflow",
     "imageName": "simple_st_soul_overflow.png",
+    "profile": "High",
     "roiFront": "447,260,384,42",
     "roiBack": "447,260,384,42",
     "method": "Template matching",
@@ -146,6 +162,7 @@
   {
     "itemName": "st_souls_close",
     "imageName": "simple_st_souls_close.png",
+    "profile": "High",
     "roiFront": "1180,227,56,83",
     "roiBack": "1166,215,84,107",
     "method": "Template matching",
@@ -155,6 +172,7 @@
   {
     "itemName": "st_soul_stack",
     "imageName": "simple_st_soul_stack.png",
+    "profile": "High",
     "roiFront": "142,234,20,16",
     "roiBack": "142,234,20,16",
     "method": "Template matching",
@@ -164,6 +182,7 @@
   {
     "itemName": "st_soul_stack_1",
     "imageName": "simple_st_soul_stack_1.png",
+    "profile": "High",
     "roiFront": "89,239,105,19",
     "roiBack": "89,239,105,19",
     "method": "Template matching",
@@ -173,6 +192,7 @@
   {
     "itemName": "st_luck",
     "imageName": "simple_st_luck.png",
+    "profile": "High",
     "roiFront": "596,236,110,56",
     "roiBack": "596,236,110,56",
     "method": "Template matching",
@@ -182,6 +202,7 @@
   {
     "itemName": "st_small_luck",
     "imageName": "simple_st_small_luck.png",
+    "profile": "High",
     "roiFront": "549,236,201,35",
     "roiBack": "549,236,201,35",
     "method": "Template matching",

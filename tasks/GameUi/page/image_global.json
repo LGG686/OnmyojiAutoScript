@@ -6,7 +6,7 @@
     "roiBack": "85,10,136,60",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "阵容助手页"
   }
 ]

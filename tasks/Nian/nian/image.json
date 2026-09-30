@@ -2,6 +2,7 @@
   {
     "itemName": "auto_matching",
     "imageName": "nian_auto_matching.png",
+    "profile": "High",
     "roiFront": "698,598,180,64",
     "roiBack": "698,598,180,64",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "n_check",
     "imageName": "nian_n_check.png",
+    "profile": "High",
     "roiFront": "793,279,242,246",
     "roiBack": "793,279,242,246",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "n_waiting",
     "imageName": "nian_n_waiting.png",
+    "profile": "High",
     "roiFront": "735,28,54,51",
     "roiBack": "614,10,303,83",
     "method": "Template matching",

@@ -2,6 +2,7 @@
   {
     "itemName": "s_next_period",
     "imageName": "shrine_s_next_period.png",
+    "profile": "High",
     "roiFront": "1083,574,90,86",
     "roiBack": "1083,574,90,86",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "s_white_five",
     "imageName": "shrine_s_white_five.png",
+    "profile": "High",
     "roiFront": "769,143,77,85",
     "roiBack": "769,143,77,85",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "s_white_four",
     "imageName": "shrine_s_white_four.png",
+    "profile": "High",
     "roiFront": "951,144,73,82",
     "roiBack": "951,144,73,82",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "s_black",
     "imageName": "shrine_s_black.png",
+    "profile": "High",
     "roiFront": "588,143,78,83",
     "roiBack": "588,143,78,83",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "s_buy_black",
     "imageName": "shrine_s_buy_black.png",
+    "profile": "High",
     "roiFront": "777,508,173,60",
     "roiBack": "777,508,173,60",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "s_buy_white_five",
     "imageName": "shrine_s_buy_white_five.png",
+    "profile": "High",
     "roiFront": "778,512,177,56",
     "roiBack": "778,512,177,56",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "s_buy_white_four",
     "imageName": "shrine_s_buy_white_four.png",
+    "profile": "High",
     "roiFront": "779,507,173,64",
     "roiBack": "779,507,173,64",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "s_confirm_white_five",
     "imageName": "shrine_s_confirm_white_five.png",
+    "profile": "High",
     "roiFront": "554,522,174,61",
     "roiBack": "520,416,220,193",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "s_confirm_white_four",
     "imageName": "shrine_s_confirm_white_four.png",
+    "profile": "High",
     "roiFront": "548,486,176,62",
     "roiBack": "509,404,252,231",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "s_confirm_black",
     "imageName": "shrine_s_confirm_black.png",
+    "profile": "High",
     "roiFront": "547,496,180,62",
     "roiBack": "532,426,214,184",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "s_buy_up",
     "imageName": "shrine_s_buy_up.png",
+    "profile": "High",
     "roiFront": "762,412,56,54",
     "roiBack": "762,412,56,54",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "s_check_black",
     "imageName": "shrine_s_check_black.png",
+    "profile": "High",
     "roiFront": "811,225,108,178",
     "roiBack": "811,225,108,178",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "s_check_white_five",
     "imageName": "shrine_s_check_white_five.png",
+    "profile": "High",
     "roiFront": "810,222,109,182",
     "roiBack": "810,222,109,182",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "s_check_white_four",
     "imageName": "shrine_s_check_white_four.png",
+    "profile": "High",
     "roiFront": "808,222,113,181",
     "roiBack": "808,222,113,181",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "s_summon_to_shrine",
     "imageName": "shrine_s_summon_to_shrine.png",
+    "profile": "High",
     "roiFront": "1235,353,16,38",
     "roiBack": "864,210,413,337",
     "method": "Template matching",

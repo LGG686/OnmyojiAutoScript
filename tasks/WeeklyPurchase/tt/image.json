@@ -2,6 +2,7 @@
   {
     "itemName": "tt_enter",
     "imageName": "tt_tt_enter.png",
+    "profile": "High",
     "roiFront": "1140,585,73,76",
     "roiBack": "1140,585,73,76",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "tt_check",
     "imageName": "tt_tt_check.png",
+    "profile": "High",
     "roiFront": "141,61,228,67",
     "roiBack": "141,61,228,67",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "tt_black",
     "imageName": "tt_tt_black.png",
+    "profile": "High",
     "roiFront": "710,176,91,90",
     "roiBack": "453,171,589,109",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "tt_ticket_bule",
     "imageName": "tt_tt_ticket_bule.png",
+    "profile": "High",
     "roiFront": "484,176,85,91",
     "roiBack": "475,170,562,110",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "tt_ap",
     "imageName": "tt_tt_ap.png",
+    "profile": "High",
     "roiFront": "938,177,88,87",
     "roiBack": "467,167,581,123",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "tt_buy_up",
     "imageName": "tt_tt_buy_up.png",
+    "profile": "High",
     "roiFront": "755,427,59,57",
     "roiBack": "740,386,80,146",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "tt_buy_confirm",
     "imageName": "tt_tt_buy_confirm.png",
+    "profile": "High",
     "roiFront": "584,512,53,53",
     "roiBack": "553,487,169,115",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "tt_borrow",
     "imageName": "tt_tt_borrow.png",
+    "profile": "High",
     "roiFront": "1043,262,39,149",
     "roiBack": "960,169,208,309",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "tt_configure",
     "imageName": "tt_tt_configure.png",
+    "profile": "High",
     "roiFront": "1129,608,42,44",
     "roiBack": "1036,523,240,197",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "tt_confirm",
     "imageName": "tt_tt_confirm.png",
+    "profile": "High",
     "roiFront": "1129,608,42,44",
     "roiBack": "1036,523,240,197",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "tt_shikigami",
     "imageName": "tt_tt_shikigami.png",
+    "profile": "High",
     "roiFront": "682,257,15,14",
     "roiBack": "652,221,151,148",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "tt_shikigami_replace",
     "imageName": "tt_tt_shikigami_replace.png",
+    "profile": "High",
     "roiFront": "755,641,57,19",
     "roiBack": "703,580,148,134",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "tt_borrow_confirm",
     "imageName": "tt_tt_borrow_confirm.png",
+    "profile": "High",
     "roiFront": "960,508,50,53",
     "roiBack": "886,444,222,194",
     "method": "Template matching",

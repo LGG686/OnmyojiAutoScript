@@ -2,6 +2,7 @@
   {
     "itemName": "explore",
     "imageName": "res_explore.png",
+    "profile": "High",
     "roiFront": "758,122,66,77",
     "roiBack": "339,104,836,120",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "area_boss",
     "imageName": "res_area_boss.png",
+    "profile": "High",
     "roiFront": "639,636,65,68",
     "roiBack": "606,619,145,100",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "back_blue",
     "imageName": "res_back_blue.png",
+    "profile": "High",
     "roiFront": "51,30,51,52",
     "roiBack": "4,1,128,110",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "filter",
     "imageName": "res_filter.png",
+    "profile": "High",
     "roiFront": "1116,33,35,31",
     "roiBack": "1076,19,98,78",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "battle_1",
     "imageName": "res_battle_1.png",
+    "profile": "High",
     "roiFront": "1083,235,65,54",
     "roiBack": "1083,235,65,54",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "battle_2",
     "imageName": "res_battle_2.png",
+    "profile": "High",
     "roiFront": "1086,390,56,53",
     "roiBack": "1086,390,56,53",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "battle_3",
     "imageName": "res_battle_3.png",
+    "profile": "High",
     "roiFront": "1083,545,66,53",
     "roiBack": "1083,545,66,53",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "fire",
     "imageName": "res_fire.png",
+    "profile": "High",
     "roiFront": "1109,490,100,73",
     "roiBack": "1075,463,150,158",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "close_red",
     "imageName": "res_close_red.png",
+    "profile": "High",
     "roiFront": "1190,24,37,38",
     "roiBack": "1190,24,37,38",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "ab_close_red",
     "imageName": "res_ab_close_red.png",
+    "profile": "High",
     "roiFront": "1194,24,38,37",
     "roiBack": "1194,24,38,37",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "ab_filter_title_reward",
     "imageName": "ab_filter_title_reward.png",
+    "profile": "High",
     "roiFront": "920,110,190,70",
     "roiBack": "920,110,190,70",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "ab_filter_title_famous",
     "imageName": "ab_filter_title_famous.png",
+    "profile": "High",
     "roiFront": "920,110,190,70",
     "roiBack": "920,110,190,70",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "ab_filter_title_collection",
     "imageName": "ab_filter_title_collection.png",
+    "profile": "High",
     "roiFront": "920,110,190,70",
     "roiBack": "920,110,190,70",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "ab_filter_opened",
     "imageName": "ab_filter_opened.png",
+    "profile": "High",
     "roiFront": "840,110,130,70",
     "roiBack": "840,110,130,70",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "ab_difficulty_ji",
     "imageName": "ab_difficulty_ji.png",
+    "profile": "High",
     "roiFront": "260,100,70,70",
     "roiBack": "260,100,70,70",
     "method": "Template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "ab_difficulty_normal",
     "imageName": "ab_difficulty_normal.png",
+    "profile": "High",
     "roiFront": "260,100,70,70",
     "roiBack": "260,100,70,70",
     "method": "Template matching",
@@ -146,6 +162,7 @@
   {
     "itemName": "ab_level_handle",
     "imageName": "ab_level_handle.png",
+    "profile": "High",
     "roiFront": "170,250,400,75",
     "roiBack": "170,250,400,75",
     "method": "Template matching",
@@ -155,6 +172,7 @@
   {
     "itemName": "ab_level_60",
     "imageName": "ab_level_60.png",
+    "profile": "High",
     "roiFront": "300,160,110,100",
     "roiBack": "300,160,110,100",
     "method": "Template matching",
@@ -164,6 +182,7 @@
   {
     "itemName": "ab_ji_floor_list_check",
     "imageName": "ab_ji_floor_list_check.png",
+    "profile": "High",
     "roiFront": "390,150,60,290",
     "roiBack": "390,150,60,290",
     "method": "Template matching",
@@ -173,6 +192,7 @@
   {
     "itemName": "ab_ji_floor_one",
     "imageName": "ab_ji_floor_one.png",
+    "profile": "High",
     "roiFront": "390,150,60,290",
     "roiBack": "390,150,60,290",
     "method": "Template matching",
@@ -182,6 +202,7 @@
   {
     "itemName": "ab_ji_floor_ten",
     "imageName": "ab_ji_floor_ten.png",
+    "profile": "High",
     "roiFront": "390,370,60,40",
     "roiBack": "390,370,60,40",
     "method": "Template matching",
@@ -191,6 +212,7 @@
   {
     "itemName": "ab_group_rank_none",
     "imageName": "ab_rank_none.png",
+    "profile": "High",
     "roiFront": "890,415,95,85",
     "roiBack": "890,415,95,85",
     "method": "Template matching",
@@ -200,6 +222,7 @@
   {
     "itemName": "ab_num_challenge_rail",
     "imageName": "ab_num_challenge_rail.png",
+    "profile": "High",
     "roiFront": "895,639,14,27",
     "roiBack": "895,639,14,27",
     "method": "Template matching",

@@ -2,6 +2,7 @@
   {
     "itemName": "guild_goto_tf",
     "imageName": "touch_fish_guild_goto_tf.png",
+    "profile": "High",
     "roiFront": "30,433,88,30",
     "roiBack": "7,153,227,329",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "wt_happy_get",
     "imageName": "touch_fish_wt_happy_get.png",
+    "profile": "High",
     "roiFront": "736,461,119,35",
     "roiBack": "736,461,119,35",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "wt_save_all",
     "imageName": "touch_fish_wt_save_all.png",
+    "profile": "High",
     "roiFront": "1115,598,79,74",
     "roiBack": "1115,598,79,74",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "check_touch_fish",
     "imageName": "touch_fish_check_touch_fish.png",
+    "profile": "High",
     "roiFront": "1082,20,27,27",
     "roiBack": "1082,20,27,27",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "wt_tf_goto_main",
     "imageName": "touch_fish_wt_tf_goto_main.png",
+    "profile": "High",
     "roiFront": "93,17,42,39",
     "roiBack": "0,0,198,82",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "wt_open_fold_window",
     "imageName": "touch_fish_wt_open_fold_window.png",
+    "profile": "High",
     "roiFront": "28,155,21,21",
     "roiBack": "28,155,21,21",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "wt_fold_window",
     "imageName": "touch_fish_wt_fold_window.png",
+    "profile": "High",
     "roiFront": "261,155,21,21",
     "roiBack": "261,155,21,21",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "wt_tf_confirm",
     "imageName": "touch_fish_wt_tf_confirm.png",
+    "profile": "High",
     "roiFront": "672,588,139,56",
     "roiBack": "672,588,139,56",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "wt_tf_save_success",
     "imageName": "touch_fish_wt_tf_save_success.png",
+    "profile": "High",
     "roiFront": "942,243,62,25",
     "roiBack": "871,212,219,70",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "wt_last_save",
     "imageName": "touch_fish_wt_last_save.png",
+    "profile": "High",
     "roiFront": "590,78,99,24",
     "roiBack": "540,58,213,59",
     "method": "Template matching",

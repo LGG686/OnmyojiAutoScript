@@ -23,17 +23,17 @@ class QuizAssets:
 
 	# Image Rule Assets
 	# description 
-	I_ENTRY = RuleImage(roi_front=(770,373,33,139), roi_back=(745,281,142,329), threshold=0.8, method="Template matching", file="./tasks/Quiz/quiz/entry.png")
+	I_ENTRY = RuleImage(profile="High", roi_front=(770,373,33,139), roi_back=(745,281,142,329), threshold=0.8, method="Template matching", file="./tasks/Quiz/quiz/entry.png")
 	# 开始 
-	I_START = RuleImage(roi_front=(1149,608,66,41), roi_back=(1136,574,100,100), threshold=0.8, method="Template matching", file="./tasks/Quiz/quiz/quiz_start.png")
+	I_START = RuleImage(profile="High", roi_front=(1149,608,66,41), roi_back=(1136,574,100,100), threshold=0.8, method="Template matching", file="./tasks/Quiz/quiz/quiz_start.png")
 	# 标志 
-	I_MESSAGE = RuleImage(roi_front=(73,483,53,46), roi_back=(51,450,170,136), threshold=0.8, method="Template matching", file="./tasks/Quiz/quiz/message.png")
+	I_MESSAGE = RuleImage(profile="High", roi_front=(73,483,53,46), roi_back=(51,450,170,136), threshold=0.8, method="Template matching", file="./tasks/Quiz/quiz/message.png")
 	# 失败然后离开 
-	I_FAIL_QUIT = RuleImage(roi_front=(612,534,67,31), roi_back=(375,484,524,163), threshold=0.8, method="Template matching", file="./tasks/Quiz/quiz/fail_quit.png")
+	I_FAIL_QUIT = RuleImage(profile="High", roi_front=(612,534,67,31), roi_back=(375,484,524,163), threshold=0.8, method="Template matching", file="./tasks/Quiz/quiz/fail_quit.png")
 	# 结算分享 
-	I_SHARE = RuleImage(roi_front=(1171,625,53,44), roi_back=(1152,592,100,100), threshold=0.8, method="Template matching", file="./tasks/Quiz/quiz/quiz_share.png")
+	I_SHARE = RuleImage(profile="High", roi_front=(1171,625,53,44), roi_back=(1152,592,100,100), threshold=0.8, method="Template matching", file="./tasks/Quiz/quiz/quiz_share.png")
 	# description 
-	I_ALONE_ENSURE = RuleImage(roi_front=(1216,405,30,41), roi_back=(1138,148,140,435), threshold=0.7, method="Template matching", file="./tasks/Quiz/quiz/alone_ensure.png")
+	I_ALONE_ENSURE = RuleImage(profile="High", roi_front=(1216,405,30,41), roi_back=(1138,148,140,435), threshold=0.7, method="Template matching", file="./tasks/Quiz/quiz/alone_ensure.png")
 
 
 	# Ocr Rule Assets

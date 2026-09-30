@@ -2,6 +2,7 @@
   {
     "itemName": "stone_enter",
     "imageName": "stone_stone_enter.png",
+    "profile": "High",
     "roiFront": "1172,444,38,41",
     "roiBack": "1172,444,38,41",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "stone_sure",
     "imageName": "stone_stone_sure.png",
+    "profile": "High",
     "roiFront": "644,621,56,39",
     "roiBack": "618,614,120,52",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "buy_plus",
     "imageName": "buy_plus.png",
+    "profile": "High",
     "roiFront": "765,543,43,40",
     "roiBack": "765,543,43,40",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "buy_add",
     "imageName": "buy_add.png",
+    "profile": "High",
     "roiFront": "678,540,43,40",
     "roiBack": "678,540,43,40",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "buy_sub",
     "imageName": "buy_sub.png",
+    "profile": "High",
     "roiFront": "468,540,43,40",
     "roiBack": "468,540,43,40",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "stone_close",
     "imageName": "stone_stone_close.png",
+    "profile": "High",
     "roiFront": "911,56,42,38",
     "roiBack": "888,49,100,100",
     "method": "Template matching",

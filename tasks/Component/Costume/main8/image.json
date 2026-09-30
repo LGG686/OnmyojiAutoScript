@@ -2,6 +2,7 @@
   {
     "itemName": "check_main_8",
     "imageName": "main8_check_main_8.png",
+    "profile": "High",
     "roiFront": "843,116,240,64",
     "roiBack": "149,108,1088,100",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "main_goto_exploration_8",
     "imageName": "main8_main_goto_exploration_8.png",
+    "profile": "High",
     "roiFront": "665,141,59,61",
     "roiBack": "239,125,904,100",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "main_goto_summon_8",
     "imageName": "main8_main_goto_summon_8.png",
+    "profile": "High",
     "roiFront": "1236,212,39,62",
     "roiBack": "1085,192,194,119",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "main_goto_town_8",
     "imageName": "main8_main_goto_town_8.png",
+    "profile": "High",
     "roiFront": "671,434,56,51",
     "roiBack": "308,409,888,82",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "pet_house_8",
     "imageName": "main8_pet_house_8.png",
+    "profile": "High",
     "roiFront": "1110,499,50,40",
     "roiBack": "1033,469,241,83",
     "method": "Template matching",

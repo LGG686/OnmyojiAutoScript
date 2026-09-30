@@ -120,7 +120,7 @@ class CostumeBase:
 
     @staticmethod
     def _clone_rule_image(rule: RuleImage) -> RuleImage:
-        clone = RuleImage(
+        clone = RuleImage(profile="High",
             roi_front=tuple(rule.roi_front),
             roi_back=tuple(rule.roi_back),
             threshold=rule.threshold,

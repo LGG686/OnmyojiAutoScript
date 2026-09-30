@@ -6,7 +6,7 @@
     "roiBack": "778,232,127,98",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -16,7 +16,7 @@
     "roiBack": "710,174,68,88",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -26,7 +26,7 @@
     "roiBack": "959,138,50,58",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -36,7 +36,7 @@
     "roiBack": "928,177,221,182",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -46,7 +46,7 @@
     "roiBack": "543,125,63,69",
     "method": "Template matching",
     "threshold": 0.6,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -56,7 +56,7 @@
     "roiBack": "97,171,211,244",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -66,7 +66,7 @@
     "roiBack": "804,387,312,129",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -76,7 +76,7 @@
     "roiBack": "808,395,327,118",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -86,7 +86,7 @@
     "roiBack": "782,392,328,135",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -96,7 +96,7 @@
     "roiBack": "814,386,279,137",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -106,7 +106,7 @@
     "roiBack": "774,382,320,122",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   }
 ]

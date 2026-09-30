@@ -6,7 +6,7 @@
     "roiBack": "972,293,169,80",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -16,7 +16,7 @@
     "roiBack": "1161,114,68,85",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -26,7 +26,7 @@
     "roiBack": "434,68,120,120",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "完美达成"
   },
   {
@@ -36,7 +36,7 @@
     "roiBack": "830,121,64,78",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -46,7 +46,7 @@
     "roiBack": "420,62,120,120",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "差强人意"
   },
   {
@@ -56,7 +56,7 @@
     "roiBack": "651,161,601,391",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -66,7 +66,7 @@
     "roiBack": "671,309,428,258",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   }
 ]

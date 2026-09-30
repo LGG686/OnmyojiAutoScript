@@ -83,7 +83,7 @@ class ChessRecognitionMixin:
     @cached_property
     def store_gold_rule(self) -> RuleImage:
         """商店卡价格前的金币图标，用于定位其右侧价格数字。"""
-        return RuleImage(
+        return RuleImage(profile="High",
             roi_front=(0, 0, 18, 18),
             roi_back=(0, 0, 1280, 720),
             method=RuleImage.METHOD_TEMPLATE_MATCH,
@@ -145,7 +145,7 @@ class ChessRecognitionMixin:
             # 两类模板归一为同一个式神名，并同时参与匹配。
             if folder == 'shikigami' and name.endswith('_1'):
                 name = name[:-2]
-            rule = RuleImage(
+            rule = RuleImage(profile="High",
                 roi_front=(cls.HAND_AREA[0], cls.HAND_AREA[1], 1, 1),
                 roi_back=cls.HAND_AREA,
                 threshold=cls.HAND_TEMPLATE_THRESHOLD,
@@ -167,7 +167,7 @@ class ChessRecognitionMixin:
         """直接加载三种场上勾玉；不依赖 assets/json 注册项。"""
         template_dir = CHESS_TASK_DIR / 'c'
         return tuple(
-            RuleImage(
+            RuleImage(profile="High",
                 roi_front=(0, 0, 1, 1),
                 roi_back=(0, 0, 1, 1),
                 threshold=self.BOARD_OCCUPANCY_TEMPLATE_THRESHOLD,
@@ -196,7 +196,7 @@ class ChessRecognitionMixin:
                         f'name={name}, file={filename}'
                     )
                     continue
-                rules.append((name, RuleImage(
+                rules.append((name, RuleImage(profile="High",
                     roi_front=(self.HAND_AREA[0], self.HAND_AREA[1], 1, 1),
                     roi_back=self.HAND_AREA,
                     threshold=threshold,
@@ -225,7 +225,7 @@ class ChessRecognitionMixin:
             CHESS_TASK_DIR
             / self.HAKUZOSU_PROTECT_IMAGE
         )
-        return RuleImage(
+        return RuleImage(profile="High",
             roi_front=(self.HAND_AREA[0], self.HAND_AREA[1], 1, 1),
             roi_back=self.HAND_AREA,
             threshold=self.HAND_TEMPLATE_THRESHOLD,
@@ -253,7 +253,7 @@ class ChessRecognitionMixin:
             name = file.stem[len('store_'):]
             rules.append((
                 name,
-                RuleImage(
+                RuleImage(profile="High",
                     roi_front=(self.HAND_AREA[0], self.HAND_AREA[1], 1, 1),
                     roi_back=self.HAND_AREA,
                     threshold=self.SHOP_TEMPLATE_THRESHOLD,

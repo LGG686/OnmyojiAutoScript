@@ -2,6 +2,7 @@
   {
     "itemName": "pet_house",
     "imageName": "pet_pet_house.png",
+    "profile": "High",
     "roiFront": "1012,414,56,25",
     "roiBack": "952,412,144,60",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "pet_claw",
     "imageName": "pet_pet_claw.png",
+    "profile": "High",
     "roiFront": "1171,625,55,56",
     "roiBack": "1171,625,55,56",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "pet_feast",
     "imageName": "pet_pet_feast.png",
+    "profile": "High",
     "roiFront": "849,624,69,49",
     "roiBack": "849,624,69,49",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "pet_feed",
     "imageName": "pet_pet_feed.png",
+    "profile": "High",
     "roiFront": "899,511,79,68",
     "roiBack": "884,485,127,123",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "pet_skip",
     "imageName": "pet_pet_skip.png",
+    "profile": "High",
     "roiFront": "1089,119,72,41",
     "roiBack": "999,42,242,147",
     "method": "Template matching",

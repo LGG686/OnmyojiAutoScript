@@ -2,6 +2,7 @@
   {
     "itemName": "pk_mystery_imitate",
     "imageName": "pk_pk_mystery_imitate.png",
+    "profile": "High",
     "roiFront": "1154,607,81,89",
     "roiBack": "1133,591,129,125",
     "method": "Template matching",

@@ -2,6 +2,7 @@
   {
     "itemName": "sl_submit",
     "imageName": "soul_sl_submit.png",
+    "profile": "High",
     "roiFront": "835,588,145,61",
     "roiBack": "835,588,145,61",
     "method": "Template matching",

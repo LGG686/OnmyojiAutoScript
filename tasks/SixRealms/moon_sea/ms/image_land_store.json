@@ -2,6 +2,7 @@
   {
     "itemName": "store_refresh",
     "imageName": "ms_store_refresh.png",
+    "profile": "High",
     "roiFront": "545,596,46,47",
     "roiBack": "519,568,100,100",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "store_skill_101",
     "imageName": "ms_store_skill_101.png",
+    "profile": "High",
     "roiFront": "876,121,47,41",
     "roiBack": "682,100,455,571",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "store_exit",
     "imageName": "ms_store_exit.png",
+    "profile": "High",
     "roiFront": "1179,586,59,56",
     "roiBack": "1179,586,59,56",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "store_stable_flag",
     "imageName": "ms_store_stable_flag.png",
+    "profile": "High",
     "roiFront": "1028,251,28,27",
     "roiBack": "1011,241,63,47",
     "method": "Template matching",

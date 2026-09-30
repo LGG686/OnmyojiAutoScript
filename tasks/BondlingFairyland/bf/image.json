@@ -2,6 +2,7 @@
   {
     "itemName": "bf_searsh",
     "imageName": "bf_bf_searsh.png",
+    "profile": "High",
     "roiFront": "1144,580,88,85",
     "roiBack": "1102,531,176,188",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "bf_lock",
     "imageName": "bf_bf_lock.png",
+    "profile": "High",
     "roiFront": "826,653,24,26",
     "roiBack": "826,653,24,26",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "bf_unlock",
     "imageName": "bf_bf_unlock.png",
+    "profile": "High",
     "roiFront": "822,651,28,28",
     "roiBack": "822,651,28,28",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "bf_store",
     "imageName": "bf_bf_store.png",
+    "profile": "High",
     "roiFront": "261,632,57,57",
     "roiBack": "261,632,57,57",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "bf_records",
     "imageName": "bf_bf_records.png",
+    "profile": "High",
     "roiFront": "1028,566,43,42",
     "roiBack": "1028,566,43,42",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "bf_local_1_azure_basan",
     "imageName": "bf_bf_local_1_azure_basan.png",
+    "profile": "High",
     "roiFront": "237,536,28,25",
     "roiBack": "225,523,53,50",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "bf_local_2_snowball",
     "imageName": "bf_bf_local_2_snowball.png",
+    "profile": "High",
     "roiFront": "418,490,24,25",
     "roiBack": "406,475,53,50",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "bf_local_3_little_kuro",
     "imageName": "bf_bf_local_3_little_kuro.png",
+    "profile": "High",
     "roiFront": "704,509,29,26",
     "roiBack": "690,492,62,58",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "bf_local_4_none",
     "imageName": "bf_bf_local_4_none.png",
+    "profile": "High",
     "roiFront": "911,488,26,25",
     "roiBack": "899,468,53,56",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "bf_local_5_tomb_guard",
     "imageName": "bf_bf_local_5_tomb_guard.png",
+    "profile": "High",
     "roiFront": "1039,487,31,31",
     "roiBack": "1026,481,56,51",
     "method": "Template matching",

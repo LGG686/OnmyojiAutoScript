@@ -2,6 +2,7 @@
   {
     "itemName": "abyss_dragon",
     "imageName": "res_abyss_dragon.png",
+    "profile": "High",
     "roiFront": "199,150,109,271",
     "roiBack": "199,150,109,271",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "abyss_dragon_over",
     "imageName": "res_abyss_dragon_over.png",
+    "profile": "High",
     "roiFront": "200,150,110,270",
     "roiBack": "200,150,110,270",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "abyss_peacock",
     "imageName": "res_abyss_peacock.png",
+    "profile": "High",
     "roiFront": "521,152,48,165",
     "roiBack": "465,104,145,312",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "abyss_fox",
     "imageName": "res_abyss_fox.png",
+    "profile": "High",
     "roiFront": "815,174,49,144",
     "roiBack": "789,130,148,249",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "abyss_leopard",
     "imageName": "res_abyss_leopard.png",
+    "profile": "High",
     "roiFront": "1142,166,50,162",
     "roiBack": "1093,143,138,297",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "abyss_navigation",
     "imageName": "res_abyss_navigation.png",
+    "profile": "High",
     "roiFront": "1200,372,50,44",
     "roiBack": "1200,372,50,44",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "abyss_shiki",
     "imageName": "res_abyss_shiki.png",
+    "profile": "High",
     "roiFront": "1199,462,47,53",
     "roiBack": "1199,462,47,53",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "abyss_shadows",
     "imageName": "res_abyss_shadows.png",
+    "profile": "High",
     "roiFront": "711,489,107,38",
     "roiBack": "711,479,107,48",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "abyss_map",
     "imageName": "res_abyss_map.png",
+    "profile": "High",
     "roiFront": "306,147,170,48",
     "roiBack": "306,147,170,48",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "abyss_map_exit",
     "imageName": "res_abyss_map_exit.png",
+    "profile": "High",
     "roiFront": "1154,96,32,32",
     "roiBack": "1154,96,32,32",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "abyss_enemy_info_exit",
     "imageName": "res_abyss_enemy_info_exit.png",
+    "profile": "High",
     "roiFront": "975,80,90,70",
     "roiBack": "975,80,90,70",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "abyss_fire",
     "imageName": "res_abyss_fire.png",
+    "profile": "High",
     "roiFront": "1121,605,77,50",
     "roiBack": "1121,605,77,50",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "abyss_goto_enemy",
     "imageName": "res_abyss_goto_enemy.png",
+    "profile": "High",
     "roiFront": "1120,610,75,45",
     "roiBack": "1120,610,75,45",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "change_area",
     "imageName": "res_change_area.png",
+    "profile": "High",
     "roiFront": "993,610,63,61",
     "roiBack": "993,610,63,61",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "ensure_button",
     "imageName": "res_ensure_button.png",
+    "profile": "High",
     "roiFront": "672,405,169,55",
     "roiBack": "672,405,169,55",
     "method": "Template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "is_attack",
     "imageName": "res_is_attack.png",
+    "profile": "High",
     "roiFront": "576,54,91,45",
     "roiBack": "576,54,91,45",
     "method": "Template matching",
@@ -146,6 +162,7 @@
   {
     "itemName": "check_finish",
     "imageName": "res_check_finish.png",
+    "profile": "High",
     "roiFront": "570,50,120,60",
     "roiBack": "570,50,120,60",
     "method": "Template matching",
@@ -155,6 +172,7 @@
   {
     "itemName": "peacock_area",
     "imageName": "res_peacock_area.png",
+    "profile": "High",
     "roiFront": "577,14,127,36",
     "roiBack": "577,14,127,36",
     "method": "Template matching",
@@ -164,6 +182,7 @@
   {
     "itemName": "leopard_area",
     "imageName": "res_leopard_area.png",
+    "profile": "High",
     "roiFront": "589,13,104,39",
     "roiBack": "589,13,104,39",
     "method": "Template matching",
@@ -173,6 +192,7 @@
   {
     "itemName": "fox_area",
     "imageName": "res_fox_area.png",
+    "profile": "High",
     "roiFront": "581,18,121,29",
     "roiBack": "581,18,121,29",
     "method": "Template matching",
@@ -182,6 +202,7 @@
   {
     "itemName": "change_area",
     "imageName": "res_change_area.png",
+    "profile": "High",
     "roiFront": "511,20,27,27",
     "roiBack": "511,20,27,27",
     "method": "Template matching",
@@ -191,6 +212,7 @@
   {
     "itemName": "dragon_area",
     "imageName": "res_dragon_area.png",
+    "profile": "High",
     "roiFront": "584,15,111,34",
     "roiBack": "584,15,111,34",
     "method": "Template matching",
@@ -200,6 +222,7 @@
   {
     "itemName": "wait_to_start",
     "imageName": "res_wait_to_start.png",
+    "profile": "High",
     "roiFront": "588,64,70,26",
     "roiBack": "588,64,70,26",
     "method": "Template matching",
@@ -209,6 +232,7 @@
   {
     "itemName": "select_difficulty",
     "imageName": "res_select_difficulty.png",
+    "profile": "High",
     "roiFront": "703,645,50,55",
     "roiBack": "703,645,50,55",
     "method": "Template matching",
@@ -218,6 +242,7 @@
   {
     "itemName": "difficulty_easy",
     "imageName": "res_difficulty_easy.png",
+    "profile": "High",
     "roiFront": "644,389,35,41",
     "roiBack": "619,374,91,275",
     "method": "Template matching",
@@ -227,6 +252,7 @@
   {
     "itemName": "difficulty_normal",
     "imageName": "res_difficulty_normal.png",
+    "profile": "High",
     "roiFront": "642,453,38,47",
     "roiBack": "621,378,87,272",
     "method": "Template matching",
@@ -236,6 +262,7 @@
   {
     "itemName": "difficulty_hard",
     "imageName": "res_difficulty_hard.png",
+    "profile": "High",
     "roiFront": "645,527,40,39",
     "roiBack": "620,383,89,263",
     "method": "Template matching",
@@ -245,6 +272,7 @@
   {
     "itemName": "btn_start",
     "imageName": "res_btn_start.png",
+    "profile": "High",
     "roiFront": "1120,570,100,120",
     "roiBack": "1120,570,100,120",
     "method": "Template matching",
@@ -254,6 +282,7 @@
   {
     "itemName": "start_ensure",
     "imageName": "res_start_ensure.png",
+    "profile": "High",
     "roiFront": "660,390,190,80",
     "roiBack": "660,390,190,80",
     "method": "Template matching",
@@ -263,6 +292,7 @@
   {
     "itemName": "abyss_enemy_fire",
     "imageName": "res_abyss_enemy_fire.png",
+    "profile": "High",
     "roiFront": "1100,560,130,130",
     "roiBack": "1100,560,130,130",
     "method": "Template matching",
@@ -272,6 +302,7 @@
   {
     "itemName": "mark_main",
     "imageName": "res_mark_main.png",
+    "profile": "High",
     "roiFront": "375,40,60,30",
     "roiBack": "375,40,60,30",
     "method": "Template matching",
@@ -281,6 +312,7 @@
   {
     "itemName": "check_shenshe",
     "imageName": "res_check_shenshe.png",
+    "profile": "High",
     "roiFront": "72,76,45,115",
     "roiBack": "31,27,119,207",
     "method": "Template matching",
@@ -290,6 +322,7 @@
   {
     "itemName": "check_abyss",
     "imageName": "res_check_abyss.png",
+    "profile": "High",
     "roiFront": "1082,14,52,50",
     "roiBack": "992,0,247,80",
     "method": "Template matching",
@@ -299,6 +332,7 @@
   {
     "itemName": "difficulty_extreme",
     "imageName": "res_difficulty_extreme.png",
+    "profile": "High",
     "roiFront": "644,593,40,39",
     "roiBack": "620,383,89,263",
     "method": "Template matching",
@@ -308,6 +342,7 @@
   {
     "itemName": "open_quick_loadout",
     "imageName": "res_open_quick_loadout.png",
+    "profile": "High",
     "roiFront": "897,625,45,46",
     "roiBack": "892,620,55,56",
     "method": "Template matching",
@@ -317,6 +352,7 @@
   {
     "itemName": "abyss_quick_loadout_fight",
     "imageName": "res_abyss_quick_loadout_fight.png",
+    "profile": "High",
     "roiFront": "811,540,119,42",
     "roiBack": "806,535,129,52",
     "method": "Template matching",

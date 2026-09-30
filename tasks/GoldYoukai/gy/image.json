@@ -2,6 +2,7 @@
   {
     "itemName": "gold_win",
     "imageName": "gy_gold_win.png",
+    "profile": "High",
     "roiFront": "380,44,100,100",
     "roiBack": "380,44,100,100",
     "method": "Template matching",

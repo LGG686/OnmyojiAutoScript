@@ -2,6 +2,7 @@
   {
     "itemName": "pk_battle_common",
     "imageName": "pk_pk_battle_common.png",
+    "profile": "High",
     "roiFront": "719,223,35,40",
     "roiBack": "703,210,66,72",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "pk_battle_fire",
     "imageName": "pk_pk_battle_fire.png",
+    "profile": "High",
     "roiFront": "1120,578,97,94",
     "roiBack": "1120,578,97,94",
     "method": "Template matching",

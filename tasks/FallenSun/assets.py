@@ -12,17 +12,17 @@ class FallenSunAssets:
 
 	# Image Rule Assets
 	# 选择日轮 
-	I_FALLEN_SUN = RuleImage(roi_front=(886,107,47,55), roi_back=(734,74,219,341), threshold=0.8, method="Template matching", file="./tasks/FallenSun/f/f_fallen_sun.png")
+	I_FALLEN_SUN = RuleImage(profile="High", roi_front=(886,107,47,55), roi_back=(734,74,219,341), threshold=0.8, method="Template matching", file="./tasks/FallenSun/f/f_fallen_sun.png")
 	# 组队 
-	I_FORM_TEAM = RuleImage(roi_front=(961,598,94,58), roi_back=(930,562,165,158), threshold=0.8, method="Template matching", file="./tasks/FallenSun/f/f_form_team.png")
+	I_FORM_TEAM = RuleImage(profile="High", roi_front=(961,598,94,58), roi_back=(930,562,165,158), threshold=0.8, method="Template matching", file="./tasks/FallenSun/f/f_form_team.png")
 	# description 
-	I_FALLEN_SUN_FIRE = RuleImage(roi_front=(1145,596,92,47), roi_back=(1110,562,155,158), threshold=0.8, method="Template matching", file="./tasks/FallenSun/f/f_fallen_sun_fire.png")
+	I_FALLEN_SUN_FIRE = RuleImage(profile="High", roi_front=(1145,596,92,47), roi_back=(1110,562,155,158), threshold=0.8, method="Template matching", file="./tasks/FallenSun/f/f_fallen_sun_fire.png")
 	# description 
-	I_FALLEN_SUN_UNLOCK = RuleImage(roi_front=(704,658,21,28), roi_back=(646,637,192,83), threshold=0.8, method="Template matching", file="./tasks/FallenSun/f/f_fallen_sun_unlock.png")
+	I_FALLEN_SUN_UNLOCK = RuleImage(profile="High", roi_front=(704,658,21,28), roi_back=(646,637,192,83), threshold=0.8, method="Template matching", file="./tasks/FallenSun/f/f_fallen_sun_unlock.png")
 	# description 
-	I_FALLEN_SUN_LOCK = RuleImage(roi_front=(705,659,19,26), roi_back=(661,641,169,79), threshold=0.6, method="Template matching", file="./tasks/FallenSun/f/f_fallen_sun_lock.png")
+	I_FALLEN_SUN_LOCK = RuleImage(profile="High", roi_front=(705,659,19,26), roi_back=(661,641,169,79), threshold=0.6, method="Template matching", file="./tasks/FallenSun/f/f_fallen_sun_lock.png")
 	# 小小宠物，发现宝藏 
-	I_PET_PRESENT = RuleImage(roi_front=(873,184,62,147), roi_back=(873,184,62,147), threshold=0.8, method="Template matching", file="./tasks/FallenSun/f/f_pet_present.png")
+	I_PET_PRESENT = RuleImage(profile="High", roi_front=(873,184,62,147), roi_back=(873,184,62,147), threshold=0.8, method="Template matching", file="./tasks/FallenSun/f/f_pet_present.png")
 
 
 	# List Rule Assets

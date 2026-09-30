@@ -2,6 +2,7 @@
   {
     "itemName": "local_2",
     "imageName": "battle2_local_2.png",
+    "profile": "High",
     "roiFront": "30,569,21,22",
     "roiBack": "30,569,21,22",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "exit_2",
     "imageName": "battle2_exit_2.png",
+    "profile": "High",
     "roiFront": "17,16,35,34",
     "roiBack": "17,16,35,34",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "friends_2",
     "imageName": "battle2_friends_2.png",
+    "profile": "High",
     "roiFront": "88,15,34,39",
     "roiBack": "88,15,34,39",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "battle_info_2",
     "imageName": "battle2_battle_info_2.png",
+    "profile": "High",
     "roiFront": "232,17,34,36",
     "roiBack": "211,0,145,61",
     "method": "Template matching",

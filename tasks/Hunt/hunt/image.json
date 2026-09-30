@@ -2,6 +2,7 @@
   {
     "itemName": "hunt_shrine",
     "imageName": "hunt_hunt_shrine.png",
+    "profile": "High",
     "roiFront": "870,624,65,61",
     "roiBack": "870,624,65,61",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "hunt_hunt",
     "imageName": "hunt_hunt_hunt.png",
+    "profile": "High",
     "roiFront": "157,414,215,166",
     "roiBack": "157,414,215,166",
     "method": "Template matching",

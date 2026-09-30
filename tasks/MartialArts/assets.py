@@ -27,43 +27,43 @@ class MartialArtsAssets:
 
 	# Image Rule Assets
 	#  
-	I_BATTLE_MAIN_TO_RECORDS = RuleImage(roi_front=(996,552,45,49), roi_back=(991,547,55,59), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_battle_main_to_records.png")
+	I_BATTLE_MAIN_TO_RECORDS = RuleImage(profile="High", roi_front=(996,552,45,49), roi_back=(991,547,55,59), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_battle_main_to_records.png")
 	#  
-	I_AP_UNLOCK = RuleImage(roi_front=(868,637,31,30), roi_back=(863,632,41,40), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_ap_unlock.png")
+	I_AP_UNLOCK = RuleImage(profile="High", roi_front=(868,637,31,30), roi_back=(863,632,41,40), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_ap_unlock.png")
 	#  
-	I_MAR_FIRE_AP = RuleImage(roi_front=(1134,598,90,47), roi_back=(1129,593,100,57), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_fire_ap.png")
+	I_MAR_FIRE_AP = RuleImage(profile="High", roi_front=(1134,598,90,47), roi_back=(1129,593,100,57), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_fire_ap.png")
 	#  
-	I_AP_LOCK = RuleImage(roi_front=(868,637,31,30), roi_back=(863,632,41,40), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_ap_lock.png")
+	I_AP_LOCK = RuleImage(profile="High", roi_front=(868,637,31,30), roi_back=(863,632,41,40), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_ap_lock.png")
 	#  
-	I_BOSS_UNLOCK = RuleImage(roi_front=(1094,452,31,30), roi_back=(1089,447,41,40), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_boss_unlock.png")
+	I_BOSS_UNLOCK = RuleImage(profile="High", roi_front=(1094,452,31,30), roi_back=(1089,447,41,40), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_boss_unlock.png")
 	#  
-	I_BOSS_LOCK = RuleImage(roi_front=(1094,452,31,30), roi_back=(1089,447,41,40), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_boss_lock.png")
+	I_BOSS_LOCK = RuleImage(profile="High", roi_front=(1094,452,31,30), roi_back=(1089,447,41,40), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_boss_lock.png")
 	#  
-	I_BATTLE_BOSS_TO_RECORDS = RuleImage(roi_front=(995,590,45,49), roi_back=(990,585,55,59), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_battle_boss_to_records.png")
+	I_BATTLE_BOSS_TO_RECORDS = RuleImage(profile="High", roi_front=(995,590,45,49), roi_back=(990,585,55,59), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_battle_boss_to_records.png")
 	#  
-	I_MAR_FIRE_BOSS = RuleImage(roi_front=(1099,601,90,47), roi_back=(1094,596,100,57), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_fire_boss.png")
+	I_MAR_FIRE_BOSS = RuleImage(profile="High", roi_front=(1099,601,90,47), roi_back=(1094,596,100,57), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_fire_boss.png")
 	#  
-	I_MAR_FIRE_BOSS_GOLD = RuleImage(roi_front=(1104,579,76,90), roi_back=(1099,574,86,100), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_fire_boss_gold.png")
+	I_MAR_FIRE_BOSS_GOLD = RuleImage(profile="High", roi_front=(1104,579,76,90), roi_back=(1099,574,86,100), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_fire_boss_gold.png")
 	#  
-	I_MAR_CHANGE_BOSS_MODE = RuleImage(roi_front=(1163,539,29,30), roi_back=(1158,534,39,40), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_change_boss_mode.png")
+	I_MAR_CHANGE_BOSS_MODE = RuleImage(profile="High", roi_front=(1163,539,29,30), roi_back=(1158,534,39,40), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_change_boss_mode.png")
 	#  
-	I_MAR_FIRE_BOSS_MAIN = RuleImage(roi_front=(1106,529,70,82), roi_back=(1101,524,80,92), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_fire_boss_main.png")
+	I_MAR_FIRE_BOSS_MAIN = RuleImage(profile="High", roi_front=(1106,529,70,82), roi_back=(1101,524,80,92), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_fire_boss_main.png")
 	#  
-	I_FIRE_OVER = RuleImage(roi_front=(1126,606,30,35), roi_back=(1121,601,40,45), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_fire_over.png")
+	I_FIRE_OVER = RuleImage(profile="High", roi_front=(1126,606,30,35), roi_back=(1121,601,40,45), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_fire_over.png")
 	#  
-	I_BOSS_MAIN_GOTO_BOSS = RuleImage(roi_front=(1189,80,30,35), roi_back=(1184,75,40,45), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_boss_main_goto_boss.png")
+	I_BOSS_MAIN_GOTO_BOSS = RuleImage(profile="High", roi_front=(1189,80,30,35), roi_back=(1184,75,40,45), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_boss_main_goto_boss.png")
 	#  
-	I_MR_BOSS_GOTO_QUICK_LOADOUT = RuleImage(roi_front=(910,597,32,36), roi_back=(900,586,52,56), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mr_boss_goto_quick_loadout.png")
+	I_MR_BOSS_GOTO_QUICK_LOADOUT = RuleImage(profile="High", roi_front=(910,597,32,36), roi_back=(900,586,52,56), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mr_boss_goto_quick_loadout.png")
 	#  
-	I_MR_BOSS_QUICK_LOADOUT_FIGHT = RuleImage(roi_front=(809,518,119,42), roi_back=(804,513,129,52), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mr_boss_quick_loadout_fight.png")
+	I_MR_BOSS_QUICK_LOADOUT_FIGHT = RuleImage(profile="High", roi_front=(809,518,119,42), roi_back=(804,513,129,52), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mr_boss_quick_loadout_fight.png")
 	#  
-	I_MR_MAIN_AWARDS = RuleImage(roi_front=(480,232,321,42), roi_back=(397,150,477,137), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mr_main_awards.png")
+	I_MR_MAIN_AWARDS = RuleImage(profile="High", roi_front=(480,232,321,42), roi_back=(397,150,477,137), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mr_main_awards.png")
 	#  
-	I_MR_MAIN_SIGHIN_CLOSE = RuleImage(roi_front=(1082,122,30,35), roi_back=(1077,117,40,45), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mr_main_sighin_close.png")
+	I_MR_MAIN_SIGHIN_CLOSE = RuleImage(profile="High", roi_front=(1082,122,30,35), roi_back=(1077,117,40,45), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mr_main_sighin_close.png")
 	#  
-	I_MR_REWARD_MAIN = RuleImage(roi_front=(584,611,119,42), roi_back=(580,606,129,52), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mr_reward_main.png")
+	I_MR_REWARD_MAIN = RuleImage(profile="High", roi_front=(584,611,119,42), roi_back=(580,606,129,52), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mr_reward_main.png")
 	#  
-	I_MAR_FIRE_BOSS_MAIN_AGAIN = RuleImage(roi_front=(1106,529,70,82), roi_back=(1101,524,80,92), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_fire_boss_main_again.png")
+	I_MAR_FIRE_BOSS_MAIN_AGAIN = RuleImage(profile="High", roi_front=(1106,529,70,82), roi_back=(1101,524,80,92), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_mar_fire_boss_main_again.png")
 
 
 	# Ocr Rule Assets
@@ -83,18 +83,18 @@ class MartialArtsAssets:
 
 	# Image Rule Assets
 	# 武道大会活动主页标志（待裁模板） 
-	I_MAIN_GOTO_MAR = RuleImage(roi_front=(1190,380,37,39), roi_back=(1162,193,87,328), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_main_goto_mar.png")
+	I_MAIN_GOTO_MAR = RuleImage(profile="High", roi_front=(1190,380,37,39), roi_back=(1162,193,87,328), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_main_goto_mar.png")
 	#  
-	I_CHECK_MAIN_MAR = RuleImage(roi_front=(152,15,134,41), roi_back=(144,10,146,55), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_check_main_mar.png")
+	I_CHECK_MAIN_MAR = RuleImage(profile="High", roi_front=(152,15,134,41), roi_back=(144,10,146,55), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_check_main_mar.png")
 	#  
-	I_TO_BATTLE_AP = RuleImage(roi_front=(184,212,26,131), roi_back=(179,207,36,141), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_to_battle_ap.png")
+	I_TO_BATTLE_AP = RuleImage(profile="High", roi_front=(184,212,26,131), roi_back=(179,207,36,141), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_to_battle_ap.png")
 	#  
-	I_TO_BATTLE_BOSS = RuleImage(roi_front=(1118,258,26,131), roi_back=(1113,253,36,141), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_to_battle_boss.png")
+	I_TO_BATTLE_BOSS = RuleImage(profile="High", roi_front=(1118,258,26,131), roi_back=(1113,253,36,141), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_to_battle_boss.png")
 	#  
-	I_CHECK_BATTLE_AP = RuleImage(roi_front=(150,16,134,41), roi_back=(144,10,146,55), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_check_battle_ap.png")
+	I_CHECK_BATTLE_AP = RuleImage(profile="High", roi_front=(150,16,134,41), roi_back=(144,10,146,55), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_check_battle_ap.png")
 	#  
-	I_CHECK_BATTLE_BOSS = RuleImage(roi_front=(152,13,134,41), roi_back=(147,8,144,51), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_check_battle_boss.png")
+	I_CHECK_BATTLE_BOSS = RuleImage(profile="High", roi_front=(152,13,134,41), roi_back=(147,8,144,51), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_check_battle_boss.png")
 	#  
-	I_CHECK_BATTLE_BOSS_MAIN = RuleImage(roi_front=(555,63,164,47), roi_back=(550,58,174,57), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_check_battle_boss_main.png")
+	I_CHECK_BATTLE_BOSS_MAIN = RuleImage(profile="High", roi_front=(555,63,164,47), roi_back=(550,58,174,57), threshold=0.8, method="Template matching", file="./tasks/MartialArts/mr/mr_check_battle_boss_main.png")
 
 

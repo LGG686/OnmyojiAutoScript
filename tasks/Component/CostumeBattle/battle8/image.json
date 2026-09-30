@@ -2,6 +2,7 @@
   {
     "itemName": "local_8",
     "imageName": "battle8_local_8.png",
+    "profile": "High",
     "roiFront": "30,566,23,25",
     "roiBack": "30,566,23,25",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "exit_8",
     "imageName": "battle8_exit_8.png",
+    "profile": "High",
     "roiFront": "22,17,27,31",
     "roiBack": "22,17,27,31",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "friends_8",
     "imageName": "battle8_friends_8.png",
+    "profile": "High",
     "roiFront": "89,18,35,34",
     "roiBack": "89,18,35,34",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "win_8",
     "imageName": "battle8_win_8.png",
+    "profile": "High",
     "roiFront": "391,100,100,100",
     "roiBack": "296,33,414,224",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "de_win_8",
     "imageName": "battle8_de_win_8.png",
+    "profile": "High",
     "roiFront": "392,99,100,100",
     "roiBack": "239,36,399,198",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "false_8",
     "imageName": "battle8_false_8.png",
+    "profile": "High",
     "roiFront": "384,106,100,100",
     "roiBack": "346,96,184,120",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "battle_info_8",
     "imageName": "battle8_battle_info_8.png",
+    "profile": "High",
     "roiFront": "232,17,32,33",
     "roiBack": "212,0,143,57",
     "method": "Template matching",

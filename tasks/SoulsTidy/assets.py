@@ -21,47 +21,47 @@ class SoulsTidyAssets:
 
 	# Image Rule Assets
 	# 点击御魂 
-	I_ST_SOULS = RuleImage(roi_front=(1170,226,70,80), roi_back=(1170,226,70,80), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_souls.png")
+	I_ST_SOULS = RuleImage(profile="High", roi_front=(1170,226,70,80), roi_back=(1170,226,70,80), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_souls.png")
 	# 更换 
-	I_ST_REPLACE = RuleImage(roi_front=(856,170,100,100), roi_back=(856,170,100,100), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_replace.png")
+	I_ST_REPLACE = RuleImage(profile="High", roi_front=(856,170,100,100), roi_back=(856,170,100,100), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_replace.png")
 	# 奉纳 
-	I_ST_BONGNA = RuleImage(roi_front=(1154,202,77,97), roi_back=(1154,202,77,97), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_bongna.png")
+	I_ST_BONGNA = RuleImage(profile="High", roi_front=(1154,202,77,97), roi_back=(1154,202,77,97), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_bongna.png")
 	# 贪吃鬼 
-	I_ST_GREED = RuleImage(roi_front=(1157,611,65,60), roi_back=(1157,611,65,60), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_greed.png")
+	I_ST_GREED = RuleImage(profile="High", roi_front=(1157,611,65,60), roi_back=(1157,611,65,60), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_greed.png")
 	# 整理 
-	I_ST_TIDY = RuleImage(roi_front=(1155,328,74,100), roi_back=(1155,328,74,100), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_tidy.png")
+	I_ST_TIDY = RuleImage(profile="High", roi_front=(1155,328,74,100), roi_back=(1155,328,74,100), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_tidy.png")
 	# 进食习惯 
-	I_ST_GREED_HABIT = RuleImage(roi_front=(817,529,165,61), roi_back=(817,529,165,61), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_greed_habit.png")
+	I_ST_GREED_HABIT = RuleImage(profile="High", roi_front=(817,529,165,61), roi_back=(817,529,165,61), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_greed_habit.png")
 	# 立即进食 
-	I_ST_FEED_NOW = RuleImage(roi_front=(929,593,73,65), roi_back=(929,593,73,65), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_feed_now.png")
+	I_ST_FEED_NOW = RuleImage(profile="High", roi_front=(929,593,73,65), roi_back=(929,593,73,65), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_feed_now.png")
 	# 未选中 
-	I_ST_UNSELECTED = RuleImage(roi_front=(542,342,38,37), roi_back=(542,342,38,37), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_unselected.png")
+	I_ST_UNSELECTED = RuleImage(profile="High", roi_front=(542,342,38,37), roi_back=(542,342,38,37), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_unselected.png")
 	# 关闭贪吃鬼 
-	I_ST_GREED_CLOSE = RuleImage(roi_front=(933,211,35,37), roi_back=(933,211,35,37), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_greed_close.png")
+	I_ST_GREED_CLOSE = RuleImage(profile="High", roi_front=(933,211,35,37), roi_back=(933,211,35,37), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_greed_close.png")
 	# 招财猫 
-	I_ST_CAT = RuleImage(roi_front=(799,269,147,133), roi_back=(799,269,147,133), threshold=0.7, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_cat.png")
+	I_ST_CAT = RuleImage(profile="High", roi_front=(799,269,147,133), roi_back=(799,269,147,133), threshold=0.7, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_cat.png")
 	# 奉纳 
-	I_ST_DONATE = RuleImage(roi_front=(813,628,126,68), roi_back=(813,628,126,68), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_donate.png")
+	I_ST_DONATE = RuleImage(profile="High", roi_front=(813,628,126,68), roi_back=(813,628,126,68), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_donate.png")
 	# 神赐 
-	I_ST_GOD_PRESENT = RuleImage(roi_front=(578,234,131,73), roi_back=(542,117,204,219), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_god_present.png")
+	I_ST_GOD_PRESENT = RuleImage(profile="High", roi_front=(578,234,131,73), roi_back=(542,117,204,219), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_god_present.png")
 	# 已弃置被选中 
-	I_ST_ABANDONED_SELECTED = RuleImage(roi_front=(32,112,107,52), roi_back=(15,89,139,87), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_abandoned_selected.png")
+	I_ST_ABANDONED_SELECTED = RuleImage(profile="High", roi_front=(32,112,107,52), roi_back=(15,89,139,87), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_abandoned_selected.png")
 	# 第一个御魂是+0的 
-	I_ST_LEVEL_0 = RuleImage(roi_front=(85,235,45,30), roi_back=(85,235,45,30), threshold=0.9, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_level_0.png")
+	I_ST_LEVEL_0 = RuleImage(profile="High", roi_front=(85,235,45,30), roi_back=(85,235,45,30), threshold=0.9, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_level_0.png")
 	# 御魂奉纳后获得的金币 
-	I_ST_GOLD = RuleImage(roi_front=(170,100,950,500), roi_back=(170,100,950,500), threshold=0.9, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_gold.png")
+	I_ST_GOLD = RuleImage(profile="High", roi_front=(170,100,950,500), roi_back=(170,100,950,500), threshold=0.9, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_gold.png")
 	# 御魂溢出 
-	I_ST_SOUL_OVERFLOW = RuleImage(roi_front=(447,260,384,42), roi_back=(447,260,384,42), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_soul_overflow.png")
+	I_ST_SOUL_OVERFLOW = RuleImage(profile="High", roi_front=(447,260,384,42), roi_back=(447,260,384,42), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_soul_overflow.png")
 	# 御魂关闭状态 
-	I_ST_SOULS_CLOSE = RuleImage(roi_front=(1180,227,56,83), roi_back=(1166,215,84,107), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_souls_close.png")
+	I_ST_SOULS_CLOSE = RuleImage(profile="High", roi_front=(1180,227,56,83), roi_back=(1166,215,84,107), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_souls_close.png")
 	# 5星御魂的堆叠标识_大于1个 
-	I_ST_SOUL_STACK = RuleImage(roi_front=(142,234,20,16), roi_back=(142,234,20,16), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_soul_stack.png")
+	I_ST_SOUL_STACK = RuleImage(profile="High", roi_front=(142,234,20,16), roi_back=(142,234,20,16), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_soul_stack.png")
 	# 5星御魂堆叠标识_1个 
-	I_ST_SOUL_STACK_1 = RuleImage(roi_front=(89,239,105,19), roi_back=(89,239,105,19), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_soul_stack_1.png")
+	I_ST_SOUL_STACK_1 = RuleImage(profile="High", roi_front=(89,239,105,19), roi_back=(89,239,105,19), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_soul_stack_1.png")
 	# 吉运 
-	I_ST_LUCK = RuleImage(roi_front=(596,236,110,56), roi_back=(596,236,110,56), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_luck.png")
+	I_ST_LUCK = RuleImage(profile="High", roi_front=(596,236,110,56), roi_back=(596,236,110,56), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_luck.png")
 	# 小吉运 
-	I_ST_SMALL_LUCK = RuleImage(roi_front=(549,236,201,35), roi_back=(549,236,201,35), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_small_luck.png")
+	I_ST_SMALL_LUCK = RuleImage(profile="High", roi_front=(549,236,201,35), roi_back=(549,236,201,35), threshold=0.8, method="Template matching", file="./tasks/SoulsTidy/simple/simple_st_small_luck.png")
 
 
 	# Long Click Rule Assets

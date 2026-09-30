@@ -12,27 +12,27 @@ class OrochiAssets:
 
 	# Image Rule Assets
 	# 八级大蛇进入 
-	I_OROCHI = RuleImage(roi_front=(279,278,47,60), roi_back=(57,120,293,403), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_orochi.png")
+	I_OROCHI = RuleImage(profile="High", roi_front=(279,278,47,60), roi_back=(57,120,293,403), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_orochi.png")
 	# 组队 
-	I_FORM_TEAM = RuleImage(roi_front=(960,594,98,70), roi_back=(913,547,193,166), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_form_team.png")
+	I_FORM_TEAM = RuleImage(profile="High", roi_front=(960,594,98,70), roi_back=(913,547,193,166), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_form_team.png")
 	# 锁定 
-	I_OROCHI_LOCK = RuleImage(roi_front=(704,658,22,26), roi_back=(623,645,270,64), threshold=0.6, method="Template matching", file="./tasks/Orochi/o/o_orochi_lock.png")
+	I_OROCHI_LOCK = RuleImage(profile="High", roi_front=(704,658,22,26), roi_back=(623,645,270,64), threshold=0.6, method="Template matching", file="./tasks/Orochi/o/o_orochi_lock.png")
 	# 解锁 
-	I_OROCHI_UNLOCK = RuleImage(roi_front=(705,658,19,23), roi_back=(623,649,273,59), threshold=0.6, method="Template matching", file="./tasks/Orochi/o/o_orochi_unlock.png")
+	I_OROCHI_UNLOCK = RuleImage(profile="High", roi_front=(705,658,19,23), roi_back=(623,649,273,59), threshold=0.6, method="Template matching", file="./tasks/Orochi/o/o_orochi_unlock.png")
 	# 点击挑战 
-	I_OROCHI_FIRE = RuleImage(roi_front=(1145,594,94,49), roi_back=(1123,572,131,124), threshold=0.6, method="Template matching", file="./tasks/Orochi/o/o_orochi_fire.png")
+	I_OROCHI_FIRE = RuleImage(profile="High", roi_front=(1145,594,94,49), roi_back=(1123,572,131,124), threshold=0.6, method="Template matching", file="./tasks/Orochi/o/o_orochi_fire.png")
 	# 式神录 
-	I_SHI_RECORDS = RuleImage(roi_front=(843,568,44,44), roi_back=(615,523,333,197), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_shi_records.png")
+	I_SHI_RECORDS = RuleImage(profile="High", roi_front=(843,568,44,44), roi_back=(615,523,333,197), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_shi_records.png")
 	# 小小宠物，发现宝藏 
-	I_PET_PRESENT = RuleImage(roi_front=(873,184,62,147), roi_back=(873,184,62,147), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_pet_present.png")
+	I_PET_PRESENT = RuleImage(profile="High", roi_front=(873,184,62,147), roi_back=(873,184,62,147), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_pet_present.png")
 	# 八岐大蛇标志 
-	I_OROCHI_CHECK_10 = RuleImage(roi_front=(929,123,203,39), roi_back=(896,100,269,84), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_orochi_check_10.png")
+	I_OROCHI_CHECK_10 = RuleImage(profile="High", roi_front=(929,123,203,39), roi_back=(896,100,269,84), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_orochi_check_10.png")
 	# 巫女大蛇标志 
-	I_OROCHI_CHECK_11 = RuleImage(roi_front=(929,123,203,39), roi_back=(896,100,269,84), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_orochi_check_11.png")
+	I_OROCHI_CHECK_11 = RuleImage(profile="High", roi_front=(929,123,203,39), roi_back=(896,100,269,84), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_orochi_check_11.png")
 	# 神罚标志 
-	I_OROCHI_CHECK_12 = RuleImage(roi_front=(929,116,100,46), roi_back=(896,100,269,84), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_orochi_check_12.png")
+	I_OROCHI_CHECK_12 = RuleImage(profile="High", roi_front=(929,116,100,46), roi_back=(896,100,269,84), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_orochi_check_12.png")
 	# 虚无大蛇标志 
-	I_OROCHI_CHECK_13 = RuleImage(roi_front=(929,121,211,41), roi_back=(896,100,269,84), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_orochi_check_13.png")
+	I_OROCHI_CHECK_13 = RuleImage(profile="High", roi_front=(929,121,211,41), roi_back=(896,100,269,84), threshold=0.8, method="Template matching", file="./tasks/Orochi/o/o_orochi_check_13.png")
 
 
 	# List Rule Assets

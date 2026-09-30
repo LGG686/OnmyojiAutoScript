@@ -2,6 +2,7 @@
   {
     "itemName": "eternity_sea",
     "imageName": "res_eternity_sea.png",
+    "profile": "High",
     "roiFront": "1172,98,50,109",
     "roiBack": "1054,88,180,244",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "form_team",
     "imageName": "res_form_team.png",
+    "profile": "High",
     "roiFront": "964,603,89,51",
     "roiBack": "931,558,165,162",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "eternity_sea_fire",
     "imageName": "res_eternity_sea_fire.png",
+    "profile": "High",
     "roiFront": "1142,596,93,48",
     "roiBack": "1102,556,171,164",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "eternitysea_unlock",
     "imageName": "res_eternitysea_unlock.png",
+    "profile": "High",
     "roiFront": "705,659,20,26",
     "roiBack": "645,630,195,90",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "neweternitysea_lock",
     "imageName": "res_neweternitysea_lock.png",
+    "profile": "High",
     "roiFront": "702,658,24,28",
     "roiBack": "655,636,182,84",
     "method": "Template matching",

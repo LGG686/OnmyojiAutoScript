@@ -2,6 +2,7 @@
   {
     "itemName": "login",
     "imageName": "image_login.png",
+    "profile": "High",
     "roiFront": "360,1069,58,29",
     "roiBack": "0,768,720,512",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "circle",
     "imageName": "res_circle.png",
+    "profile": "High",
     "roiFront": "44,1229,55,34",
     "roiBack": "0,1101,176,179",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "circle_check",
     "imageName": "res_circle_check.png",
+    "profile": "High",
     "roiFront": "44,1221,53,51",
     "roiBack": "0,1067,273,213",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "welfare",
     "imageName": "res_welfare.png",
+    "profile": "High",
     "roiFront": "87,185,45,27",
     "roiBack": "0,0,249,243",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "claim",
     "imageName": "res_claim.png",
+    "profile": "High",
     "roiFront": "595,539,60,33",
     "roiBack": "0,0,720,1280",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "login_again",
     "imageName": "res_login_again.png",
+    "profile": "High",
     "roiFront": "527,694,53,30",
     "roiBack": "0,335,720,556",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "claim_s",
     "imageName": "res_claim_s.png",
+    "profile": "High",
     "roiFront": "348,51,60,39",
     "roiBack": "0,0,719,262",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "x",
     "imageName": "res_x.png",
+    "profile": "High",
     "roiFront": "352,912,19,48",
     "roiBack": "0,375,720,768",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "gift",
     "imageName": "res_gift.png",
+    "profile": "High",
     "roiFront": "582,126,39,41",
     "roiBack": "0,0,719,262",
     "method": "Template matching",

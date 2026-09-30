@@ -6,7 +6,7 @@
     "roiBack": "759,628,330,86",
     "method": "Template matching",
     "threshold": 0.7,
-    "profile": "Default",
+    "profile": "High",
     "description": "上锁图标"
   },
   {
@@ -16,7 +16,7 @@
     "roiBack": "752,625,313,92",
     "method": "Template matching",
     "threshold": 0.7,
-    "profile": "Default",
+    "profile": "High",
     "description": "还未上锁图片"
   },
   {
@@ -26,7 +26,7 @@
     "roiBack": "1118,510,119,186",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "活动爬塔标志"
   },
   {
@@ -36,7 +36,7 @@
     "roiBack": "1055,495,202,219",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "体力爬塔标志"
   },
   {
@@ -46,7 +46,7 @@
     "roiBack": "1174,511,104,82",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "切换按键"
   },
   {
@@ -56,7 +56,7 @@
     "roiBack": "1055,495,202,219",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "100体爬塔标志"
   },
   {
@@ -66,7 +66,7 @@
     "roiBack": "758,628,313,92",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "体力爬塔阵容解锁"
   },
   {
@@ -76,7 +76,7 @@
     "roiBack": "758,628,313,92",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "体力爬塔阵容锁定"
   },
   {
@@ -86,7 +86,7 @@
     "roiBack": "1080,530,192,190",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "More",
+    "profile": "High",
     "description": "活动通用挑战图标"
   },
   {
@@ -96,7 +96,7 @@
     "roiBack": "1080,530,192,190",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "More",
+    "profile": "High",
     "description": "boss挑战标志"
   },
   {
@@ -106,7 +106,7 @@
     "roiBack": "755,631,330,86",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "使用五倍卷"
   },
   {
@@ -116,7 +116,7 @@
     "roiBack": "746,629,330,86",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "不使用五倍卷"
   },
   {
@@ -126,7 +126,7 @@
     "roiBack": "610,408,77,77",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": ""
   },
   {
@@ -136,7 +136,7 @@
     "roiBack": "610,408,77,77",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": ""
   },
   {
@@ -146,7 +146,7 @@
     "roiBack": "1042,68,179,170",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": ""
   },
   {
@@ -156,7 +156,7 @@
     "roiBack": "470,73,330,86",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": ""
   },
   {
@@ -166,7 +166,7 @@
     "roiBack": "0,505,240,65",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "未选御魂"
   }
 ]

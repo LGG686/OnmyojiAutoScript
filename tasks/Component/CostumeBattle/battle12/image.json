@@ -2,6 +2,7 @@
   {
     "itemName": "exit_12",
     "imageName": "battle12_exit_12.png",
+    "profile": "High",
     "roiFront": "16,15,22,25",
     "roiBack": "16,15,40,40",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "friends_12",
     "imageName": "battle12_friends_12.png",
+    "profile": "High",
     "roiFront": "90,14,22,30",
     "roiBack": "90,14,40,40",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "local_12",
     "imageName": "battle12_local_12.png",
+    "profile": "High",
     "roiFront": "29,566,28,28",
     "roiBack": "29,566,40,40",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "win_12",
     "imageName": "battle12_win_12.png",
+    "profile": "High",
     "roiFront": "390,30,46,88",
     "roiBack": "390,30,510,290",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "de_win_12",
     "imageName": "battle12_de_win_12.png",
+    "profile": "High",
     "roiFront": "390,30,46,88",
     "roiBack": "390,30,510,290",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "false_12",
     "imageName": "battle12_false_12.png",
+    "profile": "High",
     "roiFront": "390,30,58,86",
     "roiBack": "390,30,510,290",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "battle_info_12",
     "imageName": "battle12_battle_info_12.png",
+    "profile": "High",
     "roiFront": "234,17,32,32",
     "roiBack": "215,0,142,58",
     "method": "Template matching",

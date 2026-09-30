@@ -52,77 +52,77 @@ class AbyssShadowsAssets:
 
 	# Image Rule Assets
 	# 狭间_神龙入口
-	I_ABYSS_DRAGON = RuleImage(roi_front=(199,150,109,271), roi_back=(199,150,109,271), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_dragon.png")
+	I_ABYSS_DRAGON = RuleImage(profile="High", roi_front=(199,150,109,271), roi_back=(199,150,109,271), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_dragon.png")
 	# 狭间_神龙入口_已封印
-	I_ABYSS_DRAGON_OVER = RuleImage(roi_front=(200,150,110,270), roi_back=(200,150,110,270), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_dragon_over.png")
+	I_ABYSS_DRAGON_OVER = RuleImage(profile="High", roi_front=(200,150,110,270), roi_back=(200,150,110,270), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_dragon_over.png")
 	# 狭间_孔雀入口
-	I_ABYSS_PEACOCK = RuleImage(roi_front=(521,152,48,165), roi_back=(465,104,145,312), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_peacock.png")
+	I_ABYSS_PEACOCK = RuleImage(profile="High", roi_front=(521,152,48,165), roi_back=(465,104,145,312), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_peacock.png")
 	# 狭间_白藏主入口
-	I_ABYSS_FOX = RuleImage(roi_front=(815,174,49,144), roi_back=(789,130,148,249), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_fox.png")
+	I_ABYSS_FOX = RuleImage(profile="High", roi_front=(815,174,49,144), roi_back=(789,130,148,249), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_fox.png")
 	# 狭间_黑豹入口
-	I_ABYSS_LEOPARD = RuleImage(roi_front=(1142,166,50,162), roi_back=(1093,143,138,297), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_leopard.png")
+	I_ABYSS_LEOPARD = RuleImage(profile="High", roi_front=(1142,166,50,162), roi_back=(1093,143,138,297), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_leopard.png")
 	# 战报
-	I_ABYSS_NAVIGATION = RuleImage(roi_front=(1200,372,50,44), roi_back=(1200,372,50,44), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_navigation.png")
+	I_ABYSS_NAVIGATION = RuleImage(profile="High", roi_front=(1200,372,50,44), roi_back=(1200,372,50,44), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_navigation.png")
 	# 式神录
-	I_ABYSS_SHIKI = RuleImage(roi_front=(1199,462,47,53), roi_back=(1199,462,47,53), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_shiki.png")
+	I_ABYSS_SHIKI = RuleImage(profile="High", roi_front=(1199,462,47,53), roi_back=(1199,462,47,53), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_shiki.png")
 	# 狭间暗域
-	I_ABYSS_SHADOWS = RuleImage(roi_front=(711,489,107,38), roi_back=(711,479,107,48), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_shadows.png")
+	I_ABYSS_SHADOWS = RuleImage(profile="High", roi_front=(711,489,107,38), roi_back=(711,479,107,48), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_shadows.png")
 	# 战报页面
-	I_ABYSS_MAP = RuleImage(roi_front=(306,147,170,48), roi_back=(306,147,170,48), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_map.png")
+	I_ABYSS_MAP = RuleImage(profile="High", roi_front=(306,147,170,48), roi_back=(306,147,170,48), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_map.png")
 	# 战报退出按钮
-	I_ABYSS_MAP_EXIT = RuleImage(roi_front=(1154,96,32,32), roi_back=(1154,96,32,32), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_map_exit.png")
+	I_ABYSS_MAP_EXIT = RuleImage(profile="High", roi_front=(1154,96,32,32), roi_back=(1154,96,32,32), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_map_exit.png")
 	# 怪物信息页面退出按钮
-	I_ABYSS_ENEMY_INFO_EXIT = RuleImage(roi_front=(975,80,90,70), roi_back=(975,80,90,70), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_enemy_info_exit.png")
+	I_ABYSS_ENEMY_INFO_EXIT = RuleImage(profile="High", roi_front=(975,80,90,70), roi_back=(975,80,90,70), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_enemy_info_exit.png")
 	# 挑战按钮
-	I_ABYSS_FIRE = RuleImage(roi_front=(1121,605,77,50), roi_back=(1121,605,77,50), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_fire.png")
+	I_ABYSS_FIRE = RuleImage(profile="High", roi_front=(1121,605,77,50), roi_back=(1121,605,77,50), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_fire.png")
 	# 前往
-	I_ABYSS_GOTO_ENEMY = RuleImage(roi_front=(1120,610,75,45), roi_back=(1120,610,75,45), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_goto_enemy.png")
+	I_ABYSS_GOTO_ENEMY = RuleImage(profile="High", roi_front=(1120,610,75,45), roi_back=(1120,610,75,45), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_goto_enemy.png")
 	# description
-	I_CHANGE_AREA = RuleImage(roi_front=(993,610,63,61), roi_back=(993,610,63,61), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_change_area.png")
+	I_CHANGE_AREA = RuleImage(profile="High", roi_front=(993,610,63,61), roi_back=(993,610,63,61), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_change_area.png")
 	# description
-	I_ENSURE_BUTTON = RuleImage(roi_front=(672,405,169,55), roi_back=(672,405,169,55), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_ensure_button.png")
+	I_ENSURE_BUTTON = RuleImage(profile="High", roi_front=(672,405,169,55), roi_back=(672,405,169,55), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_ensure_button.png")
 	# 进攻中
-	I_IS_ATTACK = RuleImage(roi_front=(576,54,91,45), roi_back=(576,54,91,45), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_is_attack.png")
+	I_IS_ATTACK = RuleImage(profile="High", roi_front=(576,54,91,45), roi_back=(576,54,91,45), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_is_attack.png")
 	# 狭间暗域 挑战结束
-	I_CHECK_FINISH = RuleImage(roi_front=(570,50,120,60), roi_back=(570,50,120,60), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_check_finish.png")
+	I_CHECK_FINISH = RuleImage(profile="High", roi_front=(570,50,120,60), roi_back=(570,50,120,60), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_check_finish.png")
 	# description
-	I_PEACOCK_AREA = RuleImage(roi_front=(577,14,127,36), roi_back=(577,14,127,36), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_peacock_area.png")
+	I_PEACOCK_AREA = RuleImage(profile="High", roi_front=(577,14,127,36), roi_back=(577,14,127,36), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_peacock_area.png")
 	# 黑豹领域
-	I_LEOPARD_AREA = RuleImage(roi_front=(589,13,104,39), roi_back=(589,13,104,39), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_leopard_area.png")
+	I_LEOPARD_AREA = RuleImage(profile="High", roi_front=(589,13,104,39), roi_back=(589,13,104,39), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_leopard_area.png")
 	# 白藏主领域
-	I_FOX_AREA = RuleImage(roi_front=(581,18,121,29), roi_back=(581,18,121,29), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_fox_area.png")
+	I_FOX_AREA = RuleImage(profile="High", roi_front=(581,18,121,29), roi_back=(581,18,121,29), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_fox_area.png")
 	# 更换领域
-	I_CHANGE_AREA = RuleImage(roi_front=(511,20,27,27), roi_back=(511,20,27,27), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_change_area.png")
+	I_CHANGE_AREA = RuleImage(profile="High", roi_front=(511,20,27,27), roi_back=(511,20,27,27), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_change_area.png")
 	# 神龙领域
-	I_DRAGON_AREA = RuleImage(roi_front=(584,15,111,34), roi_back=(584,15,111,34), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_dragon_area.png")
+	I_DRAGON_AREA = RuleImage(profile="High", roi_front=(584,15,111,34), roi_back=(584,15,111,34), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_dragon_area.png")
 	# description
-	I_WAIT_TO_START = RuleImage(roi_front=(588,64,70,26), roi_back=(588,64,70,26), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_wait_to_start.png")
+	I_WAIT_TO_START = RuleImage(profile="High", roi_front=(588,64,70,26), roi_back=(588,64,70,26), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_wait_to_start.png")
 	# 选择难度按钮
-	I_SELECT_DIFFICULTY = RuleImage(roi_front=(703,645,50,55), roi_back=(703,645,50,55), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_select_difficulty.png")
+	I_SELECT_DIFFICULTY = RuleImage(profile="High", roi_front=(703,645,50,55), roi_back=(703,645,50,55), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_select_difficulty.png")
 	# 容易难度
-	I_DIFFICULTY_EASY = RuleImage(roi_front=(644,389,35,41), roi_back=(619,374,91,275), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_difficulty_easy.png")
+	I_DIFFICULTY_EASY = RuleImage(profile="High", roi_front=(644,389,35,41), roi_back=(619,374,91,275), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_difficulty_easy.png")
 	# 普通难度
-	I_DIFFICULTY_NORMAL = RuleImage(roi_front=(642,453,38,47), roi_back=(621,378,87,272), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_difficulty_normal.png")
+	I_DIFFICULTY_NORMAL = RuleImage(profile="High", roi_front=(642,453,38,47), roi_back=(621,378,87,272), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_difficulty_normal.png")
 	# 困难难度
-	I_DIFFICULTY_HARD = RuleImage(roi_front=(645,527,40,39), roi_back=(620,383,89,263), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_difficulty_hard.png")
+	I_DIFFICULTY_HARD = RuleImage(profile="High", roi_front=(645,527,40,39), roi_back=(620,383,89,263), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_difficulty_hard.png")
 	# 开启按钮
-	I_BTN_START = RuleImage(roi_front=(1120,570,100,120), roi_back=(1120,570,100,120), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_btn_start.png")
+	I_BTN_START = RuleImage(profile="High", roi_front=(1120,570,100,120), roi_back=(1120,570,100,120), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_btn_start.png")
 	# 开启确认按钮
-	I_START_ENSURE = RuleImage(roi_front=(660,390,190,80), roi_back=(660,390,190,80), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_start_ensure.png")
+	I_START_ENSURE = RuleImage(profile="High", roi_front=(660,390,190,80), roi_back=(660,390,190,80), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_start_ensure.png")
 	# 当附近有可用怪物时，右下角出现的开始战斗按钮
-	I_ABYSS_ENEMY_FIRE = RuleImage(roi_front=(1100,560,130,130), roi_back=(1100,560,130,130), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_enemy_fire.png")
+	I_ABYSS_ENEMY_FIRE = RuleImage(profile="High", roi_front=(1100,560,130,130), roi_back=(1100,560,130,130), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_enemy_fire.png")
 	# 红标主怪
-	I_MARK_MAIN = RuleImage(roi_front=(375,40,60,30), roi_back=(375,40,60,30), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_mark_main.png")
+	I_MARK_MAIN = RuleImage(profile="High", roi_front=(375,40,60,30), roi_back=(375,40,60,30), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_mark_main.png")
 	# 神社页面标志
-	I_CHECK_SHENSHE = RuleImage(roi_front=(72,76,45,115), roi_back=(31,27,119,207), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_check_shenshe.png")
+	I_CHECK_SHENSHE = RuleImage(profile="High", roi_front=(72,76,45,115), roi_back=(31,27,119,207), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_check_shenshe.png")
 	# 狭间暗域页面标志
-	I_CHECK_ABYSS = RuleImage(roi_front=(1082,14,52,50), roi_back=(992,0,247,80), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_check_abyss.png")
+	I_CHECK_ABYSS = RuleImage(profile="High", roi_front=(1082,14,52,50), roi_back=(992,0,247,80), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_check_abyss.png")
 	# 极难度
-	I_DIFFICULTY_EXTREME = RuleImage(roi_front=(644,593,40,39), roi_back=(620,383,89,263), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_difficulty_extreme.png")
+	I_DIFFICULTY_EXTREME = RuleImage(profile="High", roi_front=(644,593,40,39), roi_back=(620,383,89,263), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_difficulty_extreme.png")
 	#
-	I_OPEN_QUICK_LOADOUT = RuleImage(roi_front=(897,625,45,46), roi_back=(892,620,55,56), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_open_quick_loadout.png")
+	I_OPEN_QUICK_LOADOUT = RuleImage(profile="High", roi_front=(897,625,45,46), roi_back=(892,620,55,56), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_open_quick_loadout.png")
 	#
-	I_ABYSS_QUICK_LOADOUT_FIGHT = RuleImage(roi_front=(811,540,119,42), roi_back=(806,535,129,52), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_quick_loadout_fight.png")
+	I_ABYSS_QUICK_LOADOUT_FIGHT = RuleImage(profile="High", roi_front=(811,540,119,42), roi_back=(806,535,129,52), threshold=0.8, method="Template matching", file="./tasks/AbyssShadows/res/res_abyss_quick_loadout_fight.png")
 
 
 	# List Rule Assets

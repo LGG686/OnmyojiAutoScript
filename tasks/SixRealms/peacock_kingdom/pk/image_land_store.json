@@ -2,6 +2,7 @@
   {
     "itemName": "pk_store_exit",
     "imageName": "pk_pk_store_exit.png",
+    "profile": "High",
     "roiFront": "1196,611,54,54",
     "roiBack": "1196,611,54,54",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "pk_store_refresh",
     "imageName": "pk_pk_store_refresh.png",
+    "profile": "High",
     "roiFront": "591,595,53,52",
     "roiBack": "566,577,110,80",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "pk_store_stable_flag",
     "imageName": "pk_pk_store_stable_flag.png",
+    "profile": "High",
     "roiFront": "1059,257,29,31",
     "roiBack": "1059,257,29,31",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "pk_store_skill_thunder",
     "imageName": "pk_pk_store_skill_thunder.png",
+    "profile": "High",
     "roiFront": "1076,135,41,38",
     "roiBack": "697,91,482,626",
     "method": "Template matching",

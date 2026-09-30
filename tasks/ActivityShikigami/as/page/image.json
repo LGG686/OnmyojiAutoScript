@@ -2,6 +2,7 @@
   {
     "itemName": "main_goto_act",
     "imageName": "as_main_goto_act.png",
+    "profile": "High",
     "roiFront": "1188,304,35,28",
     "roiBack": "1164,134,83,393",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "skip_button",
     "imageName": "as_skip_button.png",
+    "profile": "High",
     "roiFront": "1159,37,51,22",
     "roiBack": "1141,27,86,43",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "check_battle_main",
     "imageName": "as_check_battle_main.png",
+    "profile": "High",
     "roiFront": "151,18,141,41",
     "roiBack": "141,0,192,69",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "confirm_skip",
     "imageName": "as_confirm_skip.png",
+    "profile": "High",
     "roiFront": "707,442,137,38",
     "roiBack": "656,397,231,124",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "activity_signin_close",
     "imageName": "as_activity_signin_close.png",
+    "profile": "High",
     "roiFront": "1137,179,40,32",
     "roiBack": "1113,150,94,85",
     "method": "Template matching",

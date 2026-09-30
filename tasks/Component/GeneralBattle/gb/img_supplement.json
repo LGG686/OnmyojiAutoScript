@@ -2,6 +2,7 @@
   {
     "itemName": "greed_ghost",
     "imageName": "gb_greed_ghost.png",
+    "profile": "High",
     "roiFront": "56,40,45,45",
     "roiBack": "56,40,45,45",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "confirm",
     "imageName": "gb_confirm.png",
+    "profile": "High",
     "roiFront": "732,383,83,43",
     "roiBack": "330,228,615,286",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "confirm_close_diff_soul",
     "imageName": "gb_confirm_close_diff_soul.png",
+    "profile": "High",
     "roiFront": "571,404,135,54",
     "roiBack": "517,374,226,112",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "disable_7days_diff_soul",
     "imageName": "gb_disable_7days_diff_soul.png",
+    "profile": "High",
     "roiFront": "547,342,27,36",
     "roiBack": "524,325,70,71",
     "method": "Template matching",

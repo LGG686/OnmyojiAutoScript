@@ -2,6 +2,7 @@
   {
     "itemName": "entry",
     "imageName": "entry.png",
+    "profile": "High",
     "roiFront": "770,373,33,139",
     "roiBack": "745,281,142,329",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "start",
     "imageName": "quiz_start.png",
+    "profile": "High",
     "roiFront": "1149,608,66,41",
     "roiBack": "1136,574,100,100",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "message",
     "imageName": "message.png",
+    "profile": "High",
     "roiFront": "73,483,53,46",
     "roiBack": "51,450,170,136",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "fail_quit",
     "imageName": "fail_quit.png",
+    "profile": "High",
     "roiFront": "612,534,67,31",
     "roiBack": "375,484,524,163",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "share",
     "imageName": "quiz_share.png",
+    "profile": "High",
     "roiFront": "1171,625,53,44",
     "roiBack": "1152,592,100,100",
     "method": "Template matching",
@@ -50,6 +55,7 @@
     "roiBack": "1138,148,140,435",
     "description": "description",
     "imageName": "alone_ensure.png",
+    "profile": "High",
     "method": "Template matching",
     "threshold": "0.7"
   }

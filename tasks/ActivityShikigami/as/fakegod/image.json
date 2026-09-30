@@ -2,6 +2,7 @@
   {
     "itemName": "fg_lock",
     "imageName": "as_lock.png",
+    "profile": "High",
     "roiFront": "779,648,31,30",
     "roiBack": "685,612,330,86",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "fg_unlock",
     "imageName": "as_unlock.png",
+    "profile": "High",
     "roiFront": "779,648,31,30",
     "roiBack": "686,610,313,92",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "fg_climb_mode_pass",
     "imageName": "as_climb_mode_pass.png",
+    "profile": "High",
     "roiFront": "1143,544,21,21",
     "roiBack": "1118,510,119,186",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "fg_climb_mode_ap",
     "imageName": "as_climb_mode_ap.png",
+    "profile": "High",
     "roiFront": "1093,542,22,25",
     "roiBack": "1055,495,202,219",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "fg_climb_mode_ap100",
     "imageName": "as_climb_mode_ap100.png",
+    "profile": "High",
     "roiFront": "1186,665,22,25",
     "roiBack": "1055,495,202,219",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "fg_ap_unlock",
     "imageName": "as_ap_unlock.png",
+    "profile": "High",
     "roiFront": "779,648,31,30",
     "roiBack": "686,610,313,92",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "fg_ap_lock",
     "imageName": "as_ap_lock.png",
+    "profile": "High",
     "roiFront": "779,648,31,30",
     "roiBack": "686,610,313,92",
     "method": "Template matching",
@@ -69,7 +76,7 @@
     "roiBack": "1080,530,192,190",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "More",
+    "profile": "High",
     "description": "活动挑战按钮"
   }
 ]

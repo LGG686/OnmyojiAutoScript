@@ -2,6 +2,7 @@
   {
     "itemName": "ad_close_red",
     "imageName": "additional_ad_close_red.png",
+    "profile": "High",
     "roiFront": "993,130,33,36",
     "roiBack": "953,91,215,121",
     "method": "Template matching",

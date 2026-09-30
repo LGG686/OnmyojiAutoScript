@@ -2,6 +2,7 @@
   {
     "itemName": "tpage_1",
     "imageName": "train_tpage_1.png",
+    "profile": "High",
     "roiFront": "238,504,221,123",
     "roiBack": "121,480,950,166",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "tpage_2",
     "imageName": "train_tpage_2.png",
+    "profile": "High",
     "roiFront": "411,506,231,120",
     "roiBack": "132,479,933,171",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "tpage_3",
     "imageName": "train_tpage_3.png",
+    "profile": "High",
     "roiFront": "748,504,240,118",
     "roiBack": "125,482,937,166",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "tpage_4",
     "imageName": "train_tpage_4.png",
+    "profile": "High",
     "roiFront": "281,507,233,120",
     "roiBack": "124,484,933,163",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "tpage_5",
     "imageName": "train_tpage_5.png",
+    "profile": "High",
     "roiFront": "539,506,238,120",
     "roiBack": "130,483,940,166",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "tpage_6",
     "imageName": "train_tpage_6.png",
+    "profile": "High",
     "roiFront": "801,505,232,118",
     "roiBack": "128,493,937,153",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "tcheck_1",
     "imageName": "train_tcheck_1.png",
+    "profile": "High",
     "roiFront": "19,246,100,100",
     "roiBack": "2,218,135,215",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "tcheck_2",
     "imageName": "train_tcheck_2.png",
+    "profile": "High",
     "roiFront": "9,216,157,226",
     "roiBack": "0,197,186,263",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "tcheck_3",
     "imageName": "train_tcheck_3.png",
+    "profile": "High",
     "roiFront": "5,126,138,299",
     "roiBack": "2,110,147,345",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "tcheck_4",
     "imageName": "train_tcheck_4.png",
+    "profile": "High",
     "roiFront": "7,108,100,332",
     "roiBack": "0,101,120,347",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "tcheck_5",
     "imageName": "train_tcheck_5.png",
+    "profile": "High",
     "roiFront": "132,28,77,103",
     "roiBack": "94,13,152,234",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "tcheck_6",
     "imageName": "train_tcheck_6.png",
+    "profile": "High",
     "roiFront": "9,107,100,350",
     "roiBack": "3,97,113,369",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "switch_background",
     "imageName": "train_switch_background.png",
+    "profile": "High",
     "roiFront": "992,649,105,36",
     "roiBack": "969,627,152,72",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "tcheck_22",
     "imageName": "train_tcheck_22.png",
+    "profile": "High",
     "roiFront": "14,150,100,100",
     "roiBack": "5,139,124,127",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "tcheck_32",
     "imageName": "train_tcheck_32.png",
+    "profile": "High",
     "roiFront": "35,175,100,100",
     "roiBack": "26,155,123,141",
     "method": "Template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "check_run",
     "imageName": "train_check_run.png",
+    "profile": "High",
     "roiFront": "95,598,92,45",
     "roiBack": "68,578,143,100",
     "method": "Template matching",

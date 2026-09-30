@@ -12,10 +12,10 @@ class CustomCourtyardAffairAssets:
 
 	# Image Rule Assets
 	# 庭院事务
-	I_CHECK_COURTYARD_AFFAIRS_1 = RuleImage(roi_front=(742,82,236,53), roi_back=(698,47,349,137), threshold=0.8, method="Template matching", file="./tasks/Component/CustomCourtyardAffair/ca1/ca1_check_courtyard_affairs_1.png")
+	I_CHECK_COURTYARD_AFFAIRS_1 = RuleImage(profile="High", roi_front=(742,82,236,53), roi_back=(698,47,349,137), threshold=0.8, method="Template matching", file="./tasks/Component/CustomCourtyardAffair/ca1/ca1_check_courtyard_affairs_1.png")
 	# 一键完成
-	I_ONE_COMPLETE_1 = RuleImage(roi_front=(1123,591,81,87), roi_back=(1082,567,173,147), threshold=0.8, method="Template matching", file="./tasks/Component/CustomCourtyardAffair/ca1/ca1_one_complete_1.png")
+	I_ONE_COMPLETE_1 = RuleImage(profile="High", roi_front=(1123,591,81,87), roi_back=(1082,567,173,147), threshold=0.8, method="Template matching", file="./tasks/Component/CustomCourtyardAffair/ca1/ca1_one_complete_1.png")
 	# 进入日常(灰色)
-	I_ENTER_DAILY_1 = RuleImage(roi_front=(1160,153,48,90), roi_back=(1138,123,92,253), threshold=0.8, method="Template matching", file="./tasks/Component/CustomCourtyardAffair/ca1/ca1_enter_daily_1.png")
+	I_ENTER_DAILY_1 = RuleImage(profile="High", roi_front=(1160,153,48,90), roi_back=(1138,123,92,253), threshold=0.8, method="Template matching", file="./tasks/Component/CustomCourtyardAffair/ca1/ca1_enter_daily_1.png")
 	# 检查是否已经处在日常中
-	I_CHECK_IN_DAILY_1 = RuleImage(roi_front=(1160,153,48,90), roi_back=(1138,123,92,253), threshold=0.8, method="Template matching", file="./tasks/Component/CustomCourtyardAffair/ca1/ca1_check_in_daily_1.png")
+	I_CHECK_IN_DAILY_1 = RuleImage(profile="High", roi_front=(1160,153,48,90), roi_back=(1138,123,92,253), threshold=0.8, method="Template matching", file="./tasks/Component/CustomCourtyardAffair/ca1/ca1_check_in_daily_1.png")

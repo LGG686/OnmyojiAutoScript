@@ -2,6 +2,7 @@
   {
     "itemName": "hinvite",
     "imageName": "hya_hinvite.png",
+    "profile": "High",
     "roiFront": "139,593,63,39",
     "roiBack": "105,535,129,147",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "haccess",
     "imageName": "hya_haccess.png",
+    "profile": "High",
     "roiFront": "1059,554,100,100",
     "roiBack": "1059,554,100,100",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "hstart",
     "imageName": "hya_hstart.png",
+    "profile": "High",
     "roiFront": "1119,555,100,100",
     "roiBack": "1119,555,100,100",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "hselected",
     "imageName": "hya_hselected.png",
+    "profile": "High",
     "roiFront": "980,265,41,44",
     "roiBack": "226,53,836,348",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "hend",
     "imageName": "hya_hend.png",
+    "profile": "High",
     "roiFront": "81,164,86,299",
     "roiBack": "81,164,86,299",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "hfreeze",
     "imageName": "hya_hfreeze.png",
+    "profile": "High",
     "roiFront": "1092,665,187,54",
     "roiBack": "1092,665,187,54",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "htitle",
     "imageName": "hya_htitle.png",
+    "profile": "High",
     "roiFront": "578,21,134,48",
     "roiBack": "578,21,134,48",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "hclose_red",
     "imageName": "hya_hclose_red.png",
+    "profile": "High",
     "roiFront": "1056,177,54,54",
     "roiBack": "1056,177,54,54",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "ensure_recall",
     "imageName": "hya_ensure_recall.png",
+    "profile": "High",
     "roiFront": "1060,145,66,62",
     "roiBack": "877,72,307,211",
     "method": "Template matching",

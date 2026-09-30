@@ -2,6 +2,7 @@
   {
     "itemName": "fire_kirin",
     "imageName": "o_fire_kirin.png",
+    "profile": "High",
     "roiFront": "127,176,139,252",
     "roiBack": "106,121,217,406",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "form_team",
     "imageName": "o_form_team.png",
+    "profile": "High",
     "roiFront": "961,602,96,55",
     "roiBack": "937,555,153,154",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "evozone_lock",
     "imageName": "o_evozone_lock.png",
+    "profile": "High",
     "roiFront": "703,656,24,32",
     "roiBack": "683,646,63,64",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "evozone_unlock",
     "imageName": "o_evozone_unlock.png",
+    "profile": "High",
     "roiFront": "704,658,21,27",
     "roiBack": "680,643,67,67",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "evozone_fire",
     "imageName": "o_evozone_fire.png",
+    "profile": "High",
     "roiFront": "1146,595,93,50",
     "roiBack": "1125,570,131,124",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "shi_records",
     "imageName": "o_shi_records.png",
+    "profile": "High",
     "roiFront": "844,569,43,43",
     "roiBack": "827,559,79,74",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "pet_present",
     "imageName": "o_pet_present.png",
+    "profile": "High",
     "roiFront": "873,184,62,147",
     "roiBack": "873,184,62,147",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "wind_kirin",
     "imageName": "o_wind_kirin.png",
+    "profile": "High",
     "roiFront": "445,114,139,252",
     "roiBack": "411,77,217,406",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "water_kirin",
     "imageName": "o_water_kirin.png",
+    "profile": "High",
     "roiFront": "743,182,139,252",
     "roiBack": "710,121,217,406",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "lightning_kirin",
     "imageName": "o_lightning_kirin.png",
+    "profile": "High",
     "roiFront": "1051,111,139,252",
     "roiBack": "1013,85,217,406",
     "method": "Template matching",

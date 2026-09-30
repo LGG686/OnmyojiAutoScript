@@ -2,6 +2,7 @@
   {
     "itemName": "to_battle_main",
     "imageName": "as_to_battle_main.png",
+    "profile": "High",
     "roiFront": "315,204,91,77",
     "roiBack": "287,125,149,201",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "to_battle_boss",
     "imageName": "as_to_battle_boss.png",
+    "profile": "High",
     "roiFront": "125,449,88,58",
     "roiBack": "97,402,145,138",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "battle_main_to_records",
     "imageName": "as_battle_main_to_records.png",
+    "profile": "High",
     "roiFront": "1015,560,39,42",
     "roiBack": "674,539,439,157",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "check_battle_pass",
     "imageName": "as_check_battle_pass.png",
+    "profile": "High",
     "roiFront": "151,18,134,40",
     "roiBack": "141,0,157,67",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "to_battle_climb",
     "imageName": "climb_to_battle_climb.png",
+    "profile": "High",
     "roiFront": "68,98,140,33",
     "roiBack": "32,83,247,97",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "check_climb_main",
     "imageName": "climb_check_climb_main.png",
+    "profile": "High",
     "roiFront": "151,18,134,40",
     "roiBack": "141,0,157,67",
     "method": "Template matching",

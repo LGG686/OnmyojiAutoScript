@@ -12,14 +12,14 @@ class OtherWorldTwilightAssets:
 
 	# Image Rule Assets
 	# 逢魔之时前往彼世逢魔标志 
-	I_DE_TO_OTHER_WORLD = RuleImage(roi_front=(485,130,84,94), roi_back=(416,82,228,225), threshold=0.8, method="Template matching", file="./tasks/OtherWorldTwilight/owt/owt_de_to_other_world.png")
+	I_DE_TO_OTHER_WORLD = RuleImage(profile="High", roi_front=(485,130,84,94), roi_back=(416,82,228,225), threshold=0.8, method="Template matching", file="./tasks/OtherWorldTwilight/owt/owt_de_to_other_world.png")
 	# 挑战标志 
-	I_OWT_FIRE = RuleImage(roi_front=(1142,603,82,74), roi_back=(1088,561,181,159), threshold=0.8, method="Template matching", file="./tasks/OtherWorldTwilight/owt/owt_owt_fire.png")
+	I_OWT_FIRE = RuleImage(profile="High", roi_front=(1142,603,82,74), roi_back=(1088,561,181,159), threshold=0.8, method="Template matching", file="./tasks/OtherWorldTwilight/owt/owt_owt_fire.png")
 	# 组队标志 
-	I_OWT_TEAM = RuleImage(roi_front=(959,605,82,74), roi_back=(905,561,181,159), threshold=0.8, method="Template matching", file="./tasks/OtherWorldTwilight/owt/owt_owt_team.png")
+	I_OWT_TEAM = RuleImage(profile="High", roi_front=(959,605,82,74), roi_back=(905,561,181,159), threshold=0.8, method="Template matching", file="./tasks/OtherWorldTwilight/owt/owt_owt_team.png")
 	# 锁定阵容标志 
-	I_OWT_LOCK = RuleImage(roi_front=(679,650,20,30), roi_back=(593,633,228,87), threshold=0.8, method="Template matching", file="./tasks/OtherWorldTwilight/owt/owt_owt_lock.png")
+	I_OWT_LOCK = RuleImage(profile="High", roi_front=(679,650,20,30), roi_back=(593,633,228,87), threshold=0.8, method="Template matching", file="./tasks/OtherWorldTwilight/owt/owt_owt_lock.png")
 	# 解锁阵容标志 
-	I_OWT_UNLOCK = RuleImage(roi_front=(679,650,20,30), roi_back=(593,633,228,87), threshold=0.8, method="Template matching", file="./tasks/OtherWorldTwilight/owt/owt_owt_unlock.png")
+	I_OWT_UNLOCK = RuleImage(profile="High", roi_front=(679,650,20,30), roi_back=(593,633,228,87), threshold=0.8, method="Template matching", file="./tasks/OtherWorldTwilight/owt/owt_owt_unlock.png")
 
 

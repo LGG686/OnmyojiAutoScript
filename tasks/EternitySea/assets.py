@@ -12,15 +12,15 @@ class EternitySeaAssets:
 
 	# Image Rule Assets
 	# 选择永生之海 
-	I_ETERNITY_SEA = RuleImage(roi_front=(1172,98,50,109), roi_back=(1054,88,180,244), threshold=0.8, method="Template matching", file="./tasks/EternitySea/res/res_eternity_sea.png")
+	I_ETERNITY_SEA = RuleImage(profile="High", roi_front=(1172,98,50,109), roi_back=(1054,88,180,244), threshold=0.8, method="Template matching", file="./tasks/EternitySea/res/res_eternity_sea.png")
 	# 组队 
-	I_FORM_TEAM = RuleImage(roi_front=(964,603,89,51), roi_back=(931,558,165,162), threshold=0.8, method="Template matching", file="./tasks/EternitySea/res/res_form_team.png")
+	I_FORM_TEAM = RuleImage(profile="High", roi_front=(964,603,89,51), roi_back=(931,558,165,162), threshold=0.8, method="Template matching", file="./tasks/EternitySea/res/res_form_team.png")
 	# 挑战 
-	I_ETERNITY_SEA_FIRE = RuleImage(roi_front=(1142,596,93,48), roi_back=(1102,556,171,164), threshold=0.8, method="Template matching", file="./tasks/EternitySea/res/res_eternity_sea_fire.png")
+	I_ETERNITY_SEA_FIRE = RuleImage(profile="High", roi_front=(1142,596,93,48), roi_back=(1102,556,171,164), threshold=0.8, method="Template matching", file="./tasks/EternitySea/res/res_eternity_sea_fire.png")
 	# 开锁 
-	I_ETERNITYSEA_UNLOCK = RuleImage(roi_front=(705,659,20,26), roi_back=(645,630,195,90), threshold=0.8, method="Template matching", file="./tasks/EternitySea/res/res_eternitysea_unlock.png")
+	I_ETERNITYSEA_UNLOCK = RuleImage(profile="High", roi_front=(705,659,20,26), roi_back=(645,630,195,90), threshold=0.8, method="Template matching", file="./tasks/EternitySea/res/res_eternitysea_unlock.png")
 	# 关锁 
-	I_NEWETERNITYSEA_LOCK = RuleImage(roi_front=(702,658,24,28), roi_back=(655,636,182,84), threshold=0.6, method="Template matching", file="./tasks/EternitySea/res/res_neweternitysea_lock.png")
+	I_NEWETERNITYSEA_LOCK = RuleImage(profile="High", roi_front=(702,658,24,28), roi_back=(655,636,182,84), threshold=0.6, method="Template matching", file="./tasks/EternitySea/res/res_neweternitysea_lock.png")
 
 
 	# List Rule Assets

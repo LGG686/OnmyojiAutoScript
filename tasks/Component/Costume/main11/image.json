@@ -6,7 +6,7 @@
     "roiBack": "131,514,1099,100",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -16,7 +16,7 @@
     "roiBack": "192,105,904,66",
     "method": "Template matching",
     "threshold": 0.6,
-    "profile": "Default",
+    "profile": "High",
     "description": "description"
   },
   {
@@ -26,7 +26,7 @@
     "roiBack": "500,102,623,68",
     "method": "Template matching",
     "threshold": 0.6,
-    "profile": "Default",
+    "profile": "High",
     "description": ""
   },
   {
@@ -36,7 +36,7 @@
     "roiBack": "262,145,999,78",
     "method": "Template matching",
     "threshold": 0.7,
-    "profile": "Default",
+    "profile": "High",
     "description": "町中"
   },
   {
@@ -46,7 +46,7 @@
     "roiBack": "724,295,440,69",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "宠物室"
   }
 ]

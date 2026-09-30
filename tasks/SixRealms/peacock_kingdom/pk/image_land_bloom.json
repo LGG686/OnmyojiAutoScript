@@ -2,6 +2,7 @@
   {
     "itemName": "pk_bloom_exit",
     "imageName": "pk_pk_bloom_exit.png",
+    "profile": "High",
     "roiFront": "1153,630,62,60",
     "roiBack": "1141,615,84,98",
     "method": "Template matching",

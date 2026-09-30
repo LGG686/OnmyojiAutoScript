@@ -2,6 +2,7 @@
   {
     "itemName": "check_exploration",
     "imageName": "page_check_exploration.png",
+    "profile": "High",
     "roiFront": "1152,148,21,22",
     "roiBack": "1152,148,21,22",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "exploration_goto_awake_zone",
     "imageName": "page_exploration_goto_awake_zone.png",
+    "profile": "High",
     "roiFront": "161,633,47,44",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "exploration_goto_soul_zone",
     "imageName": "page_exploration_goto_soul_zone.png",
+    "profile": "High",
     "roiFront": "69,633,46,39",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "exploration_goto_realm_raid",
     "imageName": "page_exploration_goto_realm_raid.png",
+    "profile": "High",
     "roiFront": "354,636,49,38",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "exploration_goto_goryou_realm",
     "imageName": "page_exploration_goto_goryou_realm.png",
+    "profile": "High",
     "roiFront": "353,639,47,45",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "exploration_goto_delegation",
     "imageName": "page_exploration_goto_delegation.png",
+    "profile": "High",
     "roiFront": "448,634,54,39",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "exploration_goto_secret_zones",
     "imageName": "page_exploration_goto_secret_zones.png",
+    "profile": "High",
     "roiFront": "546,635,51,42",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "exploration_goto_hero_test",
     "imageName": "page_exploration_goto_hero_test.png",
+    "profile": "High",
     "roiFront": "829,634,58,56",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "exploration_goto_area_boss",
     "imageName": "page_exploration_goto_area_boss.png",
+    "profile": "High",
     "roiFront": "642,638,50,38",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "exploration_goto_heian_kitan",
     "imageName": "page_exploration_goto_heian_kitan.png",
+    "profile": "High",
     "roiFront": "739,643,52,44",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "exploration_goto_bondling_fairyland",
     "imageName": "page_exploration_goto_bondling_fairyland.png",
+    "profile": "High",
     "roiFront": "1024,635,52,47",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "check_awake",
     "imageName": "page_check_awake.png",
+    "profile": "High",
     "roiFront": "165,533,39,45",
     "roiBack": "115,521,201,120",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "check_soul_zones",
     "imageName": "page_check_soul_zones.png",
+    "profile": "High",
     "roiFront": "1188,635,48,46",
     "roiBack": "1158,616,103,93",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "check_realm_raid",
     "imageName": "page_check_realm_raid.png",
+    "profile": "High",
     "roiFront": "129,632,52,48",
     "roiBack": "66,526,233,188",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "check_hero_test",
     "imageName": "page_check_hero_test.png",
+    "profile": "High",
     "roiFront": "148,10,133,48",
     "roiBack": "137,0,157,71",
     "method": "Template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "check_goryou",
     "imageName": "page_check_goryou.png",
+    "profile": "High",
     "roiFront": "880,8,30,39",
     "roiBack": "880,8,30,39",
     "method": "Template matching",
@@ -146,6 +162,7 @@
   {
     "itemName": "check_delegation",
     "imageName": "page_check_delegation.png",
+    "profile": "High",
     "roiFront": "839,132,49,45",
     "roiBack": "839,132,49,45",
     "method": "Template matching",
@@ -155,6 +172,7 @@
   {
     "itemName": "check_secret_zones",
     "imageName": "page_check_secret_zones.png",
+    "profile": "High",
     "roiFront": "1145,592,110,119",
     "roiBack": "1145,592,110,119",
     "method": "Template matching",
@@ -164,6 +182,7 @@
   {
     "itemName": "check_area_boss",
     "imageName": "page_check_area_boss.png",
+    "profile": "High",
     "roiFront": "20,320,150,130",
     "roiBack": "20,320,150,130",
     "method": "Template matching",
@@ -173,6 +192,7 @@
   {
     "itemName": "check_heian_kitan",
     "imageName": "page_check_heian_kitan.png",
+    "profile": "High",
     "roiFront": "27,48,47,39",
     "roiBack": "27,48,47,39",
     "method": "Template matching",
@@ -182,6 +202,7 @@
   {
     "itemName": "check_bondling_fairyland",
     "imageName": "page_check_bondling_fairyland.png",
+    "profile": "High",
     "roiFront": "614,660,56,49",
     "roiBack": "582,630,130,90",
     "method": "Template matching",
@@ -191,6 +212,7 @@
   {
     "itemName": "ryoutoppa_goto_realmraid",
     "imageName": "page_ryoutoppa_goto_realmraid.png",
+    "profile": "High",
     "roiFront": "1201,234,62,105",
     "roiBack": "1201,234,62,105",
     "method": "Template matching",
@@ -200,6 +222,7 @@
   {
     "itemName": "kekkai_toppa",
     "imageName": "page_kekkai_toppa.png",
+    "profile": "High",
     "roiFront": "1065,3,203,61",
     "roiBack": "1065,3,203,61",
     "method": "Template matching",
@@ -209,6 +232,7 @@
   {
     "itemName": "realm_raid_goto_shikigami_records",
     "imageName": "page_realm_raid_goto_shikigami_records.png",
+    "profile": "High",
     "roiFront": "1208,610,45,44",
     "roiBack": "1166,520,112,198",
     "method": "Template matching",
@@ -218,6 +242,7 @@
   {
     "itemName": "exploration_to_moon_sea",
     "imageName": "page_exploration_to_moon_sea.png",
+    "profile": "High",
     "roiFront": "930,635,49,44",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -227,6 +252,7 @@
   {
     "itemName": "exploration_to_incense_realm",
     "imageName": "page_exploration_to_incense_realm.png",
+    "profile": "High",
     "roiFront": "930,635,49,44",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -236,6 +262,7 @@
   {
     "itemName": "exploration_to_seasonrift_forest",
     "imageName": "page_exploration_to_seasonrift_forest.png",
+    "profile": "High",
     "roiFront": "930,635,49,44",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -245,6 +272,7 @@
   {
     "itemName": "exploration_to_pure_buddha_realm",
     "imageName": "page_exploration_to_pure_buddha_realm.png",
+    "profile": "High",
     "roiFront": "930,635,49,44",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -254,6 +282,7 @@
   {
     "itemName": "exploration_to_mantra_tower",
     "imageName": "page_exploration_to_mantra_tower.png",
+    "profile": "High",
     "roiFront": "930,635,49,44",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -263,6 +292,7 @@
   {
     "itemName": "exploration_to_peacock_kingdom",
     "imageName": "page_exploration_to_peacock_kingdom.png",
+    "profile": "High",
     "roiFront": "930,635,49,44",
     "roiBack": "33,619,1150,99",
     "method": "Template matching",
@@ -272,6 +302,7 @@
   {
     "itemName": "check_moon_sea",
     "imageName": "page_check_moon_sea.png",
+    "profile": "High",
     "roiFront": "347,163,29,106",
     "roiBack": "296,117,165,256",
     "method": "Template matching",
@@ -281,6 +312,7 @@
   {
     "itemName": "check_incense_realm",
     "imageName": "page_check_incense_realm.png",
+    "profile": "High",
     "roiFront": "347,163,29,106",
     "roiBack": "296,117,165,256",
     "method": "Template matching",
@@ -290,6 +322,7 @@
   {
     "itemName": "check_seasonrift_forest",
     "imageName": "page_check_seasonrift_forest.png",
+    "profile": "High",
     "roiFront": "348,158,30,106",
     "roiBack": "296,117,165,256",
     "method": "Template matching",
@@ -299,6 +332,7 @@
   {
     "itemName": "check_pure_buddha_realm",
     "imageName": "page_check_pure_buddha_realm.png",
+    "profile": "High",
     "roiFront": "348,158,30,106",
     "roiBack": "296,117,165,256",
     "method": "Template matching",
@@ -308,6 +342,7 @@
   {
     "itemName": "check_mantra_tower",
     "imageName": "page_check_mantra_tower.png",
+    "profile": "High",
     "roiFront": "348,158,30,106",
     "roiBack": "296,117,165,256",
     "method": "Template matching",
@@ -317,6 +352,7 @@
   {
     "itemName": "check_peacock_kingdom",
     "imageName": "page_check_peacock_kingdom.png",
+    "profile": "High",
     "roiFront": "348,158,30,106",
     "roiBack": "296,117,165,256",
     "method": "Template matching",

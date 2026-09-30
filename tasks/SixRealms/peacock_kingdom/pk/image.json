@@ -2,6 +2,7 @@
   {
     "itemName": "pk_start_confirm",
     "imageName": "pk_pk_start_confirm.png",
+    "profile": "High",
     "roiFront": "1127,578,87,93",
     "roiBack": "1102,557,146,142",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "pk_start",
     "imageName": "pk_pk_start.png",
+    "profile": "High",
     "roiFront": "1111,578,119,122",
     "roiBack": "1092,548,175,170",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "pk_start_confirm2",
     "imageName": "pk_pk_start_confirm2.png",
+    "profile": "High",
     "roiFront": "1119,564,121,134",
     "roiBack": "1092,548,175,170",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "pk_exit_main",
     "imageName": "pk_pk_exit_main.png",
+    "profile": "High",
     "roiFront": "516,316,56,55",
     "roiBack": "474,293,333,135",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "pk_continue",
     "imageName": "pk_pk_continue.png",
+    "profile": "High",
     "roiFront": "1111,578,119,122",
     "roiBack": "1092,548,175,170",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "pk_check_map",
     "imageName": "pk_pk_check_map.png",
+    "profile": "High",
     "roiFront": "1120,19,142,233",
     "roiBack": "1103,0,177,271",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "pk_battle_thunder",
     "imageName": "pk_pk_battle_thunder.png",
+    "profile": "High",
     "roiFront": "79,94,29,30",
     "roiBack": "12,83,205,52",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "pk_start_third_skill",
     "imageName": "pk_pk_start_third_skill.png",
+    "profile": "High",
     "roiFront": "1006,601,85,41",
     "roiBack": "1006,601,85,41",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "pk_check_main",
     "imageName": "pk_pk_check_main.png",
+    "profile": "High",
     "roiFront": "93,18,112,48",
     "roiBack": "93,18,112,48",
     "method": "Template matching",

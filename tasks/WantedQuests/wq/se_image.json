@@ -2,6 +2,7 @@
   {
     "itemName": "wqse_fire",
     "imageName": "wq_wqse_fire.png",
+    "profile": "High",
     "roiFront": "1041,556,100,100",
     "roiBack": "1016,534,147,138",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "wq_d1111",
     "imageName": "wq_wq_d1111.png",
+    "profile": "High",
     "roiFront": "20,171,99,105",
     "roiBack": "6,148,150,299",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "wq_nian",
     "imageName": "wq_wq_nian.png",
+    "profile": "High",
     "roiFront": "19,176,100,100",
     "roiBack": "0,153,166,273",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "wqse_special_fire",
     "imageName": "wq_wqse_special_fire.png",
+    "profile": "High",
     "roiFront": "1116,555,96,96",
     "roiBack": "1076,525,168,160",
     "method": "Template matching",

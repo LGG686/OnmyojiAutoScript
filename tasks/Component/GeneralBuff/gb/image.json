@@ -2,6 +2,7 @@
   {
     "itemName": "buff_1",
     "imageName": "gb_buff_1.png",
+    "profile": "High",
     "roiFront": "363,32,32,46",
     "roiBack": "344,14,128,76",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "awake",
     "imageName": "gb_awake.png",
+    "profile": "High",
     "roiFront": "381,130,35,45",
     "roiBack": "360,107,80,447",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "soul",
     "imageName": "gb_soul.png",
+    "profile": "High",
     "roiFront": "377,203,39,40",
     "roiBack": "361,121,71,388",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "gold_50",
     "imageName": "gb_gold_50.png",
+    "profile": "High",
     "roiFront": "373,269,52,36",
     "roiBack": "367,120,64,391",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "gold_100",
     "imageName": "gb_gold_100.png",
+    "profile": "High",
     "roiFront": "378,338,43,39",
     "roiBack": "365,121,74,407",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "exp_50",
     "imageName": "gb_exp_50.png",
+    "profile": "High",
     "roiFront": "379,406,44,43",
     "roiBack": "365,127,70,393",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "exp_100",
     "imageName": "gb_exp_100.png",
+    "profile": "High",
     "roiFront": "383,406,30,40",
     "roiBack": "368,126,58,386",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "open_yellow",
     "imageName": "gb_open_yellow.png",
+    "profile": "High",
     "roiFront": "774,299,13,18",
     "roiBack": "766,133,35,366",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "close_red",
     "imageName": "gb_close_red.png",
+    "profile": "High",
     "roiFront": "773,365,12,20",
     "roiBack": "764,134,38,369",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "cloud",
     "imageName": "gb_cloud.png",
+    "profile": "High",
     "roiFront": "357,505,65,38",
     "roiBack": "313,484,158,75",
     "method": "Template matching",

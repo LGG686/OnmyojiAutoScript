@@ -2,6 +2,7 @@
   {
     "itemName": "banquet_flag",
     "imageName": "res_banquet_flag.png",
+    "profile": "High",
     "roiFront": "1035,12,33,60",
     "roiBack": "1035,12,33,60",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "banquet_exp_full",
     "imageName": "res_banquet_exp_full.png",
+    "profile": "High",
     "roiFront": "28,408,18,16",
     "roiBack": "7,138,106,366",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "banquet_switch",
     "imageName": "res_banquet_switch.png",
+    "profile": "High",
     "roiFront": "998,164,49,83",
     "roiBack": "974,131,106,152",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "banquet_confirm",
     "imageName": "res_banquet_confirm.png",
+    "profile": "High",
     "roiFront": "1072,411,50,59",
     "roiBack": "990,348,202,163",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "banquet_all_put",
     "imageName": "res_banquet_all_put.png",
+    "profile": "High",
     "roiFront": "718,412,90,31",
     "roiBack": "653,377,233,105",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "banquet_clear_all",
     "imageName": "res_banquet_clear_all.png",
+    "profile": "High",
     "roiFront": "480,413,90,31",
     "roiBack": "416,377,233,105",
     "method": "Template matching",

@@ -2,6 +2,7 @@
   {
     "itemName": "ryou_shenshe",
     "imageName": "res_ryou_shenshe.png",
+    "profile": "High",
     "roiFront": "850,660,100,60",
     "roiBack": "850,660,100,60",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "ryou_dokan",
     "imageName": "res_ryou_dokan.png",
+    "profile": "High",
     "roiFront": "465,160,100,50",
     "roiBack": "465,160,100,50",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "ryou_dokan_activated",
     "imageName": "res_ryou_dokan_activated.png",
+    "profile": "High",
     "roiFront": "0,150,200,400",
     "roiBack": "0,150,200,400",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "ryou_dokan_check",
     "imageName": "res_ryou_dokan_check.png",
+    "profile": "High",
     "roiFront": "567,15,144,42",
     "roiBack": "567,15,144,42",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "ryou_dokan_shikigami",
     "imageName": "res_ryou_dokan_shikigami.png",
+    "profile": "High",
     "roiFront": "995,602,77,72",
     "roiBack": "960,580,140,120",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "ryou_dokan_attack_priority",
     "imageName": "res_ryou_dokan_priority.png",
+    "profile": "High",
     "roiFront": "767,663,48,27",
     "roiBack": "520,660,557,48",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "ryou_dokan_attack_priority_0",
     "imageName": "res_ryou_dokan_priority_0.png",
+    "profile": "High",
     "roiFront": "98,170,94,43",
     "roiBack": "98,170,94,43",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "ryou_dokan_attack_priority_1",
     "imageName": "res_ryou_dokan_priority_1.png",
+    "profile": "High",
     "roiFront": "342,175,96,42",
     "roiBack": "342,175,96,42",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "ryou_dokan_attack_priority_2",
     "imageName": "res_ryou_dokan_priority_2.png",
+    "profile": "High",
     "roiFront": "585,175,89,35",
     "roiBack": "585,175,89,35",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "ryou_dokan_attack_priority_3",
     "imageName": "res_ryou_dokan_priority_3.png",
+    "profile": "High",
     "roiFront": "830,175,88,41",
     "roiBack": "830,175,88,41",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "ryou_dokan_attack_priority_4",
     "imageName": "res_ryou_dokan_priority_4.png",
+    "profile": "High",
     "roiFront": "1072,178,94,39",
     "roiBack": "1072,178,94,39",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "ryou_dokan_finding_dokan",
     "imageName": "res_ryou_dokan_finding_dokan.png",
+    "profile": "High",
     "roiFront": "980,60,100,160",
     "roiBack": "980,60,100,160",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "ryou_dokan_found_dokan",
     "imageName": "res_ryou_dokan_found_dokan.png",
+    "profile": "High",
     "roiFront": "440,580,360,140",
     "roiBack": "440,580,360,140",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "ryou_dokan_gathering",
     "imageName": "res_ryou_dokan_gathering.png",
+    "profile": "High",
     "roiFront": "653,76,46,26",
     "roiBack": "653,76,46,26",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "ryou_dokan_start_challenge",
     "imageName": "res_ryou_dokan_start_challenge.png",
+    "profile": "High",
     "roiFront": "1100,550,180,80",
     "roiBack": "1100,550,180,80",
     "method": "Template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "ryou_dokan_cd1",
     "imageName": "res_ryou_dokan_cd1.png",
+    "profile": "High",
     "roiFront": "1068,500,146,27",
     "roiBack": "1068,500,146,27",
     "method": "Template matching",
@@ -146,6 +162,7 @@
   {
     "itemName": "ryou_dokan_cd",
     "imageName": "res_ryou_dokan_cd.png",
+    "profile": "High",
     "roiFront": "1122,566,117,74",
     "roiBack": "1122,566,117,74",
     "method": "Template matching",
@@ -155,6 +172,7 @@
   {
     "itemName": "ryou_dokan_in_field",
     "imageName": "res_ryou_dokan_in_field.png",
+    "profile": "High",
     "roiFront": "1128,536,100,100",
     "roiBack": "1128,536,100,100",
     "method": "Template matching",
@@ -164,6 +182,7 @@
   {
     "itemName": "dokan_boss_waiting",
     "imageName": "res_dokan_boss_waiting.png",
+    "profile": "High",
     "roiFront": "460,140,370,80",
     "roiBack": "460,140,370,80",
     "method": "Template matching",
@@ -173,6 +192,7 @@
   {
     "itemName": "ryou_dokan_master_battle",
     "imageName": "res_ryou_dokan_master_battle.png",
+    "profile": "High",
     "roiFront": "862,69,41,89",
     "roiBack": "640,0,640,360",
     "method": "Template matching",
@@ -182,6 +202,7 @@
   {
     "itemName": "dokan_abandoned_toppa",
     "imageName": "res_ryou_dokan_abandoned_toppa.png",
+    "profile": "High",
     "roiFront": "0,550,180,170",
     "roiBack": "0,550,180,170",
     "method": "Template matching",
@@ -191,6 +212,7 @@
   {
     "itemName": "dokan_abandoned_toppa_ensure",
     "imageName": "res_ryou_dokan_abandoned_toppa_ensure.png",
+    "profile": "High",
     "roiFront": "0,0,1280,720",
     "roiBack": "0,0,1280,720",
     "method": "Template matching",
@@ -200,6 +222,7 @@
   {
     "itemName": "dokan_abandoned_toppa_title",
     "imageName": "res_ryou_dokan_abandoned_toppa_title.png",
+    "profile": "High",
     "roiFront": "1020,160,260,80",
     "roiBack": "1020,160,260,80",
     "method": "Template matching",
@@ -209,6 +232,7 @@
   {
     "itemName": "ryou_dokan_win",
     "imageName": "res_ryou_dokan_win.png",
+    "profile": "High",
     "roiFront": "422,49,100,80",
     "roiBack": "348,13,319,178",
     "method": "Template matching",
@@ -218,6 +242,7 @@
   {
     "itemName": "ryou_dokan_in_field2",
     "imageName": "res_ryou_dokan_in_field2.png",
+    "profile": "High",
     "roiFront": "1131,562,88,48",
     "roiBack": "1131,562,88,48",
     "method": "Template matching",
@@ -227,6 +252,7 @@
   {
     "itemName": "ryou_dokan_battle_master_first",
     "imageName": "res_ryou_dokan_battle_master_first.png",
+    "profile": "High",
     "roiFront": "1113,205,50,28",
     "roiBack": "1080,180,160,70",
     "method": "Template matching",
@@ -236,6 +262,7 @@
   {
     "itemName": "ryou_dokan_battle_master_second",
     "imageName": "res_ryou_dokan_battle_master_second.png",
+    "profile": "High",
     "roiFront": "1114,208,48,25",
     "roiBack": "1080,180,160,70",
     "method": "Template matching",
@@ -245,6 +272,7 @@
   {
     "itemName": "ryou_dokan_battle_over",
     "imageName": "res_ryou_dokan_battle_over.png",
+    "profile": "High",
     "roiFront": "571,503,106,49",
     "roiBack": "571,503,106,49",
     "method": "Template matching",
@@ -254,6 +282,7 @@
   {
     "itemName": "ryou_dokan_fighting",
     "imageName": "res_ryou_dokan_fighting.png",
+    "profile": "High",
     "roiFront": "232,36,42,19",
     "roiBack": "232,36,42,19",
     "method": "Template matching",
@@ -263,6 +292,7 @@
   {
     "itemName": "ryou_dokan_finished",
     "imageName": "res_ryou_dokan_finished.png",
+    "profile": "High",
     "roiFront": "658,649,91,27",
     "roiBack": "658,649,91,27",
     "method": "Template matching",
@@ -272,6 +302,7 @@
   {
     "itemName": "ryou_dokan_toppa_rank",
     "imageName": "res_ryou_dokan_toppa_rank.png",
+    "profile": "High",
     "roiFront": "110,80,170,70",
     "roiBack": "110,80,170,70",
     "method": "Template matching",
@@ -281,6 +312,7 @@
   {
     "itemName": "ryou_dokan_failed_vote_keep_bounty",
     "imageName": "res_ryou_dokan_failed_vote_keep_bounty.png",
+    "profile": "High",
     "roiFront": "1020,220,260,120",
     "roiBack": "1020,220,260,120",
     "method": "Template matching",
@@ -290,6 +322,7 @@
   {
     "itemName": "ryou_dokan_failed_vote_battle_again",
     "imageName": "res_ryou_dokan_failed_vote_battle_again.png",
+    "profile": "High",
     "roiFront": "1020,220,260,120",
     "roiBack": "1020,220,260,120",
     "method": "Template matching",
@@ -299,6 +332,7 @@
   {
     "itemName": "ryou_dokan_abandoned_toppa_abandoned",
     "imageName": "res_ryou_dokan_abandoned_toppa_abandoned.png",
+    "profile": "High",
     "roiFront": "1020,220,260,120",
     "roiBack": "1020,220,260,120",
     "method": "Template matching",
@@ -308,6 +342,7 @@
   {
     "itemName": "ryou_dokan_abandoned_toppa_continue",
     "imageName": "res_ryou_dokan_abandoned_toppa_continue.png",
+    "profile": "High",
     "roiFront": "1020,220,260,120",
     "roiBack": "1020,220,260,120",
     "method": "Template matching",
@@ -317,6 +352,7 @@
   {
     "itemName": "ryou_dokan_quit_battle_ensure",
     "imageName": "res_ryou_dokan_quit_battle_ensure.png",
+    "profile": "High",
     "roiFront": "0,0,1280,720",
     "roiBack": "0,0,1280,720",
     "method": "Template matching",
@@ -326,6 +362,7 @@
   {
     "itemName": "ryou_dokan_exit_ensure",
     "imageName": "res_ryou_dokan_exit_ensure.png",
+    "profile": "High",
     "roiFront": "678,395,125,56",
     "roiBack": "678,395,125,56",
     "method": "Template matching",
@@ -335,6 +372,7 @@
   {
     "itemName": "ryou_dokan_cheering_scores",
     "imageName": "res_ryou_dokan_cheering_scores.png",
+    "profile": "High",
     "roiFront": "157,100,35,39",
     "roiBack": "157,100,35,39",
     "method": "Template matching",
@@ -344,6 +382,7 @@
   {
     "itemName": "ryou_dokan_cheering_attacking_sama",
     "imageName": "res_ryou_dokan_cheering_attacking_sama.png",
+    "profile": "High",
     "roiFront": "948,182,56,295",
     "roiBack": "948,182,56,295",
     "method": "Template matching",
@@ -353,6 +392,7 @@
   {
     "itemName": "scene_ryou",
     "imageName": "scene_ryou.png",
+    "profile": "High",
     "roiFront": "1161,674,75,31",
     "roiBack": "1161,674,75,31",
     "method": "Template matching",
@@ -362,6 +402,7 @@
   {
     "itemName": "scene_shenshe",
     "imageName": "scene_shenshe.png",
+    "profile": "High",
     "roiFront": "477,165,63,65",
     "roiBack": "477,165,65,80",
     "method": "Template matching",
@@ -371,6 +412,7 @@
   {
     "itemName": "ryou_dokan_create_dokan",
     "imageName": "res_ryou_dokan_create_dokan.png",
+    "profile": "High",
     "roiFront": "240,600,94,90",
     "roiBack": "240,600,94,90",
     "method": "Template matching",
@@ -380,6 +422,7 @@
   {
     "itemName": "ryou_dokan_create_dokan_ensure",
     "imageName": "res_ryou_dokan_create_dokan_ensure.png",
+    "profile": "High",
     "roiFront": "0,0,1280,720",
     "roiBack": "0,0,1280,720",
     "method": "Template matching",
@@ -389,6 +432,7 @@
   {
     "itemName": "ryou_dokan_dokan_info_close",
     "imageName": "res_ryou_dokan_dokan_info_close.png",
+    "profile": "High",
     "roiFront": "1150,80,100,90",
     "roiBack": "1150,80,100,90",
     "method": "Template matching",
@@ -398,6 +442,7 @@
   {
     "itemName": "ryou_dokan_today_attack_count",
     "imageName": "res_ryou_dokan_today_attack_count.png",
+    "profile": "High",
     "roiFront": "500,630,250,50",
     "roiBack": "500,630,250,50",
     "method": "Template matching",
@@ -407,6 +452,7 @@
   {
     "itemName": "ryou_dokan_remain_attack_count_done",
     "imageName": "res_ryou_dokan_remain_attack_count_done.png",
+    "profile": "High",
     "roiFront": "550,610,220,80",
     "roiBack": "550,610,220,80",
     "method": "Template matching",
@@ -416,6 +462,7 @@
   {
     "itemName": "ryou_dokan_remain_attack_count_zero",
     "imageName": "res_ryou_dokan_remain_attack_count_zero.png",
+    "profile": "High",
     "roiFront": "650,610,110,80",
     "roiBack": "650,610,110,80",
     "method": "Template matching",
@@ -425,6 +472,7 @@
   {
     "itemName": "ryou_dokan_remain_attack_count_one",
     "imageName": "res_ryou_dokan_remain_attack_count_one.png",
+    "profile": "High",
     "roiFront": "650,610,110,80",
     "roiBack": "650,610,110,80",
     "method": "Template matching",
@@ -434,6 +482,7 @@
   {
     "itemName": "ryou_dokan_remain_attack_count_two",
     "imageName": "res_ryou_dokan_remain_attack_count_two.png",
+    "profile": "High",
     "roiFront": "650,610,110,80",
     "roiBack": "650,610,110,80",
     "method": "Template matching",
@@ -443,6 +492,7 @@
   {
     "itemName": "center_guanzhu_xiuxi",
     "imageName": "res_ryou_dokan_center_guanzhu_xiuxi.png",
+    "profile": "High",
     "roiFront": "0,0,1280,720",
     "roiBack": "0,0,1280,720",
     "method": "Template matching",
@@ -452,6 +502,7 @@
   {
     "itemName": "center_point_people_number",
     "imageName": "res_ryou_dokan_center_point_people_number.png",
+    "profile": "High",
     "roiFront": "0,0,1280,720",
     "roiBack": "0,0,1280,720",
     "method": "Template matching",
@@ -461,6 +512,7 @@
   {
     "itemName": "center_challenge",
     "imageName": "res_ryou_dokan_center_challenge.png",
+    "profile": "High",
     "roiFront": "0,0,1280,720",
     "roiBack": "0,0,1280,720",
     "method": "Template matching",
@@ -470,6 +522,7 @@
   {
     "itemName": "challenge_ensure",
     "imageName": "res_ryou_dokan_challenge_ensure.png",
+    "profile": "High",
     "roiFront": "0,0,1280,720",
     "roiBack": "0,0,1280,720",
     "method": "Template matching",
@@ -479,6 +532,7 @@
   {
     "itemName": "refresh_ensure",
     "imageName": "res_ryou_dokan_refresh_ensure.png",
+    "profile": "High",
     "roiFront": "0,0,1280,720",
     "roiBack": "0,0,1280,720",
     "method": "Template matching",
@@ -488,6 +542,7 @@
   {
     "itemName": "rightpad_point_bounty",
     "imageName": "res_ryou_dokan_rightpad_point_bounty.png",
+    "profile": "High",
     "roiFront": "1125,103,27,29",
     "roiBack": "1077,0,171,602",
     "method": "Template matching",
@@ -497,6 +552,7 @@
   {
     "itemName": "ryou_dokan_center_top",
     "imageName": "res_ryou_dokan_center_top.png",
+    "profile": "High",
     "roiFront": "500,20,300,70",
     "roiBack": "500,20,300,70",
     "method": "Template matching",
@@ -506,6 +562,7 @@
   {
     "itemName": "ryou_dokan_dokan_quit",
     "imageName": "res_ryou_dokan_dokan_quit.png",
+    "profile": "High",
     "roiFront": "0,2,80,80",
     "roiBack": "0,2,80,80",
     "method": "Template matching",
@@ -515,6 +572,7 @@
   {
     "itemName": "ryou_dokan_spoils_of_dokan",
     "imageName": "res_ryou_dokan_spoils_of_dokan.png",
+    "profile": "High",
     "roiFront": "480,400,400,100",
     "roiBack": "480,400,400,100",
     "method": "Template matching",
@@ -524,6 +582,7 @@
   {
     "itemName": "ryou_dokan_cheering",
     "imageName": "res_ryou_dokan_cheering.png",
+    "profile": "High",
     "roiFront": "65,601,71,33",
     "roiBack": "44,568,112,100",
     "method": "Template matching",
@@ -533,6 +592,7 @@
   {
     "itemName": "ryou_dokan_cheering_gray",
     "imageName": "res_ryou_dokan_cheering_gray.png",
+    "profile": "High",
     "roiFront": "65,601,71,33",
     "roiBack": "44,568,112,100",
     "method": "Template matching",
@@ -542,6 +602,7 @@
   {
     "itemName": "ryou_dokan_have_dokan",
     "imageName": "res_ryou_dokan_have_dokan.png",
+    "profile": "High",
     "roiFront": "240,600,94,90",
     "roiBack": "240,600,94,90",
     "method": "Template matching",

@@ -2,6 +2,7 @@
   {
     "itemName": "gr_fire",
     "imageName": "gr_gr_fire.png",
+    "profile": "High",
     "roiFront": "1057,584,88,89",
     "roiBack": "1012,557,183,148",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "gr_lock",
     "imageName": "gr_gr_lock.png",
+    "profile": "High",
     "roiFront": "701,657,27,32",
     "roiBack": "665,629,99,91",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "gr_unlock",
     "imageName": "gr_gr_unlock.png",
+    "profile": "High",
     "roiFront": "705,656,20,30",
     "roiBack": "671,636,84,73",
     "method": "Template matching",

@@ -2,6 +2,7 @@
   {
     "itemName": "hero2_skill1",
     "imageName": "as_hero2_skill1.png",
+    "profile": "High",
     "roiFront": "825,358,61,36",
     "roiBack": "47,340,1178,65",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "hero2_skill2",
     "imageName": "as_hero2_skill2.png",
+    "profile": "High",
     "roiFront": "521,356,63,37",
     "roiBack": "46,333,1174,82",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "hero2_skill4",
     "imageName": "as_hero2_skill4.png",
+    "profile": "High",
     "roiFront": "1127,356,65,41",
     "roiBack": "48,349,1173,57",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "hero2_skill5",
     "imageName": "as_hero2_skill5.png",
+    "profile": "High",
     "roiFront": "217,358,65,37",
     "roiBack": "46,334,1148,81",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "hero2_skill3",
     "imageName": "as_hero2_skill3.png",
+    "profile": "High",
     "roiFront": "520,358,62,38",
     "roiBack": "41,346,1172,63",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "hero2_skill6",
     "imageName": "as_hero2_skill6.png",
+    "profile": "High",
     "roiFront": "427,356,62,38",
     "roiBack": "48,342,1175,67",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "hero2_skill7",
     "imageName": "as_hero2_skill7.png",
+    "profile": "High",
     "roiFront": "823,355,64,41",
     "roiBack": "54,344,1170,74",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "hero2_skill8",
     "imageName": "as_hero2_skill8.png",
+    "profile": "High",
     "roiFront": "221,353,60,40",
     "roiBack": "54,343,1167,73",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "hero2_skill9",
     "imageName": "as_hero2_skill9.png",
+    "profile": "High",
     "roiFront": "219,356,60,38",
     "roiBack": "50,342,1169,73",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "hero2_skill10",
     "imageName": "as_hero2_skill10.png",
+    "profile": "High",
     "roiFront": "1127,356,59,40",
     "roiBack": "53,345,1169,74",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "hero2_skill11",
     "imageName": "as_hero2_skill11.png",
+    "profile": "High",
     "roiFront": "521,357,60,39",
     "roiBack": "48,342,1172,74",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "hero2_skill12",
     "imageName": "as_hero2_skill12.png",
+    "profile": "High",
     "roiFront": "1034,354,122,41",
     "roiBack": "53,341,1172,74",
     "method": "Template matching",

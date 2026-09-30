@@ -2,6 +2,7 @@
   {
     "itemName": "mall_consignment",
     "imageName": "navbar_mall_consignment.png",
+    "profile": "High",
     "roiFront": "217,648,46,40",
     "roiBack": "175,610,120,103",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "mall_consignment_check",
     "imageName": "navbar_mall_consignment_check.png",
+    "profile": "High",
     "roiFront": "12,166,100,390",
     "roiBack": "12,166,100,390",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "mall_sccales",
     "imageName": "navbar_mall_sccales.png",
+    "profile": "High",
     "roiFront": "470,649,68,49",
     "roiBack": "427,621,147,92",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "mall_sccales_check",
     "imageName": "navbar_mall_sccales_check.png",
+    "profile": "High",
     "roiFront": "409,253,100,100",
     "roiBack": "336,133,253,355",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "mall_scales_sure",
     "imageName": "navbar_mall_scales_sure.png",
+    "profile": "High",
     "roiFront": "1195,100,62,85",
     "roiBack": "1195,100,62,85",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "mall_bondlings_sure",
     "imageName": "navbar_mall_bondlings_sure.png",
+    "profile": "High",
     "roiFront": "1194,421,69,74",
     "roiBack": "1194,421,69,74",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "mall_bondlings_on",
     "imageName": "navbar_mall_bondlings_on.png",
+    "profile": "High",
     "roiFront": "903,12,27,32",
     "roiBack": "309,0,952,62",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "mall_bondlings_check",
     "imageName": "navbar_mall_bondlings_check.png",
+    "profile": "High",
     "roiFront": "355,186,34,104",
     "roiBack": "355,186,34,104",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "mall_sundry",
     "imageName": "navbar_mall_sundry.png",
+    "profile": "High",
     "roiFront": "875,646,53,54",
     "roiBack": "834,621,116,90",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "mall_sundry_check",
     "imageName": "navbar_mall_sundry_check.png",
+    "profile": "High",
     "roiFront": "1101,6,31,44",
     "roiBack": "1035,0,131,58",
     "method": "Template matching",

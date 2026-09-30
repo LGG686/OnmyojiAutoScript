@@ -2,6 +2,7 @@
   {
     "itemName": "ra_open",
     "imageName": "ra_ra_open.png",
+    "profile": "High",
     "roiFront": "1257,78,22,58",
     "roiBack": "1257,78,22,58",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "ra_close",
     "imageName": "ra_ra_close.png",
+    "profile": "High",
     "roiFront": "1256,123,23,44",
     "roiBack": "1256,123,23,44",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "toggle_button",
     "imageName": "as_toggle_button.png",
+    "profile": "High",
     "roiFront": "1193,527,27,25",
     "roiBack": "1169,146,73,453",
     "method": "Template matching",

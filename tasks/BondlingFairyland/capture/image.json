@@ -2,6 +2,7 @@
   {
     "itemName": "c_auto_true",
     "imageName": "capture_c_auto_true.png",
+    "profile": "High",
     "roiFront": "765,200,50,24",
     "roiBack": "749,187,79,51",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "c_auto_false",
     "imageName": "capture_c_auto_false.png",
+    "profile": "High",
     "roiFront": "766,200,43,25",
     "roiBack": "745,189,88,44",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "c_low_true",
     "imageName": "capture_c_low_true.png",
+    "profile": "High",
     "roiFront": "523,284,30,32",
     "roiBack": "514,274,51,50",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "c_low_false",
     "imageName": "capture_c_low_false.png",
+    "profile": "High",
     "roiFront": "521,282,33,35",
     "roiBack": "513,275,48,47",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "c_midum_true",
     "imageName": "capture_c_midum_true.png",
+    "profile": "High",
     "roiFront": "663,283,31,31",
     "roiBack": "653,277,49,46",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "c_midum_false",
     "imageName": "capture_c_midum_false.png",
+    "profile": "High",
     "roiFront": "662,283,31,32",
     "roiBack": "654,276,49,45",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "c_high_true",
     "imageName": "capture_c_high_true.png",
+    "profile": "High",
     "roiFront": "800,283,33,36",
     "roiBack": "792,273,49,50",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "c_high_false",
     "imageName": "capture_c_high_false.png",
+    "profile": "High",
     "roiFront": "801,283,32,34",
     "roiBack": "792,273,51,50",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "c_first_enable",
     "imageName": "capture_c_first_enable.png",
+    "profile": "High",
     "roiFront": "507,563,33,31",
     "roiBack": "500,553,49,47",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "c_first_disable",
     "imageName": "capture_c_first_disable.png",
+    "profile": "High",
     "roiFront": "708,560,38,34",
     "roiBack": "702,553,49,49",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "caption_ensure",
     "imageName": "capture_caption_ensure.png",
+    "profile": "High",
     "roiFront": "665,610,129,56",
     "roiBack": "652,601,153,77",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "click_caption",
     "imageName": "capture_click_caption.png",
+    "profile": "High",
     "roiFront": "68,414,54,42",
     "roiBack": "48,398,97,81",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "c_continuous_disable",
     "imageName": "capture_c_continuous_disable.png",
+    "profile": "High",
     "roiFront": "709,468,33,36",
     "roiBack": "702,462,50,52",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "c_continuous_enable",
     "imageName": "capture_c_continuous_enable.png",
+    "profile": "High",
     "roiFront": "508,468,32,34",
     "roiBack": "500,461,47,48",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "c_minimal_mode_enable",
     "imageName": "capture_c_minimal_mode_enable.png",
+    "profile": "High",
     "roiFront": "764,155,48,24",
     "roiBack": "757,149,63,39",
     "method": "Template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "c_minimal_mode_disable",
     "imageName": "capture_c_minimal_mode_disable.png",
+    "profile": "High",
     "roiFront": "764,156,46,23",
     "roiBack": "758,148,62,39",
     "method": "Template matching",

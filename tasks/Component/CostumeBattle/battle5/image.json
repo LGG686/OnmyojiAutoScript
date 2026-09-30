@@ -2,6 +2,7 @@
   {
     "itemName": "local_5",
     "imageName": "battle5_local_5.png",
+    "profile": "High",
     "roiFront": "30,567,23,25",
     "roiBack": "30,567,23,25",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "exit_5",
     "imageName": "battle5_exit_5.png",
+    "profile": "High",
     "roiFront": "22,17,27,31",
     "roiBack": "22,17,27,31",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "friends_5",
     "imageName": "battle5_friends_5.png",
+    "profile": "High",
     "roiFront": "90,17,35,34",
     "roiBack": "90,17,35,34",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "battle_info_5",
     "imageName": "battle5_battle_info_5.png",
+    "profile": "High",
     "roiFront": "233,18,31,31",
     "roiBack": "212,0,147,57",
     "method": "Template matching",

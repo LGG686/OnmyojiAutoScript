@@ -2,6 +2,7 @@
   {
     "itemName": "frog_medal",
     "imageName": "res_frog_medal.png",
+    "profile": "High",
     "roiFront": "912,12,32,35",
     "roiBack": "912,12,32,35",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "rr_three",
     "imageName": "res_rr_three.png",
+    "profile": "High",
     "roiFront": "346,584,42,44",
     "roiBack": "346,584,42,44",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "frog_raid",
     "imageName": "res_frog_raid.png",
+    "profile": "High",
     "roiFront": "511,301,282,100",
     "roiBack": "511,301,282,100",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "rr_person",
     "imageName": "res_rr_person.png",
+    "profile": "High",
     "roiFront": "1203,236,56,100",
     "roiBack": "1203,236,56,155",
     "method": "Template matching",

@@ -2,6 +2,7 @@
   {
     "itemName": "event_reward",
     "imageName": "exploration_event_reward.png",
+    "profile": "High",
     "roiFront": "529,78,222,51",
     "roiBack": "524,73,232,61",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "event_fight",
     "imageName": "exploration_event_fight.png",
+    "profile": "High",
     "roiFront": "529,78,222,51",
     "roiBack": "524,73,232,61",
     "method": "Template matching",
@@ -24,12 +26,13 @@
     "roiBack": "1043,543,106,54",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "More",
+    "profile": "High",
     "description": "战斗"
   },
   {
     "itemName": "event_reward_open",
     "imageName": "exploration_event_reward_open.png",
+    "profile": "High",
     "roiFront": "1050,558,96,44",
     "roiBack": "1045,552,106,54",
     "method": "Template matching",
@@ -39,6 +42,7 @@
   {
     "itemName": "event_close",
     "imageName": "exploration_event_close.png",
+    "profile": "High",
     "roiFront": "1095,117,42,38",
     "roiBack": "1079,94,76,87",
     "method": "Template matching",
@@ -48,6 +52,7 @@
   {
     "itemName": "shikigami_help",
     "imageName": "exploration_shikigami_help.png",
+    "profile": "High",
     "roiFront": "142,282,42,42",
     "roiBack": "127,266,74,80",
     "method": "Template matching",
@@ -57,6 +62,7 @@
   {
     "itemName": "event_fight_lock",
     "imageName": "exploration_event_fight_lock.png",
+    "profile": "High",
     "roiFront": "795,600,33,30",
     "roiBack": "790,595,43,40",
     "method": "Template matching",
@@ -66,6 +72,7 @@
   {
     "itemName": "event_fight_unlock",
     "imageName": "exploration_event_fight_unlock.png",
+    "profile": "High",
     "roiFront": "795,600,33,30",
     "roiBack": "790,595,43,40",
     "method": "Template matching",
@@ -75,6 +82,7 @@
   {
     "itemName": "encounter_to_records",
     "imageName": "exploration_encounter_to_records.png",
+    "profile": "High",
     "roiFront": "929,506,42,42",
     "roiBack": "910,488,74,80",
     "method": "Template matching",
@@ -84,6 +92,7 @@
   {
     "itemName": "exp_main",
     "imageName": "exploration_exp_main.png",
+    "profile": "High",
     "roiFront": "23,109,58,34",
     "roiBack": "19,85,263,323",
     "method": "Template matching",
@@ -93,6 +102,7 @@
   {
     "itemName": "exp_branch",
     "imageName": "exploration_exp_branch.png",
+    "profile": "High",
     "roiFront": "24,348,58,34",
     "roiBack": "19,85,263,323",
     "method": "Template matching",
@@ -102,6 +112,7 @@
   {
     "itemName": "exp_encounter",
     "imageName": "exploration_exp_encounter.png",
+    "profile": "High",
     "roiFront": "25,199,69,33",
     "roiBack": "19,85,263,323",
     "method": "Template matching",
@@ -111,6 +122,7 @@
   {
     "itemName": "event_story",
     "imageName": "exploration_event_story.png",
+    "profile": "High",
     "roiFront": "1156,32,58,34",
     "roiBack": "1132,14,115,66",
     "method": "Template matching",
@@ -120,6 +132,7 @@
   {
     "itemName": "story_skip_ensure",
     "imageName": "exploration_story_skip_ensure.png",
+    "profile": "High",
     "roiFront": "716,445,117,34",
     "roiBack": "674,426,203,68",
     "method": "Template matching",
@@ -129,6 +142,7 @@
   {
     "itemName": "event_fight_boss",
     "imageName": "exploration_event_fight_boss.png",
+    "profile": "High",
     "roiFront": "477,70,222,51",
     "roiBack": "472,65,232,61",
     "method": "Template matching",
@@ -138,6 +152,7 @@
   {
     "itemName": "event_reward_close",
     "imageName": "exploration_event_reward_close.png",
+    "profile": "High",
     "roiFront": "1203,140,42,38",
     "roiBack": "1184,116,76,87",
     "method": "Template matching",

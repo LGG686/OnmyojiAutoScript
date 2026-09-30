@@ -29,7 +29,7 @@ class RuleImage:
         method: str,
         threshold: float,
         file: str,
-        profile: str = None,
+        profile: str = "High",
     ) -> None:
         """
         初始化

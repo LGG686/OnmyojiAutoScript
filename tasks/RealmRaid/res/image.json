@@ -2,6 +2,7 @@
   {
     "itemName": "realm_raid",
     "imageName": "res_realm_raid.png",
+    "profile": "High",
     "roiFront": "246,628,63,64",
     "roiBack": "246,628,63,64",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "medal_5",
     "imageName": "res_medal_5.png",
+    "profile": "High",
     "roiFront": "238,205,212,53",
     "roiBack": "216,187,919,364",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "medal_4",
     "imageName": "res_medal_4.png",
+    "profile": "High",
     "roiFront": "241,483,193,46",
     "roiBack": "228,178,899,362",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "medal_3",
     "imageName": "res_medal_3.png",
+    "profile": "High",
     "roiFront": "240,210,193,41",
     "roiBack": "229,189,894,345",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "medal_2",
     "imageName": "res_medal_2.png",
+    "profile": "High",
     "roiFront": "572,478,198,48",
     "roiBack": "217,193,923,354",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "medal_1",
     "imageName": "res_medal_1.png",
+    "profile": "High",
     "roiFront": "570,206,199,52",
     "roiBack": "237,198,892,336",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "medal_0",
     "imageName": "res_medal_0.png",
+    "profile": "High",
     "roiFront": "536,336,176,51",
     "roiBack": "231,200,898,336",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "back_red",
     "imageName": "res_back_red.png",
+    "profile": "High",
     "roiFront": "1178,101,57,64",
     "roiBack": "1178,101,57,64",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "unlock",
     "imageName": "res_unlock.png",
+    "profile": "High",
     "roiFront": "818,579,38,42",
     "roiBack": "818,579,38,42",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "lock",
     "imageName": "res_lock.png",
+    "profile": "High",
     "roiFront": "818,579,36,41",
     "roiBack": "818,579,36,41",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "fresh",
     "imageName": "res_fresh.png",
+    "profile": "High",
     "roiFront": "957,564,182,66",
     "roiBack": "957,564,182,66",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "shikigami",
     "imageName": "res_shikigami.png",
+    "profile": "High",
     "roiFront": "1206,608,54,51",
     "roiBack": "1206,608,54,51",
     "method": "Template matching",
@@ -110,6 +122,7 @@
   {
     "itemName": "fire",
     "imageName": "res_fire.png",
+    "profile": "High",
     "roiFront": "982,494,136,63",
     "roiBack": "140,129,1024,584",
     "method": "Template matching",
@@ -119,6 +132,7 @@
   {
     "itemName": "soul_raid",
     "imageName": "res_soul_raid.png",
+    "profile": "High",
     "roiFront": "577,502,100,100",
     "roiBack": "577,502,100,100",
     "method": "Template matching",
@@ -128,6 +142,7 @@
   {
     "itemName": "fresh_ensure",
     "imageName": "res_fresh_ensure.png",
+    "profile": "High",
     "roiFront": "672,403,173,59",
     "roiBack": "672,403,173,59",
     "method": "Template matching",
@@ -137,6 +152,7 @@
   {
     "itemName": "unlock_2",
     "imageName": "res_unlock_2.png",
+    "profile": "High",
     "roiFront": "1002,643,30,41",
     "roiBack": "1002,643,30,41",
     "method": "Template matching",
@@ -146,6 +162,7 @@
   {
     "itemName": "lock_2",
     "imageName": "res_lock_2.png",
+    "profile": "High",
     "roiFront": "1002,645,34,38",
     "roiBack": "1002,645,34,38",
     "method": "Template matching",
@@ -155,6 +172,7 @@
   {
     "itemName": "medal_5_frog",
     "imageName": "res_medal_5_frog.png",
+    "profile": "High",
     "roiFront": "903,479,201,49",
     "roiBack": "189,182,967,376",
     "method": "Template matching",
@@ -164,6 +182,7 @@
   {
     "itemName": "medal_3_2",
     "imageName": "res_medal_3_2.png",
+    "profile": "High",
     "roiFront": "575,489,188,32",
     "roiBack": "575,489,188,32",
     "method": "Template matching",
@@ -173,6 +192,7 @@
   {
     "itemName": "medal_3_3",
     "imageName": "res_medal_3_3.png",
+    "profile": "High",
     "roiFront": "902,479,201,50",
     "roiBack": "902,479,201,50",
     "method": "Template matching",
@@ -182,6 +202,7 @@
   {
     "itemName": "fire_again",
     "imageName": "res_fire_again.png",
+    "profile": "High",
     "roiFront": "830,506,61,36",
     "roiBack": "256,384,773,231",
     "method": "Template matching",
@@ -191,6 +212,7 @@
   {
     "itemName": "show_again",
     "imageName": "res_show_again.png",
+    "profile": "High",
     "roiFront": "539,344,32,36",
     "roiBack": "397,218,485,275",
     "method": "Template matching",

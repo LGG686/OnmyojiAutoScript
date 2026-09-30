@@ -2,6 +2,7 @@
   {
     "itemName": "fp_access",
     "imageName": "fp_fp_access.png",
+    "profile": "High",
     "roiFront": "1192,317,36,34",
     "roiBack": "1000,101,261,472",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "toggle_button",
     "imageName": "fp_toggle_button.png",
+    "profile": "High",
     "roiFront": "1202,466,22,21",
     "roiBack": "1090,127,176,377",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "fp_access_1",
     "imageName": "fp_fp_access_1.png",
+    "profile": "High",
     "roiFront": "264,339,26,95",
     "roiBack": "129,202,329,380",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "fp_challenge",
     "imageName": "fp_fp_challenge.png",
+    "profile": "High",
     "roiFront": "1159,598,60,29",
     "roiBack": "1159,598,60,29",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "battle_success",
     "imageName": "battle_success.png",
+    "profile": "High",
     "roiFront": "435,147,100,100",
     "roiBack": "435,147,100,100",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "fp_close_get_skin",
     "imageName": "fp_fp_close_get_skin.png",
+    "profile": "High",
     "roiFront": "932,227,43,43",
     "roiBack": "887,59,317,243",
     "method": "Template matching",

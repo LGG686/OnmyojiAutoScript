@@ -6,7 +6,7 @@
     "roiBack": "1167,131,80,431",
     "method": "Template matching",
     "threshold": 0.75,
-    "profile": "Default",
+    "profile": "High",
     "description": "庭院右栏LBS活动入口（线下庆典仓鼠）"
   },
   {
@@ -16,7 +16,7 @@
     "roiBack": "900,450,380,270",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "活动界面组队挑战按钮（兼页面check）"
   },
   {
@@ -26,7 +26,7 @@
     "roiBack": "412,158,458,473",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "战斗结算后奖励转换弹窗的确定按钮"
   },
   {
@@ -36,7 +36,7 @@
     "roiBack": "504,264,40,42",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "队伍公开权限弹窗：已勾选的所有人"
   },
   {
@@ -46,7 +46,7 @@
     "roiBack": "504,264,40,42",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "队伍公开权限弹窗：未勾选的所有人"
   },
   {
@@ -56,7 +56,7 @@
     "roiBack": "505,391,42,43",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "队伍公开权限弹窗：未勾选的不公开"
   },
   {
@@ -66,7 +66,7 @@
     "roiBack": "508,392,36,40",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "队伍公开权限弹窗：已勾选的不公开"
   },
   {
@@ -76,7 +76,7 @@
     "roiBack": "400,420,500,180",
     "method": "Template matching",
     "threshold": 0.85,
-    "profile": "Default",
+    "profile": "High",
     "description": "队伍公开权限弹窗：创建按钮"
   },
   {
@@ -86,7 +86,7 @@
     "roiBack": "980,440,300,280",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "活动地图界面右下角LBS策划鼠图标（兼页面check，点击回活动）"
   },
   {
@@ -96,7 +96,7 @@
     "roiBack": "900,540,280,175",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "活动界面右下角寻找队伍按钮（组队模式入口）"
   },
   {
@@ -106,7 +106,7 @@
     "roiBack": "250,5,800,95",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "排队横幅右上角X关闭按钮（超时取消排队用）"
   }
 ]

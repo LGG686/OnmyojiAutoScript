@@ -2,6 +2,7 @@
   {
     "itemName": "act_list_goto_act",
     "imageName": "page_act_list_goto_act.png",
+    "profile": "High",
     "roiFront": "1063,627,156,60",
     "roiBack": "1007,552,272,166",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "check_act_list",
     "imageName": "page_check_act_list.png",
+    "profile": "High",
     "roiFront": "112,13,125,44",
     "roiBack": "75,3,205,66",
     "method": "Template matching",

@@ -25,28 +25,28 @@ class GuguArtStudioAssets:
 
 	# Image Rule Assets
 	# 呱呱画室主页面 
-	I_CHECK_GUGU_ACT = RuleImage(roi_front=(1069,20,33,40), roi_back=(1052,10,74,59), threshold=0.7, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_check_gugu_act.png")
+	I_CHECK_GUGU_ACT = RuleImage(profile="High", roi_front=(1069,20,33,40), roi_back=(1052,10,74,59), threshold=0.7, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_check_gugu_act.png")
 	# 获取颜料 
-	I_OBTAIN_PAINT = RuleImage(roi_front=(1156,453,51,55), roi_back=(1118,406,156,149), threshold=0.7, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_obtain_paint.png")
+	I_OBTAIN_PAINT = RuleImage(profile="High", roi_front=(1156,453,51,55), roi_back=(1118,406,156,149), threshold=0.7, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_obtain_paint.png")
 	# 提交颜料 
-	I_SUBMIT_PAINT = RuleImage(roi_front=(1151,590,58,76), roi_back=(1117,552,148,151), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_submit_paint.png")
+	I_SUBMIT_PAINT = RuleImage(profile="High", roi_front=(1151,590,58,76), roi_back=(1117,552,148,151), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_submit_paint.png")
 	# 可以挑战标志 
-	I_GAS_CAN_FIRE = RuleImage(roi_front=(1106,578,92,96), roi_back=(1077,548,157,158), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_can_fire.png")
+	I_GAS_CAN_FIRE = RuleImage(profile="High", roi_front=(1106,578,92,96), roi_back=(1077,548,157,158), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_can_fire.png")
 	# 前往提交 
-	I_GOTO_SUBMIT = RuleImage(roi_front=(694,401,124,62), roi_back=(672,386,165,91), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_goto_submit.png")
+	I_GOTO_SUBMIT = RuleImage(profile="High", roi_front=(694,401,124,62), roi_back=(672,386,165,91), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_goto_submit.png")
 	# 前往获取 
-	I_GOTO_OBTAIN = RuleImage(roi_front=(696,400,126,63), roi_back=(688,391,141,85), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_goto_obtain.png")
+	I_GOTO_OBTAIN = RuleImage(profile="High", roi_front=(696,400,126,63), roi_back=(688,391,141,85), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_goto_obtain.png")
 	# 不能挑战标志 
-	I_GAS_CANNOT_FIRE = RuleImage(roi_front=(1100,577,100,100), roi_back=(1078,563,142,128), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_cannot_fire.png")
+	I_GAS_CANNOT_FIRE = RuleImage(profile="High", roi_front=(1100,577,100,100), roi_back=(1078,563,142,128), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_cannot_fire.png")
 	# 庭院前往呱呱画室按钮 
-	I_GAS_MAIN_TO_GUGU = RuleImage(roi_front=(1183,381,44,32), roi_back=(1167,108,81,475), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_main_to_gugu.png")
+	I_GAS_MAIN_TO_GUGU = RuleImage(profile="High", roi_front=(1183,381,44,32), roi_back=(1167,108,81,475), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_main_to_gugu.png")
 	# 奖励已领取 
-	I_GAS_ALREADY_GET_REWARD = RuleImage(roi_front=(666,599,39,15), roi_back=(517,536,594,125), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_already_get_reward.png")
+	I_GAS_ALREADY_GET_REWARD = RuleImage(profile="High", roi_front=(666,599,39,15), roi_back=(517,536,594,125), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_already_get_reward.png")
 	# 奖励锁定中不能领取 
-	I_GAS_REWARD_LOCK = RuleImage(roi_front=(790,582,14,15), roi_back=(517,536,594,125), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_reward_lock.png")
+	I_GAS_REWARD_LOCK = RuleImage(profile="High", roi_front=(790,582,14,15), roi_back=(517,536,594,125), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_reward_lock.png")
 	# 解锁阵容状态 
-	I_GAS_UNLOCK = RuleImage(roi_front=(885,659,16,21), roi_back=(845,637,224,79), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_unlock.png")
+	I_GAS_UNLOCK = RuleImage(profile="High", roi_front=(885,659,16,21), roi_back=(845,637,224,79), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_unlock.png")
 	# 锁定阵容状态 
-	I_GAS_LOCK = RuleImage(roi_front=(885,659,16,21), roi_back=(845,637,224,79), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_lock.png")
+	I_GAS_LOCK = RuleImage(profile="High", roi_front=(885,659,16,21), roi_back=(845,637,224,79), threshold=0.8, method="Template matching", file="./tasks/GuguArtStudio/gas/gas_gas_lock.png")
 
 

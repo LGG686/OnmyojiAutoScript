@@ -19,83 +19,83 @@ class DailyTriflesAssets:
 
 	# Image Rule Assets
 	# 进入庭院事务标志 
-	I_ENTER_COURTYARD_AFFAIRS = RuleImage(roi_front=(990,372,25,30), roi_back=(696,349,343,231), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_enter_courtyard_affairs.png")
+	I_ENTER_COURTYARD_AFFAIRS = RuleImage(profile="High", roi_front=(990,372,25,30), roi_back=(696,349,343,231), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_enter_courtyard_affairs.png")
 	# 庭院事务页面标志 
-	I_CHECK_COURTYARD_AFFAIRS = RuleImage(roi_front=(254,40,196,57), roi_back=(134,0,415,180), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_check_courtyard_affairs.png")
+	I_CHECK_COURTYARD_AFFAIRS = RuleImage(profile="High", roi_front=(254,40,196,57), roi_back=(134,0,415,180), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_check_courtyard_affairs.png")
 	# 一键完成标志 
-	I_ONE_COMPLETE = RuleImage(roi_front=(1114,589,93,93), roi_back=(1083,562,163,139), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_one_complete.png")
+	I_ONE_COMPLETE = RuleImage(profile="High", roi_front=(1114,589,93,93), roi_back=(1083,562,163,139), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_one_complete.png")
 	# 右上角进入日常 
-	I_ENTER_DAILY = RuleImage(roi_front=(1131,122,84,76), roi_back=(1117,98,136,226), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_enter_daily.png")
+	I_ENTER_DAILY = RuleImage(profile="High", roi_front=(1131,122,84,76), roi_back=(1117,98,136,226), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_enter_daily.png")
 	# 右上角检查是否在日常中 
-	I_CHECK_IN_DAILY = RuleImage(roi_front=(1131,115,106,88), roi_back=(1128,94,151,281), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_check_in_daily.png")
+	I_CHECK_IN_DAILY = RuleImage(profile="High", roi_front=(1131,115,106,88), roi_back=(1128,94,151,281), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_check_in_daily.png")
 
 
 	# Image Rule Assets
 	# 寮祈愿页面标志 
-	I_DT_CHECK_GUILD_WISH = RuleImage(roi_front=(13,569,76,139), roi_back=(0,511,124,209), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_check_guild_wish.png")
+	I_DT_CHECK_GUILD_WISH = RuleImage(profile="High", roi_front=(13,569,76,139), roi_back=(0,511,124,209), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_check_guild_wish.png")
 	# 赠予 
-	I_DT_GW_DONATE = RuleImage(roi_front=(839,167,109,49), roi_back=(816,90,301,490), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_donate.png")
+	I_DT_GW_DONATE = RuleImage(profile="High", roi_front=(839,167,109,49), roi_back=(816,90,301,490), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_donate.png")
 	# 交换 
-	I_DT_GW_SWAP = RuleImage(roi_front=(985,144,109,49), roi_back=(821,87,303,489), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_swap.png")
+	I_DT_GW_SWAP = RuleImage(profile="High", roi_front=(985,144,109,49), roi_back=(821,87,303,489), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_swap.png")
 	# 阴阳寮成员选中标志 
-	I_DT_GW_GUILD_MEMBER_SELECTED = RuleImage(roi_front=(211,609,126,46), roi_back=(157,597,233,69), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_guild_member_selected.png")
+	I_DT_GW_GUILD_MEMBER_SELECTED = RuleImage(profile="High", roi_front=(211,609,126,46), roi_back=(157,597,233,69), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_guild_member_selected.png")
 	# 好友选中标志 
-	I_DT_GW_FRIEND_SELECTED = RuleImage(roi_front=(211,609,126,46), roi_back=(157,597,233,69), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_friend_selected.png")
+	I_DT_GW_FRIEND_SELECTED = RuleImage(profile="High", roi_front=(211,609,126,46), roi_back=(157,597,233,69), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_friend_selected.png")
 	# 选择阴阳寮成员 
-	I_DT_GW_SELECT_GUILD_MEMBER = RuleImage(roi_front=(206,490,126,46), roi_back=(168,477,221,134), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_select_guild_member.png")
+	I_DT_GW_SELECT_GUILD_MEMBER = RuleImage(profile="High", roi_front=(206,490,126,46), roi_back=(168,477,221,134), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_select_guild_member.png")
 	# 选择好友 
-	I_DT_GW_SELECT_FRIEND = RuleImage(roi_front=(206,546,126,46), roi_back=(168,477,221,134), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_select_friend.png")
+	I_DT_GW_SELECT_FRIEND = RuleImage(profile="High", roi_front=(206,546,126,46), roi_back=(168,477,221,134), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_select_friend.png")
 	# 感谢 
-	I_DT_GW_THANKS = RuleImage(roi_front=(714,283,126,46), roi_back=(700,258,155,304), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_thanks.png")
+	I_DT_GW_THANKS = RuleImage(profile="High", roi_front=(714,283,126,46), roi_back=(700,258,155,304), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_thanks.png")
 	# 已感谢 
-	I_DT_GW_THANKED = RuleImage(roi_front=(714,283,126,46), roi_back=(700,258,155,304), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_thanked.png")
+	I_DT_GW_THANKED = RuleImage(profile="High", roi_front=(714,283,126,46), roi_back=(700,258,155,304), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_thanked.png")
 	# 捐赠记录红点 
-	I_DT_GW_DONATE_RECORD_RED = RuleImage(roi_front=(1116,584,17,22), roi_back=(1037,574,114,103), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_donate_record_red.png")
+	I_DT_GW_DONATE_RECORD_RED = RuleImage(profile="High", roi_front=(1116,584,17,22), roi_back=(1037,574,114,103), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_donate_record_red.png")
 	# 捐赠记录 
-	I_DT_GW_DONATE_RECORD = RuleImage(roi_front=(1060,600,57,58), roi_back=(1037,574,114,103), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_donate_record.png")
+	I_DT_GW_DONATE_RECORD = RuleImage(profile="High", roi_front=(1060,600,57,58), roi_back=(1037,574,114,103), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_donate_record.png")
 	# 一键感谢并领取 
-	I_DT_GW_DONATE_RECORD_THANKS = RuleImage(roi_front=(920,602,54,54), roi_back=(874,570,145,119), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_donate_record_thanks.png")
+	I_DT_GW_DONATE_RECORD_THANKS = RuleImage(profile="High", roi_front=(920,602,54,54), roi_back=(874,570,145,119), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_donate_record_thanks.png")
 	# 按交换搜索 
-	I_DT_GW_SEARCH_BY_SWAP = RuleImage(roi_front=(170,86,123,42), roi_back=(149,67,181,80), threshold=0.9, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_search_by_swap.png")
+	I_DT_GW_SEARCH_BY_SWAP = RuleImage(profile="High", roi_front=(170,86,123,42), roi_back=(149,67,181,80), threshold=0.9, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_search_by_swap.png")
 	# 按昵称搜索 
-	I_DT_GW_SEARCH_BY_NAME = RuleImage(roi_front=(170,86,123,42), roi_back=(149,67,181,80), threshold=0.9, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_search_by_name.png")
+	I_DT_GW_SEARCH_BY_NAME = RuleImage(profile="High", roi_front=(170,86,123,42), roi_back=(149,67,181,80), threshold=0.9, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_search_by_name.png")
 	# 选择按照昵称搜索 
-	I_DT_GW_SELECT_BY_NAME = RuleImage(roi_front=(197,150,52,41), roi_back=(153,138,165,106), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_select_by_name.png")
+	I_DT_GW_SELECT_BY_NAME = RuleImage(profile="High", roi_front=(197,150,52,41), roi_back=(153,138,165,106), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_select_by_name.png")
 	# 选择按照交换搜索 
-	I_DT_GW_SELECT_BY_SWAP = RuleImage(roi_front=(197,196,52,41), roi_back=(153,138,165,106), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_select_by_swap.png")
+	I_DT_GW_SELECT_BY_SWAP = RuleImage(profile="High", roi_front=(197,196,52,41), roi_back=(153,138,165,106), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_select_by_swap.png")
 	# 搜索确定按钮 
-	I_DT_GW_CONFIRM = RuleImage(roi_front=(1030,12,104,48), roi_back=(1016,0,127,71), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_confirm.png")
+	I_DT_GW_CONFIRM = RuleImage(profile="High", roi_front=(1030,12,104,48), roi_back=(1016,0,127,71), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_confirm.png")
 	# 清除搜索内容 
-	I_DT_GW_CLEAR_SEARCH = RuleImage(roi_front=(990,92,32,32), roi_back=(958,73,127,71), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_clear_search.png")
+	I_DT_GW_CLEAR_SEARCH = RuleImage(profile="High", roi_front=(990,92,32,32), roi_back=(958,73,127,71), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_clear_search.png")
 	# 暂无祈愿消息 
-	I_DT_GW_SEARCH_EMPTY = RuleImage(roi_front=(576,172,163,261), roi_back=(513,131,266,384), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_search_empty.png")
+	I_DT_GW_SEARCH_EMPTY = RuleImage(profile="High", roi_front=(576,172,163,261), roi_back=(513,131,266,384), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_search_empty.png")
 	# 寮界面前往寮祈愿 
-	I_GUILD_TO_WISH = RuleImage(roi_front=(973,630,52,51), roi_back=(833,583,447,137), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_guild_to_wish.png")
+	I_GUILD_TO_WISH = RuleImage(profile="High", roi_front=(973,630,52,51), roi_back=(833,583,447,137), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_guild_to_wish.png")
 	# 碎片不足 
-	I_DT_GW_INSUFFICIENT = RuleImage(roi_front=(899,401,116,35), roi_back=(834,126,245,460), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_insufficient.png")
+	I_DT_GW_INSUFFICIENT = RuleImage(profile="High", roi_front=(899,401,116,35), roi_back=(834,126,245,460), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_insufficient.png")
 	# 已捐满 
-	I_DT_GW_FULL = RuleImage(roi_front=(915,120,94,33), roi_back=(894,89,139,492), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_full.png")
+	I_DT_GW_FULL = RuleImage(profile="High", roi_front=(915,120,94,33), roi_back=(894,89,139,492), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_full.png")
 	# 赠送小红点 
-	I_DT_GW_DONATE_RED = RuleImage(roi_front=(1024,297,14,18), roi_back=(979,275,77,125), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_donate_red.png")
+	I_DT_GW_DONATE_RED = RuleImage(profile="High", roi_front=(1024,297,14,18), roi_back=(979,275,77,125), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_donate_red.png")
 	# 一键领取 
-	I_DT_GW_ONE_COLLECT = RuleImage(roi_front=(921,605,51,48), roi_back=(866,557,164,137), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_one_collect.png")
+	I_DT_GW_ONE_COLLECT = RuleImage(profile="High", roi_front=(921,605,51,48), roi_back=(866,557,164,137), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_one_collect.png")
 	# 赠送 
-	I_DT_GW_GIVE = RuleImage(roi_front=(979,316,44,75), roi_back=(924,160,142,276), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_give.png")
+	I_DT_GW_GIVE = RuleImage(profile="High", roi_front=(979,316,44,75), roi_back=(924,160,142,276), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_dt_gw_give.png")
 
 
 	# Image Rule Assets
 	# 邮件小图标 
-	I_HARVEST_MAIL = RuleImage(roi_front=(337,505,37,25), roi_back=(38,396,1128,157), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_harvest_mail.png")
+	I_HARVEST_MAIL = RuleImage(profile="High", roi_front=(337,505,37,25), roi_back=(38,396,1128,157), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_harvest_mail.png")
 	# 另一种邮件图标 
-	I_HARVEST_MAIL_COPY = RuleImage(roi_front=(257,509,29,21), roi_back=(192,382,928,190), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_harvest_mail_copy.png")
+	I_HARVEST_MAIL_COPY = RuleImage(profile="High", roi_front=(257,509,29,21), roi_back=(192,382,928,190), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_harvest_mail_copy.png")
 	# 全部收取 
-	I_HARVEST_MAIL_ALL = RuleImage(roi_front=(69,579,80,67), roi_back=(28,551,142,144), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_harvest_mail_all.png")
+	I_HARVEST_MAIL_ALL = RuleImage(profile="High", roi_front=(69,579,80,67), roi_back=(28,551,142,144), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_harvest_mail_all.png")
 	# 一键已读所有邮件 
-	I_READ_ALL_MAIL = RuleImage(roi_front=(180,605,130,35), roi_back=(149,588,182,72), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_read_all_mail.png")
+	I_READ_ALL_MAIL = RuleImage(profile="High", roi_front=(180,605,130,35), roi_back=(149,588,182,72), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_read_all_mail.png")
 	# 确认收取邮件 
-	I_HARVEST_MAIL_CONFIRM = RuleImage(roi_front=(687,543,168,64), roi_back=(687,543,168,64), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_harvest_mail_confirm.png")
+	I_HARVEST_MAIL_CONFIRM = RuleImage(profile="High", roi_front=(687,543,168,64), roi_back=(687,543,168,64), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/dt/dt_harvest_mail_confirm.png")
 	# 右上角的邮件图标 
-	I_DT_HARVEST_MAIL_COPY2 = RuleImage(roi_front=(1158,18,22,20), roi_back=(1127,0,61,56), threshold=0.9, method="Template matching", file="./tasks/DailyTrifles/dt/dt_harvest_mail_copy2.png")
+	I_DT_HARVEST_MAIL_COPY2 = RuleImage(profile="High", roi_front=(1158,18,22,20), roi_back=(1127,0,61,56), threshold=0.9, method="Template matching", file="./tasks/DailyTrifles/dt/dt_harvest_mail_copy2.png")
 
 
 	# Ocr Rule Assets
@@ -110,21 +110,21 @@ class DailyTriflesAssets:
 
 	# Image Rule Assets
 	# description 
-	I_L_FRIENDS = RuleImage(roi_front=(67,625,70,72), roi_back=(67,625,70,72), threshold=0.9, method="Template matching", file="./tasks/DailyTrifles/love/love_l_friends.png")
+	I_L_FRIENDS = RuleImage(profile="High", roi_front=(67,625,70,72), roi_back=(67,625,70,72), threshold=0.9, method="Template matching", file="./tasks/DailyTrifles/love/love_l_friends.png")
 	# description 
-	I_L_LOVE = RuleImage(roi_front=(123,625,67,72), roi_back=(123,625,67,72), threshold=0.9, method="Template matching", file="./tasks/DailyTrifles/love/love_l_love.png")
+	I_L_LOVE = RuleImage(profile="High", roi_front=(123,625,67,72), roi_back=(123,625,67,72), threshold=0.9, method="Template matching", file="./tasks/DailyTrifles/love/love_l_love.png")
 	# 一键收取 
-	I_L_COLLECT = RuleImage(roi_front=(47,537,129,56), roi_back=(47,537,129,56), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/love_l_collect.png")
+	I_L_COLLECT = RuleImage(profile="High", roi_front=(47,537,129,56), roi_back=(47,537,129,56), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/love_l_collect.png")
 	# 一键祝福 
-	I_ONE_CLICK_BLESS = RuleImage(roi_front=(1115,500,93,33), roi_back=(1115,500,93,33), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/Screenshots_one_click_bless.png")
+	I_ONE_CLICK_BLESS = RuleImage(profile="High", roi_front=(1115,500,93,33), roi_back=(1115,500,93,33), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/Screenshots_one_click_bless.png")
 	# 点击祝福 
-	I_CLICK_BLESS = RuleImage(roi_front=(617,442,92,39), roi_back=(617,442,92,39), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/Screenshots_click_bless.png")
+	I_CLICK_BLESS = RuleImage(profile="High", roi_front=(617,442,92,39), roi_back=(617,442,92,39), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/Screenshots_click_bless.png")
 	# 吉闻页 
-	I_LUCK_TITLE = RuleImage(roi_front=(600,52,131,67), roi_back=(600,52,131,67), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/Screenshots_luck_title.png")
+	I_LUCK_TITLE = RuleImage(profile="High", roi_front=(600,52,131,67), roi_back=(600,52,131,67), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/Screenshots_luck_title.png")
 	# 好友羁绊提升弹窗 
-	I_FRIENDSHIP_UP = RuleImage(roi_front=(1147,80,27,28), roi_back=(1147,80,27,28), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/friendship_up.png")
+	I_FRIENDSHIP_UP = RuleImage(profile="High", roi_front=(1147,80,27,28), roi_back=(1147,80,27,28), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/friendship_up.png")
 	# 吉闻关闭的红色按钮,必须与好友的关闭按钮进行区分 
-	I_CLOSE_LUCK_RED = RuleImage(roi_front=(1063,129,30,30), roi_back=(1010,84,127,128), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/love_close_luck_red.png")
+	I_CLOSE_LUCK_RED = RuleImage(profile="High", roi_front=(1063,129,30,30), roi_back=(1010,84,127,128), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/love/love_close_luck_red.png")
 
 
 	# Ocr Rule Assets
@@ -134,15 +134,15 @@ class DailyTriflesAssets:
 
 	# Image Rule Assets
 	# 礼包屋 
-	I_ROOM_GIFT = RuleImage(roi_front=(1138,658,52,40), roi_back=(1119,621,103,94), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/store/store_room_gift.png")
+	I_ROOM_GIFT = RuleImage(profile="High", roi_front=(1138,658,52,40), roi_back=(1119,621,103,94), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/store/store_room_gift.png")
 	# description 
-	I_GIFT_RECOMMEND = RuleImage(roi_front=(1183,454,53,64), roi_back=(1162,77,98,457), threshold=0.7, method="Template matching", file="./tasks/DailyTrifles/store/store_gift_recommend.png")
+	I_GIFT_RECOMMEND = RuleImage(profile="High", roi_front=(1183,454,53,64), roi_back=(1162,77,98,457), threshold=0.7, method="Template matching", file="./tasks/DailyTrifles/store/store_gift_recommend.png")
 	# 免费一抽领黑蛋 
-	I_GIFT_SIGN = RuleImage(roi_front=(186,191,115,83), roi_back=(130,129,891,473), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/store/store_gift_sign.png")
+	I_GIFT_SIGN = RuleImage(profile="High", roi_front=(186,191,115,83), roi_back=(130,129,891,473), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/store/store_gift_sign.png")
 	# 体力 
-	I_SPECIAL_SUSHI = RuleImage(roi_front=(180,130,800,460), roi_back=(180,130,800,460), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/store/store_sushi.png")
+	I_SPECIAL_SUSHI = RuleImage(profile="High", roi_front=(180,130,800,460), roi_back=(180,130,800,460), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/store/store_sushi.png")
 	# 购买时货币类型为勾玉 
-	I_STORE_COST_TYPE_JADE = RuleImage(roi_front=(600,490,50,60), roi_back=(600,490,50,60), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/store/store_cost_type_jade.png")
+	I_STORE_COST_TYPE_JADE = RuleImage(profile="High", roi_front=(600,490,50,60), roi_back=(600,490,50,60), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/store/store_cost_type_jade.png")
 
 
 	# Ocr Rule Assets
@@ -152,13 +152,13 @@ class DailyTriflesAssets:
 
 	# Image Rule Assets
 	# 点击今忆召唤票 
-	I_RECALL_TICKET = RuleImage(roi_front=(595,586,65,76), roi_back=(595,586,65,76), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/summonRecall/recall_ticket.png")
+	I_RECALL_TICKET = RuleImage(profile="High", roi_front=(595,586,65,76), roi_back=(595,586,65,76), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/summonRecall/recall_ticket.png")
 	# 今忆召唤单抽 
-	I_RECALL_ONE_TICKET = RuleImage(roi_front=(459,604,76,76), roi_back=(459,604,76,76), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/summonRecall/recall_one_ticket.png")
+	I_RECALL_ONE_TICKET = RuleImage(profile="High", roi_front=(459,604,76,76), roi_back=(459,604,76,76), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/summonRecall/recall_one_ticket.png")
 	# description 
-	I_RECALL_SM_CONFIRM = RuleImage(roi_front=(424,628,174,61), roi_back=(424,628,174,61), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/summonRecall/recall_sm_confirm.png")
+	I_RECALL_SM_CONFIRM = RuleImage(profile="High", roi_front=(424,628,174,61), roi_back=(424,628,174,61), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/summonRecall/recall_sm_confirm.png")
 	# 抽到的时候出现的 
-	I_SM_CONFIRM_2 = RuleImage(roi_front=(377,630,206,62), roi_back=(377,630,206,62), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/summonRecall/sm_sm_confirm_2.png")
+	I_SM_CONFIRM_2 = RuleImage(profile="High", roi_front=(377,630,206,62), roi_back=(377,630,206,62), threshold=0.8, method="Template matching", file="./tasks/DailyTrifles/summonRecall/sm_sm_confirm_2.png")
 
 
 	# Ocr Rule Assets

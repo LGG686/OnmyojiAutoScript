@@ -2,6 +2,7 @@
   {
     "itemName": "fg_main_goto_act",
     "imageName": "as_main_goto_act.png",
+    "profile": "High",
     "roiFront": "1188,304,35,28",
     "roiBack": "1164,134,83,393",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "fg_skip_button",
     "imageName": "as_skip_button.png",
+    "profile": "High",
     "roiFront": "1159,37,51,22",
     "roiBack": "1141,27,86,43",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "fg_to_battle_main",
     "imageName": "as_to_battle_main.png",
+    "profile": "High",
     "roiFront": "598,407,39,139",
     "roiBack": "533,291,155,370",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "fg_to_battle_boss",
     "imageName": "as_to_battle_boss.png",
+    "profile": "High",
     "roiFront": "935,250,35,123",
     "roiBack": "876,165,234,327",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "fg_check_battle_boss",
     "imageName": "as_check_battle_boss.png",
+    "profile": "High",
     "roiFront": "151,18,129,46",
     "roiBack": "141,0,151,85",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "fg_battle_main_to_records",
     "imageName": "as_battle_main_to_records.png",
+    "profile": "High",
     "roiFront": "1015,560,39,42",
     "roiBack": "674,539,439,157",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "fg_as_check_main_2",
     "imageName": "as_as_check_main_2.png",
+    "profile": "High",
     "roiFront": "153,19,164,39",
     "roiBack": "116,0,256,92",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "fg_as_open_eye",
     "imageName": "as_as_open_eye.png",
+    "profile": "High",
     "roiFront": "1198,300,60,54",
     "roiBack": "1146,253,134,217",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "fg_as_locate",
     "imageName": "as_as_locate.png",
+    "profile": "High",
     "roiFront": "1212,394,34,36",
     "roiBack": "1146,253,134,217",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "fg_as_close_eye",
     "imageName": "as_as_close_eye.png",
+    "profile": "High",
     "roiFront": "1197,297,63,57",
     "roiBack": "1146,253,134,217",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "fg_as_to_pass",
     "imageName": "as_as_to_pass.png",
+    "profile": "High",
     "roiFront": "624,505,38,35",
     "roiBack": "273,141,759,475",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "fg_to_battle_ap",
     "imageName": "as_to_battle_ap.png",
+    "profile": "High",
     "roiFront": "825,321,39,139",
     "roiBack": "720,255,238,269",
     "method": "Template matching",

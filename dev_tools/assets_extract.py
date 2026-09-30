@@ -67,8 +67,8 @@ class ImageExtractor:
         :return:
         """
         description: str = f'\t# {item["description"]} \n'
-        profile = str(item.get("profile", "Default"))
-        profile_arg = f'profile="{profile}", ' if profile in ("High", "More") else ''
+        profile = str(item.get("profile", "High"))
+        profile_arg = f'profile="{profile}", ' if profile in ("Default", "High", "More") else ''
         name: str = f'\tI_{name_transform(item["itemName"])} = RuleImage(' \
                     f'roi_front=({item["roiFront"]}), ' \
                     f'roi_back=({item["roiBack"]}), ' \

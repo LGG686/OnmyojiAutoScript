@@ -2,6 +2,7 @@
   {
     "itemName": "main_goto_mar",
     "imageName": "mr_main_goto_mar.png",
+    "profile": "High",
     "roiFront": "1190,380,37,39",
     "roiBack": "1162,193,87,328",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "check_main_mar",
     "imageName": "mr_check_main_mar.png",
+    "profile": "High",
     "roiFront": "152,15,134,41",
     "roiBack": "144,10,146,55",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "to_battle_ap",
     "imageName": "mr_to_battle_ap.png",
+    "profile": "High",
     "roiFront": "184,212,26,131",
     "roiBack": "179,207,36,141",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "to_battle_boss",
     "imageName": "mr_to_battle_boss.png",
+    "profile": "High",
     "roiFront": "1118,258,26,131",
     "roiBack": "1113,253,36,141",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "check_battle_ap",
     "imageName": "mr_check_battle_ap.png",
+    "profile": "High",
     "roiFront": "150,16,134,41",
     "roiBack": "144,10,146,55",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "check_battle_boss",
     "imageName": "mr_check_battle_boss.png",
+    "profile": "High",
     "roiFront": "152,13,134,41",
     "roiBack": "147,8,144,51",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "check_battle_boss_main",
     "imageName": "mr_check_battle_boss_main.png",
+    "profile": "High",
     "roiFront": "555,63,164,47",
     "roiBack": "550,58,174,57",
     "method": "Template matching",

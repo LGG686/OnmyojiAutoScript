@@ -2,6 +2,7 @@
   {
     "itemName": "star_danger",
     "imageName": "ms_star_danger.png",
+    "profile": "High",
     "roiFront": "715,231,36,38",
     "roiBack": "686,205,100,100",
     "method": "Template matching",

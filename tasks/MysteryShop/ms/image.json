@@ -2,6 +2,7 @@
   {
     "itemName": "me_enter",
     "imageName": "ms_me_enter.png",
+    "profile": "High",
     "roiFront": "52,494,59,44",
     "roiBack": "52,494,59,44",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "ms_share",
     "imageName": "ms_ms_share.png",
+    "profile": "High",
     "roiFront": "24,571,100,100",
     "roiBack": "24,571,100,100",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "ms_before",
     "imageName": "ms_ms_before.png",
+    "profile": "High",
     "roiFront": "25,317,39,52",
     "roiBack": "25,317,39,52",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "ms_next",
     "imageName": "ms_ms_next.png",
+    "profile": "High",
     "roiFront": "1226,315,36,53",
     "roiBack": "1226,315,36,53",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "invite_ensure",
     "imageName": "ms_invite_ensure.png",
+    "profile": "High",
     "roiFront": "711,545,127,60",
     "roiBack": "711,545,127,60",
     "method": "Template matching",

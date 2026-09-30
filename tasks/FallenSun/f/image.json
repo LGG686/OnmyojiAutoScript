@@ -2,6 +2,7 @@
   {
     "itemName": "fallen_sun",
     "imageName": "f_fallen_sun.png",
+    "profile": "High",
     "roiFront": "886,107,47,55",
     "roiBack": "734,74,219,341",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "form_team",
     "imageName": "f_form_team.png",
+    "profile": "High",
     "roiFront": "961,598,94,58",
     "roiBack": "930,562,165,158",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "fallen_sun_fire",
     "imageName": "f_fallen_sun_fire.png",
+    "profile": "High",
     "roiFront": "1145,596,92,47",
     "roiBack": "1110,562,155,158",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "fallen_sun_unlock",
     "imageName": "f_fallen_sun_unlock.png",
+    "profile": "High",
     "roiFront": "704,658,21,28",
     "roiBack": "646,637,192,83",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "fallen_sun_lock",
     "imageName": "f_fallen_sun_lock.png",
+    "profile": "High",
     "roiFront": "705,659,19,26",
     "roiBack": "661,641,169,79",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "pet_present",
     "imageName": "f_pet_present.png",
+    "profile": "High",
     "roiFront": "873,184,62,147",
     "roiBack": "873,184,62,147",
     "method": "Template matching",

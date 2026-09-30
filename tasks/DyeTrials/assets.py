@@ -12,17 +12,17 @@ class DyeTrialsAssets:
 
 	# Image Rule Assets
 	# 从庭院进入灵染试炼活动 
-	I_FP_ACCESS = RuleImage(roi_front=(1192,317,36,34), roi_back=(1000,101,261,472), threshold=0.8, method="Template matching", file="./tasks/DyeTrials/fp/fp_fp_access.png")
+	I_FP_ACCESS = RuleImage(profile="High", roi_front=(1192,317,36,34), roi_back=(1000,101,261,472), threshold=0.8, method="Template matching", file="./tasks/DyeTrials/fp/fp_fp_access.png")
 	# 寻找切换按钮 
-	I_TOGGLE_BUTTON = RuleImage(roi_front=(1202,466,22,21), roi_back=(1090,127,176,377), threshold=0.7, method="Template matching", file="./tasks/DyeTrials/fp/fp_toggle_button.png")
+	I_TOGGLE_BUTTON = RuleImage(profile="High", roi_front=(1202,466,22,21), roi_back=(1090,127,176,377), threshold=0.7, method="Template matching", file="./tasks/DyeTrials/fp/fp_toggle_button.png")
 	# 进入灵染试炼战斗界面 
-	I_FP_ACCESS_1 = RuleImage(roi_front=(264,339,26,95), roi_back=(129,202,329,380), threshold=0.7, method="Template matching", file="./tasks/DyeTrials/fp/fp_fp_access_1.png")
+	I_FP_ACCESS_1 = RuleImage(profile="High", roi_front=(264,339,26,95), roi_back=(129,202,329,380), threshold=0.7, method="Template matching", file="./tasks/DyeTrials/fp/fp_fp_access_1.png")
 	# 挑战 
-	I_FP_CHALLENGE = RuleImage(roi_front=(1159,598,60,29), roi_back=(1159,598,60,29), threshold=0.8, method="Template matching", file="./tasks/DyeTrials/fp/fp_fp_challenge.png")
+	I_FP_CHALLENGE = RuleImage(profile="High", roi_front=(1159,598,60,29), roi_back=(1159,598,60,29), threshold=0.8, method="Template matching", file="./tasks/DyeTrials/fp/fp_fp_challenge.png")
 	# description 
-	I_BATTLE_SUCCESS = RuleImage(roi_front=(435,147,100,100), roi_back=(435,147,100,100), threshold=0.8, method="Template matching", file="./tasks/DyeTrials/fp/battle_success.png")
+	I_BATTLE_SUCCESS = RuleImage(profile="High", roi_front=(435,147,100,100), roi_back=(435,147,100,100), threshold=0.8, method="Template matching", file="./tasks/DyeTrials/fp/battle_success.png")
 	# 关闭获取皮肤弹窗 
-	I_FP_CLOSE_GET_SKIN = RuleImage(roi_front=(932,227,43,43), roi_back=(887,59,317,243), threshold=0.8, method="Template matching", file="./tasks/DyeTrials/fp/fp_fp_close_get_skin.png")
+	I_FP_CLOSE_GET_SKIN = RuleImage(profile="High", roi_front=(932,227,43,43), roi_back=(887,59,317,243), threshold=0.8, method="Template matching", file="./tasks/DyeTrials/fp/fp_fp_close_get_skin.png")
 
 
 	# Ocr Rule Assets

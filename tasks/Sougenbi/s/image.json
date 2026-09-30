@@ -2,6 +2,7 @@
   {
     "itemName": "s_sougenbi",
     "imageName": "s_s_sougenbi.png",
+    "profile": "High",
     "roiFront": "567,147,48,51",
     "roiBack": "435,55,188,213",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "s_team_lock",
     "imageName": "s_s_team_lock.png",
+    "profile": "High",
     "roiFront": "703,657,23,28",
     "roiBack": "688,648,52,54",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "s_team_unlock",
     "imageName": "s_s_team_unlock.png",
+    "profile": "High",
     "roiFront": "704,658,22,26",
     "roiBack": "688,648,55,60",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "s_fire",
     "imageName": "s_s_fire.png",
+    "profile": "High",
     "roiFront": "1054,597,95,47",
     "roiBack": "1044,577,115,109",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "s_check_sougenbi",
     "imageName": "s_s_check_sougenbi.png",
+    "profile": "High",
     "roiFront": "940,106,163,63",
     "roiBack": "894,70,235,140",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "s_fire_greed",
     "imageName": "s_s_fire_greed.png",
+    "profile": "High",
     "roiFront": "1071,642,21,33",
     "roiBack": "1039,635,124,47",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "s_fire_anger",
     "imageName": "s_s_fire_anger.png",
+    "profile": "High",
     "roiFront": "1071,642,21,33",
     "roiBack": "1039,635,124,47",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "s_fire_foolery",
     "imageName": "s_s_fire_foolery.png",
+    "profile": "High",
     "roiFront": "1071,642,21,33",
     "roiBack": "1039,635,124,47",
     "method": "Template matching",

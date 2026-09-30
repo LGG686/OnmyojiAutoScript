@@ -2,6 +2,7 @@
   {
     "itemName": "realm_raid_pass",
     "imageName": "ls_realm_raid_pass.png",
+    "profile": "High",
     "roiFront": "402,175,100,100",
     "roiBack": "251,161,809,128",
     "method": "Template matching",

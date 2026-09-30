@@ -2,6 +2,7 @@
   {
     "itemName": "aa_swipe_block",
     "imageName": "a_aa_swipe_block.png",
+    "profile": "High",
     "roiFront": "124,622,35,32",
     "roiBack": "117,612,50,51",
     "method": "Template matching",

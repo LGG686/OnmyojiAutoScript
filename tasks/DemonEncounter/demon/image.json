@@ -6,7 +6,7 @@
     "roiBack": "1209,208,51,50",
     "method": "Template matching",
     "threshold": 0.7,
-    "profile": "Default",
+    "profile": "High",
     "description": "红色达摩"
   },
   {
@@ -16,7 +16,7 @@
     "roiBack": "1136,593,100,100",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "点击右下角的寻找封魔"
   },
   {
@@ -26,7 +26,7 @@
     "roiBack": "1001,645,45,45",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "点击首领"
   },
   {
@@ -36,7 +36,7 @@
     "roiBack": "900,644,45,50",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "点击封魔极"
   },
   {
@@ -46,7 +46,7 @@
     "roiBack": "789,639,48,48",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "式神录"
   },
   {
@@ -56,7 +56,7 @@
     "roiBack": "26,653,44,47",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "左下角小指针"
   },
   {
@@ -66,7 +66,7 @@
     "roiBack": "581,294,115,116",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "逢魔蓝票"
   },
   {
@@ -76,7 +76,7 @@
     "roiBack": "581,294,115,116",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "逢魔体力"
   },
   {
@@ -86,7 +86,7 @@
     "roiBack": "548,405,182,83",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "50勾玉购买"
   },
   {
@@ -96,7 +96,7 @@
     "roiBack": "960,458,186,104",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "逢魔之时前往现世逢魔标志"
   },
   {
@@ -106,7 +106,7 @@
     "roiBack": "547,264,190,157",
     "method": "Template matching",
     "threshold": 0.8,
-    "profile": "Default",
+    "profile": "High",
     "description": "地图中央未购买的宝箱展示"
   }
 ]

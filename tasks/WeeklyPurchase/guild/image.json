@@ -2,6 +2,7 @@
   {
     "itemName": "guild_shrine",
     "imageName": "guild_guild_shrine.png",
+    "profile": "High",
     "roiFront": "869,623,64,62",
     "roiBack": "869,623,64,62",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "guild_store",
     "imageName": "guild_guild_store.png",
+    "profile": "High",
     "roiFront": "651,420,212,161",
     "roiBack": "651,420,212,180",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "guild_blue",
     "imageName": "guild_guild_blue.png",
+    "profile": "High",
     "roiFront": "794,186,74,73",
     "roiBack": "315,164,584,370",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "guild_scrap",
     "imageName": "guild_guild_scrap.png",
+    "profile": "High",
     "roiFront": "570,439,71,68",
     "roiBack": "331,160,559,372",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "guild_skin",
     "imageName": "guild_guild_skin.png",
+    "profile": "High",
     "roiFront": "795,438,71,72",
     "roiBack": "320,162,573,371",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "guild_skin_check",
     "imageName": "guild_guild_skin.png",
+    "profile": "High",
     "roiFront": "795,438,71,72",
     "roiBack": "320,162,573,371",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "guild_check_scrap",
     "imageName": "guild_guild_check_scrap.png",
+    "profile": "High",
     "roiFront": "592,248,90,88",
     "roiBack": "593,249,90,88",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "guild_honor_gift",
     "imageName": "guild_guild_honor_gift.png",
+    "profile": "High",
     "roiFront": "569,212,74,73",
     "roiBack": "315,164,584,370",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "rm_check_guild_store",
     "imageName": "guild_rm_check_guild_store.png",
+    "profile": "High",
     "roiFront": "519,66,193,38",
     "roiBack": "483,34,257,100",
     "method": "Template matching",

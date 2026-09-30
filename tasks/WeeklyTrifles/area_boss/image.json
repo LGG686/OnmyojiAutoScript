@@ -2,6 +2,7 @@
   {
     "itemName": "wt_day_battle",
     "imageName": "area_boss_wt_day_battle.png",
+    "profile": "High",
     "roiFront": "40,365,65,66",
     "roiBack": "40,365,65,66",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "wt_no_day",
     "imageName": "area_boss_wt_no_day.png",
+    "profile": "High",
     "roiFront": "167,360,72,69",
     "roiBack": "167,360,72,69",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "wt_share_ab",
     "imageName": "area_boss_wt_share_ab.png",
+    "profile": "High",
     "roiFront": "1187,273,45,39",
     "roiBack": "1176,90,76,326",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "wt_ab_jade",
     "imageName": "area_boss_wt_ab_jade.png",
+    "profile": "High",
     "roiFront": "977,552,44,47",
     "roiBack": "977,552,44,47",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "wt_ab_wechat",
     "imageName": "area_boss_wt_ab_wechat.png",
+    "profile": "High",
     "roiFront": "910,647,50,41",
     "roiBack": "680,617,594,95",
     "method": "Template matching",

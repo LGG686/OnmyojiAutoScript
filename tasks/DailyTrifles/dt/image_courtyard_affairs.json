@@ -2,6 +2,7 @@
   {
     "itemName": "enter_courtyard_affairs",
     "imageName": "dt_enter_courtyard_affairs.png",
+    "profile": "High",
     "roiFront": "990,372,25,30",
     "roiBack": "696,349,343,231",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "check_courtyard_affairs",
     "imageName": "dt_check_courtyard_affairs.png",
+    "profile": "High",
     "roiFront": "254,40,196,57",
     "roiBack": "134,0,415,180",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "one_complete",
     "imageName": "dt_one_complete.png",
+    "profile": "High",
     "roiFront": "1114,589,93,93",
     "roiBack": "1083,562,163,139",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "enter_daily",
     "imageName": "dt_enter_daily.png",
+    "profile": "High",
     "roiFront": "1131,122,84,76",
     "roiBack": "1117,98,136,226",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "check_in_daily",
     "imageName": "dt_check_in_daily.png",
+    "profile": "High",
     "roiFront": "1131,115,106,88",
     "roiBack": "1128,94,151,281",
     "method": "Template matching",

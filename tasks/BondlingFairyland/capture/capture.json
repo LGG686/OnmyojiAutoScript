@@ -2,6 +2,7 @@
   {
     "itemName": "tomb_guard",
     "imageName": "capture_tomb_guard.png",
+    "profile": "High",
     "roiFront": "847,518,30,31",
     "roiBack": "832,501,64,60",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "snowball",
     "imageName": "capture_snowball.png",
+    "profile": "High",
     "roiFront": "532,375,44,48",
     "roiBack": "512,353,94,93",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "little_kuro",
     "imageName": "capture_little_kuro.png",
+    "profile": "High",
     "roiFront": "478,334,77,70",
     "roiBack": "462,318,108,102",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "azure_basan",
     "imageName": "capture_azure_basan.png",
+    "profile": "High",
     "roiFront": "654,260,48,46",
     "roiBack": "631,235,91,92",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "cap_success",
     "imageName": "capture_cap_success.png",
+    "profile": "High",
     "roiFront": "210,445,22,21",
     "roiBack": "210,445,22,21",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "cap_failure",
     "imageName": "capture_cap_failure.png",
+    "profile": "High",
     "roiFront": "1192,608,30,39",
     "roiBack": "1142,556,132,137",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "battle_fail",
     "imageName": "battle_fail.png",
+    "profile": "High",
     "roiFront": "740,267,79,84",
     "roiBack": "740,267,79,84",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "battle_fail_abandon",
     "imageName": "battle_fail_abandon.png",
+    "profile": "High",
     "roiFront": "436,606,115,36",
     "roiBack": "436,606,115,36",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "battle_success",
     "imageName": "battle_success.png",
+    "profile": "High",
     "roiFront": "651,203,70,81",
     "roiBack": "651,203,70,81",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "cap_again",
     "imageName": "capture_cap_again.png",
+    "profile": "High",
     "roiFront": "730,598,113,53",
     "roiBack": "693,572,176,99",
     "method": "Template matching",

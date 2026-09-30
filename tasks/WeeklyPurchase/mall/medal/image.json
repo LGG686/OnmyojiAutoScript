@@ -2,6 +2,7 @@
   {
     "itemName": "me_black",
     "imageName": "medal_me_black.png",
+    "profile": "High",
     "roiFront": "631,152,130,120",
     "roiBack": "165,121,859,431",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "me_blue",
     "imageName": "medal_me_blue.png",
+    "profile": "High",
     "roiFront": "176,148,138,126",
     "roiBack": "139,115,887,464",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "me_ap",
     "imageName": "medal_me_ap.png",
+    "profile": "High",
     "roiFront": "842,395,145,123",
     "roiBack": "156,111,862,454",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "me_souls",
     "imageName": "medal_me_souls.png",
+    "profile": "High",
     "roiFront": "173,391,148,133",
     "roiBack": "121,116,898,476",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "me_white",
     "imageName": "medal_me_white.png",
+    "profile": "High",
     "roiFront": "399,391,142,131",
     "roiBack": "115,114,908,452",
     "method": "Template matching",
@@ -47,6 +52,7 @@
   {
     "itemName": "me_challenge_pass",
     "imageName": "medal_me_challenge_pass.png",
+    "profile": "High",
     "roiFront": "618,390,146,129",
     "roiBack": "114,102,914,478",
     "method": "Template matching",
@@ -56,6 +62,7 @@
   {
     "itemName": "me_red",
     "imageName": "medal_me_red.png",
+    "profile": "High",
     "roiFront": "847,146,137,129",
     "roiBack": "141,129,864,454",
     "method": "Template matching",
@@ -65,6 +72,7 @@
   {
     "itemName": "me_broken",
     "imageName": "medal_me_broken.png",
+    "profile": "High",
     "roiFront": "398,144,143,116",
     "roiBack": "146,116,866,475",
     "method": "Template matching",
@@ -74,6 +82,7 @@
   {
     "itemName": "me_check_black",
     "imageName": "medal_me_check_black.png",
+    "profile": "High",
     "roiFront": "592,508,100,51",
     "roiBack": "548,482,185,101",
     "method": "Template matching",
@@ -83,6 +92,7 @@
   {
     "itemName": "me_check_blue",
     "imageName": "medal_me_check_blue.png",
+    "profile": "High",
     "roiFront": "592,493,100,52",
     "roiBack": "550,463,179,106",
     "method": "Template matching",
@@ -92,6 +102,7 @@
   {
     "itemName": "me_check_ap",
     "imageName": "medal_me_check_ap.png",
+    "profile": "High",
     "roiFront": "588,242,100,100",
     "roiBack": "588,242,100,100",
     "method": "Template matching",
@@ -101,6 +112,7 @@
   {
     "itemName": "me_check_souls",
     "imageName": "medal_me_check_souls.png",
+    "profile": "High",
     "roiFront": "591,480,100,52",
     "roiBack": "541,453,192,106",
     "method": "Template matching",

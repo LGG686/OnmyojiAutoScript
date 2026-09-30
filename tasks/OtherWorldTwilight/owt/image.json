@@ -2,6 +2,7 @@
   {
     "itemName": "de_to_other_world",
     "imageName": "owt_de_to_other_world.png",
+    "profile": "High",
     "roiFront": "485,130,84,94",
     "roiBack": "416,82,228,225",
     "method": "Template matching",
@@ -11,6 +12,7 @@
   {
     "itemName": "owt_fire",
     "imageName": "owt_owt_fire.png",
+    "profile": "High",
     "roiFront": "1142,603,82,74",
     "roiBack": "1088,561,181,159",
     "method": "Template matching",
@@ -20,6 +22,7 @@
   {
     "itemName": "owt_team",
     "imageName": "owt_owt_team.png",
+    "profile": "High",
     "roiFront": "959,605,82,74",
     "roiBack": "905,561,181,159",
     "method": "Template matching",
@@ -29,6 +32,7 @@
   {
     "itemName": "owt_lock",
     "imageName": "owt_owt_lock.png",
+    "profile": "High",
     "roiFront": "679,650,20,30",
     "roiBack": "593,633,228,87",
     "method": "Template matching",
@@ -38,6 +42,7 @@
   {
     "itemName": "owt_unlock",
     "imageName": "owt_owt_unlock.png",
+    "profile": "High",
     "roiFront": "679,650,20,30",
     "roiBack": "593,633,228,87",
     "method": "Template matching",

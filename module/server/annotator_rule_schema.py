@@ -41,7 +41,7 @@ RULE_TYPE_SCHEMAS: OrderedDict[str, dict[str, Any]] = OrderedDict(
                     "max": 1,
                     "integer": False,
                 },
-                {"key": "profile", "label": "profile", "control": "select", "default": "Default", "options": ["Default", "High", "More"]},
+                {"key": "profile", "label": "profile", "control": "select", "default": "High", "options": ["Default", "High", "More"]},
                 {"key": "description", "label": "description", "control": "textarea", "default": "", "full": True},
             ],
         },
