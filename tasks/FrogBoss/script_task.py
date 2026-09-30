@@ -20,6 +20,7 @@ from tasks.Component.GeneralBattle.assets import GeneralBattleAssets
 from tasks.Component.config_base import TimeDelta
 from tasks.FrogBoss.assets import FrogBossAssets
 from tasks.FrogBoss.config import Strategy
+from tasks.FrogBoss.record_reader import read_record_rows
 from tasks.FrogBoss.frog_oas import OasHistory, fetch_predictions, fingerprint
 
 
@@ -29,18 +30,45 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
         instance = re.sub(r'[^\w.-]', '_', self.config.config_name)
         return OasHistory(Path('data/frog_oas') / f'{instance}.jsonl')
 
-    def record_oas_result(self):
+    def record_oas_history_page(self):
         if self.config.model.frog_boss.frog_boss_config.strategy_frog != Strategy.Oas:
             return
-        winner = self.detect()
-        if winner is not None:
-            result = self.oas_history.settle(
-                fingerprint(self.device.image), 'LEFT' if winner else 'RIGHT')
-            logger.info(f'frog_oas result: {result}')
+        timer = Timer(10).start()
+        while not timer.reached():
+            self.screenshot()
+            if self.appear(self.I_FROG_LOG_CHECK):
+                break
+            self.appear_then_click(self.I_FROG_LOG, interval=2)
+        else:
+            raise GameStuckError('FrogBoss record page did not open')
+        try:
+            # Read only the currently visible rows; never scroll the record page.
+            readings = []
+            for _ in range(2):
+                self.screenshot()
+                if not self.appear(self.I_FROG_LOG_CHECK):
+                    break
+                readings.append(read_record_rows(self.device.image, self))
+            if len(readings) != 2 or readings[0] != readings[1]:
+                self.oas_history.append('unverified_result', reason='unstable_record_page')
+                logger.warning('FrogBoss record page readings were not stable')
+            else:
+                for stamp, won, side in dict.fromkeys(readings[0]):
+                    result = self.oas_history.settle_record(stamp, won, selected_side=side)
+                    logger.info(f'frog_oas record result: {result}, time={stamp}, won={won}, selected={side}')
+        finally:
+            timer = Timer(10).start()
+            while not timer.reached():
+                self.screenshot()
+                if not self.appear(self.I_FROG_LOG_CHECK) and self.appear(self.I_FROG_CHECK):
+                    break
+                self.appear_then_click(self.I_FROG_LOG_CLOSE, interval=2)
+            else:
+                raise GameStuckError('FrogBoss record page did not close')
 
     def enter_frog_boss(self):
         self.screenshot()
-        if self.appear(self.I_FROG_CHECK):
+        if self.appear(self.I_FROG_CHECK) or self.appear(self.I_FROG_LOG_CHECK):
             return
         self.enter(self.I_FROG_BOSS_ENTER)
         if not self.wait_until_appear(self.I_FROG_CHECK, wait_time=10):
@@ -48,9 +76,18 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
 
     def run(self):
         self.enter_frog_boss()
+        history_checked = False
         # 进入主界面
         while 1:
             self.screenshot()
+
+            if not history_checked and self.config.model.frog_boss.frog_boss_config.strategy_frog == Strategy.Oas:
+                if (self.appear(self.I_FROG_LOG_CHECK) or self.appear(self.I_BETTED)
+                        or self.appear(self.I_FROG_BOSS_REST)
+                        or (self.appear(self.I_BET_LEFT) and self.appear(self.I_BET_RIGHT))):
+                    self.record_oas_history_page()
+                    history_checked = True
+                    continue
 
             # 已经下注
             if self.appear(self.I_BETTED):
@@ -63,7 +100,6 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
             # 竞猜成功
             if self.appear(self.I_BET_SUCCESS):
                 logger.info('You bet win')
-                self.record_oas_result()
                 self.detect()
                 while 1:
                     self.screenshot()
@@ -79,7 +115,6 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
             # 竞猜失败
             if self.appear(self.I_BET_FAILURE):
                 logger.info('You bet lose')
-                self.record_oas_result()
                 self.ui_click_until_disappear(self.I_NEXT_COMPETITION)
                 self.detect()
                 continue

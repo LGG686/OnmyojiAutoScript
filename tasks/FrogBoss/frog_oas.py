@@ -74,8 +74,10 @@ class OasHistory:
         # Unverified newcomers start neutral; verified sources use raw win rate.
         return correct / total if total else 0.5
 
-    def settle(self, signature, winner):
-        if winner not in ('LEFT', 'RIGHT'):
+    def settle(self, signature, winner=None, *, bet_won=None):
+        if winner not in ('LEFT', 'RIGHT') and type(bet_won) is not bool:
+            self.append('unverified_result', signature=signature,
+                        reason='missing_winner_and_bet_outcome')
             return None
         # Include already settled records when checking ambiguity: never transfer
         # an old result to a newer decision with an identical lineup.
@@ -88,7 +90,64 @@ class OasHistory:
         decision = matches[0]
         if any(e.get('kind') == 'result' and e['id'] == decision['id'] for e in self.events):
             return None
+        source = 'winner_icons'
+        if winner not in ('LEFT', 'RIGHT'):
+            side = decision.get('side')
+            if side not in ('LEFT', 'RIGHT'):
+                self.append('unverified_result', signature=signature,
+                            reason='missing_bet_side')
+                return None
+            winner = side if bet_won else ('RIGHT' if side == 'LEFT' else 'LEFT')
+            source = 'bet_outcome'
         return self.append('result', id=decision['id'], winner=winner,
+                           source=source, bet_won=bet_won,
+                           outcomes={s: v == winner for s, v in decision['votes'].items()})
+
+    def settle_record(self, time_text, bet_won, selected_side=None):
+        """Associate the latest visible record by exact date and round, never lineup."""
+        match = re.fullmatch(r'\s*(\d{4})[./-](\d{1,2})[./-](\d{1,2})\s+(\d{1,2})[:：](\d{2})\s*', str(time_text))
+        played = None
+        if match:
+            try:
+                played = datetime(*map(int, match.groups()))
+            except ValueError:
+                pass
+        if (played is None or played.hour not in range(10, 24, 2)
+                or played.minute != 0 or played > datetime.now()
+                or type(bet_won) is not bool):
+            self.append('unverified_result', time_text=str(time_text),
+                        reason='invalid_record_time_or_outcome')
+            return None
+        slot = f'{played.date()}:{played.hour // 2}'
+        if selected_side in ('LEFT', 'RIGHT'):
+            observed_winner = selected_side if bet_won else ('RIGHT' if selected_side == 'LEFT' else 'LEFT')
+            observations = [e for e in self.events if e.get('kind') == 'record' and e.get('slot') == slot]
+            if any(e['winner'] != observed_winner or e['selected_side'] != selected_side for e in observations):
+                self.append('unverified_result', slot=slot, reason='conflicting_record_observation')
+                return None
+            if not observations:
+                self.append('record', slot=slot, winner=observed_winner,
+                            selected_side=selected_side, bet_won=bet_won, time_text=str(time_text))
+        matches = [e for e in self.events if e.get('kind') == 'decision' and e.get('slot') == slot]
+        if len(matches) != 1 or matches[0].get('side') not in ('LEFT', 'RIGHT'):
+            self.append('unverified_result', slot=slot,
+                        reason='missing_or_ambiguous_record_decision')
+            return None
+        decision = matches[0]
+        side = selected_side if selected_side is not None else decision['side']
+        if side not in ('LEFT', 'RIGHT') or side != decision['side']:
+            self.append('unverified_result', slot=slot, selected_side=selected_side,
+                        reason='record_bet_side_mismatch')
+            return None
+        winner = side if bet_won else ('RIGHT' if side == 'LEFT' else 'LEFT')
+        previous = [e for e in self.events if e.get('kind') == 'result' and e.get('id') == decision['id']]
+        if previous:
+            if any(e['winner'] != winner for e in previous):
+                self.append('unverified_result', slot=slot, winner=winner,
+                            reason='conflicting_record_result')
+            return None
+        return self.append('result', id=decision['id'], slot=slot, winner=winner,
+                           source='record_page', bet_won=bet_won, selected_side=side,
                            outcomes={s: v == winner for s, v in decision['votes'].items()})
 
     def choose(self, signature, left, right, predictions):
