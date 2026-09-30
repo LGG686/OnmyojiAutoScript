@@ -57,7 +57,7 @@
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
-    "description": "description"
+    "description": "开始下一局"
   },
   {
     "itemName": "gold_30",

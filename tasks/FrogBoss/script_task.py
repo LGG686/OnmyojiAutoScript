@@ -119,6 +119,9 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
                     self.screenshot()
                     if self._try_next_competition_fallback(idle_timer):
                         continue
+                    # 下一局可能直接进入休息中，而不再显示左右投注入口。
+                    if self.appear(self.I_FROG_BOSS_REST):
+                        break
                     if self.appear(self.I_BET_LEFT) and self.appear(self.I_BET_RIGHT):
                         break
                     if self.appear_then_click(self.I_BET_SUCCESS_BOX, interval=1):
