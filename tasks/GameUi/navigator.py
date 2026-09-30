@@ -516,12 +516,15 @@ class GameUi(ChessBattleNavigationMixin, BaseTask, GameUiAssets):
                 action_done = True
                 break
 
-        # 町中入口图标可能因动画或皮肤变化无法通过模板识别。只有在
-        # 两帧重新确认当前页仍为 town，且目标动作具有固定图标区域时，
+        # 町中各入口及庭院进入町中的图标可能因动画或皮肤变化识别失败。只有在
+        # 两帧重新确认仍在来源页，且目标动作具有固定图标区域时，
         # 才机械点击一次 roi_front 中心作为保底。
         if (
             not action_done
-            and source.key == "page_town"
+            and (
+                source.key == "page_town"
+                or (source.key == "page_main" and destination.key == "page_town")
+            )
             and isinstance(transition.action, (RuleImage, RuleGif))
             and self.confirm_page(source, skip_first_screenshot=False)
         ):
@@ -529,7 +532,7 @@ class GameUi(ChessBattleNavigationMixin, BaseTask, GameUiAssets):
             click_x = x + width // 2
             click_y = y + height // 2
             logger.warning(
-                "Town target was not recognized; use one fixed-position "
+                f"Navigation target from {source.key} was not recognized; use one fixed-position "
                 f"fallback click: action={self._action_name(transition.action)}, "
                 f"position=({click_x}, {click_y})"
             )
@@ -537,7 +540,8 @@ class GameUi(ChessBattleNavigationMixin, BaseTask, GameUiAssets):
                 x=click_x,
                 y=click_y,
                 control_name=(
-                    f"TOWN_FALLBACK_{self._action_name(transition.action)}"
+                    f"{'TOWN' if source.key == 'page_town' else 'MAIN_TO_TOWN'}_FALLBACK_"
+                    f"{self._action_name(transition.action)}"
                 ),
             )
             action_done = True
