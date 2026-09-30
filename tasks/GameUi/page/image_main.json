@@ -3,7 +3,7 @@
     "itemName": "check_main",
     "imageName": "page_check_main.png",
     "roiFront": "807,108,76,45",
-    "roiBack": "49,98,1033,61",
+    "roiBack": "47,88,1046,102",
     "method": "Template matching",
     "threshold": 0.95,
     "profile": "Default",
