@@ -2,7 +2,7 @@
   {
     "itemName": "bet_left",
     "imageName": "fb_bet_left.png",
-    "roiFront": "271,303,145,100",
+    "roiFront": "288,301,120,102",
     "roiBack": "222,251,245,195",
     "method": "Template matching",
     "threshold": 0.8,
@@ -12,7 +12,7 @@
   {
     "itemName": "bet_right",
     "imageName": "fb_bet_right.png",
-    "roiFront": "1070,302,146,100",
+    "roiFront": "1093,307,118,94",
     "roiBack": "1048,248,187,208",
     "method": "Template matching",
     "threshold": 0.8,
@@ -22,7 +22,7 @@
   {
     "itemName": "bet_success_box",
     "imageName": "fb_bet_success_box.png",
-    "roiFront": "708,394,87,50",
+    "roiFront": "713,399,80,45",
     "roiBack": "661,331,193,182",
     "method": "Template matching",
     "threshold": 0.75,
@@ -52,7 +52,7 @@
   {
     "itemName": "next_competition",
     "imageName": "fb_next_competition.png",
-    "roiFront": "777,490,40,29",
+    "roiFront": "783,492,28,22",
     "roiBack": "692,437,157,147",
     "method": "Template matching",
     "threshold": 0.8,
