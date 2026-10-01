@@ -28,8 +28,8 @@ class FrogBossAssets:
 	I_GOLD_30 = RuleImage(roi_front=(862,499,78,76), roi_back=(831,441,147,187), threshold=0.8, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_gold_30.png")
 	# 确认竞猜 
 	I_BET_SURE = RuleImage(roi_front=(1025,402,100,100), roi_back=(972,340,200,226), threshold=0.8, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_bet_sure.png")
-	# description 
-	I_GOLD_30_CHECK = RuleImage(roi_front=(513,196,58,53), roi_back=(402,141,459,489), threshold=0.8, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_gold_30_check.png")
+	# 获胜奖励说明弹窗中的竞猜金币
+	I_GOLD_30_CHECK = RuleImage(roi_front=(513,196,58,53), roi_back=(495,195,104,111), threshold=0.8, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_gold_30_check.png")
 	# description 
 	I_BETTED = RuleImage(roi_front=(1093,313,125,54), roi_back=(207,240,1058,312), threshold=0.8, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_betted.png")
 	# description 

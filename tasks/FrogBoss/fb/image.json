@@ -83,11 +83,11 @@
     "itemName": "gold_30_check",
     "imageName": "fb_gold_30_check.png",
     "roiFront": "513,196,58,53",
-    "roiBack": "402,141,459,489",
+    "roiBack": "495,195,104,111",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
-    "description": "description"
+    "description": "获胜奖励说明弹窗中的竞猜金币"
   },
   {
     "itemName": "betted",

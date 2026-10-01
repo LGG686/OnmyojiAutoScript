@@ -10,6 +10,7 @@ from pathlib import Path
 
 from module.exception import GameStuckError, TaskEnd
 from module.logger import logger
+from module.atom.click import RuleClick
 from module.atom.image import RuleImage
 from module.base.timer import Timer
 
@@ -178,7 +179,6 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
     def do_bet(self):
         logger.hr('do bet', level=2)
         self.screenshot()
-        flag_glod_30 = 0
         count_left = self.O_LEFT_COUNT.ocr(self.device.image)
         count_right = self.O_RIGHT_COUNT.ocr(self.device.image)
         match self.config.model.frog_boss.frog_boss_config.strategy_frog:
@@ -214,32 +214,50 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
                 raise ValueError(f'Unknown bet mode: {self.config.model.frog_boss.frog_boss_config.strategy_frog}')
         logger.info(f'You strategy is {self.config.model.frog_boss.frog_boss_config.strategy_frog} and bet on {click_image}')
         self.ui_click_until_disappear(click_image)
-        gold_30_timer = Timer(10)
-        gold_30_timer.start()
-        while 1:
-            self.screenshot()
-            if self.appear(self.I_GOLD_30_CHECK):
-                break
-            if gold_30_timer.reached():
-                logger.info('Gold 30 not appear')
-                break
-            if self.appear_then_click(self.I_GOLD_30, interval=3):
-                continue
-        # 正式下注
+        self.confirm_bet()
+
+    def select_gold_30(self):
+        if not self.appear(self.I_GOLD_30):
+            return False
+        # 袋子下部的奖励图标会打开说明页，只点击匹配位置的上部袋身。
+        x, y, width, height = self.I_GOLD_30.roi_front
+        area = (x + width // 4, y + height // 8, width // 2, height // 3)
+        self.click(RuleClick(
+            roi_front=area, roi_back=area, profile='High', name='FB_GOLD_30_SELECT',
+        ))
+        return True
+
+    def confirm_bet(self):
         logger.info('Formal bet')
-        while 1:
+        timer = Timer(20).start()
+        gold_selected = False
+        submit_attempts = 0
+        while not timer.reached():
             self.screenshot()
             if self.appear(self.I_BETTED):
-                break
-            if self.appear_then_click(self.I_BET_SURE, interval=2) and flag_glod_30 == 1:
-                continue
-            if self.appear_then_click(self.I_GOLD_30, interval=2):
-                flag_glod_30 = 1
+                return
+            if self.appear(self.I_FROG_BOSS_REST):
+                return
+            # 弹窗后方的金额、鼓面仍能匹配，必须先处理弹窗并重新截图。
+            if self.appear(self.I_GOLD_30_CHECK):
+                logger.info('Close FrogBoss betting reward information')
+                self.click(self.C_RANDOM_LEFT, interval=2)
                 continue
             if self.appear_then_click(self.I_UI_CONFIRM, interval=2):
                 continue
             if self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=2):
                 continue
+            if not gold_selected:
+                if self.select_gold_30():
+                    gold_selected = True
+                continue
+            if submit_attempts < 3 and self.appear_then_click(self.I_BET_SURE, interval=3):
+                submit_attempts += 1
+                continue
+        raise GameStuckError(
+            f'FrogBoss betting confirmation timeout: gold_selected={gold_selected}, '
+            f'submit_attempts={submit_attempts}'
+        )
 
     def detect(self) -> bool:
         """
