@@ -249,12 +249,17 @@ class RuleImage:
         best_val = -1.0
         best_loc = None
         best_shape = None
-        cur_scale = min_scale
-        while cur_scale <= max_scale + 1e-8:
+        # 倍数按索引求值：`cur_scale += step` 会浮点向下漂（1.0 漂成 0.9999999999999999），
+        # 再经 int() 截断就少 1 像素，导致恰好原尺寸那一档永远测不到。
+        index = 0
+        while True:
+            cur_scale = min_scale + index * step
+            if cur_scale > max_scale + 1e-8:
+                break
+            index += 1
             scaled_w = max(1, int(mat.shape[1] * cur_scale))
             scaled_h = max(1, int(mat.shape[0] * cur_scale))
             if scaled_w > source.shape[1] or scaled_h > source.shape[0]:
-                cur_scale += step
                 continue
             scaled_mat = cv2.resize(mat, (scaled_w, scaled_h), interpolation=cv2.INTER_LINEAR)
             res = cv2.matchTemplate(source, scaled_mat, cv2.TM_CCOEFF_NORMED)
@@ -263,7 +268,6 @@ class RuleImage:
                 best_val = max_val
                 best_loc = max_loc
                 best_shape = (scaled_w, scaled_h)
-            cur_scale += step
         if self.debug_mode:
             logger.attr(self.name, f'multi-scale matching score {best_val:.5f}')
         if best_loc is not None and best_shape is not None and best_val > threshold:

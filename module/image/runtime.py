@@ -693,6 +693,25 @@ class ImageRuntime:
         return mat is None or mat.shape[0] == 0 or mat.shape[1] == 0
 
     @staticmethod
+    def _template_is_degenerate(template: np.ndarray, mask: np.ndarray | None = None) -> bool:
+        """
+        判断模板在参与匹配的区域内是否逐通道恒为常量。
+
+        CCOEFF_NORMED 归一化时分母来自各通道的方差，参与区域内只要有通道完全没有起伏，
+        分母就是 0，OpenCV 会走特判：无掩码时整张结果矩阵被填成 1.0（恒假阳性，且落点固定
+        在 roi_back 左上角），带掩码时整张变成 0/0 的 nan。两种都让这条规则失去意义，
+        这里提前拦掉，而不是把异常数值当成命中。
+        """
+        region = template if mask is None else template[mask > 0]
+        if region.size == 0:
+            return True
+        # 掩码取值后是 `(N, C)`、整体模板是 `(H, W, C)`、灰度图是 `(H, W)` 或 `(N,)`，
+        # 通道数只认模板本身，再统一摊平成 `(N, C)` 逐通道判断。
+        channels = 1 if template.ndim == 2 else template.shape[-1]
+        samples = region.reshape(-1, channels)
+        return all(float(samples[:, channel].std()) == 0.0 for channel in range(channels))
+
+    @staticmethod
     def _mean_brightness(image: np.ndarray) -> float:
         """计算图像区域的平均亮度，用于亮度窗口匹配。"""
         if image.size == 0:
@@ -720,6 +739,9 @@ class ImageRuntime:
             logger.error(f"Template image is invalid: {None if template is None else template.shape}")
             return True, 1.0, [int(v) for v in roi_back]
         if source.shape[0] < template.shape[0] or source.shape[1] < template.shape[1]:
+            return False, -1.0, None
+        if self._template_is_degenerate(template, mask):
+            logger.error(f"{log_name} template is flat (no variance in matching area), treated as not matched")
             return False, -1.0, None
         if mask is None:
             result = cv2.matchTemplate(source, template, cv2.TM_CCOEFF_NORMED)
@@ -758,18 +780,26 @@ class ImageRuntime:
         if self._template_image_invalid(template):
             logger.error(f"Template image is invalid: {None if template is None else template.shape}")
             return True, 1.0, [int(v) for v in roi_back], None
+        if self._template_is_degenerate(template):
+            logger.error(f"{log_name} template is flat (no variance), treated as not matched")
+            return False, -1.0, None, None
 
         min_scale, max_scale, step = self._get_multi_scale_range(scale_range, scale_step)
         best_val = -1.0
         best_loc = None
         best_shape = None
         best_scale = None
-        current_scale = min_scale
-        while current_scale <= max_scale + 1e-8:
+        # 倍数按索引求值：`current_scale += step` 会浮点向下漂（1.0 漂成 0.9999999999999999），
+        # 再经 int() 截断就少 1 像素，导致恰好原尺寸那一档永远测不到。
+        index = 0
+        while True:
+            current_scale = min_scale + index * step
+            if current_scale > max_scale + 1e-8:
+                break
+            index += 1
             scaled_w = max(1, int(template.shape[1] * current_scale))
             scaled_h = max(1, int(template.shape[0] * current_scale))
             if scaled_w > source.shape[1] or scaled_h > source.shape[0]:
-                current_scale += step
                 continue
             scaled_template = cv2.resize(template, (scaled_w, scaled_h), interpolation=cv2.INTER_LINEAR)
             result = cv2.matchTemplate(source, scaled_template, cv2.TM_CCOEFF_NORMED)
@@ -779,7 +809,6 @@ class ImageRuntime:
                 best_loc = max_loc
                 best_shape = (scaled_w, scaled_h)
                 best_scale = current_scale
-            current_scale += step
 
         roi_front = None
         matched = best_loc is not None and best_shape is not None and best_val > threshold
@@ -894,6 +923,9 @@ class ImageRuntime:
             logger.error(f"Template image is invalid: {None if template is None else template.shape}")
             return []
         if source.shape[0] < template.shape[0] or source.shape[1] < template.shape[1]:
+            return []
+        if self._template_is_degenerate(template, entry.mask):
+            logger.error(f"{rule['name']} template is flat (no variance in matching area), skip match_all")
             return []
         if entry.mask is None:
             results = cv2.matchTemplate(source, template, cv2.TM_CCOEFF_NORMED)
