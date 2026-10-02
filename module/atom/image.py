@@ -17,6 +17,7 @@ from module.base.utils import is_approx_rectangle
 class RuleImage:
     debug_mode: bool = False
     METHOD_TEMPLATE_MATCH = "Template matching"
+    METHOD_MASKED_TEMPLATE_MATCH = "Masked template matching"
     METHOD_MULTI_SCALE_TEMPLATE_MATCH = "Multi-scale template matching"
     METHOD_SIFT_FLANN = "Sift Flann"
     DEFAULT_MULTI_SCALE_RANGE = (0.6, 1.2)
@@ -35,7 +36,7 @@ class RuleImage:
         初始化
         :param roi_front: 前置roi
         :param roi_back: 后置roi 用于匹配的区域
-        :param method: 匹配方法 "Template matching" / "Multi-scale template matching" / "Sift Flann"
+        :param method: 匹配方法 "Template matching" / "Masked template matching" / "Multi-scale template matching" / "Sift Flann"
         :param threshold: 阈值  0.8
         :param file: 相对路径, 带后缀
         """
@@ -114,6 +115,14 @@ class RuleImage:
         :return:
         """
         return self.method == self.METHOD_TEMPLATE_MATCH
+
+    @property
+    def is_masked_template_match(self) -> bool:
+        """
+        是否是掩码模板匹配，掩码取自同目录下 `xxx_mask.png`
+        :return:
+        """
+        return self.method == self.METHOD_MASKED_TEMPLATE_MATCH
 
     @property
     def is_multi_scale_template_match(self) -> bool:
@@ -353,6 +362,8 @@ class RuleImage:
     def test_match(self, image: np.array):
         self.debug_mode = True
         if self.is_template_match:
+            return self.match(image)
+        if self.is_masked_template_match:
             return self.match(image)
         if self.is_multi_scale_template_match:
             return self.match(image)
