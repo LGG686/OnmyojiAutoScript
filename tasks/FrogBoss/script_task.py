@@ -7,6 +7,7 @@ import requests
 import re
 import json
 from pathlib import Path
+from time import sleep
 
 from module.exception import GameStuckError, TaskEnd
 from module.logger import logger
@@ -26,6 +27,20 @@ from tasks.FrogBoss.frog_oas import OasHistory, fetch_predictions, fingerprint
 
 
 class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
+    # 金额选择页竞猜按钮的固定中心，用于关闭奖励详情，避免点到左侧商店气泡。
+    C_BET_REWARD_CLOSE = RuleClick(
+        roi_front=(1075, 452, 1, 1), roi_back=(1075, 452, 1, 1),
+        profile='High', name='FB_BET_REWARD_CLOSE',
+    )
+
+    def close_frog_mall(self):
+        if not self.appear(self.I_FROG_MALL):
+            return False
+        if self.appear_then_click(self.I_FORG_MALL_CLOSE, interval=1):
+            logger.info('Close unexpected FrogBoss mall page')
+            self.screenshot()
+        return True
+
     @cached_property
     def oas_history(self):
         instance = re.sub(r'[^\w.-]', '_', self.config.config_name)
@@ -37,6 +52,8 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
         timer = Timer(10).start()
         while not timer.reached():
             self.screenshot()
+            if self.close_frog_mall():
+                continue
             if self.appear(self.I_FROG_LOG_CHECK):
                 break
             self.appear_then_click(self.I_FROG_LOG, interval=2)
@@ -61,6 +78,8 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
             timer = Timer(10).start()
             while not timer.reached():
                 self.screenshot()
+                if self.close_frog_mall():
+                    continue
                 if not self.appear(self.I_FROG_LOG_CHECK) and self.appear(self.I_FROG_CHECK):
                     break
                 self.appear_then_click(self.I_FROG_LOG_CLOSE, interval=2)
@@ -69,6 +88,11 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
 
     def enter_frog_boss(self):
         self.screenshot()
+        timer = Timer(10).start()
+        while self.close_frog_mall():
+            if timer.reached():
+                raise GameStuckError('FrogBoss mall page did not close')
+            self.screenshot()
         if self.appear(self.I_FROG_CHECK) or self.appear(self.I_FROG_LOG_CHECK):
             return
         self.enter(self.I_FROG_BOSS_ENTER)
@@ -85,6 +109,16 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
             return True
         return False
 
+    def confirmed_finish_marker(self):
+        for marker in (self.I_BETTED, self.I_FROG_BOSS_REST):
+            if self.appear(marker):
+                sleep(0.2)
+                self.screenshot()
+                if not self.appear(self.I_FROG_MALL) and self.appear(marker):
+                    return marker
+                return None
+        return None
+
     def run(self):
         self.enter_frog_boss()
         history_checked = False
@@ -92,6 +126,9 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
         # 进入主界面
         while 1:
             self.screenshot()
+            if self.close_frog_mall():
+                idle_timer.reset()
+                continue
             if self._try_next_competition_fallback(idle_timer):
                 continue
 
@@ -104,13 +141,10 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
                     idle_timer.reset()
                     continue
 
-            # 已经下注
-            if self.appear(self.I_BETTED):
-                logger.info('You have betted')
-                break
-            # 休息中
-            if self.appear(self.I_FROG_BOSS_REST):
-                logger.info('Frog Boss Rest')
+            # 安排下一次运行前，间隔0.2秒确认同一结束标志仍然存在。
+            finish_marker = self.confirmed_finish_marker()
+            if finish_marker is not None:
+                logger.info('You have betted' if finish_marker == self.I_BETTED else 'Frog Boss Rest')
                 break
             # 竞猜成功
             if self.appear(self.I_BET_SUCCESS):
@@ -118,6 +152,9 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
                 self.detect()
                 while 1:
                     self.screenshot()
+                    if self.close_frog_mall():
+                        idle_timer.reset()
+                        continue
                     if self._try_next_competition_fallback(idle_timer):
                         continue
                     # 下一局可能直接进入休息中，而不再显示左右投注入口。
@@ -179,6 +216,8 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
     def do_bet(self):
         logger.hr('do bet', level=2)
         self.screenshot()
+        if self.close_frog_mall():
+            return
         count_left = self.O_LEFT_COUNT.ocr(self.device.image)
         count_right = self.O_RIGHT_COUNT.ocr(self.device.image)
         match self.config.model.frog_boss.frog_boss_config.strategy_frog:
@@ -200,6 +239,8 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
                 logger.info(f'frog_oas decision: {decision}')
                 # Fetching may span a round transition; never click a stale frame.
                 self.screenshot()
+                if self.close_frog_mall():
+                    return
                 from tasks.FrogBoss.frog_oas import same_lineup
                 if not same_lineup(signature, fingerprint(self.device.image)):
                     raise GameStuckError('FrogBoss lineup changed while fetching predictions')
@@ -234,14 +275,21 @@ class ScriptTask(RightActivity, FrogBossAssets, GeneralBattleAssets):
         submit_attempts = 0
         while not timer.reached():
             self.screenshot()
+            if self.close_frog_mall():
+                gold_selected = False
+                submit_attempts = 0
+                continue
             if self.appear(self.I_BETTED):
                 return
             if self.appear(self.I_FROG_BOSS_REST):
                 return
+            # 商店关闭后可能已回到左右下注入口，由主循环重新进入下注流程。
+            if self.appear(self.I_BET_LEFT) and self.appear(self.I_BET_RIGHT):
+                return
             # 弹窗后方的金额、鼓面仍能匹配，必须先处理弹窗并重新截图。
             if self.appear(self.I_GOLD_30_CHECK):
                 logger.info('Close FrogBoss betting reward information')
-                self.click(self.C_RANDOM_LEFT, interval=2)
+                self.click(self.C_BET_REWARD_CLOSE, interval=2)
                 continue
             if self.appear_then_click(self.I_UI_CONFIRM, interval=2):
                 continue

@@ -43,6 +43,44 @@ class BettingTask(ScriptTask):
 
 @patch('tasks.FrogBoss.script_task.Timer', FrameTimer)
 class BettingFlowTests(unittest.TestCase):
+    @patch('tasks.FrogBoss.script_task.sleep')
+    def test_finish_requires_same_marker_in_second_frame(self, delay):
+        for marker in (ScriptTask.I_BETTED, ScriptTask.I_FROG_BOSS_REST):
+            for second_frame, expected in (({marker.name}, marker), (set(), None),
+                                            ({ScriptTask.I_FROG_MALL.name, marker.name}, None)):
+                with self.subTest(marker=marker.name, second_frame=second_frame):
+                    task = BettingTask([second_frame])
+                    task.visible = {marker.name}
+                    self.assertEqual(task.confirmed_finish_marker(), expected)
+                    delay.assert_called_with(0.2)
+
+    def test_mall_has_priority_over_betting_and_resumes_after_close(self):
+        panel = {ScriptTask.I_GOLD_30.name, ScriptTask.I_BET_SURE.name}
+        mall = {ScriptTask.I_FROG_MALL.name, ScriptTask.I_FORG_MALL_CLOSE.name}
+        task = BettingTask([
+            panel | mall,
+            panel,  # 关闭后立即刷新，禁止继续使用弹窗后方的旧画面。
+            panel,
+            panel,
+            {ScriptTask.I_BETTED.name},
+        ])
+        task.confirm_bet()
+        self.assertEqual([rule.name for rule in task.clicks], [
+            ScriptTask.I_FORG_MALL_CLOSE.name,
+            'FB_GOLD_30_SELECT',
+            ScriptTask.I_BET_SURE.name,
+        ])
+
+    def test_mall_returning_to_bet_entries_hands_back_to_main_loop(self):
+        entries = {ScriptTask.I_BET_LEFT.name, ScriptTask.I_BET_RIGHT.name}
+        task = BettingTask([
+            {ScriptTask.I_FROG_MALL.name, ScriptTask.I_FORG_MALL_CLOSE.name},
+            entries,
+            entries,
+        ])
+        task.confirm_bet()
+        self.assertEqual([rule.name for rule in task.clicks], [ScriptTask.I_FORG_MALL_CLOSE.name])
+
     def test_reward_overlay_and_confirmation_hide_clickable_background(self):
         panel = {ScriptTask.I_GOLD_30.name, ScriptTask.I_BET_SURE.name}
         task = BettingTask([
@@ -54,11 +92,12 @@ class BettingFlowTests(unittest.TestCase):
         ])
         task.confirm_bet()
         self.assertEqual([rule.name for rule in task.clicks], [
-            ScriptTask.C_RANDOM_LEFT.name,
+            ScriptTask.C_BET_REWARD_CLOSE.name,
             'FB_GOLD_30_SELECT',
             ScriptTask.I_BET_SURE.name,
             ScriptTask.I_UI_CONFIRM.name,
         ])
+        self.assertEqual(task.clicks[0].coord(), (1075, 452))
         selection = task.clicks[1]
         x, y, width, height = ScriptTask.I_GOLD_30.roi_front
         sx, sy, sw, sh = selection.roi_front

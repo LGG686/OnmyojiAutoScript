@@ -63,6 +63,10 @@ class FrogBossAssets:
 	I_FROG_LAST_SELECT_RED = RuleImage(roi_front=(342,149,36,38), roi_back=(327,120,70,77), threshold=0.8, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_frog_last_select_red.png")
 	# 上一句选择蓝色 
 	I_FROG_LAST_SELECT_BLUE = RuleImage(roi_front=(342,149,36,38), roi_back=(327,120,70,77), threshold=0.8, method="Template matching", profile="High", file="./tasks/FrogBoss/fb/fb_frog_last_select_blue.png")
+	# 商店
+	I_FROG_MALL = RuleImage(roi_front=(189,60,202,57), roi_back=(125,13,371,145), threshold=0.8, method="Template matching", file="./tasks/FrogBoss/fb/fb_frog_mall.png")
+	# 商店关闭
+	I_FORG_MALL_CLOSE = RuleImage(roi_front=(1089,114,43,41), roi_back=(1067,84,83,89), threshold=0.8, method="Template matching", file="./tasks/FrogBoss/fb/fb_forg_mall_close.png")
 
 
 	# Ocr Rule Assets

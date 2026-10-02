@@ -98,5 +98,25 @@
     "threshold": 0.8,
     "profile": "High",
     "description": "上一句选择蓝色"
+  },
+  {
+    "itemName": "frog_mall",
+    "imageName": "fb_frog_mall.png",
+    "roiFront": "189,60,202,57",
+    "roiBack": "125,13,371,145",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "商店"
+  },
+  {
+    "itemName": "forg_mall_close",
+    "imageName": "fb_forg_mall_close.png",
+    "roiFront": "1089,114,43,41",
+    "roiBack": "1067,84,83,89",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "商店关闭"
   }
 ]
