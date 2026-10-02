@@ -165,7 +165,9 @@ class OasHistory:
         if crowd:
             votes['crowd'] = crowd
         cold_start = not any(e.get('kind') == 'result' for e in self.events)
-        weights = {} if cold_start else {uid: self.reliability(uid) for uid in votes}
+        win_rates = {} if cold_start else {uid: self.reliability(uid) for uid in votes}
+        # A source below 50% penalizes its predicted side; newcomers are neutral.
+        weights = {uid: rate - 0.5 for uid, rate in win_rates.items()}
         scores = {'LEFT': 0.0, 'RIGHT': 0.0}
         if cold_start:
             # Two equal votes: the expert majority as a whole and the crowd.
@@ -179,8 +181,9 @@ class OasHistory:
         side = random.choice(('LEFT', 'RIGHT')) if tied else max(scores, key=scores.get)
         return self.append('decision', id=uuid4().hex, slot=slot, signature=signature,
                            left=left, right=right, votes=votes, weights=weights,
-                           scores=scores, side=side, strategy_version=2,
-                           mode='cold_start' if cold_start else 'win_rate',
+                           win_rates=win_rates,
+                           scores=scores, side=side, strategy_version=3,
+                           mode='cold_start' if cold_start else 'signed_win_rate',
                            expert_counts={'LEFT': expert_left, 'RIGHT': expert_right},
                            expert_side=expert_side, crowd_side=crowd, random_tiebreak=tied)
 

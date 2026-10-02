@@ -24,8 +24,8 @@ class OasTests(unittest.TestCase):
             self.assertEqual(reloaded.reliability('crowd'), 1)
             second = reloaded.choose('1' * 512, 10, 20, [
                 {'uid': 'a', 'side': 'LEFT'}, {'uid': 'b', 'side': 'LEFT'}])
-            self.assertEqual(second['scores'], {'LEFT': 1, 'RIGHT': 1})
-            self.assertEqual(second['mode'], 'win_rate')
+            self.assertEqual(second['scores'], {'LEFT': 0, 'RIGHT': .5})
+            self.assertEqual(second['mode'], 'signed_win_rate')
             reloaded.settle('1' * 512, 'RIGHT')
             self.assertEqual(reloaded.reliability('a'), .5)
             self.assertEqual(reloaded.reliability('b'), 0)
@@ -68,7 +68,60 @@ class OasTests(unittest.TestCase):
                     self.assertIsNone(store.settle('0' * 512, bet_won=won))
                     reloaded = OasHistory(store.path)
                     second = reloaded.choose('1' * 512, left, right, [{'uid': 'a', 'side': side}])
-                    self.assertEqual(second['mode'], 'win_rate')
+                    self.assertEqual(second['mode'], 'signed_win_rate')
+
+    def test_signed_weights_penalize_wrong_sources_and_leave_newcomers_neutral(self):
+        with tempfile.TemporaryDirectory() as directory:
+            store = OasHistory(Path(directory) / 'history.jsonl')
+            store.append('decision', id='previous', slot='2026-09-28:5', signature='1' * 512, votes={
+                'wrong': 'LEFT', 'correct': 'RIGHT', 'crowd': 'LEFT',
+            })
+            store.append('result', id='previous', winner='RIGHT')
+            decision = store.choose('0' * 512, 20, 10, [
+                {'uid': 'wrong', 'side': 'LEFT'},
+                {'uid': 'correct', 'side': 'RIGHT'},
+                {'uid': 'newcomer', 'side': 'LEFT'},
+            ])
+            self.assertEqual(decision['win_rates'], {
+                'wrong': 0, 'correct': 1, 'newcomer': .5, 'crowd': 0,
+            })
+            self.assertEqual(decision['weights'], {
+                'wrong': -.5, 'correct': .5, 'newcomer': 0, 'crowd': -.5,
+            })
+            self.assertEqual(decision['scores'], {'LEFT': -1, 'RIGHT': .5})
+            self.assertEqual(decision['side'], 'RIGHT')
+            self.assertEqual(decision['strategy_version'], 3)
+
+    def test_negative_consensus_can_select_the_opposite_side(self):
+        with tempfile.TemporaryDirectory() as directory:
+            store = OasHistory(Path(directory) / 'history.jsonl')
+            store.append('decision', id='previous', slot='2026-09-28:5', signature='1' * 512,
+                         votes={'a': 'LEFT'})
+            store.append('result', id='previous', winner='RIGHT')
+            decision = store.choose('0' * 512, 20, 10, [{'uid': 'a', 'side': 'LEFT'}])
+            self.assertEqual(decision['weights'], {'a': -.5, 'crowd': 0})
+            self.assertEqual(decision['scores'], {'LEFT': -.5, 'RIGHT': 0})
+            self.assertEqual(decision['side'], 'RIGHT')
+
+    def test_signed_weights_use_raw_cumulative_rate_and_randomize_zero_tie(self):
+        with tempfile.TemporaryDirectory() as directory:
+            store = OasHistory(Path(directory) / 'history.jsonl')
+            for index, winner in enumerate(('LEFT', 'RIGHT', 'RIGHT', 'RIGHT')):
+                store.append('decision', id=f'seed{index}', slot=f'2026-09-28:{5 + index}',
+                             signature='1' * 512, votes={'a': 'LEFT', 'b': 'RIGHT'})
+                store.append('result', id=f'seed{index}', winner=winner)
+            decision = store.choose('0' * 512, 0, 0, [
+                {'uid': 'a', 'side': 'LEFT'}, {'uid': 'b', 'side': 'RIGHT'},
+            ])
+            self.assertEqual(decision['weights'], {'a': -.25, 'b': .25})
+            self.assertEqual(decision['side'], 'RIGHT')
+            with patch('tasks.FrogBoss.frog_oas.random.choice', return_value='LEFT') as choose:
+                tied = store.choose('1' * 512, 0, 0, [
+                    {'uid': 'a', 'side': 'LEFT'}, {'uid': 'b', 'side': 'LEFT'},
+                ])
+            self.assertEqual(tied['scores'], {'LEFT': 0, 'RIGHT': 0})
+            self.assertTrue(tied['random_tiebreak'])
+            choose.assert_called_once_with(('LEFT', 'RIGHT'))
 
     def test_bet_outcome_rejects_missing_or_ambiguous_lineup(self):
         with tempfile.TemporaryDirectory() as directory:
