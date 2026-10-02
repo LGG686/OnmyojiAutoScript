@@ -61,6 +61,14 @@ class ScriptTask(GameUi, SwitchSoul, GeneralBattle, DokanAssets):
     def _exit_matcher(self) -> ExitMatcher | None:
         return pages.any_of(self.I_RYOU_DOKAN_CENTER_TOP, self.I_RYOU_DOKAN_REMAIN_ATTACK_COUNT_DONE)
 
+    def _handle_missing_battle_page(self, context: BattleContext, config: GeneralBattleConfig,
+                                    exit_matcher: ExitMatcher | None) -> BattleAction:
+        # 道馆连战也可能主动退出，不经过结算页；返回道馆后必须交还任务主流程。
+        if exit_matcher is not None and self._evaluate_exit_matcher(exit_matcher):
+            logger.info("Dokan battle ended: returned to dokan")
+            return BattleAction.EXIT_WIN if context.is_win else BattleAction.EXIT_LOSE
+        return super()._handle_missing_battle_page(context, config, exit_matcher)
+
     def _get_battle_behavior_scopes(self, config: GeneralBattleConfig, battle_key: str) -> dict[str, BattleBehaviorScope]:
         scopes = super()._get_battle_behavior_scopes(config, battle_key)
         if battle_key == 'dokan_owner':
