@@ -14,9 +14,7 @@ page_main.connect(
 )
 
 # 狭间幻境挑战界面
-page_ibuki_arena = Page(
-    any_of(IbukiArenaAssets.I_CHECK_ARENA, IbukiArenaAssets.I_CHALLENGE)
-)
+page_ibuki_arena = Page(IbukiArenaAssets.I_CHECK_ARENA)
 page_ibuki_arena.connect(
     page_ibuki, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_ibuki_arena->page_ibuki"
 )

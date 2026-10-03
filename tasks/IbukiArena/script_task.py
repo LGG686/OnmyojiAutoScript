@@ -74,6 +74,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, IbukiArenaAssets):
                 if self.appear_then_click(self.I_CHALLENGE, interval=1.2):
                     logger.info(f'remain {remain}/{total}')
                     time.sleep(0.5)
+                    self.screenshot()
                     self.run_general_battle(
                         config=self.conf.general_battle_config,
                         exit_matcher=pages.page_ibuki_arena,
