@@ -4,7 +4,7 @@ from tasks.GlobalGame.assets import GlobalGameAssets
 from tasks.IbukiArena.assets import IbukiArenaAssets
 
 # 伊吹之擂主界面
-page_ibuki = Page(any_of(IbukiArenaAssets.I_CHECK_ACT, IbukiArenaAssets.I_GOTO_ARENA))
+page_ibuki = Page(any_of(IbukiArenaAssets.I_CHECK_IBUKI, IbukiArenaAssets.I_GOTO_ARENA))
 page_ibuki.add_enter_failure_hooks(RightActivityAssets.I_TOGGLE_BUTTON)
 page_ibuki.connect(
     page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_ibuki->page_main"

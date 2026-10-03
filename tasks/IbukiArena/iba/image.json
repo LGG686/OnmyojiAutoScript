@@ -9,8 +9,8 @@
     "description": "庭院右侧活动栏进入伊吹之擂"
   },
   {
-    "itemName": "check_act",
-    "imageName": "iba_check_act.png",
+    "itemName": "check_ibuki",
+    "imageName": "iba_check_ibuki.png",
     "roiFront": "88,24,136,44",
     "roiBack": "60,10,190,70",
     "method": "Template matching",
@@ -54,8 +54,8 @@
     "description": "跳过剧情"
   },
   {
-    "itemName": "act_unlock",
-    "imageName": "iba_act_unlock.png",
+    "itemName": "ibuki_unlock",
+    "imageName": "iba_ibuki_unlock.png",
     "roiFront": "760,634,22,27",
     "roiBack": "733,617,117,61",
     "method": "Template matching",
@@ -63,8 +63,8 @@
     "description": "未锁定状态"
   },
   {
-    "itemName": "act_lock",
-    "imageName": "iba_act_lock.png",
+    "itemName": "ibuki_lock",
+    "imageName": "iba_ibuki_lock.png",
     "roiFront": "760,634,22,27",
     "roiBack": "733,617,117,61",
     "method": "Template matching",

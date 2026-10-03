@@ -73,6 +73,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, IbukiArenaAssets):
                 # 挑战
                 if self.appear_then_click(self.I_CHALLENGE, interval=1.2):
                     logger.info(f'remain {remain}/{total}')
+                    time.sleep(0.5)
                     self.run_general_battle(
                         config=self.conf.general_battle_config,
                         exit_matcher=pages.page_ibuki_arena,
@@ -83,9 +84,9 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, IbukiArenaAssets):
 
     def switch_lock(self):
         if self.conf.general_battle_config.lock_team_enable:
-            self.ui_click(self.I_ACT_UNLOCK, self.I_ACT_LOCK)
+            self.ui_click(self.I_IBUKI_UNLOCK, self.I_IBUKI_LOCK)
             return
-        self.ui_click(self.I_ACT_LOCK, self.I_ACT_UNLOCK)
+        self.ui_click(self.I_IBUKI_LOCK, self.I_IBUKI_UNLOCK)
 
     def switch_soul(self):
         """切换御魂"""
