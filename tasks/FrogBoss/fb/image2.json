@@ -6,7 +6,7 @@
     "roiBack": "1169,203,78,320",
     "method": "Template matching",
     "threshold": 0.7,
-    "profile": "High",
+    "profile": "Default",
     "description": "description"
   },
   {

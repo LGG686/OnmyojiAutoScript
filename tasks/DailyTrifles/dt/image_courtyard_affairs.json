@@ -2,51 +2,51 @@
   {
     "itemName": "enter_courtyard_affairs",
     "imageName": "dt_enter_courtyard_affairs.png",
-    "profile": "High",
     "roiFront": "990,372,25,30",
-    "roiBack": "696,349,343,231",
+    "roiBack": "144,349,895,241",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "进入庭院事务标志"
   },
   {
     "itemName": "check_courtyard_affairs",
     "imageName": "dt_check_courtyard_affairs.png",
-    "profile": "High",
     "roiFront": "254,40,196,57",
     "roiBack": "134,0,415,180",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "庭院事务页面标志"
   },
   {
     "itemName": "one_complete",
     "imageName": "dt_one_complete.png",
-    "profile": "High",
     "roiFront": "1114,589,93,93",
     "roiBack": "1083,562,163,139",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "一键完成标志"
   },
   {
     "itemName": "enter_daily",
     "imageName": "dt_enter_daily.png",
-    "profile": "High",
     "roiFront": "1131,122,84,76",
     "roiBack": "1117,98,136,226",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "右上角进入日常"
   },
   {
     "itemName": "check_in_daily",
     "imageName": "dt_check_in_daily.png",
-    "profile": "High",
     "roiFront": "1131,115,106,88",
     "roiBack": "1128,94,151,281",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "右上角检查是否在日常中"
   }
 ]
