@@ -66,12 +66,12 @@ class Scales(Buy, MallNavbar):
         # 购买确认
         while 1:
             self.screenshot()
-            if self.appear(self.I_SCA_SIX_STAR) or self.appear(self.I_SCA_REWARD):
+            if self.appear(self.I_SCA_SIX_STAR) or self.appear(self.I_SCA_REWARD) or self.appear(self.I_SCA_SIX_STAR_BIG):
                 logger.info('Scales buy success')
                 time.sleep(1)
                 while 1:
                     self.screenshot()
-                    if not self.appear(self.I_SCA_SIX_STAR):
+                    if not self.appear(self.I_SCA_SIX_STAR) and not self.appear(self.I_SCA_SIX_STAR_BIG):
                         break
                     if self.click(self.C_SCA_SOULS_GET, interval=1):
                         continue
@@ -79,7 +79,7 @@ class Scales(Buy, MallNavbar):
                 logger.info('Scales get success')
                 break
 
-            if self.click(self.C_BUY_MORE, interval=5):
+            if self.click(self.C_BUY_MORE, interval=8):
                 continue
 
     def _scales_buy_sea_more(self, start_click, number: int = None):

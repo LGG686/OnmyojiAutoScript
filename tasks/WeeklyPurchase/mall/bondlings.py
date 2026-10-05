@@ -51,17 +51,9 @@ class Bondlings(Buy, MallNavbar):
         if buy_number == 0:
             logger.info('Buy number is 0')
             return
-        self.screenshot()
-
-        # if buy_button.name == 'BONDLINGS_BL_BUY_SOULS':
-        #     if self.appear(self.I_ME_SOULS_NEW):
-        #         # 契灵御魂已经买光
-        #         logger.warning('本周契灵御魂已经买光')
-        #         return
-        # pos = self.O_BL_RES_SOULS_new.ocr_full(self.device.image)
-
-        # 检查是否出现了购买按钮
-        if not self.appear(buy_button):
+        # 契灵商店商品区有弹出动画，进入后兑换按钮可能尚未渲染完成。
+        # 等到按钮出现再继续（最多 3s，事件驱动，无 sleep）
+        if not self.wait_until_appear(buy_button, wait_time=3):
             logger.warning('Buy button is not appear')
             return
         # 检查剩余数量
