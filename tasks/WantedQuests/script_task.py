@@ -2,6 +2,7 @@
 # @author runhey
 # github https://github.com/runhey
 import re
+import cv2
 from datetime import timedelta, time, datetime
 from time import sleep
 
@@ -651,45 +652,77 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
             return True
         return re.search(r'[封野][印卬]', text) is not None
 
-    def find_wq(
+    def _scan_wq_candidates(
         self,
         img,
         *,
-        allow_edge_fallback: bool = False,
-    ) -> tuple[int, int, int, List[int]]:
+        scale: float = 1.0,
+    ) -> tuple[list, list, bool]:
         """
-        在探索页面定位未完成的悬赏卡位。
+        扫描探索页左侧整列，解析未完成的悬赏卡位候选。
 
-        新逻辑先找进度，再用同一卡位附近的“悬赏/封印”文字确认归属，
-        避免将真八岐大蛇等其他左侧入口误当成悬赏。靠近底部的卡位先
-        通过外层翻页移到完整区域；连续翻页仍无法完整显示时才启用边缘保底。
+        原生分辨率下 PP-OCR 的「文字检测」阶段偶尔会漏掉小字进度（如 4/5
+        压在杂乱深色背景上，检测框未生成，识别便无从触发）。将整列 ROI 在
+        送 OCR 前放大 scale 倍可显著改善此类小字召回（2026-10-05 漏检排查）。
 
         :param img: 当前截图
-        :param allow_edge_fallback: 已连续翻页到下方时，允许点击文字裁切的底部卡位
-        :return: (已完成数量, 有效标记, 总数量, 进度文字点击 roi)
+        :param scale: 送 OCR 前对整列 ROI 的放大倍数，1.0 表示原尺寸
+        :return: (已确认候选, 底部边缘候选, 是否识别到“悬赏/封印”标签)
         """
-        res_list = self.O_WQ_TEXT_ALL.detect_and_ocr(img)
+        roi_x, roi_y, roi_w, roi_height = self.O_WQ_TEXT_ALL.roi
+        if scale == 1.0:
+            res_list = self.O_WQ_TEXT_ALL.detect_and_ocr(img)
+            box_scale = 1.0
+        else:
+            # 放大整列后，把规则的 roi/area 临时同步到放大后的坐标再调用
+            # detect_and_ocr；结束（无论是否异常）都还原，避免影响后续 OCR。
+            big = cv2.resize(
+                img,
+                None,
+                fx=scale,
+                fy=scale,
+                interpolation=cv2.INTER_LINEAR,
+            )
+            saved_roi = list(self.O_WQ_TEXT_ALL.roi)
+            saved_area = list(self.O_WQ_TEXT_ALL.area)
+            scaled_roi = [
+                int(roi_x * scale),
+                int(roi_y * scale),
+                int(roi_w * scale),
+                int(roi_height * scale),
+            ]
+            self.O_WQ_TEXT_ALL.roi = scaled_roi
+            self.O_WQ_TEXT_ALL.area = list(scaled_roi)
+            try:
+                res_list = self.O_WQ_TEXT_ALL.detect_and_ocr(big, logDisplay=False)
+            finally:
+                self.O_WQ_TEXT_ALL.roi = saved_roi
+                self.O_WQ_TEXT_ALL.area = saved_area
+            box_scale = 1.0 / scale
+
         progress_pattern = re.compile(
             r'(?<!\d)(\d{1,2})([7/])(\d{1,2})(?!\d)'
         )
-        roi_x, roi_y, _, roi_height = self.O_WQ_TEXT_ALL.roi
         safe_progress_bottom = (
             roi_y + roi_height - self.WQ_LIST_EDGE_MARGIN
         )
 
         ocr_items = []
+        label_found = False
         for result in res_list:
-            relative_area = self._wq_box_xywh(result.box)
-            absolute_area = [
-                relative_area[0] + roi_x,
-                relative_area[1] + roi_y,
-                relative_area[2],
-                relative_area[3],
+            text = self._normalize_wq_list_text(result.ocr_text)
+            if self._has_wq_label_hint(text):
+                label_found = True
+            relative_area = [
+                v * box_scale for v in self._wq_box_xywh(result.box)
             ]
-            ocr_items.append((
-                self._normalize_wq_list_text(result.ocr_text),
-                absolute_area,
-            ))
+            absolute_area = [
+                int(relative_area[0] + roi_x),
+                int(relative_area[1] + roi_y),
+                int(relative_area[2]),
+                int(relative_area[3]),
+            ]
+            ocr_items.append((text, absolute_area))
 
         confirmed_candidates = []
         edge_candidates = []
@@ -736,9 +769,42 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
             elif label_confirmed:
                 confirmed_candidates.append(candidate)
 
-        candidates = confirmed_candidates
+        return confirmed_candidates, edge_candidates, label_found
+
+    def find_wq(
+        self,
+        img,
+        *,
+        allow_edge_fallback: bool = False,
+    ) -> tuple[int, int, int, List[int]]:
+        """
+        在探索页面定位未完成的悬赏卡位。
+
+        新逻辑先找进度，再用同一卡位附近的“悬赏/封印”文字确认归属，
+        避免将真八岐大蛇等其他左侧入口误当成悬赏。靠近底部的卡位先
+        通过外层翻页移到完整区域；连续翻页仍无法完整显示时才启用边缘保底。
+
+        原生分辨率偶尔漏检小字进度（如 4/5 压在杂乱背景上被文字检测跳过），
+        此时若已识别到“悬赏/封印”标签说明列表确有卡位，则整列放大 2x 重扫一次。
+
+        :param img: 当前截图
+        :param allow_edge_fallback: 已连续翻页到下方时，允许点击文字裁切的底部卡位
+        :return: (已完成数量, 有效标记, 总数量, 进度文字点击 roi)
+        """
+        confirmed, edge, label_found = self._scan_wq_candidates(img, scale=1.0)
+        if not confirmed and not (allow_edge_fallback and edge):
+            if label_found:
+                logger.info(
+                    'No wanted quest progress at native resolution; '
+                    'retry with 2x upscaled column'
+                )
+                confirmed, edge, label_found = self._scan_wq_candidates(
+                    img, scale=2.0
+                )
+
+        candidates = confirmed
         if not candidates and allow_edge_fallback:
-            candidates = edge_candidates
+            candidates = edge
             if candidates:
                 logger.warning(
                     'Use cropped bottom wanted quest as fallback after '
