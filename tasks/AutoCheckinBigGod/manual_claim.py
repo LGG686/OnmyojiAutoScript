@@ -93,6 +93,7 @@ class ManualClaimMixin(PortraitUIMixin):
         empty_timer = None       # 浮窗展开后一直无按钮的计时
         no_match_timer = None    # 见过按钮后持续无按钮的计时（防动画/丢帧误判完成）
         in_welfare = False       # 是否处于福利中心（检测刚进入，等浮窗自动弹出动画）
+        wait_timer = None        # 进入福利中心后等待自动签到完成的计时（约 5s）
         claimed_any = False
         claimed = False
         while 1:
@@ -114,116 +115,130 @@ class ManualClaimMixin(PortraitUIMixin):
                 continue
 
             # 3. 处于福利中心界面（顶部标题）
+            #    [2026-10-05] 实测：进入福利中心即自动签到，无需手动点领 / 滑动领取。
+            #    故进入后仅停留约 5s 等待自动签到完成即可，原"逐个点领 + 滑动到底"逻辑已停用（见下方注释块）。
             if self.appear(A.I_CLAIM_S):
                 if not in_welfare:
-                    # 刚进入福利中心：浮窗会自动从下往上弹出，等它稳定再操作。
-                    # 同时重置上一轮福利中心残留的状态
                     in_welfare = True
-                    just_swiped = False
-                    prev_ys = None
-                    clicked_ys = []
-                    empty_timer = None
-                    no_match_timer = None
-                    start_stabilize()
-                    continue
+                    logger.info('已进入福利中心，等待自动签到完成（约 5s）...')
+                    wait_timer = Timer(5).start()
+                if wait_timer is not None and wait_timer.reached():
+                    logger.info('福利中心自动签到完成')
+                    claimed = True
+                    break
+                continue
 
-                matches = A.I_CLAIM.match_all_any(self.device.image)
-                matches.sort(key=lambda m: m[2])  # 按 y 从上到下
-                ys = [m[2] for m in matches]
-
-                # 界面稳定检测：动画/滚动期间按钮位置逐帧变化，连续 STABLE_FRAMES 帧不变
-                # 才开始操作（自适应设备性能；超时兜底防永远等下去）
-                if stabilizing:
-                    if stabilize_deadline.reached():
-                        logger.warning(f'等待界面稳定超时（{STABILIZE_MAX_SECONDS}s），继续执行')
-                        stabilizing = False
-                    elif ys and last_ys is not None and len(ys) == len(last_ys) \
-                            and all(abs(a - b) <= BOTTOM_TOLERANCE for a, b in zip(ys, last_ys)):
-                        stable_frames += 1
-                        last_ys = ys
-                        if stable_frames >= STABLE_FRAMES:
-                            logger.info('界面已稳定，开始处理')
-                            stabilizing = False
-                    else:
-                        stable_frames = 0
-                        last_ys = ys
-                    if stabilizing:
-                        continue
-
-                if matches:
-                    seen_buttons = True
-                    sheet_opened = True
-                    empty_timer = None
-                    no_match_timer = None
-
-                    # 上滑稳定后的第一帧：按钮位置与上滑前一致 → 列表到底，结束。
-                    # prev_ys 在上滑后的稳定等待期间不更新，否则等于拿滑动后的帧和
-                    # 自己比较，会误判"到底"提前退出（实测踩过）
-                    if just_swiped:
-                        if prev_ys is not None and len(ys) == len(prev_ys) \
-                                and all(abs(a - b) <= BOTTOM_TOLERANCE for a, b in zip(ys, prev_ys)):
-                            logger.info('礼物列表已到底，全部领取按钮处理完毕')
-                            claimed = True
-                            break
-                        just_swiped = False
-                    prev_ys = ys
-
-                    # 点击冷却中：只截图观察，不点击（无 sleep）
-                    if cooldown is not None and not cooldown.reached():
-                        continue
-
-                    # 点一个本屏还没点过的按钮（从上到下）。
-                    # 已领取的粉色按钮也会被点一遍——用户确认无害、可接受。
-                    target = None
-                    for m in matches:
-                        y = m[2]
-                        if any(abs(y - cy) < SAME_BUTTON_TOLERANCE for cy in clicked_ys):
-                            continue
-                        target = m
-                        break
-
-                    if target is not None:
-                        _, x, y, w, h = target
-                        self._tap(x + w // 2, y + h // 2, name='I_CLAIM')
-                        clicked_ys.append(y)
-                        claimed_any = True
-                        cooldown = Timer(CLAIM_COOLDOWN_SECONDS).start()
-                    else:
-                        # 本屏的按钮全部点过 → 上滑加载更多（跨屏允许重复点击，不做
-                        # 滑动距离补偿推算：实测滑动距离不精确，推算会误跳过新按钮）
-                        logger.info('本屏领取按钮已全部点击，上滑查看更多')
-                        clicked_ys = []
-                        just_swiped = True
-                        start_stabilize()
-                        self._swipe(360, 1050, 360, 450, 400)
-                    continue
-
-                # 没有任何领取按钮
-                if not sheet_opened and self._appear_then_click(A.I_GIFT, interval=5):
-                    logger.info('浮窗未自动弹出，点悬浮图标打开')
-                    sheet_opened = True
-                    start_stabilize()
-                    continue
-                if not seen_buttons:
-                    # 浮窗已展开但一直没有按钮 → 等一段时间后视为无可领取项
-                    if empty_timer is None:
-                        empty_timer = Timer(EMPTY_SHEET_SECONDS).start()
-                    elif empty_timer.reached():
-                        logger.info('礼物浮窗内无可领取项')
-                        claimed = True
-                        break
-                    continue
-                # 见过按钮但现在没了：浮窗被关闭/页面切换等。动画或瞬时丢帧也会造成
-                # 一两帧空白（实测踩过：上滑动画中一帧空白就提前结束），所以要求
-                # 持续 NO_MATCH_SECONDS 都没有按钮才判定完成
-                if no_match_timer is None:
-                    no_match_timer = Timer(NO_MATCH_SECONDS).start()
-                    continue
-                if not no_match_timer.reached():
-                    continue
-                logger.info('福利中心持续无领取按钮，领取完成')
-                claimed = True
-                break
+            # ===== 以下为原"进入福利中心后手动点领 / 滑动"逻辑，已停用，保留备查 =====
+            # if self.appear(A.I_CLAIM_S):
+            #     if not in_welfare:
+            #         # 刚进入福利中心：浮窗会自动从下往上弹出，等它稳定再操作。
+            #         # 同时重置上一轮福利中心残留的状态
+            #         in_welfare = True
+            #         just_swiped = False
+            #         prev_ys = None
+            #         clicked_ys = []
+            #         empty_timer = None
+            #         no_match_timer = None
+            #         start_stabilize()
+            #         continue
+            #
+            #     matches = A.I_CLAIM.match_all_any(self.device.image)
+            #     matches.sort(key=lambda m: m[2])  # 按 y 从上到下
+            #     ys = [m[2] for m in matches]
+            #
+            #     # 界面稳定检测：动画/滚动期间按钮位置逐帧变化，连续 STABLE_FRAMES 帧不变
+            #     # 才开始操作（自适应设备性能；超时兜底防永远等下去）
+            #     if stabilizing:
+            #         if stabilize_deadline.reached():
+            #             logger.warning(f'等待界面稳定超时（{STABILIZE_MAX_SECONDS}s），继续执行')
+            #             stabilizing = False
+            #         elif ys and last_ys is not None and len(ys) == len(last_ys) \
+            #                 and all(abs(a - b) <= BOTTOM_TOLERANCE for a, b in zip(ys, last_ys)):
+            #             stable_frames += 1
+            #             last_ys = ys
+            #             if stable_frames >= STABLE_FRAMES:
+            #                 logger.info('界面已稳定，开始处理')
+            #                 stabilizing = False
+            #         else:
+            #             stable_frames = 0
+            #             last_ys = ys
+            #         if stabilizing:
+            #             continue
+            #
+            #     if matches:
+            #         seen_buttons = True
+            #         sheet_opened = True
+            #         empty_timer = None
+            #         no_match_timer = None
+            #
+            #         # 上滑稳定后的第一帧：按钮位置与上滑前一致 → 列表到底，结束。
+            #         # prev_ys 在上滑后的稳定等待期间不更新，否则等于拿滑动后的帧和
+            #         # 自己比较，会误判"到底"提前退出（实测踩过）
+            #         if just_swiped:
+            #             if prev_ys is not None and len(ys) == len(prev_ys) \
+            #                     and all(abs(a - b) <= BOTTOM_TOLERANCE for a, b in zip(ys, prev_ys)):
+            #                 logger.info('礼物列表已到底，全部领取按钮处理完毕')
+            #                 claimed = True
+            #                 break
+            #             just_swiped = False
+            #         prev_ys = ys
+            #
+            #         # 点击冷却中：只截图观察，不点击（无 sleep）
+            #         if cooldown is not None and not cooldown.reached():
+            #             continue
+            #
+            #         # 点一个本屏还没点过的按钮（从上到下）。
+            #         # 已领取的粉色按钮也会被点一遍——用户确认无害、可接受。
+            #         target = None
+            #         for m in matches:
+            #             y = m[2]
+            #             if any(abs(y - cy) < SAME_BUTTON_TOLERANCE for cy in clicked_ys):
+            #                 continue
+            #             target = m
+            #             break
+            #
+            #         if target is not None:
+            #             _, x, y, w, h = target
+            #             self._tap(x + w // 2, y + h // 2, name='I_CLAIM')
+            #             clicked_ys.append(y)
+            #             claimed_any = True
+            #             cooldown = Timer(CLAIM_COOLDOWN_SECONDS).start()
+            #         else:
+            #             # 本屏的按钮全部点过 → 上滑加载更多（跨屏允许重复点击，不做
+            #             # 滑动距离补偿推算：实测滑动距离不精确，推算会误跳过新按钮）
+            #             logger.info('本屏领取按钮已全部点击，上滑查看更多')
+            #             clicked_ys = []
+            #             just_swiped = True
+            #             start_stabilize()
+            #             self._swipe(360, 1050, 360, 450, 400)
+            #         continue
+            #
+            #     # 没有任何领取按钮
+            #     if not sheet_opened and self._appear_then_click(A.I_GIFT, interval=5):
+            #         logger.info('浮窗未自动弹出，点悬浮图标打开')
+            #         sheet_opened = True
+            #         start_stabilize()
+            #         continue
+            #     if not seen_buttons:
+            #         # 浮窗已展开但一直没有按钮 → 等一段时间后视为无可领取项
+            #         if empty_timer is None:
+            #             empty_timer = Timer(EMPTY_SHEET_SECONDS).start()
+            #         elif empty_timer.reached():
+            #             logger.info('礼物浮窗内无可领取项')
+            #             claimed = True
+            #             break
+            #         continue
+            #     # 见过按钮但现在没了：浮窗被关闭/页面切换等。动画或瞬时丢帧也会造成
+            #     # 一两帧空白（实测踩过：上滑动画中一帧空白就提前结束），所以要求
+            #     # 持续 NO_MATCH_SECONDS 都没有按钮才判定完成
+            #     if no_match_timer is None:
+            #         no_match_timer = Timer(NO_MATCH_SECONDS).start()
+            #         continue
+            #     if not no_match_timer.reached():
+            #         continue
+            #     logger.info('福利中心持续无领取按钮，领取完成')
+            #     claimed = True
+            #     break
 
             # 不在福利中心
             in_welfare = False

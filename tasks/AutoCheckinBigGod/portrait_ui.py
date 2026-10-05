@@ -130,7 +130,7 @@ class PortraitUIMixin(BaseTask):
         return None
 
     def _cleanup_portrait(self):
-        """竖屏任务清理：杀死大神APP进程，并把阴阳师游戏重新拉到前台。"""
+        """竖屏任务清理：杀死大神APP进程，把阴阳师游戏重新拉到前台，并还原横屏状态。"""
         try:
             logger.info(f'杀死大神APP进程: {GL_PACKAGE}')
             self._adb_shell(['am', 'force-stop', GL_PACKAGE])
@@ -143,5 +143,26 @@ class PortraitUIMixin(BaseTask):
             try:
                 logger.info(f'恢复阴阳师前台: {component}')
                 self._adb_shell(['am', 'start', '-n', component])
+                # 冷启动要几秒才真正切到前台；等到 app_is_running() 为 True 再撒手，
+                # 否则下一个任务的前置检查(app_is_running)会扑空、误判"游戏未运行"，
+                # 继而派发 Restart 把刚拉起的游戏又杀掉重开一次（13:14 日志实测：
+                # 恢复前台后 0.75s 即被 Restart 的 full restart 重新拉起）
+                self.device.wait_app_start_ready(timeout=30)
+                logger.info('阴阳师已进入前台，清理完成')
             except Exception as e:
                 logger.warning(f'恢复阴阳师前台失败: {e}')
+        # 还原 _init_portrait 改掉的横屏状态：屏幕已切回横屏而 device.orientation 仍为 0 时，
+        # minitouch convert() 不做坐标变换、把横屏坐标当竖屏面板坐标直传，后续任务点击会
+        # 整体错位（10-07/10-08 实测：TalismanPass 全部点击落空、反复点同一按钮）。
+        # 游戏刚回到前台时屏幕可能还在竖屏旋转中，此处取到的仍是 0，须轮询等到它真正转回
+        # 横屏再取值；取到 0 就撒手等于没还原。
+        self.device._screen_size_checked = False
+        self.device._screen_black_checked = False
+        timeout = Timer(15, count=15).start()
+        while 1:
+            if self.device.get_orientation() != 0:
+                break
+            if timeout.reached():
+                logger.warning('等待屏幕转回横屏超时，orientation 仍为 0')
+                break
+            self.device.sleep(0.5)
