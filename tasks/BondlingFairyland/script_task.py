@@ -333,19 +333,13 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
                 self.screenshot()
                 self._room_locked = bool(self.appear(self.I_LOCK))
                 logger.info(f'Bondling room locked: {self._room_locked}')
-                battle_state = self.wait_battle(
-                    wait_time=self.config.bondling_fairyland.invite_config.wait_time
-                )
-                if battle_state is True:
+                if self.wait_battle(
+                        wait_time=self.config.bondling_fairyland.invite_config.wait_time
+                ):
                     self.run_general_battle(self.config.bondling_fairyland.battle_config)
                     wait_timer.reset()
                     # 进入战斗流程
                     self.device.stuck_record_add('BATTLE_STATUS_S')
-                elif battle_state is None:
-                    # 接受邀请时队长已经开战，游戏会把队员退回契灵主界面。
-                    # 这不是房间销毁，继续等待队长下一轮邀请。
-                    logger.info('契灵：邀请接受过慢，未赶上本轮战斗，继续等待下一次邀请')
-                    continue
                 else:
                     break
             # 队长秒开的时候，检测是否进入到战斗中
@@ -359,8 +353,7 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
         while 1:
             # 有一种情况是本来要退出的，但是队长邀请了进入的战斗的加载界面
             if self.appear(self.I_CHECK_MAIN) or self.appear(self.I_CHECK_EXPLORATION) or self.appear(
-                    self.I_CHECK_BONDLING_FAIRYLAND) or self.appear(self.I_BALL_AREA) or self.appear(
-                    self.I_BALL_HELP):
+                    self.I_BALL_AREA) or self.appear(self.I_BALL_HELP):
                 break
             # 如果可能在房间就退出
             if self.exit_room():
@@ -730,13 +723,12 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
             if self.appear_then_click(self.I_UI_CONFIRM, interval=1):
                 continue
 
-    def wait_battle(self, wait_time: time) -> bool | None:
+    def wait_battle(self, wait_time: time) -> bool:
         """
         在房间等待,(要求保证在房间里面) 队长开启战斗
         如果队长跑路了，或者的等待了很久还没开始
         :return: 如果成功进入战斗（反正就是不在房间 ）返回 True
                  如果失败了，（退出房间）返回 False
-                 如果接受邀请过慢而回到契灵主界面，返回 None，继续等待下一轮邀请
         """
         wait_second = wait_time.second + wait_time.minute * 60
         self.timer_wait = Timer(wait_second)
@@ -746,38 +738,21 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
         while 1:
             self.screenshot()
 
-            if self.appear(self.I_EXIT):
-                success = True
-                logger.info("契灵：已经在战斗场景中")
+            # 如果自己在庭院/探索界面或者球区域，那就是房间已经被销毁了
+            if self.appear(self.I_CHECK_MAIN) or self.appear(self.I_CHECK_EXPLORATION) or self.appear(
+                    self.I_BALL_AREA) or self.appear(self.I_BALL_HELP):
+                logger.warning('Room destroyed')
+                success = False
                 break
-
-            # 队员接受邀请过慢时，队长可能已经开始战斗。游戏会短暂显示
-            # 房间后把队员退回契灵主界面；该状态应继续等待下一轮邀请，
-            # 不能按房间销毁结束整个队员任务。
-            if not self.is_in_room(False) and (
-                    self.appear(self.I_CHECK_BONDLING_FAIRYLAND)
-                    or self.appear(self.I_BALL_AREA)
-                    or self.appear(self.I_BALL_HELP)):
-                self.screenshot()
-                if not self.is_in_room(False) and (
-                        self.appear(self.I_CHECK_BONDLING_FAIRYLAND)
-                        or self.appear(self.I_BALL_AREA)
-                        or self.appear(self.I_BALL_HELP)):
-                    logger.warning('Late invitation: returned to bondling fairyland, wait for next invite')
-                    success = None
-                    break
-
-            # 只有稳定回到庭院或探索页，才按房间确实已经销毁处理。
-            if self.appear(self.I_CHECK_MAIN) or self.appear(self.I_CHECK_EXPLORATION):
-                self.screenshot()
-                if self.appear(self.I_CHECK_MAIN) or self.appear(self.I_CHECK_EXPLORATION):
-                    logger.warning('Room destroyed')
-                    success = False
-                    break
 
             if self.timer_wait.reached():
                 logger.warning('Wait battle time out')
                 success = False
+                break
+
+            if self.appear(self.I_EXIT):
+                success = True
+                logger.info("契灵：已经在战斗场景中")
                 break
 
         # 调出循环只有这些可能性：
@@ -785,8 +760,7 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
         # 2. 队长跑路（自己还是在房间里面）
         # 3. 等待时间到没有开始（还是在房间里面）
         # 4. 房间的时间到了被迫提出房间（这个时候来到了探索界面）
-        # 5. 接受邀请过慢，回到契灵主界面等待下一轮邀请
-        if success is False:
+        if not success:
             logger.info('Leave room')
             self.exit_room()
 
