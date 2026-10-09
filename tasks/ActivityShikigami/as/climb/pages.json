@@ -2,61 +2,71 @@
   {
     "itemName": "to_battle_main",
     "imageName": "as_to_battle_main.png",
-    "profile": "High",
-    "roiFront": "315,204,91,77",
-    "roiBack": "287,125,149,201",
+    "roiFront": "820,460,96,52",
+    "roiBack": "757,319,265,255",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "进入爬塔主界面"
   },
   {
     "itemName": "to_battle_boss",
     "imageName": "as_to_battle_boss.png",
-    "profile": "High",
-    "roiFront": "125,449,88,58",
-    "roiBack": "97,402,145,138",
+    "roiFront": "1063,295,110,33",
+    "roiBack": "989,232,235,176",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "进入首领战斗页面"
   },
   {
     "itemName": "battle_main_to_records",
     "imageName": "as_battle_main_to_records.png",
-    "profile": "High",
     "roiFront": "1015,560,39,42",
     "roiBack": "674,539,439,157",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "从爬塔主界面进入式神录"
   },
   {
     "itemName": "check_battle_pass",
     "imageName": "as_check_battle_pass.png",
-    "profile": "High",
-    "roiFront": "151,18,134,40",
-    "roiBack": "141,0,157,67",
+    "roiFront": "154,16,134,40",
+    "roiBack": "142,2,157,67",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "爬塔主界面标志"
   },
   {
     "itemName": "to_battle_climb",
     "imageName": "climb_to_battle_climb.png",
-    "profile": "High",
-    "roiFront": "68,98,140,33",
-    "roiBack": "32,83,247,97",
+    "roiFront": "683,244,23,48",
+    "roiBack": "457,199,392,324",
     "method": "Template matching",
-    "threshold": 0.8,
+    "threshold": 0.7,
+    "profile": "High",
     "description": ""
   },
   {
     "itemName": "check_climb_main",
     "imageName": "climb_check_climb_main.png",
-    "profile": "High",
-    "roiFront": "151,18,134,40",
-    "roiBack": "141,0,157,67",
+    "roiFront": "594,3,134,40",
+    "roiBack": "582,0,157,67",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": ""
+  },
+  {
+    "itemName": "check_battle_boss",
+    "imageName": "climb_check_battle_boss.png",
+    "roiFront": "154,16,134,40",
+    "roiBack": "142,2,157,67",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "首领战斗界面标志"
   }
 ]

@@ -164,7 +164,14 @@ page_activity_exploration.connect(page_act, ActivityShikigamiAssets.I_EXPLORATIO
                                   key='exploration->activity')
 
 page_climb_main = Page(ActivityShikigamiAssets.I_CHECK_CLIMB_MAIN)
-page_climb_main.connect(page_act, GlobalGameAssets.I_UI_BACK_YELLOW, key='climb_main->activity')
+page_climb_main.connect(page_act, GlobalGameAssets.I_UI_BACK_CIRCLE, key='climb_main->activity')
+page_climb_main.add_enter_success_hooks(handle_activity_overlay)
+page_climb_main.add_enter_failure_hooks(
+    find_activity_entry,
+    handle_activity_reward,
+    handle_activity_close,
+    handle_activity_story,
+)
 
 # 当期爬塔四种战斗页面。
 page_climb_ap = Page(all_of(
@@ -183,7 +190,7 @@ page_climb_ap100 = Page(ActivityShikigamiAssets.I_CLIMB_MODE_AP100)
 page_climb_ap100.add_enter_failure_hooks(GlobalGameAssets.I_UI_BACK_RED)
 page_climb_ap100.connect(page_climb_main, GlobalGameAssets.I_UI_BACK_YELLOW, key='climb_ap100->climb_main')
 
-page_climb_boss = Page(ActivityShikigamiAssets.I_AS_BOSS_FIRE)
+page_climb_boss = Page(ActivityShikigamiAssets.I_CHECK_BATTLE_BOSS)
 page_climb_boss.connect(page_act, GlobalGameAssets.I_UI_BACK_YELLOW, key='climb_boss->activity')
 
 # 大富翁棋盘。

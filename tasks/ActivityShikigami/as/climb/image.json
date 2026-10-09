@@ -22,7 +22,7 @@
   {
     "itemName": "climb_mode_pass",
     "imageName": "as_climb_mode_pass.png",
-    "roiFront": "1143,544,21,21",
+    "roiFront": "1148,637,22,27",
     "roiBack": "1118,510,119,186",
     "method": "Template matching",
     "threshold": 0.8,
@@ -62,8 +62,8 @@
   {
     "itemName": "ap_unlock",
     "imageName": "as_ap_unlock.png",
-    "roiFront": "796,653,31,30",
-    "roiBack": "758,628,313,92",
+    "roiFront": "900,655,21,23",
+    "roiBack": "757,624,313,92",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
@@ -72,8 +72,8 @@
   {
     "itemName": "ap_lock",
     "imageName": "as_ap_lock.png",
-    "roiFront": "796,653,31,30",
-    "roiBack": "758,628,313,92",
+    "roiFront": "899,654,23,26",
+    "roiBack": "760,625,313,92",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
@@ -82,7 +82,7 @@
   {
     "itemName": "act_fire",
     "imageName": "as_act_fire.png",
-    "roiFront": "1125,578,99,97",
+    "roiFront": "1125,589,100,50",
     "roiBack": "1080,530,192,190",
     "method": "Template matching",
     "threshold": 0.8,
@@ -122,8 +122,8 @@
   {
     "itemName": "check_climb_hard",
     "imageName": "climb_check_climb_hard.png",
-    "roiFront": "615,413,67,67",
-    "roiBack": "610,408,77,77",
+    "roiFront": "1146,385,67,67",
+    "roiBack": "1042,359,238,129",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
@@ -132,8 +132,8 @@
   {
     "itemName": "check_climb_easy",
     "imageName": "climb_check_climb_easy.png",
-    "roiFront": "615,413,67,67",
-    "roiBack": "610,408,77,77",
+    "roiFront": "1146,274,67,67",
+    "roiBack": "1084,233,183,141",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",

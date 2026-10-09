@@ -1,8 +1,8 @@
 [
   {
     "itemName": "remain_pass",
-    "roiFront": "756,17,88,31",
-    "roiBack": "756,17,88,31",
+    "roiFront": "1124,24,88,31",
+    "roiBack": "1124,24,88,31",
     "mode": "Digit",
     "method": "Default",
     "keyword": "",
