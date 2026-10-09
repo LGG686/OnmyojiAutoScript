@@ -182,7 +182,7 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralRoom, GameUi, SwitchSoul, 
     def team_exit_matcher(self):
         return self.is_in_room(False) or \
             self.appear(self.I_OWT_FIRE) or \
-            self.appear(self.I_GI_SURE)
+            self.appear(self.I_UI_CONFIRM)
 
 
 if __name__ == '__main__':

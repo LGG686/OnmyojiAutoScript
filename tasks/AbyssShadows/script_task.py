@@ -658,8 +658,8 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
         logger.info("Quitting battle")
         while True:
             self.screenshot()
-            if self.appear(self.I_EXIT_ENSURE):
-                if self.click(self.I_EXIT_ENSURE, interval=1):
+            if self.appear(self.I_UI_CONFIRM):
+                if self.click(self.I_UI_CONFIRM, interval=1):
                     self.wait_until_appear(self.I_ABYSS_NAVIGATION, wait_time=1)
                 continue
             if self.appear(self.I_ABYSS_NAVIGATION):
@@ -672,7 +672,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
                 continue
             if self.appear(self.I_EXIT):
                 if self.click(self.I_EXIT, interval=2):
-                    self.wait_until_appear(self.I_EXIT_ENSURE, wait_time=1)
+                    self.wait_until_appear(self.I_UI_CONFIRM, wait_time=1)
                 continue
         return
 

@@ -620,7 +620,7 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
 
         if self.appear_then_click(self.I_DISABLE_7DAYS_DIFF_SOUL, interval=0.6):
             return BattleAction.CONTINUE
-        if self.appear_then_click(self.I_CONFIRM_CLOSE_DIFF_SOUL, interval=0.6):
+        if self.appear_then_click(self.I_UI_CONFIRM, interval=0.6):
             return BattleAction.CONTINUE
 
         self._run_battle_behavior_once(
@@ -871,13 +871,13 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
             return False
         while True:
             self.screenshot()
-            if self.appear_then_click(self.I_EXIT_ENSURE, interval=0.8):
+            if self.appear_then_click(self.I_UI_CONFIRM, interval=0.8):
                 continue
             if GameUi.get_current_page(self) in (page_battle_result, page_reward):
                 break
             if self.appear_then_click(self.I_EXIT, interval=6):
                 continue
-        self.ui_click_until_disappear(self.I_EXIT_ENSURE, interval=0.8)
+        self.ui_click_until_disappear(self.I_UI_CONFIRM, interval=0.8)
         logger.info('Exit battle success')
         return True
 

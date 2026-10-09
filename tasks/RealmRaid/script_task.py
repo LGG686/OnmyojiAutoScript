@@ -423,15 +423,15 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RealmRaidAssets):
             return False
         while 1:
             self.screenshot()
-            if self.appear(self.I_FRESH_ENSURE):
+            if self.appear(self.I_UI_CONFIRM):
                 break
             if self.appear_then_click(self.I_FRESH, interval=1):
                 continue
         while 1:
             self.screenshot()
-            if not self.appear(self.I_FRESH_ENSURE):
+            if not self.appear(self.I_UI_CONFIRM):
                 return True
-            if self.appear_then_click(self.I_FRESH_ENSURE, interval=1):
+            if self.appear_then_click(self.I_UI_CONFIRM, interval=1):
                 continue
         return False
 
@@ -466,9 +466,9 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RealmRaidAssets):
             if self.appear(self.I_EXIT):
                 logger.info(f'Click fire again success')
                 return True
-            if self.appear_then_click(self.I_SHOW_AGAIN, interval=2):
+            if self.appear_then_click(self.I_UI_UNCHECK, interval=2):
                 continue
-            if self.appear_then_click(self.I_FRESH_ENSURE, interval=2):
+            if self.appear_then_click(self.I_UI_CONFIRM, interval=2):
                 continue
             if self.appear_then_click(self.I_FIRE_AGAIN, interval=2):
                 continue

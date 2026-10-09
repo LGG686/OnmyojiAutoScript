@@ -42,7 +42,7 @@ class ScriptTask(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, SwitchSoul, 
 
     def _register_custom_pages(self) -> None:
         reward_page = self.navigator.resolve_page(page_reward)
-        reward_page.recognizer = any_of(self.I_GI_SURE, reward_page.recognizer)
+        reward_page.recognizer = any_of(self.I_UI_CONFIRM, reward_page.recognizer)
 
     def _handle_continuous_prepare(self, context: BattleContext, config: GeneralBattleConfig) -> BattleAction:
         if 0 < config.max_continuous <= context.continuous_count:

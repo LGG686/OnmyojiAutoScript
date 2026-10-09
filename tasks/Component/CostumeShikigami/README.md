@@ -16,7 +16,7 @@
 - 御魂切换（SwitchSoul）
   - `I_SOU_CHECK_IN`（判定在预设面板/式神录）
   - `I_SOUL_PRESET`、`I_SOU_TEAM_PRESENT`（预设标题/标志）
-  - `I_SOU_SWITCH_1` ~ `I_SOU_SWITCH_4`、`I_SOU_SWITCH_SURE`（切换/确认按钮）
+  - `I_SOU_SWITCH_1` ~ `I_SOU_SWITCH_4`（切换/确认按钮）
   - `I_SOU_CHECK_GROUP_1` ~ `I_SOU_CHECK_GROUP_7`（分组选中标志）
   - `I_SOU_CLICK_PRESENT`（需要切换的预设按钮-深色）
   - `I_RECORD_SOUL_BACK`（返回）
@@ -63,7 +63,6 @@ _shikigami_base_assets = [
     'I_SOU_CHECK_IN',
     'I_SOU_TEAM_PRESENT',
     'I_SOU_CLICK_PRESENT',
-    'I_SOU_SWITCH_SURE',
     # SwitchSoul 分组相关 (1-7组)
     *[f'I_SOU_CHECK_GROUP_{i}' for i in range(1, 8)],
     # SwitchSoul 队伍相关 (1-4队)

@@ -386,11 +386,11 @@ class QuickLoadout(BaseTask, SwitchSoulAssets):
         timer = Timer(self.CONFIRM_TIMEOUT).start()
         while not timer.reached():
             self.screenshot()
-            if not self.appear(self.I_SOU_SWITCH_SURE):
+            if not self.appear(self.I_UI_CONFIRM):
                 sleep(0.15)
                 continue
             logger.info('Confirm quick loadout soul equipment')
-            self.ui_click_until_disappear(self.I_SOU_SWITCH_SURE, interval=0.6)
+            self.ui_click_until_disappear(self.I_UI_CONFIRM, interval=0.6)
             return
         logger.info('Quick loadout soul confirmation did not appear; preset may already be equipped')
 

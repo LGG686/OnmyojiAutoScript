@@ -36,7 +36,6 @@ class ScriptTask(GameUi, SwitchSoul, SwitchSoulAssets, SoulsTidyAssets):
             [self.I_SOU_SWITCH_2, 0],
             [self.I_SOU_SWITCH_3, 0],
             [self.I_SOU_SWITCH_4, 0],
-            [self.I_SOU_SWITCH_SURE, 0],
             # SoulsTidy - 御魂页面关键元素
             [self.I_ST_SOULS, 0],
             [self.I_ST_REPLACE, 0],

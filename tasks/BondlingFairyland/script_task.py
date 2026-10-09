@@ -445,7 +445,7 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
             for i in range(3):
                 if self.appear_then_click(self.I_BUY_PLUS, interval=1):
                     sleep(0.5)
-            if self.appear_then_click(self.I_GI_SURE, interval=1):
+            if self.appear_then_click(self.I_UI_CONFIRM, interval=1):
                 continue
             if self.appear_then_click(self.I_STONE_SURE, interval=1):
                 continue

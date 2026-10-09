@@ -26,7 +26,7 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
         reward_page = self.navigator.resolve_page(page_reward)
         if reward_page is None:
             return
-        reward_page.recognizer = any_of(self.I_GI_SURE, reward_page.recognizer)
+        reward_page.recognizer = any_of(self.I_UI_CONFIRM, reward_page.recognizer)
 
     def _handle_reward(self, context: BattleContext, config: GeneralBattleConfig) -> BattleAction:
         # 无论胜利与否, 都会出现是否邀请一次队友, 区别在于, 失败的话不会出现那个勾选默认邀请的框

@@ -30,7 +30,7 @@ class ScriptTask(GeneralBattle, GeneralInvite, GeneralBuff, GeneralRoom, GameUi,
         reward_page = self.navigator.resolve_page(page_reward)
         if reward_page is None:
             return
-        reward_page.recognizer = any_of(self.I_GI_SURE, self.I_GREED_GHOST, self.I_PET_PRESENT,
+        reward_page.recognizer = any_of(self.I_UI_CONFIRM, self.I_GREED_GHOST, self.I_PET_PRESENT,
                                         reward_page.recognizer)
 
     def _exit_matcher(self) -> ExitMatcher | None:
