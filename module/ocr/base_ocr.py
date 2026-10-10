@@ -196,6 +196,11 @@ class BaseCor:
         # pre process
         start_time = time.time()
         image = self.crop(image, self.roi)
+        # roi 越界（如竖屏帧配横屏 roi）会裁出空图，送进 OCR 会让 server 端
+        # warpPerspective 断言崩溃，按"无文字"返回，不把异常抛给上层任务。
+        if image.size == 0:
+            logger.warning(f'[{self.name}] ROI {self.roi} out of bounds, image {image.shape}, skip ocr')
+            return ''
         image = self.pre_process(image)
         # image = enlarge_canvas(image)
         # ocr
@@ -231,6 +236,9 @@ class BaseCor:
         # pre process
         start_time = time.time()
         image = self.crop(image, self.roi)
+        if image.size == 0:
+            logger.warning(f'[{self.name}] ROI {self.roi} out of bounds, image {image.shape}, skip ocr')
+            return []
         image = self.pre_process(image)
         # image = enlarge_canvas(image)
 
@@ -316,6 +324,9 @@ class BaseCor:
         # pre process
         start_time = time.time()
         image = self.crop(image, self.roi)
+        if image.size == 0:
+            logger.warning(f'[{self.name}] ROI {self.roi} out of bounds, image {image.shape}, skip ocr')
+            return ''
         image = self.pre_process(image)
         # image = enlarge_canvas(image)
         # ocr

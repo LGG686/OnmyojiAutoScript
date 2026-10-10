@@ -339,6 +339,12 @@ class Device(DesktopDevice, Platform, Screenshot, Control, AppControl):
                 time.sleep(interval)
                 continue
 
+            # 启动 splash 为竖屏 720x1280（中央白图标），只查颜色非纯黑会误判就绪；
+            # 阴阳师除 splash 外恒为横屏，必须以 1280x720 为准，竖屏帧继续等。
+            if image.shape[0] != 720 or image.shape[1] != 1280:
+                time.sleep(interval)
+                continue
+
             color = get_color(image, area=(0, 0, 1280, 720))
             if sum(color) >= 1:
                 logger.info(f'Game start ready, frame color: {color}')
