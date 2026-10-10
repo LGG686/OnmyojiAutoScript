@@ -80,7 +80,7 @@ class ActivityShikigamiAssets:
 	# 爬塔主界面标志 
 	I_CHECK_BATTLE_PASS = RuleImage(roi_front=(154,16,134,40), roi_back=(142,2,157,67), threshold=0.8, method="Template matching", profile="High", file="./tasks/ActivityShikigami/as/climb/as_check_battle_pass.png")
 	#  
-	I_TO_BATTLE_CLIMB = RuleImage(roi_front=(683,244,23,48), roi_back=(457,199,392,324), threshold=0.7, method="Template matching", profile="High", file="./tasks/ActivityShikigami/as/climb/climb_to_battle_climb.png")
+	I_TO_BATTLE_CLIMB = RuleImage(roi_front=(721,346,17,31), roi_back=(301,113,851,590), threshold=0.7, method="Template matching", profile="High", file="./tasks/ActivityShikigami/as/climb/climb_to_battle_climb.png")
 	#  
 	I_CHECK_CLIMB_MAIN = RuleImage(roi_front=(594,3,134,40), roi_back=(582,0,157,67), threshold=0.8, method="Template matching", profile="High", file="./tasks/ActivityShikigami/as/climb/climb_check_climb_main.png")
 	# 首领战斗界面标志 

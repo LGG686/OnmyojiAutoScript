@@ -42,8 +42,8 @@
   {
     "itemName": "to_battle_climb",
     "imageName": "climb_to_battle_climb.png",
-    "roiFront": "683,244,23,48",
-    "roiBack": "457,199,392,324",
+    "roiFront": "721,346,17,31",
+    "roiBack": "301,113,851,590",
     "method": "Template matching",
     "threshold": 0.7,
     "profile": "High",

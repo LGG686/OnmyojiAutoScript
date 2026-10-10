@@ -342,8 +342,8 @@
   {
     "itemName": "i_no_default",
     "imageName": "gi_i_no_default.png",
-    "roiFront": "542,343,36,35",
-    "roiBack": "542,343,36,35",
+    "roiFront": "554,351,18,18",
+    "roiBack": "472,281,203,166",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
@@ -352,8 +352,8 @@
   {
     "itemName": "i_default",
     "imageName": "gi_i_default.png",
-    "roiFront": "541,342,41,39",
-    "roiBack": "541,342,41,39",
+    "roiFront": "551,352,21,20",
+    "roiBack": "441,265,227,222",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
