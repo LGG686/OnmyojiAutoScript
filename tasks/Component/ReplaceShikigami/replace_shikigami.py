@@ -117,8 +117,8 @@ class ReplaceShikigami(BaseTask, ReplaceShikigamiAssets):
                 # 导致一直无法选上
                 clicked = True
                 continue
-            if self.appear_then_click(self.I_U_CIRCLE_ALTERNATE, interval=2.5):
-                self.appear_then_click(self.I_U_CONFIRM_ALTERNATE, interval=1.5)
+            if self.appear_then_click(self.I_UI_UNCHECK, interval=2.5):
+                self.appear_then_click(self.I_UI_CONFIRM, interval=1.5)
                 continue
         logger.info('Set shikigami: %d' % shikigami_order)
 

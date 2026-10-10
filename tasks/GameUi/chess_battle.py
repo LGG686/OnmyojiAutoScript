@@ -18,7 +18,7 @@ class ChessBattleNavigationMixin:
 
     def _advance_chess_result_stage(self) -> bool:
         """优先处理奖励和分享阶段，避免背景被识别成大厅。"""
-        if self.appear(ChessAssets.I_REWARD_CHESS):
+        if self.appear(self.I_UI_REWARD):
             self._chess_share_advancing = False
             from tasks.GameUi.default_pages import random_click
             self.click(random_click(), interval=1.5)
@@ -48,7 +48,7 @@ class ChessBattleNavigationMixin:
         return (
             self.appear(self.I_CHESS_EXIT_TO_LOBBY)
             or self.appear(self.I_CHESS_EXIT_TO_LOBBY_2)
-            or self.appear(ChessAssets.I_REWARD_CHESS)
+            or self.appear(self.I_UI_REWARD)
             or self.appear(ChessAssets.I_SHARE)
             or self.appear(self.I_CHECK_CHESS_RANK)
             or self.appear(self.I_CHESS_RANK_GOTO_LOBBY)
@@ -175,8 +175,8 @@ class ChessBattleNavigationMixin:
             self.device.stuck_record_clear()
             self.screenshot()
 
-            confirm_visible = self.appear(self.I_CHESS_EXIT_CONFIRM)
-            cancel_visible = self.appear(self.I_CHESS_EXIT_CANCEL)
+            confirm_visible = self.appear(self.I_UI_CONFIRM)
+            cancel_visible = self.appear(self.I_UI_CANCEL)
             if confirm_visible or cancel_visible:
                 dialog_seen = True
 
@@ -189,15 +189,15 @@ class ChessBattleNavigationMixin:
             now = time.monotonic()
             if dialog_seen:
                 if confirm_visible and now >= next_confirm_click_at:
-                    self.click(self.I_CHESS_EXIT_CONFIRM)
+                    self.click(self.I_UI_CONFIRM)
                     confirm_clicked = True
                     next_confirm_click_at = now + 2.0
                 time.sleep(self.CHESS_EXIT_SCREENSHOT_INTERVAL)
                 continue
 
             if now >= next_exit_click_at:
-                if self.appear(self.I_CHESS_EXIT):
-                    self.click(self.I_CHESS_EXIT)
+                if self.appear(self.I_UI_BACK_CIRCLE):
+                    self.click(self.I_UI_BACK_CIRCLE)
                 next_exit_click_at = now + 2.0
             time.sleep(self.CHESS_EXIT_SCREENSHOT_INTERVAL)
 

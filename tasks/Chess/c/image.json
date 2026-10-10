@@ -240,16 +240,6 @@
     "description": ""
   },
   {
-    "itemName": "reward_chess",
-    "imageName": "c_reward_chess.png",
-    "profile": "High",
-    "roiFront": "485,227,310,44",
-    "roiBack": "480,222,320,54",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": ""
-  },
-  {
     "itemName": "share",
     "imageName": "c_share.png",
     "profile": "High",

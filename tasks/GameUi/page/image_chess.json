@@ -10,36 +10,6 @@
     "description": "百鬼棋局局内页面标志"
   },
   {
-    "itemName": "chess_exit",
-    "imageName": "page_chess_exit.png",
-    "profile": "High",
-    "roiFront": "12,14,48,38",
-    "roiBack": "12,14,48,38",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "百鬼棋局主动退出"
-  },
-  {
-    "itemName": "chess_exit_confirm",
-    "imageName": "page_chess_exit_confirm.png",
-    "profile": "High",
-    "roiFront": "716,409,88,45",
-    "roiBack": "716,409,88,45",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "百鬼棋局确认退出"
-  },
-  {
-    "itemName": "chess_exit_cancel",
-    "imageName": "page_chess_exit_cancel.png",
-    "profile": "High",
-    "roiFront": "478,409,88,45",
-    "roiBack": "478,409,88,45",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "百鬼棋局退出确认弹窗"
-  },
-  {
     "itemName": "chess_exit_to_lobby",
     "imageName": "page_chess_exit_to_lobby.png",
     "profile": "High",

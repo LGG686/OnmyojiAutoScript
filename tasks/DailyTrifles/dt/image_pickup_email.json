@@ -40,16 +40,6 @@
     "description": "一键已读所有邮件"
   },
   {
-    "itemName": "harvest_mail_confirm",
-    "imageName": "dt_harvest_mail_confirm.png",
-    "profile": "High",
-    "roiFront": "687,543,168,64",
-    "roiBack": "687,543,168,64",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "确认收取邮件"
-  },
-  {
     "itemName": "dt_harvest_mail_copy2",
     "imageName": "dt_harvest_mail_copy2.png",
     "profile": "High",

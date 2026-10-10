@@ -93,8 +93,6 @@ class DailyTriflesAssets:
 	I_HARVEST_MAIL_ALL = RuleImage(roi_front=(69,579,80,67), roi_back=(28,551,142,144), threshold=0.8, method="Template matching", profile="High", file="./tasks/DailyTrifles/dt/dt_harvest_mail_all.png")
 	# 一键已读所有邮件 
 	I_READ_ALL_MAIL = RuleImage(roi_front=(180,605,130,35), roi_back=(149,588,182,72), threshold=0.8, method="Template matching", profile="High", file="./tasks/DailyTrifles/dt/dt_read_all_mail.png")
-	# 确认收取邮件 
-	I_HARVEST_MAIL_CONFIRM = RuleImage(roi_front=(687,543,168,64), roi_back=(687,543,168,64), threshold=0.8, method="Template matching", profile="High", file="./tasks/DailyTrifles/dt/dt_harvest_mail_confirm.png")
 	# 右上角的邮件图标 
 	I_DT_HARVEST_MAIL_COPY2 = RuleImage(roi_front=(1158,18,22,20), roi_back=(1127,0,61,56), threshold=0.9, method="Template matching", profile="High", file="./tasks/DailyTrifles/dt/dt_harvest_mail_copy2.png")
 

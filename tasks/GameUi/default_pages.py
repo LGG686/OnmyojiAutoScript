@@ -230,7 +230,7 @@ page_relax.connect(page_main, GameUiAssets.I_BACK_BROWN, key="page_relax->page_m
 page_shikigami_records = Page(GameUiAssets.I_CHECK_RECORDS, category="global")
 page_shikigami_records.add_enter_failure_hooks(conditional_action(condition=GameUiAssets.I_CHECK_MAIN,
                                                                   action=RestartAssets.C_LOGIN_SCROLL_CLOSE_AREA))
-page_shikigami_records.add_enter_success_hooks(GlobalGameAssets.I_UI_CANCEL_SAMLL)
+page_shikigami_records.add_enter_success_hooks(GlobalGameAssets.I_UI_CANCEL, GlobalGameAssets.I_UI_CANCEL_SAMLL)
 page_shikigami_records.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_shikigami_records->page_main")
 page_main.connect(page_shikigami_records, GameUiAssets.I_MAIN_GOTO_SHIKIGAMI_RECORDS, key="page_main->page_shikigami_records")
 
@@ -368,7 +368,7 @@ page_chess_result = Page(
     any_of(
         GameUiAssets.I_CHESS_EXIT_TO_LOBBY,
         GameUiAssets.I_CHESS_EXIT_TO_LOBBY_2,
-        ChessAssets.I_REWARD_CHESS,
+        GlobalGameAssets.I_UI_REWARD,
         ChessAssets.I_SHARE,
         GameUiAssets.I_CHECK_CHESS_RANK,
         GameUiAssets.I_CHESS_RANK_GOTO_LOBBY,
