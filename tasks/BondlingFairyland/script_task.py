@@ -216,9 +216,8 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
                     if self.appear_then_click(self.I_UI_CONFIRM, interval=1):
                         continue
                     if self.appear(self.I_CREATE_TEAM, interval=1):
+                        self.ensure_private(room_mark=self.I_GI_IN_ROOM)
                         self.appear_then_click(self.I_CREATE_TEAM, interval=2)
-                        if not self.appear(self.I_GI_IN_ROOM):
-                            self.ensure_private(room_mark=self.I_GI_IN_ROOM)
                         continue
                     # 求援
                     if self.appear(self.I_BALL_AREA, interval=1):
@@ -262,7 +261,8 @@ class ScriptTask(GameUi, GeneralInvite, GeneralRoom, GeneralBattle, SwitchSoul, 
                     break
                 # 点击挑战
                 if not is_first:
-                    if self.run_invite(config=self.config.bondling_fairyland.invite_config):
+                    if self.run_invite(config=self.config.bondling_fairyland.invite_config,
+                                       invite_delay=8):
                         success = self.run_general_battle(self.config.bondling_fairyland.battle_config)
                         is_first = False
                     else:

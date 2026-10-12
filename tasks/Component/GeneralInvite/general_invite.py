@@ -43,13 +43,14 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
     timer_wait = None
     timer_emoji = None  # 等待期间如果没有操作的话，可能会导致长时间无响应报错
 
-    def run_invite(self, config: InviteConfig, is_first: bool = False) -> bool:
+    def run_invite(self, config: InviteConfig, is_first: bool = False, invite_delay: int = 30) -> bool:
         """
         队长！！身份。。。在组队界面邀请好友（ 如果开启is_first） 等待队员进入开启挑战
         请注意，返回的时候成功时是进入战斗了！！！
         如果是失败，那就是没有队友进入，然后会退出房间的界面
         :param config:
         :param is_first: 如果是第一次开房间的那就要邀请队员，其他情况等待队员进入
+        :param invite_delay: 非首次等待队友时的补邀延迟(秒), 到点仍然只补邀一次
         :return:
         """
         if not self.ensure_enter():
@@ -62,7 +63,7 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
             self.ensure_room_type(len(config.friend_list.split('\n')))
             self.invite_friends(config)
         else:
-            self.timer_invite = Timer(30)
+            self.timer_invite = Timer(invite_delay)
             self.timer_invite.start()
             self.timer_emoji = Timer(20)
             self.timer_emoji.start()
@@ -95,7 +96,7 @@ class GeneralInvite(BaseTask, GeneralInviteAssets):
                     logger.info('Invitation is triggered every 20s')
                     self.timer_invite.reset()
                 else:
-                    logger.info('Wait for 30s and invite again')
+                    logger.info(f'Wait for {invite_delay}s and invite again')
                     self.timer_invite = None
                 invite_success = self.invite_friends(config)
                 if not is_first and self.room_type == RoomType.BONDLING_FAIRYLAND and not invite_success:
