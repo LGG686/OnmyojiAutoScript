@@ -1,7 +1,9 @@
 """式神活动三种玩法共用运行能力。"""
 
+import os
 from datetime import datetime
 
+import cv2
 from cached_property import cached_property
 
 from module.atom.image import RuleImage
@@ -26,6 +28,14 @@ class ActivityResourceNotEnough(Exception):
 class BaseAct(GameUi, GeneralBattle, SwitchSoul, BaseActivity, ActivityShikigamiAssets):
     """统一保存计数、软时间边界、随机休息、御魂和战斗配置。"""
 
+    # 挑战按钮 OCR 引导后的模板缓存位置（log 目录已被 .gitignore 忽略，不会入库）
+    # 文件名必须带玩法：图像服务按模板路径缓存（默认 3600s），同名文件换玩法覆盖写不会生效
+    FIRE_TPL_FILE = './log/as_fire_tpl/as_fire_tpl_{}.png'
+    # 缓存模板相对识别框外扩的搜索余量
+    FIRE_TPL_PAD = 20
+    # 挑战按钮连续未命中多少轮后放弃，避免匹配不上时死循环
+    MAX_FIRE_MISS = 3
+
     def __init__(self, config, device):
         super().__init__(config, device)
         self.action_count = {name: 0 for name in BATTLE_TYPES}
@@ -47,6 +57,8 @@ class BaseAct(GameUi, GeneralBattle, SwitchSoul, BaseActivity, ActivityShikigami
         self.switched_soul = {name: False for name in BATTLE_TYPES}
         self.current_action_type = ''
         self.activity_time_reached = False
+        self._fire_tpl = None
+        self._fire_tpl_key = None
 
     @cached_property
     def conf(self) -> ActivityShikigami:
@@ -68,13 +80,47 @@ class BaseAct(GameUi, GeneralBattle, SwitchSoul, BaseActivity, ActivityShikigami
             pages.page_battle_result.recognizer,
         )
 
+    def _fire_template(self, action_type: str):
+        """返回爬塔挑战按钮规则。
+
+        一轮爬塔要打几百次，每轮都走 OCR 开销太大；而按钮在运行中不会变，
+        所以用 OCR 认一次「挑战」，把识别到的位置裁成模板缓存，之后都走模板匹配。
+        换玩法（action_type）时会重新 OCR 引导一次，所以各玩法按钮外观不同也能各自适配。
+        """
+        if self._fire_tpl is not None and self._fire_tpl_key == action_type:
+            return self._fire_tpl
+        x, y, w, h = (int(v) for v in self.O_FIRE.ocr(self.device.image))
+        if (x, y, w, h) == (0, 0, 0, 0):
+            return None
+        img_h, img_w = self.device.image.shape[:2]
+        tpl_file = self.FIRE_TPL_FILE.format(action_type)
+        os.makedirs(os.path.dirname(tpl_file), exist_ok=True)
+        cv2.imwrite(
+            tpl_file,
+            cv2.cvtColor(self.device.image[y:y + h, x:x + w], cv2.COLOR_RGB2BGR),
+        )
+        pad = self.FIRE_TPL_PAD
+        back_x, back_y = max(0, x - pad), max(0, y - pad)
+        back_w, back_h = min(img_w - back_x, w + pad * 2), min(img_h - back_y, h + pad * 2)
+        self._fire_tpl = RuleImage(
+            roi_front=(x, y, w, h),
+            roi_back=(back_x, back_y, back_w, back_h),
+            threshold=0.8,
+            method="Template matching",
+            file=tpl_file,
+            profile="High",
+        )
+        self._fire_tpl_key = action_type
+        logger.info(f'Climb fire template cached from ocr: {action_type} {(x, y, w, h)}')
+        return self._fire_tpl
+
     def _exit_matcher(self):
         if self.current_action_type == 'fakegod':
             return self.I_FG_ACT_FIRE
-        if self.current_action_type == 'boss':
-            return self.I_AS_BOSS_FIRE
-        if self.current_action_type in ('ap', 'pass', 'ap100'):
-            return self.I_ACT_FIRE
+        if self.current_action_type in ('boss', 'ap', 'pass', 'ap100'):
+            # 复用 OCR 引导出来的挑战按钮模板；没有缓存时交给 general_battle 的 2 秒兜底
+            if self._fire_tpl is not None and self._fire_tpl_key == self.current_action_type:
+                return self._fire_tpl
         return None
 
     def _handle_result(self, context: BattleContext, config: GeneralBattleConfig) -> BattleAction:

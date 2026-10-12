@@ -43,7 +43,7 @@
     "itemName": "activity_signin_close",
     "imageName": "as_activity_signin_close.png",
     "roiFront": "1137,179,40,32",
-    "roiBack": "1113,150,94,85",
+    "roiBack": "1034,69,227,220",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",

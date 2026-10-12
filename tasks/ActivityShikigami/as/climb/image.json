@@ -1,23 +1,23 @@
 [
   {
-    "itemName": "lock",
+    "itemName": "lock_1",
     "imageName": "as_lock.png",
-    "roiFront": "898,647,24,27",
-    "roiBack": "759,628,330,86",
+    "roiFront": "899,654,22,26",
+    "roiBack": "711,627,378,87",
     "method": "Template matching",
     "threshold": 0.7,
     "profile": "High",
-    "description": "上锁图标"
+    "description": "阵容锁定图标1"
   },
   {
-    "itemName": "unlock",
+    "itemName": "unlock_1",
     "imageName": "as_unlock.png",
-    "roiFront": "899,648,24,23",
-    "roiBack": "752,625,313,92",
+    "roiFront": "899,655,22,23",
+    "roiBack": "703,622,362,95",
     "method": "Template matching",
     "threshold": 0.7,
     "profile": "High",
-    "description": "还未上锁图片"
+    "description": "阵容解锁图标1"
   },
   {
     "itemName": "climb_mode_pass",
@@ -32,10 +32,10 @@
   {
     "itemName": "climb_mode_ap",
     "imageName": "as_climb_mode_ap.png",
-    "roiFront": "1093,542,22,25",
+    "roiFront": "1086,662,106,31",
     "roiBack": "1055,495,202,219",
     "method": "Template matching",
-    "threshold": 0.8,
+    "threshold": 0.7,
     "profile": "High",
     "description": "体力爬塔标志"
   },
@@ -52,52 +52,32 @@
   {
     "itemName": "climb_mode_ap100",
     "imageName": "as_climb_mode_ap100.png",
-    "roiFront": "1186,665,22,25",
-    "roiBack": "1055,495,202,219",
+    "roiFront": "155,16,122,41",
+    "roiBack": "84,4,265,59",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
     "description": "100体爬塔标志"
   },
   {
-    "itemName": "ap_unlock",
+    "itemName": "unlock_2",
     "imageName": "as_ap_unlock.png",
-    "roiFront": "900,655,21,23",
-    "roiBack": "757,624,313,92",
+    "roiFront": "807,655,21,23",
+    "roiBack": "701,620,369,96",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
-    "description": "体力爬塔阵容解锁"
+    "description": "阵容解锁图标2"
   },
   {
-    "itemName": "ap_lock",
+    "itemName": "lock_2",
     "imageName": "as_ap_lock.png",
-    "roiFront": "899,654,23,26",
-    "roiBack": "760,625,313,92",
+    "roiFront": "807,652,23,26",
+    "roiBack": "688,613,385,104",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
-    "description": "体力爬塔阵容锁定"
-  },
-  {
-    "itemName": "act_fire",
-    "imageName": "as_act_fire.png",
-    "roiFront": "1125,589,100,50",
-    "roiBack": "1080,530,192,190",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "profile": "High",
-    "description": "活动通用挑战图标"
-  },
-  {
-    "itemName": "as_boss_fire",
-    "imageName": "as_as_boss_fire.png",
-    "roiFront": "1130,590,92,47",
-    "roiBack": "1080,530,192,190",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "profile": "High",
-    "description": "boss挑战标志"
+    "description": "阵容锁定图标2"
   },
   {
     "itemName": "fight_penta_use",

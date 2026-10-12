@@ -13,6 +13,7 @@ from tasks.GameUi.page import (
     all_of,
     any_of,
     conditional_action,
+    not_,
     page_battle,
     page_battle_prepare,
     page_battle_result,
@@ -156,15 +157,15 @@ page_act.add_enter_failure_hooks(
 page_act.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key='activity->main')
 page_main.connect(page_act, ActivityShikigamiAssets.I_MAIN_GOTO_ACT, key='main->activity')
 
-# 当期爬塔入口中间层。
+# 当期探索玩法入口中间层。
 page_activity_exploration = Page(ActivityShikigamiAssets.I_EXP_CHECK_EXPLORATION)
 page_act.connect(page_activity_exploration, ActivityShikigamiAssets.I_TO_EXPLORATION,
                  key='activity->exploration')
 page_activity_exploration.connect(page_act, ActivityShikigamiAssets.I_EXPLORATION_TO_MAIN,
                                   key='exploration->activity')
 
+# 当期爬塔入口中间层：活动主页出边统一由 normal.setup_climb_pages() 声明。
 page_climb_main = Page(ActivityShikigamiAssets.I_CHECK_CLIMB_MAIN)
-page_climb_main.connect(page_act, GlobalGameAssets.I_UI_BACK_CIRCLE, key='climb_main->activity')
 page_climb_main.add_enter_success_hooks(handle_activity_overlay)
 page_climb_main.add_enter_failure_hooks(
     find_activity_entry,
@@ -172,23 +173,23 @@ page_climb_main.add_enter_failure_hooks(
     handle_activity_close,
     handle_activity_story,
 )
+page_climb_main.connect(page_act, GlobalGameAssets.I_UI_BACK_CIRCLE, key='climb_main->activity')
 
 # 当期爬塔四种战斗页面。
-page_climb_ap = Page(all_of(
-    ActivityShikigamiAssets.I_CHECK_BATTLE_PASS,
-    ActivityShikigamiAssets.I_CLIMB_MODE_AP,
-))
-page_climb_ap.connect(page_climb_main, GlobalGameAssets.I_UI_BACK_YELLOW, key='climb_ap->climb_main')
+# 体力 / 百体由活动主页直达、返回也回活动主页；门票仍经由爬塔主页、返回爬塔主页。
+page_climb_ap = Page(ActivityShikigamiAssets.I_CLIMB_MODE_AP)
+page_climb_ap.connect(page_act, GlobalGameAssets.I_UI_BACK_YELLOW, key='climb_ap->activity')
 
+# 门票页判据：出现门票页标题，且不同时处于体力界面。
 page_climb_pass = Page(all_of(
     ActivityShikigamiAssets.I_CHECK_BATTLE_PASS,
-    ActivityShikigamiAssets.I_CLIMB_MODE_PASS,
+    not_(ActivityShikigamiAssets.I_CLIMB_MODE_AP),
 ))
 page_climb_pass.connect(page_climb_main, GlobalGameAssets.I_UI_BACK_YELLOW, key='climb_pass->climb_main')
 
 page_climb_ap100 = Page(ActivityShikigamiAssets.I_CLIMB_MODE_AP100)
 page_climb_ap100.add_enter_failure_hooks(GlobalGameAssets.I_UI_BACK_RED)
-page_climb_ap100.connect(page_climb_main, GlobalGameAssets.I_UI_BACK_YELLOW, key='climb_ap100->climb_main')
+page_climb_ap100.connect(page_act, GlobalGameAssets.I_UI_BACK_YELLOW, key='climb_ap100->activity')
 
 page_climb_boss = Page(ActivityShikigamiAssets.I_CHECK_BATTLE_BOSS)
 page_climb_boss.connect(page_act, GlobalGameAssets.I_UI_BACK_YELLOW, key='climb_boss->activity')

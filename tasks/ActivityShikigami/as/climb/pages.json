@@ -2,7 +2,7 @@
   {
     "itemName": "to_battle_main",
     "imageName": "as_to_battle_main.png",
-    "roiFront": "820,460,96,52",
+    "roiFront": "820,460,100,29",
     "roiBack": "757,319,265,255",
     "method": "Template matching",
     "threshold": 0.8,
@@ -68,5 +68,25 @@
     "threshold": 0.8,
     "profile": "High",
     "description": "首领战斗界面标志"
+  },
+  {
+    "itemName": "to_battle_ap100",
+    "imageName": "climb_to_battle_ap100.png",
+    "roiFront": "409,456,97,31",
+    "roiBack": "285,419,316,109",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "进入百体战斗页面"
+  },
+  {
+    "itemName": "to_battle_ap",
+    "imageName": "climb_to_battle_ap.png",
+    "roiFront": "223,255,97,31",
+    "roiBack": "83,165,339,213",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "进入体力战斗页面"
   }
 ]

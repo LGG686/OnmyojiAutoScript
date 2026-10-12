@@ -19,46 +19,38 @@ class NormalClimbAct:
     def setup_climb_pages(self):
         page_act = self.navigator.resolve_page(pages.page_act)
         page_climb_main = self.navigator.resolve_page(pages.page_climb_main)
-        page_pass = self.navigator.resolve_page(pages.page_climb_pass)
         page_ap = self.navigator.resolve_page(pages.page_climb_ap)
         page_ap100 = self.navigator.resolve_page(pages.page_climb_ap100)
         page_boss = self.navigator.resolve_page(pages.page_climb_boss)
+        page_pass = self.navigator.resolve_page(pages.page_climb_pass)
 
+        # 进入边：活动主页直达爬塔主页 / 体力 / 百体 / 首领；门票再经爬塔主页中转。
         page_act.connect(
             page_climb_main,
             ActivityShikigamiAssets.I_TO_BATTLE_MAIN,
             key='activity->climb_main',
         )
-        page_climb_main.connect(
+        page_act.connect(
             page_ap,
-            ActivityShikigamiAssets.I_TO_BATTLE_CLIMB,
-            key='climb_main->climb_ap',
+            ActivityShikigamiAssets.I_TO_BATTLE_AP,
+            key='activity->climb_ap',
         )
-        page_ap.add_enter_failure_hooks(pages.conditional_action(
-            condition=ActivityShikigamiAssets.I_CLIMB_MODE_PASS,
-            action=ActivityShikigamiAssets.I_CLIMB_MODE_SWITCH,
-        ))
-        page_climb_main.connect(
-            page_pass,
-            ActivityShikigamiAssets.I_TO_BATTLE_CLIMB,
-            key='climb_main->climb_pass',
-        )
-        page_pass.add_enter_failure_hooks(pages.conditional_action(
-            condition=ActivityShikigamiAssets.I_CLIMB_MODE_AP,
-            action=ActivityShikigamiAssets.I_CLIMB_MODE_SWITCH,
-        ))
-        page_climb_main.connect(
+        page_act.connect(
             page_ap100,
-            ActivityShikigamiAssets.I_TO_BATTLE_CLIMB,
-            key='climb_main->climb_ap100',
+            ActivityShikigamiAssets.I_TO_BATTLE_AP100,
+            key='activity->climb_ap100',
         )
         page_act.connect(
             page_boss,
             ActivityShikigamiAssets.I_TO_BATTLE_BOSS,
             key='activity->climb_boss',
         )
-        page_pass.connect(page_ap, ActivityShikigamiAssets.I_CLIMB_MODE_SWITCH, key='climb_pass->climb_ap')
-        page_ap.connect(page_pass, ActivityShikigamiAssets.I_CLIMB_MODE_SWITCH, key='climb_ap->climb_pass')
+        page_climb_main.connect(
+            page_pass,
+            ActivityShikigamiAssets.I_TO_BATTLE_CLIMB,
+            key='climb_main->climb_pass',
+        )
+        # 本期停用边与钩子统一收在文件末尾的「Climb disabled transitions」区块。
 
     def run_climb(self):
         logger.hr('Start activity: Climb', 1)
@@ -70,8 +62,8 @@ class NormalClimbAct:
 
     def _run_climb_type(self, action_type: str):
         if action_type == 'pass':
-            # 进入共用爬塔界面，不要求切到门票模式，先统一读取门票。
-            self.goto_page(pages.page_climb_ap, accepted_pages=(pages.page_climb_pass,))
+            # 门票与体力已分家，门票数量只有门票页能读到，必须先进门票页再统一读数。
+            self.goto_page(pages.page_climb_pass)
             remain = self._read_shared_climb_tickets()
             # 困难模式收益优先；任一模式次数为 0 时直接跳过。
             for pass_mode in ('hard', 'easy'):
@@ -257,7 +249,7 @@ class NormalClimbAct:
         )
 
     def _climb_fire_rule(self, action_type: str):
-        return self.I_AS_BOSS_FIRE if action_type == 'boss' else self.I_ACT_FIRE
+        return self._fire_template(action_type)
 
     def _climb_penta_enabled(self, action_type: str) -> bool:
         """返回当前体力分支是否实际启用了五倍挑战。"""
@@ -472,8 +464,8 @@ class NormalClimbAct:
 
     def _enter_climb_battle(self, action_type: str) -> bool:
         click_times = 0
+        miss_times = 0
         max_times = random.randint(3, 5)
-        fire_rule = self._climb_fire_rule(action_type)
         while True:
             self.screenshot()
             if self.is_in_battle(False):
@@ -487,23 +479,47 @@ class NormalClimbAct:
             if self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=1) or \
                     self.appear_then_click(self.I_UI_CONFIRM, interval=1):
                 continue
+            fire_rule = self._climb_fire_rule(action_type)
+            if fire_rule is None:
+                miss_times += 1
+                if miss_times >= self.MAX_FIRE_MISS:
+                    logger.warning(f'{action_type} fire button not found by ocr for {miss_times} rounds')
+                    raise ActivityResourceNotEnough
+                continue
             if self.appear_then_click(fire_rule, interval=1):
                 self.device.click_record_clear()
                 click_times += 1
+                miss_times = 0
                 logger.info(f'Try click fire, remain times[{max_times - click_times}]')
+            elif self.interval_timer[fire_rule.name].reached():
+                # 节流窗口已过仍未命中才算一次未命中，并重新计时，避免刷帧把偶发抖动算进去
+                miss_times += 1
+                self.interval_timer[fire_rule.name].reset()
+                if miss_times >= self.MAX_FIRE_MISS:
+                    logger.warning(f'{action_type} fire button not matched for {miss_times} rounds')
+                    raise ActivityResourceNotEnough
 
     def _sync_climb_team_lock(self, action_type: str):
+        """
+        同步阵容的锁定状态
+
+        锁定图标存在两套外观，这里取并集识别，任意一套命中即可
+        """
         enable = self.battle_config(action_type).lock_team_enable
-        if action_type == 'boss':
-            lock_rule, unlock_rule = self.I_LOCK, self.I_UNLOCK
-        else:
-            lock_rule, unlock_rule = self.I_AP_LOCK, self.I_AP_UNLOCK
+        locks = [self.I_LOCK_1, self.I_LOCK_2]
+        unlocks = [self.I_UNLOCK_1, self.I_UNLOCK_2]
         if enable:
             logger.info(f'Lock {action_type} team')
-            self.ui_click(unlock_rule, stop=lock_rule, interval=1.5)
+            click_rules, stop_rules = unlocks, locks
         else:
             logger.info(f'Unlock {action_type} team')
-            self.ui_click(lock_rule, stop=unlock_rule, interval=1.5)
+            click_rules, stop_rules = locks, unlocks
+        while 1:
+            self.screenshot()
+            if any(self.appear(rule) for rule in stop_rules):
+                break
+            if any(self.appear_then_click(rule, interval=1.5) for rule in click_rules):
+                continue
 
     def _climb_resource_available(self, action_type: str) -> bool:
         logger.hr(f'Check {action_type} resource')
@@ -552,3 +568,34 @@ class NormalClimbAct:
             )
             return False
         return True
+
+
+# ---------------------------------------------------------------------------
+# Climb disabled transitions
+#
+# 本期活动布局变更后停用，与 setup_climb_pages() 配套：
+#   - 体力 / 百体已改为活动主页直达，不再经由爬塔主页；门票仍走爬塔主页中转
+#   - 同一爬塔界面内切换模式的机制已不存在，模式纠正钩子一并停用
+# 若后续活动改回「爬塔主页 + 内部模式切换」的旧布局，把下面内容移回
+# setup_climb_pages() 取消注释即可（其中 page_ap / page_pass 是该函数内
+# resolve_page 得到的 session 副本，模块级无法直接引用）。
+#
+# page_climb_main.connect(
+#     page_ap,
+#     ActivityShikigamiAssets.I_TO_BATTLE_CLIMB,
+#     key='climb_main->climb_ap',
+# )
+# page_ap.add_enter_failure_hooks(pages.conditional_action(
+#     condition=ActivityShikigamiAssets.I_CLIMB_MODE_PASS,
+#     action=ActivityShikigamiAssets.I_CLIMB_MODE_SWITCH,
+# ))
+# page_pass.add_enter_failure_hooks(pages.conditional_action(
+#     condition=ActivityShikigamiAssets.I_CLIMB_MODE_AP,
+#     action=ActivityShikigamiAssets.I_CLIMB_MODE_SWITCH,
+# ))
+# page_pass.connect(page_ap, ActivityShikigamiAssets.I_CLIMB_MODE_SWITCH, key='climb_pass->climb_ap')
+# page_ap.connect(page_pass, ActivityShikigamiAssets.I_CLIMB_MODE_SWITCH, key='climb_ap->climb_pass')
+#
+# 另有 _read_shared_climb_tickets() 内停用的门票选择器空态判据
+# （I_ORCHI_SELECT_NONE），因与函数内计数逻辑绑定，保留在原处。
+# ---------------------------------------------------------------------------
