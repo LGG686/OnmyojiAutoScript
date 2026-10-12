@@ -28,6 +28,9 @@ from tasks.WantedQuests.explore import WQExplore, ExploreWantedBoss
 class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
     WQ_LIST_MAX_SCROLLS = 4
     WQ_LIST_EDGE_MARGIN = 80
+    # 2x 重扫仍未命中进度时，再放宽检测框阈值重扫一次（小字叠背景时 DBNet
+    # 生成的文字框分数偏低，默认 0.8 会被直接过滤掉）
+    WQ_RELAXED_BOX_THRESH = 0.5
 
     # 追踪界面(显示"前往"按钮的界面,左上角位置,神秘任务不好使)显示以下名称时,任务不再执行
     unwanted_boss_name_list: list = []
@@ -69,13 +72,22 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
                 logger.info("get treasure")
                 self.ui_get_reward(self.I_E_REWARD_BOX_BIG)
                 continue
-            current, found, total, self.O_WQ_TEXT_ALL.area = self.find_wq(
-                self.device.image,
-                allow_edge_fallback=(
-                    error_count >= self.WQ_LIST_MAX_SCROLLS
-                ),
+            current, found, total, self.O_WQ_TEXT_ALL.area, only_completed = (
+                self.find_wq(
+                    self.device.image,
+                    allow_edge_fallback=(
+                        error_count >= self.WQ_LIST_MAX_SCROLLS
+                    ),
+                )
             )
             if found == -1:
+                if only_completed:
+                    # 列表上只剩自己已打满的卡位（如协作悬赏等协作方完成），
+                    # 没有可执行项，翻页也翻不出新进度，直接收工等下次轮询。
+                    logger.info(
+                        'Only self-completed wanted quest remains, exit'
+                    )
+                    break
                 if error_count >= self.WQ_LIST_MAX_SCROLLS:
                     logger.warning(
                         'No unfinished wanted quest after scrolling '
@@ -657,21 +669,27 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
         img,
         *,
         scale: float = 1.0,
-    ) -> tuple[list, list, bool]:
+        box_thresh: Optional[float] = None,
+    ) -> tuple[list, list, bool, bool]:
         """
         扫描探索页左侧整列，解析未完成的悬赏卡位候选。
 
         原生分辨率下 PP-OCR 的「文字检测」阶段偶尔会漏掉小字进度（如 4/5
         压在杂乱深色背景上，检测框未生成，识别便无从触发）。将整列 ROI 在
         送 OCR 前放大 scale 倍可显著改善此类小字召回（2026-10-05 漏检排查）。
+        仍未命中时再放宽 box_thresh 重扫一次，给分数偏低的检测框一个机会。
 
         :param img: 当前截图
         :param scale: 送 OCR 前对整列 ROI 的放大倍数，1.0 表示原尺寸
-        :return: (已确认候选, 底部边缘候选, 是否识别到“悬赏/封印”标签)
+        :param box_thresh: 文字检测框阈值，None 表示用运行时的默认值
+        :return: (已确认候选, 底部边缘候选, 是否识别到“悬赏/封印”标签,
+                  是否识别到已完成的卡位)
         """
         roi_x, roi_y, roi_w, roi_height = self.O_WQ_TEXT_ALL.roi
         if scale == 1.0:
-            res_list = self.O_WQ_TEXT_ALL.detect_and_ocr(img)
+            res_list = self.O_WQ_TEXT_ALL.detect_and_ocr(
+                img, box_thresh=box_thresh
+            )
             box_scale = 1.0
         else:
             # 放大整列后，把规则的 roi/area 临时同步到放大后的坐标再调用
@@ -694,7 +712,9 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
             self.O_WQ_TEXT_ALL.roi = scaled_roi
             self.O_WQ_TEXT_ALL.area = list(scaled_roi)
             try:
-                res_list = self.O_WQ_TEXT_ALL.detect_and_ocr(big, logDisplay=False)
+                res_list = self.O_WQ_TEXT_ALL.detect_and_ocr(
+                    big, logDisplay=False, box_thresh=box_thresh
+                )
             finally:
                 self.O_WQ_TEXT_ALL.roi = saved_roi
                 self.O_WQ_TEXT_ALL.area = saved_area
@@ -726,6 +746,7 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
 
         confirmed_candidates = []
         edge_candidates = []
+        completed_seen = False
         for text, progress_area in ocr_items:
             match = progress_pattern.search(text)
             if not match:
@@ -736,8 +757,6 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
                     'Ignore abnormal wanted quest progress: '
                     f'{text}'
                 )
-                continue
-            if current == total:
                 continue
 
             progress_top = progress_area[1]
@@ -756,6 +775,13 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
                         label_confirmed = True
                         break
 
+            if current == total:
+                # 已打满的卡位不是可执行任务（常见于协作悬赏自己这份已完成、
+                # 等协作方），只记下“列表里确实有卡”，交给调用方决定是否收工。
+                if label_confirmed:
+                    completed_seen = True
+                continue
+
             candidate = (
                 progress_top,
                 current,
@@ -769,14 +795,14 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
             elif label_confirmed:
                 confirmed_candidates.append(candidate)
 
-        return confirmed_candidates, edge_candidates, label_found
+        return confirmed_candidates, edge_candidates, label_found, completed_seen
 
     def find_wq(
         self,
         img,
         *,
         allow_edge_fallback: bool = False,
-    ) -> tuple[int, int, int, List[int]]:
+    ) -> tuple[int, int, int, List[int], bool]:
         """
         在探索页面定位未完成的悬赏卡位。
 
@@ -785,21 +811,49 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
         通过外层翻页移到完整区域；连续翻页仍无法完整显示时才启用边缘保底。
 
         原生分辨率偶尔漏检小字进度（如 4/5 压在杂乱背景上被文字检测跳过），
-        此时若已识别到“悬赏/封印”标签说明列表确有卡位，则整列放大 2x 重扫一次。
+        此时若已识别到“悬赏/封印”标签说明列表确有卡位，则整列放大 2x 重扫一次；
+        仍未命中再放宽文字检测框阈值重扫一次。若整列只有已打满的卡位（如协作
+        悬赏自己这份已完成、等协作方），则直接收工，不做无谓的重扫与翻页。
 
         :param img: 当前截图
         :param allow_edge_fallback: 已连续翻页到下方时，允许点击文字裁切的底部卡位
-        :return: (已完成数量, 有效标记, 总数量, 进度文字点击 roi)
+        :return: (已完成数量, 有效标记, 总数量, 进度文字点击 roi,
+                  是否列表里只剩已完成的卡位)
         """
-        confirmed, edge, label_found = self._scan_wq_candidates(img, scale=1.0)
+        only_completed = False
+        confirmed, edge, label_found, completed_seen = self._scan_wq_candidates(
+            img, scale=1.0
+        )
         if not confirmed and not (allow_edge_fallback and edge):
             if label_found:
                 logger.info(
                     'No wanted quest progress at native resolution; '
                     'retry with 2x upscaled column'
                 )
-                confirmed, edge, label_found = self._scan_wq_candidates(
-                    img, scale=2.0
+                confirmed, edge, label_found, retried_completed = (
+                    self._scan_wq_candidates(img, scale=2.0)
+                )
+                completed_seen = completed_seen or retried_completed
+            if completed_seen and not confirmed and not (
+                allow_edge_fallback and edge
+            ):
+                logger.info(
+                    'Only self-completed wanted quest remains, '
+                    'nothing to execute (co-op waiting for partner)'
+                )
+                only_completed = True
+            elif label_found and not confirmed and not (
+                allow_edge_fallback and edge
+            ):
+                logger.info(
+                    'No wanted quest progress after 2x retry; '
+                    f'retry with relaxed box threshold '
+                    f'{self.WQ_RELAXED_BOX_THRESH}'
+                )
+                confirmed, edge, _, _ = self._scan_wq_candidates(
+                    img,
+                    scale=2.0,
+                    box_thresh=self.WQ_RELAXED_BOX_THRESH,
                 )
 
         candidates = confirmed
@@ -819,8 +873,8 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
                 f'Find wanted quest progress {raw_text}: '
                 f'{current}/{total}, click={click_area}'
             )
-            return current, 1, total, click_area
-        return -1, -1, -1, [0, 0, 0, 0]
+            return current, 1, total, click_area, False
+        return -1, -1, -1, [0, 0, 0, 0], only_completed
 
     def is_wq_remained(self):
         """检测是否仍有悬赏；兼容列表底部仅剩裁切卡位。"""
