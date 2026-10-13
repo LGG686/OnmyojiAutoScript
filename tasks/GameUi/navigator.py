@@ -31,6 +31,7 @@ from tasks.GameUi.page_definition import Page, Transition, sort_pages_by_priorit
 from tasks.GameUi.registry import PageRegistry
 from tasks.GameUi.session import NavigatorSession
 from tasks.SixRealms.assets import SixRealmsAssets
+from tasks.KekkaiUtilize.assets import KekkaiUtilizeAssets
 from tasks.base_task import BaseTask
 
 
@@ -41,16 +42,17 @@ class GameUi(ChessBattleNavigationMixin, BaseTask, GameUiAssets):
 
     # 全局未知页关闭动作，所有任务共享。
     DEFAULT_UNKNOWN_CLOSERS = [
+        GlobalGameAssets.I_UI_CONFIRM,
+        GlobalGameAssets.I_UI_CONFIRM_SAMLL,
         GlobalGameAssets.I_UI_BACK_RED,
         GlobalGameAssets.I_CHAT_CLOSE_BUTTON,
         ActivityShikigamiAssets.I_SKIP_BUTTON,
-        GlobalGameAssets.I_UI_CONFIRM_SAMLL,
-        GlobalGameAssets.I_UI_CONFIRM,
         ExplorationAssets.I_E_EXIT_CONFIRM,
         GameUiAssets.I_BACK_DAILY,
         GlobalGameAssets.I_UI_BACK_YELLOW,
         SixRealmsAssets.I_EXIT_SIXREALMS,
         GlobalGameAssets.I_UI_BACK_BLUE,
+        KekkaiUtilizeAssets.I_PLANT_TREE_CLOSE,
     ]
 
     def __init__(self, config, device):
