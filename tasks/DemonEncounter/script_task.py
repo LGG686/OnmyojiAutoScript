@@ -70,6 +70,11 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
             raise TaskEnd('DemonEncounter')
         self.execute_lantern()
         self.execute_boss()
+        # 一天最多两次挑战机会, 打完一把回逢魔大地图扫一次次数, 还有(1/2)就再打一把
+        self.goto_page(page_rwt)
+        if self._check_challenge_count():
+            logger.hr('Start next boss battle', 1)
+            self.execute_boss()
         self.goto_page(page_main)
         self.set_next_run(task='DemonEncounter', success=True, finish=False)
         raise TaskEnd('DemonEncounter')
@@ -104,10 +109,10 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
         logger.warning('Challenge count not recognized, assume attempts remain')
         return True
 
-    def execute_boss(self):
+    def execute_boss(self) -> bool:
         """
         打boss
-        :return:
+        :return: True 表示完整打完了一场, False 表示首领一直进不去
         """
         logger.hr('Start boss battle', 1)
 
@@ -189,13 +194,16 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
         def enter_boss():
             logger.info('trying to enter boss...')
             # 点击集结挑战
-            boss_fire_count = 0  # 三次没点到就意味着今天已经挑战过了
+            boss_fire_count = 0  # 三次点了界面都没变化: 这个首领进不去(人多/不可加入)
             ocr_people_item = self.O_DE_BEST_BOSS_PEOPLE if self.best_demon_enable else self.O_DE_BOSS_PEOPLE
+            fire_item = self.I_BEST_BOSS_FIRE if self.best_demon_enable else self.I_BOSS_FIRE
             while 1:
                 self.screenshot()
+                people_hint = ''
 
                 if self.appear(self.I_BOSS_FIRE) or self.appear(self.I_BEST_BOSS_FIRE):
                     current, remain, total = ocr_people_item.ocr(self.device.image)
+                    people_hint = f' ({current}/{total})'
                     if total == 300 and current >= 290:
                         logger.info('Boss battle people is full')
                         if not self.appear(self.I_UI_BACK_RED):
@@ -204,9 +212,10 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
                         self.ui_click_until_disappear(self.I_UI_BACK_RED)
                         # 退出重新选一个没人慢的boss
                         logger.info('Exit and reselect')
+                        self.wait_until_disappear(fire_item, timeout=5)
                         return False
 
-                logger.info('Boss battle people is not full')
+                logger.info(f'Boss battle people is not full{people_hint}')
 
                 if self.appear(self.I_BOSS_CONFIRM):
                     self.ui_click(self.I_BOSS_NO_SELECT, self.I_BOSS_SELECTED)
@@ -215,10 +224,13 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
                 if self.appear(self.I_BOSS_GATHER):
                     break
                 if boss_fire_count >= 3:
-                    logger.warning('Boss battle already done')
-                    self.set_next_run(task='DemonEncounter', success=False, finish=True, server=True)
+                    # 点了三次界面都没变化, 多半是队伍已满/该首领已不可加入,
+                    # 退出面板换一个首领重试; 点击无效不等于今天已经挑战完,
+                    # 不能直接把当天剩余次数作废。
+                    logger.warning('Boss fire click has no effect, exit and reselect')
                     self.ui_click_until_disappear(self.I_UI_BACK_RED)
-                    raise TaskEnd('DemonEncounter')
+                    self.wait_until_disappear(fire_item, timeout=5)
+                    return False
 
                 if (self.appear_then_click(self.I_BOSS_FIRE, interval=3)
                         or self.appear_then_click(self.I_BEST_BOSS_FIRE, interval=3)):
@@ -229,7 +241,8 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
         fail_count = 0
         while True:
             if fail_count >= 5:
-                return
+                logger.warning('Boss is unavailable after 5 reselect, skip boss battle today')
+                return False
             if not find_boss():
                 continue
             if enter_boss():
@@ -283,6 +296,7 @@ class ScriptTask(GameUi, GeneralBattle, DemonEncounterAssets, SwitchSoul):
             if self.appear_then_click(self.I_BOSS_BACK_WHITE, interval=1):
                 continue
         # 返回到封魔主界面
+        return True
 
     def execute_lantern(self):
         """

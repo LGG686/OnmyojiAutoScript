@@ -52,8 +52,8 @@
   {
     "itemName": "lbs_ensure_private_false",
     "imageName": "lbs_ensure_private_false.png",
-    "roiFront": "504,391,43,43",
-    "roiBack": "505,391,42,43",
+    "roiFront": "506,391,43,43",
+    "roiBack": "493,381,67,66",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",
