@@ -473,9 +473,16 @@ class NormalClimbAct:
             if click_times >= max_times:
                 logger.warning(f'{action_type} cannot enter battle, click reach max times')
                 raise ActivityResourceNotEnough
-            if self.appear(self.I_UI_BACK_RED, interval=1):
-                logger.warning(f'{action_type} cannot enter battle, resource dialog appeared')
-                raise ActivityResourceNotEnough
+            if self.appear_then_click(self.I_UI_BACK_RED, interval=2):
+                # boss 打出超过历史最高伤害时会弹出提示浮层，关掉继续挑战；
+                # 连续 3 轮仍未进入战斗才按资源耗尽处理
+                self.device.click_record_clear()
+                miss_times += 1
+                logger.info(f'Close unexpected dialog, retry {action_type} fire')
+                if miss_times >= self.MAX_FIRE_MISS:
+                    logger.warning(f'{action_type} dialog keeps appearing, treat as resource exhausted')
+                    raise ActivityResourceNotEnough
+                continue
             if self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=1) or \
                     self.appear_then_click(self.I_UI_CONFIRM, interval=1):
                 continue
