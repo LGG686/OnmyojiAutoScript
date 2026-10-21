@@ -14,6 +14,7 @@ from pathlib import Path
 from time import sleep
 
 from module.atom.click import RuleClick
+from module.atom.frame import RuleFrame
 from module.atom.gif import RuleGif
 from module.atom.image import RuleImage
 from module.atom.list import RuleList
@@ -341,6 +342,8 @@ class GameUi(ChessBattleNavigationMixin, BaseTask, GameUiAssets):
 
         if isinstance(action, RuleList):
             return self.list_appear_click(action, interval=interval or 0.8)
+        if isinstance(action, RuleFrame):
+            return bool(self.runframe(action, True, interval=interval))
         if isinstance(action, (RuleImage, RuleGif)):
             return self.appear_then_click(action, interval=interval)
         if isinstance(action, RuleOcr):

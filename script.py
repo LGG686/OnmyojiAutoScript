@@ -31,11 +31,10 @@ from module.atom.scatter import RuleScatter
 from module.logger import logger
 from module.exception import *
 from module.server.i18n import I18n
-from module.image.rpc import ensure_image_server_ready, set_image_low_spec_mode
+from module.image.rpc import ensure_image_server_ready
 from module.ocr.rpc import (
     ensure_ocr_server_ready,
     set_ocr_logging_enabled,
-    set_ocr_low_spec_mode,
     set_ocr_model_size,
     get_ocr_client,
 )
@@ -69,23 +68,10 @@ class Script:
         self._continuous_task_interval_range: tuple[int, int] | None = None
         # 运行loop的线程
         self.loop_thread: Thread = None
-        # 低配模式属于进程级运行参数，只在脚本进程创建时读取一次。
-        # OASX 中途修改配置不会影响正在运行的脚本。
-        self.low_spec_mode = bool(self.config.script.device.low_spec_mode)
-        set_image_low_spec_mode(self.low_spec_mode)
-        set_ocr_low_spec_mode(self.low_spec_mode)
-        # 低配模式与普通模式统一使用现有 PaddleOCR medium 模型，
-        # 避免小模型降低关键文字的识别稳定性。
         set_ocr_model_size('medium')
         self.resource_precache_enable = bool(
             self.config.script.device.resource_precache_enable
         )
-        if self.low_spec_mode:
-            logger.info(
-                'Low spec mode enabled: frame cache=10s, '
-                'OCR model=medium, OCR timeout=30s, OCR cache=2s, '
-                'image threshold unchanged'
-            )
 
     @cached_property
     def config(self) -> "Config":
@@ -714,6 +700,34 @@ class Script:
         对致命异常 (ScriptError / RequestHumanTakeover / 未识别 Exception)
         在内部直接 exit(1)。
         """
+        if isinstance(e, NetworkRecoveryRequired):
+            # Unwind the interrupted task so no stale page state survives recovery.
+            self.device.stuck_record_clear()
+            self.device.click_record_clear()
+            if e.reconnect:
+                from tasks.Component.Login.service import LoginService
+                from tasks.Restart.assets import RestartAssets
+                login = LoginService(config=self.config, device=self.device)
+                deadline = time.monotonic() + 30
+                try:
+                    while True:
+                        self.device.screenshot()
+                        if login.appear(RestartAssets.I_LOGIN_8):
+                            break
+                        if time.monotonic() >= deadline:
+                            raise GameStuckError('Network reconnect did not reach login page within 30 seconds')
+                        login.appear_then_click(login.I_CLIENT_CLEAR, interval=1)
+                        self.device.sleep(0.25)
+                    login.app_handle_login()
+                except Exception as recovery_error:
+                    logger.warning(f'Network reconnect failed: {recovery_error}')
+                    self._request_error_restart(command)
+            else:
+                self._request_error_restart(command)
+            if command != 'Restart':
+                self.config.task_call(command)
+            return True
+
         if isinstance(e, TaskEnd):
             self._capture_task_runtime_outcome(command)
             return True

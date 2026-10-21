@@ -14,7 +14,6 @@
       "emulatorinfo_path": "",
       "emulator_window_minimize": false,
       "run_background_only": false,
-      "low_spec_mode": false,
       "continuous_task_rest_enable": false,
       "continuous_task_rest_interval": "60,120",
       "resource_precache_enable": false

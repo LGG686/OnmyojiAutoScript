@@ -206,6 +206,7 @@ class RuleImage:
             "roi_pad": ROI_MATCH_PAD,
             "scale_range": scale_range,
             "scale_step": float(self.scale_step),
+            "grayscale": bool(getattr(self, 'grayscale', False)),
         }
 
     def _apply_match_result(self, result: dict) -> bool:
@@ -221,6 +222,10 @@ class RuleImage:
             threshold = self.threshold
         source = self.corp(image)
         mat = self.image
+
+        if getattr(self, 'grayscale', False):
+            source = cv2.cvtColor(source, cv2.COLOR_RGB2GRAY)
+            mat = cv2.cvtColor(mat, cv2.COLOR_RGB2GRAY)
 
         if self._template_image_invalid(mat):
             return True  # 如果模板图像无效，直接返回 True
