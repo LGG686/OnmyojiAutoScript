@@ -52,32 +52,40 @@ class NormalClimbAct:
         )
         # 本期停用边与钩子统一收在文件末尾的「Climb disabled transitions」区块。
 
+    def run_boss(self):
+        logger.hr('Start activity: Boss', 1)
+        self.setup_climb_pages()
+        self._run_climb_type('boss')
+
     def run_climb(self):
         logger.hr('Start activity: Climb', 1)
         self.setup_climb_pages()
         for action_type in self.conf.general_config.climb_sequence_v:
             if self.time_limit_reached():
                 return
-            self._run_climb_type(action_type)
+            if action_type in ('pass_easy', 'pass_hard'):
+                self._run_climb_type('pass', pass_mode=action_type[5:])
+            else:
+                self._run_climb_type(action_type)
 
-    def _run_climb_type(self, action_type: str):
+    def _run_climb_type(self, action_type: str, pass_mode: str = None):
         if action_type == 'pass':
             # 门票与体力已分家，门票数量只有门票页能读到，必须先进门票页再统一读数。
             self.goto_page(pages.page_climb_pass)
             remain = self._read_shared_climb_tickets()
-            # 困难模式收益优先；任一模式次数为 0 时直接跳过。
-            for pass_mode in ('hard', 'easy'):
-                pass_limit = self.conf.general_config.pass_limit_for(pass_mode)
+            # 指定难度时只执行当前分支；未指定时困难收益优先，任一模式次数为 0 时直接跳过。
+            for mode in ((pass_mode,) if pass_mode else ('hard', 'easy')):
+                pass_limit = self.conf.general_config.pass_limit_for(mode)
                 if pass_limit <= 0:
-                    logger.info(f'Skip pass mode {pass_mode}: limit is 0')
+                    logger.info(f'Skip pass mode {mode}: limit is 0')
                     continue
                 if self.time_limit_reached():
                     return
-                required = 5 if pass_mode == 'hard' else 1
+                required = 5 if mode == 'hard' else 1
                 if remain < required:
-                    logger.info(f'Skip pass mode {pass_mode}: tickets={remain}, required={required}')
+                    logger.info(f'Skip pass mode {mode}: tickets={remain}, required={required}')
                     continue
-                self._run_climb_branch(action_type, pass_mode=pass_mode)
+                self._run_climb_branch(action_type, pass_mode=mode)
                 # 两种难度共用门票，前一分支消耗后更新余量再筛选下一分支。
                 remain = self._read_shared_climb_tickets()
             self.current_pass_mode = None
@@ -216,9 +224,9 @@ class NormalClimbAct:
 
         soul_action_type = action_type
         if action_type == 'pass' and self.current_pass_mode == 'hard':
-            # 困难门票复用百体模式的御魂预设及切换状态。
-            soul_action_type = 'ap100'
-            logger.info('Pass hard mode uses ap100 soul preset')
+            # 困难门票使用独立的御魂预设及切换状态。
+            soul_action_type = 'pass_hard'
+            logger.info('Pass hard mode uses its own soul preset')
         self.switch_soul_for(
             soul_action_type,
             self.I_BATTLE_MAIN_TO_RECORDS,
