@@ -5,11 +5,14 @@ import math
 import re
 from collections import Counter
 
-from tasks.Chess.badge.badge_hand_icons import (
+from tasks.Chess.resource.badge.badge_hand_icons import (
     BADGE_FILE_INDEX,
     BADGE_QUALITY_INDEX,
 )
-from tasks.Chess.strategy.shikigami_catalog import SHIKIGAMI_BONDS_BY_ROMAJI
+from tasks.Chess.strategy.shikigami_catalog import (
+    SHIKIGAMI_BONDS_BY_ROMAJI,
+    resolve_shikigami,
+)
 
 
 # 直接记录各符咒的实际收益；最终选择不再按类别分层。
@@ -51,6 +54,16 @@ DEFAULT_BENEFIT_BY_QUALITY = {
 }
 SILVER_SOUL_DEFAULT_BENEFIT = 3.0
 
+# 式神增强只对当前阵容配置中的对应式神计分。
+SHIKIGAMI_ENHANCEMENT_TARGETS = {
+    '弹射炸弹': '觉',
+    '怨恨连斩': '黑童子',
+    '终极吸取': '萤草',
+    '浪涌扇舞': '蝴蝶精',
+    '螺螺螺锤': '蟹姬',
+    '以伞为剑': '姑获鸟',
+}
+
 
 def _names(value: str) -> frozenset[str]:
     return frozenset(value.split())
@@ -58,6 +71,7 @@ def _names(value: str) -> frozenset[str]:
 
 GRIGRI_NAMES_BY_CATEGORY: dict[str, frozenset[str]] = {
     'bond': _names("""
+六道朱印
 流火朱印·贰 流火朱印 狐妖朱印·贰 狐妖朱印 寒霜朱印·贰 寒霜朱印
 鬼火朱印·贰 鬼火朱印 甲胄朱印·贰 甲胄朱印 护佑朱印·贰 护佑朱印
 强体朱印·贰 强体朱印 锻刃朱印·贰 锻刃朱印 嗜战朱印·贰 嗜战朱印
@@ -67,6 +81,7 @@ GRIGRI_NAMES_BY_CATEGORY: dict[str, frozenset[str]] = {
 大江山朱印·贰 大江山朱印 强运朱印·贰 强运朱印 黑夜山朱印·贰 黑夜山朱印
 """),
     'emblem': _names("""
+回响纹章·贰 回响纹章
 流火纹章·贰 流火纹章 狐妖纹章·贰 狐妖纹章 随机纹章 鬼火纹章·贰
 鬼火纹章 甲胄纹章·贰 甲胄纹章 护佑纹章·贰 护佑纹章 强体纹章·贰
 强体纹章 锻刃纹章·贰 锻刃纹章 嗜战纹章·贰 嗜战纹章 分裂纹章·贰
@@ -105,6 +120,7 @@ GRIGRI_NAMES_BY_CATEGORY: dict[str, frozenset[str]] = {
     'shikigami': _names("""
 惊喜召唤 升贺之礼 多号机·贰 多号机 中坚之力 天降之鬼 齐心协力
 """),
+    'shikigami_enhancement': frozenset(SHIKIGAMI_ENHANCEMENT_TARGETS),
 }
 
 GRIGRI_CATEGORY_BY_NAME = {
@@ -172,7 +188,7 @@ def lineup_bond_context(strategy: dict) -> dict:
     primary_count = counts.get(primary, 0)
     # 次要羁绊只保留计数第二多的一项。Counter 保留阵容式神与羁绊的
     # 首次出现顺序，因此并列时稳定选择阵容配置中先出现的羁绊。
-    secondary_bond = max(
+    secondary_bond = strategy.get('secondary_bond') or max(
         (
             bond
             for bond, count in counts.items()
@@ -200,6 +216,18 @@ def grigri_score(name: str | None, lineup=None) -> float:
     if not name:
         return 0.0
     category = grigri_category(name)
+    if category == 'shikigami_enhancement':
+        target = SHIKIGAMI_ENHANCEMENT_TARGETS[name]
+        if isinstance(lineup, dict):
+            for identity, config in lineup.get('shikigami', {}).items():
+                entry = resolve_shikigami(identity)
+                if (
+                    identity == target
+                    or (entry is not None and entry.chinese_name == target)
+                    or config.get('display_name') == target
+                ):
+                    return 22.0
+        return 0.0
     quality = BADGE_QUALITY_INDEX.get(name)
     if category in ('bond', 'emblem') and name != '随机纹章':
         bond = grigri_bond_name(name)

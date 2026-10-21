@@ -55,6 +55,8 @@ class GameUiAssets:
 	# Image Rule Assets
 	# 百鬼棋局局内页面标志 
 	I_CHECK_CHESS_BATTLE = RuleImage(profile="High", roi_front=(270,19,37,32), roi_back=(264,12,47,44), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_chess_battle.png")
+	# 百鬼棋局主动退出 
+	I_CHESS_EXIT = RuleImage(profile="High", roi_front=(12,14,48,38), roi_back=(12,14,48,38), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_chess_exit.png")
 	# 百鬼棋局正常结算返回大厅 
 	I_CHESS_EXIT_TO_LOBBY = RuleImage(profile="High", roi_front=(384,591,172,47), roi_back=(340,570,270,100), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_chess_exit_to_lobby.png")
 	# 百鬼棋局主动退出后返回大厅 
@@ -65,6 +67,8 @@ class GameUiAssets:
 	I_CHECK_CHESS_RANK = RuleImage(profile="High", roi_front=(14,75,79,38), roi_back=(14,75,79,38), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_chess_rank.png")
 	# 百鬼棋局排名页返回大厅 
 	I_CHESS_RANK_GOTO_LOBBY = RuleImage(profile="High", roi_front=(66,646,133,42), roi_back=(66,646,133,42), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_chess_rank_goto_lobby.png")
+	#  
+	I_CLOSE_RED = RuleImage(profile="High", roi_front=(1169,60,33,25), roi_back=(1077,19,151,144), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_close_red.png")
 
 
 	# Image Rule Assets

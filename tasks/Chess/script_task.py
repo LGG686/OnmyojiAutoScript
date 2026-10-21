@@ -9,6 +9,7 @@ from tasks.Chess.assets import ChessAssets
 from tasks.Chess.config import Chess
 from tasks.Chess.runtime.economy import ChessEconomyMixin
 from tasks.Chess.runtime.hand_operations import ChessHandOperationsMixin
+from tasks.Chess.runtime.hyakki_draft import ChessHyakkiDraftMixin
 from tasks.Chess.runtime.recognition import ChessRecognitionMixin
 from tasks.Chess.runtime.round_state import ChessRoundStateMixin
 from tasks.Chess.runtime.settings import ChessRuntimeSettings
@@ -19,6 +20,7 @@ from tasks.GameUi.page import page_chess
 
 
 class ChessLegacyScriptTask(
+    ChessHyakkiDraftMixin,
     ChessRecognitionMixin,
     ChessHandOperationsMixin,
     ChessRoundStateMixin,
@@ -32,15 +34,23 @@ class ChessLegacyScriptTask(
 
     conf: Chess = None
 
+    def _burst(self) -> bool:
+        """棋局任务的所有截图均检查红叉，关闭遮挡操作的浮窗。"""
+        if super()._burst():
+            return True
+        if self.appear_then_click(self.I_CLOSE_RED, interval=0.8):
+            logger.info('Chess: close floating window with red cross')
+            return True
+        return False
+
     def _wait_chess_action_state(self, condition) -> bool:
-        """在单次动作后限时轮询目标图标状态。"""
+        """限时确认动作结果；截图节奏交给设备层，不额外固定等待。"""
         deadline = time.monotonic() + self.ACTION_ICON_WAIT_TIMEOUT
         while time.monotonic() < deadline:
             self.device.stuck_record_clear()
             self.screenshot()
             if condition():
                 return True
-            time.sleep(self.FAST_OPERATION_INTERVAL)
         self.device.stuck_record_clear()
         self.screenshot()
         return bool(condition())
@@ -260,7 +270,7 @@ class ChessLegacyScriptTask(
                     'Chess rank protection: actively exit this game; '
                     'the game will not count toward completed runs'
                 )
-                if self.exit_chess_battle(return_to_lobby=False):
+                if self.Chess_Exit(return_to_lobby=False):
                     self._rank_protection_exit_succeeded = True
                     return None
                 logger.warning(
@@ -468,49 +478,19 @@ class ChessLegacyScriptTask(
         return self._read_chess_mode() == '战'
 
     def _handle_passive_stage(self, mode: str) -> bool:
-        """战、鬼、待阶段只等待，不主动改变商店状态。"""
+        """战和待阶段等待；鬼阶段执行试行投掷。"""
+        if mode == '鬼':
+            self._handle_hyakki_draft()
         return mode in ('战', '鬼', '待')
 
-    def _handle_battle_economy(self) -> str:
-        """卖卡完成后，在战阶段续跑一个尚未完成的经济原子动作。"""
-        if self._read_chess_mode() != '战':
-            return 'blocked'
-        if not getattr(self, '_economy_pending', False):
-            return 'complete'
-        logger.debug(
-            'Chess battle economy continuation: '
-            f'state={self._economy_step_state}'
-        )
-        return self._run_economy_atomic_batch(battle_mode=True)
 
-    def _handle_round_end(self) -> bool:
-        """在下一次可用的备阶段补做系统卡回收、上阵和御魂。"""
-        if not getattr(self, '_formation_pending', False):
-            return True
-        if not self._is_preparation_mode():
-            return False
-
-        logger.debug('Chess pending system-card recall')
-        if not self._ensure_shop_closed():
-            return False
-        if not self.recall_all_board_cards():
-            return False
-        time.sleep(self.ACTION_SETTLE_INTERVAL)
-        self.screenshot()
-        if not self._is_preparation_mode():
-            return False
-        # 回收之后先恢复阵容，再允许经济操作。
-        logger.debug('Chess immediate redeploy after pending recall')
-        if not self._handle_preparation():
-            return False
-
-        self._formation_pending = False
-        logger.debug('Chess pending formation recovery completed')
-        return True
 
     def _refresh_round_state_screenshot(self) -> bool:
         """刷新回目状态截图；选符咒出现时必须优先处理完毕。"""
         self.screenshot()
+        if self.select_chess_sixrealms_if_visible():
+            self.screenshot()
+            return True
         if not self.appear(self.I_SELECT_GRIGRI):
             return False
         logger.info(
@@ -714,10 +694,13 @@ class ChessLegacyScriptTask(
             time.sleep(self.SLOW_POLL_INTERVAL)
 
     def _is_in_chess_game(self) -> bool:
-        """以阵容入口或问号图标确认当前处于百鬼棋局对局内。"""
+        """以阵容入口、问号或特殊回合标志确认当前处于对局内。"""
         return (
             self.appear(self.I_OPEN_LINEUP)
             or self.appear(self.I_QUESTION_CHECK)
+            or self._special_chess_mode() is not None
+            or self._stage_marker_visible(self.I_STAGE_ORCHI)
+            or self._stage_marker_visible(self.I_STAGE_DEMON)
         )
 
     def _close_chess_lobby_abnormal_page(self) -> bool:
@@ -768,6 +751,10 @@ class ChessLegacyScriptTask(
             # 在每次截图之前清除，不能等识别到“取消等待”后才清除。
             self.device.stuck_record_clear()
             self.screenshot()
+
+            if self.select_chess_sixrealms_if_visible():
+                deadline = time.monotonic() + timeout
+                continue
 
             # 以阵容入口或问号图标确认真正进入棋局；商店按钮不再作为
             # 开局成功标志，避免大厅或匹配动画中的相似区域造成误判。
@@ -1015,14 +1002,15 @@ class ChessLegacyScriptTask(
         # c_question_check.png。
         # chess_mode OCR 仅供已确认在局内后的回目状态机使用，不能拿来
         # 判断全局页面，否则庭院等页面中的任意非空误识别都会触发退出。
-        if not self._is_in_chess_game():
+        selected_sixrealms = self.select_chess_sixrealms_if_visible()
+        if not selected_sixrealms and not self._is_in_chess_game():
             return False
 
         logger.warning(
             'Chess startup recovery: interrupted in-game state detected '
             'by I_OPEN_LINEUP or I_QUESTION_CHECK'
         )
-        if not self.exit_chess_battle():
+        if not self.Chess_Exit():
             raise GameStuckError(
                 'Chess: interrupted game detected but active exit was unavailable'
             )
