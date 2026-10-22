@@ -68,15 +68,5 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "百鬼棋局排名页返回大厅"
-  },
-  {
-    "itemName": "close_red",
-    "imageName": "page_close_red.png",
-    "roiFront": "1169,60,33,25",
-    "roiBack": "1077,19,151,144",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "profile": "High",
-    "description": ""
   }
 ]
