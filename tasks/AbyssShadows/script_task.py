@@ -334,7 +334,7 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
                 if self.click(click_area, interval=1.5):
                     click_times += 1
                     continue
-                if self.appear_then_click(self.I_ENSURE_BUTTON, interval=1):
+                if self.appear_then_click(self.I_UI_CONFIRM, interval=1):
                     continue
 
             # 点击前往按钮,知道该按钮消失或出现"挑战"字样
@@ -346,8 +346,8 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
                 if self.appear(self.I_ABYSS_FIRE):
                     logger.info(f"{self.I_ABYSS_FIRE} appear")
                     break
-                if self.appear(self.I_ENSURE_BUTTON):
-                    self.click(self.I_ENSURE_BUTTON, interval=1)
+                if self.appear(self.I_UI_CONFIRM):
+                    self.click(self.I_UI_CONFIRM, interval=1)
                     continue
                 if self.appear(self.I_ABYSS_GOTO_ENEMY):
                     self.click(self.I_ABYSS_GOTO_ENEMY, interval=1)
@@ -369,8 +369,8 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
             if self.appear(self.I_CHECK_FINISH):
                 raise AbyssShadowsFinished
             # 挑战敌人后，如果是奖励次数上限，会出现确认框
-            if self.appear(self.I_ENSURE_BUTTON):
-                self.click(self.I_ENSURE_BUTTON, interval=2)
+            if self.appear(self.I_UI_CONFIRM):
+                self.click(self.I_UI_CONFIRM, interval=2)
                 continue
             #
             if self.appear(self.I_ABYSS_ENEMY_FIRE):
@@ -422,8 +422,8 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
                 difficulty_btn = self.I_DIFFICULTY_EXTREME
         self.ui_click_until_disappear(difficulty_btn, interval=2)
         # 开始
-        self.ui_click(self.I_BTN_START, stop=self.I_START_ENSURE, interval=2)
-        self.ui_click_until_disappear(self.I_START_ENSURE, interval=2)
+        self.ui_click(self.I_BTN_START, stop=self.I_UI_CONFIRM, interval=2)
+        self.ui_click_until_disappear(self.I_UI_CONFIRM, interval=2)
 
     def process(self):
         while True:

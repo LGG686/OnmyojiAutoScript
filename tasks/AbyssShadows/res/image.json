@@ -140,16 +140,6 @@
     "description": "description"
   },
   {
-    "itemName": "ensure_button",
-    "imageName": "res_ensure_button.png",
-    "profile": "High",
-    "roiFront": "672,405,169,55",
-    "roiBack": "672,405,169,55",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "description"
-  },
-  {
     "itemName": "is_attack",
     "imageName": "res_is_attack.png",
     "profile": "High",
@@ -278,16 +268,6 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "开启按钮"
-  },
-  {
-    "itemName": "start_ensure",
-    "imageName": "res_start_ensure.png",
-    "profile": "High",
-    "roiFront": "660,390,190,80",
-    "roiBack": "660,390,190,80",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "description": "开启确认按钮"
   },
   {
     "itemName": "abyss_enemy_fire",
