@@ -436,8 +436,11 @@ class ChessEconomyMixin:
                 interval=0.3,
                 timeout=min(2.0, max(0.0, deadline-time.monotonic())),
                 confirm_frames=2,
+                max_clicks=3,
             )
             if clicked_and_gone:
+                # 已确认购买完成，旧卡的点击不应计入此格下一张卡。
+                self.device.click_record_remove(click_rule)
                 return True
             if not self._is_purchase_allowed() or self.appear(self.I_SELECT_GRIGRI):
                 return False
@@ -471,7 +474,7 @@ class ChessEconomyMixin:
                 if emergency_cleanup_done and lineup_sale_done:
                     logger.warning(
                         f'Chess buy {matched_name} remains blocked after '
-                        'emergency cleanup and one lineup-card sale'
+                        'emergency cleanup and one lineup-card sale; cancel current purchase'
                     )
                     return False
                 sell_lineup = emergency_cleanup_done
@@ -791,6 +794,9 @@ class ChessEconomyMixin:
                 f'{[round(differences[index], 2) for index in range(5, 0, -1)]}'
             )
             if len(changed) >= self.SHOP_REFRESH_CHANGED_SLOT_MINIMUM:
+                for slot_index, click_rule in self._shop_slots():
+                    if slot_index in changed:
+                        self.device.click_record_remove(click_rule)
                 return 'success'
             before = after
         logger.warning(
