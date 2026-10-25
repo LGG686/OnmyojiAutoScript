@@ -289,7 +289,8 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
         if monster_name and monster_name != getattr(self, '_wq_last_monster', None):
             self.wq_executed_set = set()
             self._wq_last_monster = monster_name
-        if monster_name in self.unwanted_boss_name_list:
+        # 识别串可能带前缀动词(如"需要击败"/"击杀"), 用子串包含匹配而非整串相等
+        if any(name in monster_name for name in self.unwanted_boss_name_list):
             logger.warning(f'unwanted {monster_name}')
             self.ui_click(self.I_TRACE_TRUE, self.I_TRACE_FALSE)
             return False
