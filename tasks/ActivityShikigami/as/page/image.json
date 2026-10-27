@@ -2,7 +2,7 @@
   {
     "itemName": "main_goto_act",
     "imageName": "as_main_goto_act.png",
-    "roiFront": "1185,217,40,32",
+    "roiFront": "1189,384,38,29",
     "roiBack": "1164,134,83,393",
     "method": "Template matching",
     "threshold": 0.7,
@@ -43,9 +43,9 @@
     "itemName": "activity_signin_close",
     "imageName": "as_activity_signin_close.png",
     "roiFront": "1137,179,40,32",
-    "roiBack": "1034,69,227,220",
+    "roiBack": "1034,29,241,260",
     "method": "Template matching",
-    "threshold": 0.8,
+    "threshold": 0.7,
     "profile": "High",
     "description": "活动签到附属页面关闭按钮"
   }

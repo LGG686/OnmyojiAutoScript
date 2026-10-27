@@ -61,6 +61,7 @@ class ExplorationAct:
                 self.I_SHIKIGAMI_HELP,
                 settlement_random_click(self.C_SAFE_RANDOM_CLICK_AREA_ACT),
             ),
+            (self.I_EVENT_STORY, self.I_EVENT_STORY),
         ):
             if not self.appear(marker):
                 continue
@@ -105,17 +106,19 @@ class ExplorationAct:
         if not entry:
             logger.info(f'Exploration {mode}: no entry after scanning, mode complete')
             return False
-        # 入口仅点击一次，等待事件最多5秒。
+        # 入口偶发一次点不进事件，最多补点一次。
         entry.burst_count = 1
-        self.click(entry, interval=0)
-        if self._wait_exp(lambda: self.appear(self.I_EVENT_REWARD)
-                          or self._exp_normal_fight_appear()
-                          or self.appear(self.I_EVENT_STORY), timeout=5):
-            return True
+        for _ in range(2):
+            self.click(entry, interval=1)
+            if self._wait_exp(lambda: self.appear(self.I_EVENT_REWARD)
+                              or self._exp_normal_fight_appear()
+                              or self.appear(self.I_EVENT_STORY)
+                              or self.appear(self.I_EVENT_DELEGATE), timeout=5):
+                return True
         if mode == 'main':
-            logger.info('Exploration main: no event after one click, mode complete')
+            logger.info('Exploration main: no event after clicking entry, mode complete')
             return False
-        raise GameStuckError(f'Exploration {mode}: entry did not open after one click')
+        raise GameStuckError(f'Exploration {mode}: entry did not open after two clicks')
 
     def _prepare_exp_encounter(self):
         soul = self.conf.switch_soul_config
@@ -191,6 +194,27 @@ class ExplorationAct:
             time.sleep(0.2)
         raise GameStuckError(f'Exploration {mode} entry did not open an event')
 
+    def _run_exp_delegate(self):
+        if not self._wait_exp(lambda: self.appear(self.I_EVENT_DELEGATE), timeout=10):
+            raise GameStuckError('Exploration delegate page did not open')
+        while True:
+            self.screenshot()
+            if self.appear(self.I_DELEGATE_CLAIM):
+                self.ui_get_reward(self.I_DELEGATE_CLAIM)
+                continue
+            if self.appear(self.I_DELEGATE_ONEKEY):
+                self.appear_then_click(self.I_DELEGATE_ONEKEY, interval=1)
+                self.device.sleep(1)
+                self.appear_then_click(self.I_DELEGATE_REFRESH, interval=1)
+                continue
+            if self.appear(self.I_DELEGATE_REFRESH):
+                self.appear_then_click(self.I_DELEGATE_REFRESH, interval=1)
+                continue
+            # 领取、一键上阵、委派都不在，只剩 I_EVENT_DELEGATE：无可委派内容。
+            break
+        if self.appear_then_click(self.I_EVENT_CLOSE, interval=1):
+            self._wait_exp(lambda: not self.appear(self.I_EVENT_DELEGATE), timeout=5)
+
     def _finish_exp_encounter_entry(self):
         """只按系统返回页面连战：事件页继续，探索页结束当前入口。"""
         while True:
@@ -211,7 +235,7 @@ class ExplorationAct:
         self._exp_soul_switched = False
         self.goto_page(pages.page_activity_exploration)
         for mode, rule in (('main', self.I_EXP_MAIN), ('encounter', self.I_EXP_ENCOUNTER),
-                           ('branch', self.I_EXP_BRANCH)):
+                           ('branch', self.I_EXP_BRANCH), ('delegate', self.I_EXP_DELEGATE)):
             self.current_action_type = f'exp_{mode}'
             count = 0
             while True:
@@ -223,7 +247,12 @@ class ExplorationAct:
                     raise GameStuckError('Expected exploration main page before selecting entry')
                 if not self._enter_exp_entry(mode, rule):
                     break
-                self._run_exp_event(mode)
+                if mode == 'delegate':
+                    # 委派入口常驻，界面内一次处理完即结束该模式。
+                    self._run_exp_delegate()
+                    break
+                else:
+                    self._run_exp_event(mode)
                 if mode == 'encounter' and not self._finish_exp_encounter_entry():
                     return
                 if not self._wait_exp(lambda: self._exp_main_ready()):

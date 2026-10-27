@@ -37,8 +37,8 @@
   },
   {
     "itemName": "remain_ap_pass",
-    "roiFront": "764,13,93,34",
-    "roiBack": "764,13,93,34",
+    "roiFront": "1133,13,93,34",
+    "roiBack": "1133,13,93,34",
     "mode": "Digit",
     "method": "Default",
     "keyword": "",

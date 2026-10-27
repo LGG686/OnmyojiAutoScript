@@ -82,8 +82,8 @@
   {
     "itemName": "to_battle_ap",
     "imageName": "climb_to_battle_ap.png",
-    "roiFront": "223,255,97,31",
-    "roiBack": "83,165,339,213",
+    "roiFront": "290,214,79,43",
+    "roiBack": "92,173,339,213",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",

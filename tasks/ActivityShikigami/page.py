@@ -161,7 +161,7 @@ page_main.connect(page_act, ActivityShikigamiAssets.I_MAIN_GOTO_ACT, key='main->
 page_activity_exploration = Page(ActivityShikigamiAssets.I_EXP_CHECK_EXPLORATION)
 page_act.connect(page_activity_exploration, ActivityShikigamiAssets.I_TO_EXPLORATION,
                  key='activity->exploration')
-page_activity_exploration.connect(page_act, ActivityShikigamiAssets.I_EXPLORATION_TO_MAIN,
+page_activity_exploration.connect(page_act, GlobalGameAssets.I_UI_BACK_YELLOW,
                                   key='exploration->activity')
 
 # 当期爬塔入口中间层：活动主页出边统一由 normal.setup_climb_pages() 声明。
