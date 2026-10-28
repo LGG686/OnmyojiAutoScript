@@ -50,16 +50,6 @@
     "description": "奖励宝箱"
   },
   {
-    "itemName": "trace_true",
-    "imageName": "wq_trace_true.png",
-    "roiFront": "1148,571,77,69",
-    "roiBack": "1035,502,245,213",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "profile": "High",
-    "description": "小号追踪"
-  },
-  {
     "itemName": "trace_false",
     "imageName": "wq_trace_false.png",
     "roiFront": "1152,569,83,79",
@@ -110,26 +100,6 @@
     "description": "description"
   },
   {
-    "itemName": "wq_trace_one_enable",
-    "imageName": "wq_trace_one_enable.png",
-    "roiFront": "1150,570,79,75",
-    "roiBack": "1047,500,233,220",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "profile": "High",
-    "description": "庭院悬赏任务界面 单个任务点开后 左上角是否追踪"
-  },
-  {
-    "itemName": "wq_trace_one_disable",
-    "imageName": "wq_trace_one_disable.png",
-    "roiFront": "1156,570,77,67",
-    "roiBack": "1055,488,225,232",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "profile": "High",
-    "description": "庭院悬赏任务界面 单个任务点开后 左上角是否追踪"
-  },
-  {
     "itemName": "wq_trace_one_check_opened",
     "imageName": "wq_trace_one_check_opened.png",
     "roiFront": "778,166,52,29",
@@ -142,8 +112,8 @@
   {
     "itemName": "wq_trace_one_realworld",
     "imageName": "wq_trace_one_realworld.png",
-    "roiFront": "837,457,180,180",
-    "roiBack": "604,295,514,417",
+    "roiFront": "1173,579,51,54",
+    "roiBack": "1037,517,243,203",
     "method": "Template matching",
     "threshold": 0.8,
     "profile": "High",

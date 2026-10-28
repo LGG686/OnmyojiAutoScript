@@ -109,8 +109,6 @@ class WantedQuestsAssets:
 	I_TRACE_DISABLE = RuleImage(roi_front=(1154,609,68,58), roi_back=(1065,495,215,225), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_trace_disable.png")
 	# 奖励宝箱 
 	I_WQ_BOX = RuleImage(roi_front=(48,187,43,38), roi_back=(0,72,118,552), threshold=0.7, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_wq_box.png")
-	# 小号追踪 
-	I_TRACE_TRUE = RuleImage(roi_front=(1148,571,77,69), roi_back=(1035,502,245,213), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_trace_true.png")
 	# 小号不追踪 
 	I_TRACE_FALSE = RuleImage(roi_front=(1152,569,83,79), roi_back=(1051,481,229,239), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_trace_false.png")
 	# description 
@@ -121,14 +119,10 @@ class WantedQuestsAssets:
 	I_GOTO_3 = RuleImage(roi_front=(1074,439,56,29), roi_back=(1053,417,101,73), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_goto_3.png")
 	# description 
 	I_GOTO_4 = RuleImage(roi_front=(1078,516,55,27), roi_back=(1054,488,100,76), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_goto_4.png")
-	# 庭院悬赏任务界面 单个任务点开后 左上角是否追踪 
-	I_WQ_TRACE_ONE_ENABLE = RuleImage(roi_front=(1150,570,79,75), roi_back=(1047,500,233,220), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_trace_one_enable.png")
-	# 庭院悬赏任务界面 单个任务点开后 左上角是否追踪 
-	I_WQ_TRACE_ONE_DISABLE = RuleImage(roi_front=(1156,570,77,67), roi_back=(1055,488,225,232), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_trace_one_disable.png")
 	# 庭院悬赏任务界面 单个任务点开后的界面 是否打开的 标志 
 	I_WQ_TRACE_ONE_CHECK_OPENED = RuleImage(roi_front=(778,166,52,29), roi_back=(582,147,431,110), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_trace_one_check_opened.png")
 	# 庭院悬赏任务界面 单个任务点开后的界面 是否为现世任务标志 
-	I_WQ_TRACE_ONE_REALWORLD = RuleImage(roi_front=(837,457,180,180), roi_back=(604,295,514,417), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_trace_one_realworld.png")
+	I_WQ_TRACE_ONE_REALWORLD = RuleImage(roi_front=(1173,579,51,54), roi_back=(1037,517,243,203), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_trace_one_realworld.png")
 	# 探索界面,左侧任务列表角标志 
 	I_WQ_LIST_TOP_BOTTOM_CHECK = RuleImage(roi_front=(42,194,35,31), roi_back=(30,126,118,521), threshold=0.8, method="Template matching", profile="High", file="./tasks/WantedQuests/wq/wq_list_top_bottom_check.png")
 
@@ -153,7 +147,7 @@ class WantedQuestsAssets:
 	# Ocr-description 
 	O_WQ_INFO_4 = RuleOcr(roi=(711,506,315,44), area=(711,507,315,44), mode="Single", method="Default", keyword="", name="wq_info_4")
 	# 怪物名称,如酒吞，阎魔等 
-	O_WQ_MONSTER_TYPE = RuleOcr(roi=(768,154,349,50), area=(768,154,349,50), mode="Full", method="Default", keyword="", name="wq_monster_type")
+	O_WQ_MONSTER_TYPE = RuleOcr(roi=(634,154,483,52), area=(634,154,483,52), mode="Full", method="Default", keyword="", name="wq_monster_type")
 	#  
 	O_WQ_TEXT_ALL = RuleOcr(roi=(11,114,96,403), area=(11,114,96,403), mode="Full", method="Default", keyword="", name="wq_text_all")
 	# 是否有悬赏封印检查 

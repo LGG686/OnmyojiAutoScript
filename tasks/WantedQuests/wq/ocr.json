@@ -82,8 +82,8 @@
   },
   {
     "itemName": "wq_monster_type",
-    "roiFront": "768,154,349,50",
-    "roiBack": "768,154,349,50",
+    "roiFront": "634,154,483,52",
+    "roiBack": "634,154,483,52",
     "mode": "Full",
     "method": "Default",
     "keyword": "",
