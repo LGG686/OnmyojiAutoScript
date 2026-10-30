@@ -50,23 +50,24 @@ class WeeklyPurchaseAssets:
 	S_GUILD_STORE = RuleSwipe(roi_front=(806,460,46,35), roi_back=(754,360,90,34), mode="default", name="guild_store")
 
 
-	# Click Rule Assets
-	# 
-	C_ITACHI_GIFT = RuleClick(roi_front=(731,250,153,55), roi_back=(731,250,153,55), name="itachi_gift")
-
-
 	# Image Rule Assets
 	#  
-	I_ITACHI_SHOP_ENTRY = RuleImage(roi_front=(47,635,45,40), roi_back=(42,630,55,50), threshold=0.8, method="Template matching", profile="High", file="./tasks/WeeklyPurchase/itachi_shop/itachi_shop_itachi_shop_entry.png")
+	I_ITACHI_SHOP_ENTRY = RuleImage(roi_front=(47,635,45,40), roi_back=(34,627,341,60), threshold=0.8, method="Template matching", profile="High", file="./tasks/WeeklyPurchase/itachi_shop/itachi_shop_itachi_shop_entry.png")
 	#  
 	I_ITACHI_SHOP_CHECK = RuleImage(roi_front=(121,37,78,39), roi_back=(116,33,88,49), threshold=0.8, method="Template matching", profile="High", file="./tasks/WeeklyPurchase/itachi_shop/itachi_shop_itachi_shop_check.png")
 
 
 	# Ocr Rule Assets
 	#  
-	O_ITACHI_COIN = RuleOcr(roi=(1081,21,134,38), area=(1081,21,134,38), mode="DigitCounter", method="Default", keyword="", name="itachi_coin")
+	O_ITACHI_COIN = RuleOcr(roi=(1102,13,134,38), area=(1102,13,134,38), mode="DigitCounter", method="Default", keyword="", name="itachi_coin")
 	#  
 	O_ITACHI_BUY_COST = RuleOcr(roi=(634,530,70,41), area=(634,530,70,41), mode="Digit", method="Default", keyword="", name="itachi_buy_cost")
+	# 小型鼬乐礼盒
+	O_ITACHI_MINI = RuleOcr(roi=(736,133,145,42), area=(677,101,452,474), mode="Single", method="Default", keyword="小型鼬乐礼盒", name="itachi_mini")
+	# 中型鼬乐礼盒
+	O_ITACHI_MEDIUM = RuleOcr(roi=(949,136,145,42), area=(677,101,452,474), mode="Single", method="Default", keyword="中型鼬乐礼盒", name="itachi_medium")
+	# 大型鼬乐礼盒
+	O_ITACHI_LARGE = RuleOcr(roi=(733,363,145,42), area=(677,101,452,474), mode="Single", method="Default", keyword="大型鼬乐礼盒", name="itachi_large")
 
 
 	# Image Rule Assets
