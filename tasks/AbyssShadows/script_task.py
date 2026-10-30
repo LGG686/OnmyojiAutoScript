@@ -385,6 +385,11 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, QuickLoadout, AbyssShadowsAs
             #
             if self.appear(self.I_PREPARE_HIGHLIGHT):
                 return True
+            # 战斗瞬间结束（敌人残血/被秒杀）：点出发后不会出现准备高亮，而是直接停在胜利结算页。
+            # 视为该敌人已击破，余下的结算点击交给 run_battle 的战斗循环处理。
+            if self.appear(self.I_WIN):
+                logger.info("Battle settled without prepare, enemy considered killed")
+                return True
             if not timer_animation.reached():
                 continue
             if self.appear(self.I_ABYSS_NAVIGATION, threshold=0.85):
