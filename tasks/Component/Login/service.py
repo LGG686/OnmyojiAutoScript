@@ -74,7 +74,7 @@ class LoginService(
             if handle_desktop_login_popup():
                 continue
             if self.appear_then_click(
-                self.I_RETURN_CHESS_CANCEL,
+                self.I_UI_CANCEL,
                 interval=0.8,
             ):
                 logger.info(
@@ -94,8 +94,8 @@ class LoginService(
                 )
                 self.return_to_chess_lobby()
                 return True
-            if self.appear_then_click(self.I_CANCEL_BATTLE, interval=0.8):
-                logger.info('Cancel continue battle')
+            if self.appear_then_click(self.I_CANCEL_UPDATE, interval=1):
+                logger.info('Cancel engine update')
                 continue
             if self.appear(self.I_CHECK_MAIN, interval=0.2) and not self.appear(self.I_MAIN_GOTO_SHIKIGAMI_RECORDS):
                 logger.info('The main had already appeared, but shikigami records had not yet appeared')
@@ -125,10 +125,10 @@ class LoginService(
             if self.appear_then_click(self.I_WATCH_VIDEO_CANCEL, interval=0.6):
                 logger.info('Close video')
                 continue
-            if self.appear_then_click(self.I_LOGIN_RED_CLOSE, interval=0.6):
+            if self.appear_then_click(self.I_UI_BACK_RED, interval=0.6):
                 logger.info('Close red close')
                 continue
-            if self.appear_then_click(self.I_LOGIN_YELLOW_CLOSE, interval=0.6):
+            if self.appear_then_click(self.I_UI_BACK_YELLOW, interval=0.6):
                 logger.info('Close yellow close')
                 continue
             if self.appear_then_click(self.I_LOGIN_LOGIN_GOTO_BIND_PHONE):
@@ -163,7 +163,7 @@ class LoginService(
                 logger.info('误入区服设置')
                 self.device.click(x=106, y=535)
                 continue
-            if self.appear(self.I_EARLY_SERVER) and self.appear_then_click(self.I_EARLY_SERVER_CANCEL):
+            if self.appear(self.I_EARLY_SERVER) and self.appear_then_click(self.I_UI_CANCEL):
                 logger.info('Cancel switch from early server to normal server')
                 continue
 

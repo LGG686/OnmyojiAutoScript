@@ -187,7 +187,7 @@ page_main = Page(
     category="global",
 )
 page_main.add_enter_success_hooks(
-    GameUiAssets.I_AD_CLOSE_RED, GlobalGameAssets.I_UI_BACK_RED, RestartAssets.I_CANCEL_BATTLE,
+    GameUiAssets.I_AD_CLOSE_RED, GlobalGameAssets.I_UI_BACK_RED, GlobalGameAssets.I_UI_CANCEL,
 )
 
 # 阵容助手可能从多个页面误触进入，黄色返回会回到实际来源页。

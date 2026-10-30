@@ -22,6 +22,7 @@ _EQ_LINE_RE = re.compile(r"^═{15,}\s*$")
 _EQ_TITLE_LINE_RE = re.compile(r"^═{10,}\s+(?P<title>.*?)\s+═{10,}\s*$")
 _TITLE_LINE_RE = re.compile(r"^─{10,}\s*(?P<title>.*?)\s*─{10,}\s*$")
 _TASK_ENDED_RE = re.compile(r"^(?P<title>.+?)\s+task ended\b", re.IGNORECASE)
+_SCHEDULER_END_RE = re.compile(r"^Scheduler:\s*End task\s+`(?P<title>[^`]+)`")
 _BATTLE_TITLE = "GENERAL BATTLE START"
 _START_TITLE = "START"
 _SIX_REALMS_TITLE = "SIXREALMS"
@@ -158,7 +159,7 @@ class LogStatsParser:
     @staticmethod
     def _extract_task_ended_title(line: str) -> str | None:
         message = line.rsplit("|", 1)[-1].strip()
-        matched = _TASK_ENDED_RE.match(message)
+        matched = _TASK_ENDED_RE.match(message) or _SCHEDULER_END_RE.match(message)
         return matched.group("title").strip() if matched else None
 
     @staticmethod
@@ -208,7 +209,7 @@ class LogStatsParser:
         if self._active_task is None:
             self._active_task = TaskRunState(
                 name=task_name,
-                start_time=self._six_realms_start_time,
+                start_time=self._six_realms_last_time,
                 last_time=self._six_realms_last_time,
             )
         elif self._normalize_title(self._active_task.name) != self._normalize_title(task_name):
@@ -216,7 +217,7 @@ class LogStatsParser:
             self._close_active_task()
             self._active_task = TaskRunState(
                 name=task_name,
-                start_time=self._six_realms_start_time,
+                start_time=self._six_realms_last_time,
                 last_time=self._six_realms_last_time,
             )
 
@@ -300,11 +301,12 @@ class LogStatsParser:
         self._six_realms_last_time = ts
 
     def _handle_task_ended(self, title: str) -> None:
-        if not self._six_realms_active or self._active_task is None:
+        if self._active_task is None:
             return
         if self._normalize_title(title) != self._normalize_title(self._active_task.name):
             return
         self._close_active_battle()
+        self._close_active_task()
 
     def _close_active_battle(self) -> None:
         if self._active_task is None or self._active_battle is None:

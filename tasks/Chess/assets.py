@@ -65,7 +65,7 @@ class ChessAssets:
 	# 购买经验 
 	I_EXPERIENCE = RuleImage(roi_front=(37,641,102,26), roi_back=(32,636,112,36), threshold=0.8, method="Template matching", profile="High", file="./tasks/Chess/c/c_experience.png")
 	# 打开阵容预设 
-	I_OPEN_LINEUP = RuleImage(roi_front=(271,17,33,34), roi_back=(259,7,57,53), threshold=0.8, method="Template matching", profile="High", file="./tasks/Chess/c/c_open_lineup.png")
+	I_OPEN_LINEUP = RuleImage(roi_front=(271,17,33,34), roi_back=(191,1,205,69), threshold=0.8, method="Template matching", profile="High", file="./tasks/Chess/c/c_open_lineup.png")
 	# 商店刷新 
 	I_REFRESH = RuleImage(roi_front=(1169,419,65,64), roi_back=(1164,414,75,74), threshold=0.8, method="Template matching", profile="High", file="./tasks/Chess/c/c_refresh.png")
 	#  
