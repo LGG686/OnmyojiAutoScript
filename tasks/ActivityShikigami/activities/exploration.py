@@ -186,9 +186,11 @@ class ExplorationAct:
                 if not self._wait_exp(lambda: self.appear(self.I_STORY_SKIP_ENSURE),
                                       click=self.I_EVENT_STORY):
                     raise GameStuckError('Story skip confirmation did not appear')
-                if not self._wait_exp(lambda: self.appear(self.I_UI_REWARD),
+                # 剧情奖励面板时有时无，回到探索主界面同样视为剧情结束。
+                if not self._wait_exp(lambda: self.appear(self.I_UI_REWARD)
+                                      or self._exp_main_ready(),
                                       click=self.I_STORY_SKIP_ENSURE):
-                    raise GameStuckError('Story reward did not appear')
+                    raise GameStuckError('Story did not end after skipping')
                 self._clear_exp_rewards()
                 return True
             time.sleep(0.2)
