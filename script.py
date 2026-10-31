@@ -39,6 +39,7 @@ from module.ocr.rpc import (
     get_ocr_client,
 )
 from module.script import ScriptRuntimeController, ScriptRuntimeDecision
+from module.cooperation import Cooperation, BATTLE_TASKS, prepare_task_cooperation
 from tasks.Restart.server_update import delay_pending_tasks_for_server_update, is_server_update_window
 from module.server.log_service import build_error_log_dir_name
 
@@ -326,6 +327,9 @@ class Script:
 
             time.sleep(5)
 
+            cooperation = self.__dict__.get('_cooperation')
+            if cooperation is not None and cooperation.requested():
+                return False
             if self.config.should_reload():
                 return False
 
@@ -445,7 +449,11 @@ class Script:
         :return:
         """
         while True:
+            cooperation = self.__dict__.get('_cooperation')
+            wake_task = cooperation.wake_next(self.config) if cooperation is not None else None
             task = self.config.get_next()
+            if wake_task and task.command != 'Restart':
+                task = next(t for t in self.config.pending_task if t.command == wake_task)
             self.config.task = task
             if self.state_queue:
                 self.state_queue.put({"schedule": self.config.get_schedule_data()})
@@ -545,6 +553,10 @@ class Script:
         RuleClick.reset_task_points()
         set_ocr_logging_enabled(self.config.global_game.ocr.save_ocr_log)
         try:
+            cooperation = self.__dict__.get('_cooperation')
+            self.config.cooperation_runtime = cooperation
+            if command in BATTLE_TASKS:
+                prepare_task_cooperation(self.config, command)
             try:
                 self.device.screenshot()
             except GameNotRunningError:
@@ -557,7 +569,10 @@ class Script:
             module_path = str(Path.cwd() / 'tasks' / command / (module_name + '.py'))
             logger.info(f'module_path: {module_path}, module_name: {module_name}')
             task_module = load_module(module_name, module_path)
-            task_module.ScriptTask(config=self.config, device=self.device).run()
+            task_runner = task_module.ScriptTask(config=self.config, device=self.device)
+            if command in BATTLE_TASKS:
+                task_runner._battle_cooperation_prepared = True
+            task_runner.run()
         except Exception as e:
             return self._handle_task_exception(e, command)
         return False
@@ -571,6 +586,8 @@ class Script:
             logger.set_file_logger(self.config_name, do_cleanup=True)
         start_day = date.today()
         logger.info(f'Start scheduler loop: {self.config_name}')
+        self._cooperation = Cooperation(self.config_name)
+        self._cooperation.start()
         if self.resource_precache_enable:
             logger.info('Resource precache enabled: warming up OCR model')
             try:
@@ -632,12 +649,17 @@ class Script:
             self.device.click_record_clear()
             logger.hr(task, level=0)
             self.config.model.running_task = task
+            self._cooperation.publish(task)
             _task_start = datetime.now()
             RuleScatter.begin_task(task)
             try:
                 success = self.run(inflection.camelize(task))
             finally:
                 RuleScatter.end_task(task)
+                self._cooperation.publish('')
+                self._cooperation.finish(task)
+                peers = getattr(self.config, '_cooperation_peers', None) or {}
+                peers.pop(task, None)
             self.config.model.running_task = ''
             logger.info(f'Scheduler: End task `{task}`')
             self.is_first_task = False
@@ -647,6 +669,12 @@ class Script:
                 self._active_date = date.today()
                 self._active_seconds_today = 0
             self._active_seconds_today += (datetime.now() - _task_start).total_seconds()
+
+            outcome = self.last_task_runtime_outcome or {}
+            if outcome.get('status') in ('cooperation_waiting', 'cooperation_failed'):
+                # A missing/busy partner is a scheduling outcome, not a game recovery failure.
+                del_cached_property(self, 'config')
+                continue
 
             # Check failures
             # failed = deep_get(self.failure_record, keys=task, default=0)
@@ -681,6 +709,8 @@ class Script:
                 continue
             else:
                 break
+
+        self._cooperation.close()
 
     def _ensure_restart_enabled(self) -> None:
         """所有重启入口均尊重任务启用开关，禁止绕过用户配置。"""
@@ -791,9 +821,11 @@ class Script:
 
         if isinstance(e, TaskEnd):
             self._capture_task_runtime_outcome(command)
-            # 任务正常收尾，说明登录态是稳的，桌面登录恢复的容忍次数重新计数
-            self._desktop_login_count = 0
-            return True
+            outcome = self.last_task_runtime_outcome or {}
+            if outcome.get('status') != 'cooperation_failed':
+                # 任务正常收尾，说明登录态是稳的，桌面登录恢复的容忍次数重新计数
+                self._desktop_login_count = 0
+            return outcome.get('status') != 'cooperation_failed'
 
         if isinstance(e, GameNotRunningError):
             logger.warning(e)

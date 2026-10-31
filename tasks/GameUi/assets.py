@@ -224,7 +224,7 @@ class GameUiAssets:
 	# description 
 	I_TOWN_GOTO_HUNT = RuleImage(profile="High", roi_front=(475,138,46,69), roi_back=(275,122,520,100), threshold=0.7, method="Template matching", file="./tasks/GameUi/page/page_town_goto_hunt.png")
 	# 协同对弈 
-	I_TOWN_GOTO_DRAFT_DUEL = RuleImage(profile="High", roi_front=(335,159,55,72), roi_back=(170,145,567,100), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_town_goto_draft_duel.png")
+	I_TOWN_GOTO_DRAFT_DUEL = RuleImage(profile="High", roi_front=(344,154,38,39), roi_back=(170,145,567,100), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_town_goto_draft_duel.png")
 	# 百鬼奕 
 	I_TOWN_GOTO_HYAKKISEN = RuleImage(profile="High", roi_front=(192,145,48,67), roi_back=(86,130,447,100), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_town_goto_hyakkisen.png")
 	# 斗技主界面左上角文字图像 
@@ -237,6 +237,8 @@ class GameUiAssets:
 	I_CHECK_HUNT_KIRIN = RuleImage(profile="High", roi_front=(353,240,30,54), roi_back=(328,234,81,68), threshold=0.7, method="Template matching", file="./tasks/GameUi/page/page_check_hunt_kirin.png")
 	# description 
 	I_CHECK_DRAFT_DUEL = RuleImage(profile="High", roi_front=(1051,612,56,58), roi_back=(1029,594,100,100), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_check_draft_duel.png")
+	# 协同对弈页面 
+	I_DRAFT_DUEL = RuleImage(profile="High", roi_front=(146,8,123,40), roi_back=(48,0,339,76), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_checks_draft_duel.png")
 	# 町中进入百鬼标志 
 	I_TOWN_GOTO_HYAKKIYAKOU = RuleImage(profile="High", roi_front=(880,165,53,69), roi_back=(827,149,148,100), threshold=0.8, method="Template matching", file="./tasks/GameUi/page/page_town_goto_hyakkiyakou.png")
 	# 百鬼夜行标志 

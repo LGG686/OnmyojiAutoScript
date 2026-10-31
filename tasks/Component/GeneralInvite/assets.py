@@ -1,4 +1,5 @@
 from module.atom.image import RuleImage
+from module.atom.frame import RuleFrame, Image, Ocr, Click
 from module.atom.click import RuleClick
 from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
@@ -51,9 +52,9 @@ class GeneralInviteAssets:
 	# 判断是否点中好友了 
 	I_SELECTED = RuleImage(roi_front=(895,373,33,32), roi_back=(347,174,589,369), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralInvite/gi/gi_selected.png")
 	# 用来判断当前的列表是哪儿的 
-	I_FLAG_1_ON = RuleImage(roi_front=(355,131,43,15), roi_back=(354,128,62,19), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_on.png")
+	I_FLAG_1_ON = RuleImage(roi_front=(355,131,43,15), roi_back=(342,128,74,19), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_on.png")
 	# description 
-	I_FLAG_1_OFF = RuleImage(roi_front=(353,128,58,20), roi_back=(353,126,58,22), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_off.png")
+	I_FLAG_1_OFF = RuleImage(roi_front=(353,128,58,20), roi_back=(342,124,69,24), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralInvite/gi/gi_flag_1_off.png")
 	# description 
 	I_FLAG_2_ON = RuleImage(roi_front=(472,82,32,11), roi_back=(454,74,56,26), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralInvite/gi/gi_flag_2_on.png")
 	# description 
@@ -63,7 +64,7 @@ class GeneralInviteAssets:
 	# description 
 	I_FLAG_3_OFF = RuleImage(roi_front=(590,129,41,19), roi_back=(590,126,41,22), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralInvite/gi/gi_flag_3_off.png")
 	# description 
-	I_FLAG_4_ON = RuleImage(roi_front=(713,128,34,21), roi_back=(713,128,34,21), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralInvite/gi/gi_flag_4_on.png")
+	I_FLAG_4_ON = RuleImage(roi_front=(713,132,34,17), roi_back=(693,126,54,23), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralInvite/gi/gi_flag_4_on.png")
 	# description 
 	I_FLAG_4_OFF = RuleImage(roi_front=(703,128,53,21), roi_back=(703,128,53,21), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralInvite/gi/gi_flag_4_off.png")
 	# 永生之海添加好友 

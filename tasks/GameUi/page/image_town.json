@@ -50,10 +50,20 @@
     "description": "description"
   },
   {
+    "itemName": "draft_duel",
+    "imageName": "page_checks_draft_duel.png",
+    "profile": "High",
+    "roiFront": "146,8,123,40",
+    "roiBack": "48,0,339,76",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "协同对弈页面"
+  },
+  {
     "itemName": "town_goto_draft_duel",
     "imageName": "page_town_goto_draft_duel.png",
     "profile": "High",
-    "roiFront": "335,159,55,72",
+    "roiFront": "344,154,38,39",
     "roiBack": "170,145,567,100",
     "method": "Template matching",
     "threshold": 0.8,

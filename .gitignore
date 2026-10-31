@@ -276,6 +276,7 @@ console.bat
 tasks/AutoCheckinBigGod/frida-server-17.6.2-android-x86_64
 oas.bat
 /data/frog_oas/
+/data/cooperation/
 # User-defined Chess lineups; builtin lineup_strategy.json stays tracked.
 /tasks/Chess/strategy/custom_lineups.json
 /tasks/Chess/strategy/custom_lineups.v1.bak.json
