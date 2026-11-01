@@ -7,7 +7,7 @@ from tasks.Component.GeneralBattle.assets import GeneralBattleAssets
 
 
 class DraftDuelMatchmakingMixin:
-    def _match_battle(self) -> bool:
+    def _match_battle(self) -> bool | str:
         """采集头像后匹配；取消必须确认回到待匹配页面才能重开。"""
         leader = self.config.draft_duel.draft_duel_config.match_mode != DraftMatchMode.MEMBER
         limit = self.config.draft_duel.draft_duel_config.match_wait_seconds
@@ -26,7 +26,10 @@ class DraftDuelMatchmakingMixin:
                                            click_wall=click_wall, cancelling=cancelling)
             self.device.stuck_record_clear()
             self.screenshot()
-            self._observe_duel_lobby()
+            if self._observe_duel_lobby():
+                # 大轮结束已退回大厅，本轮队伍作废，必须重新组队邀请发起下一大轮。
+                self._draft_match_state = None
+                return 'lobby'
             self._save_draft_checkpoint('rank')
             now = time.monotonic()
             if not leader and self.appear(self.I_LEADER_EXIT):

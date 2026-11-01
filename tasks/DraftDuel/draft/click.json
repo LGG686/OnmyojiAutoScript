@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "itemName": "round_report_blank",
+    "roiFront": "230,380,80,60",
+    "roiBack": "230,380,80,60",
+    "description": "番胜卷轴与奖励结算的空白处，点击推进下一层"
+  }
+]

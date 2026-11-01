@@ -11,11 +11,13 @@ from tasks.GameUi.page import page_draft_duel
 class DraftDuelInvitationMixin:
     def _invite_teammate(self):
         """协斗只负责打开大厅邀请入口，查找、选中和发送均调用通用邀请。"""
-        if not self.appear_then_click(self.I_EMPTY_TEAMMATE, interval=1):
-            return False
-        if not self.wait_until_appear(self.I_INVITE_ENSURE, wait_time=5):
-            return False
-        return self.invite_friends(self.config.draft_duel.invite_config, open_invite=False)
+        for _ in range(3):
+            if not self.appear_then_click(self.I_EMPTY_TEAMMATE, interval=1):
+                return False
+            if self.wait_until_appear(self.I_INVITE_ENSURE, wait_time=5):
+                return self.invite_friends(self.config.draft_duel.invite_config, open_invite=False)
+            logger.warning('DraftDuel invite panel did not appear, retry clicking teammate slot')
+        return False
 
     def is_in_room(self, is_screenshot=True):
         """为通用邀请提供基础图像判断，详细房间核验留给新流程。"""
@@ -36,6 +38,7 @@ class DraftDuelInvitationMixin:
     def _goto_draft_lobby(self) -> bool:
         """复用全局路径：庭院 -> 町中 -> 协同对弈。"""
         self.goto_page(page_draft_duel)
+        self._dismiss_round_report()
         self._observe_duel_lobby()
         return self._in_draft_lobby()
 
@@ -108,6 +111,11 @@ class DraftDuelInvitationMixin:
             if self._member_match_started():
                 logger.info('DraftDuel captain started; member entered draft or battle')
                 return True
+            if self.appear(self.I_WIN_FAN) or self.appear(self.I_UI_AWARD):
+                # 大轮结算浮窗在大轮结束时才推下来，可能晚于进大厅那一趟，等人期间同样要清掉。
+                logger.info('DraftDuel round report appeared while waiting for captain; dismiss it')
+                self._dismiss_round_report()
+                continue
             now = time.monotonic()
             if self.appear(self.I_LOBBY_TEAMMATE_WAIT) and not waiting_seen:
                 waiting_seen = True

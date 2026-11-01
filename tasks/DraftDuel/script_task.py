@@ -76,6 +76,10 @@ class ScriptTask(
             if drafted and phase != 'fight':
                 self._save_draft_checkpoint('rank')
             matched = self._match_battle() if drafted and phase != 'fight' else drafted
+            if matched == 'lobby':
+                # 大轮已打完退回大厅，重新从邀请组队开始，不进入上阵。
+                phase = 'lobby'
+                continue
             if matched:
                 self._save_draft_checkpoint('fight')
             deployed = self._deploy_shikigami() if matched else False

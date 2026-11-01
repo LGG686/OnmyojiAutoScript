@@ -298,5 +298,15 @@
     "threshold": 0.8,
     "profile": "High",
     "description": "自动上阵"
+  },
+  {
+    "itemName": "win_fan",
+    "imageName": "draft_win_fan.png",
+    "roiFront": "616,238,38,29",
+    "roiBack": "448,135,401,244",
+    "method": "Multi-scale template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "番胜卷轴扇面上沿的金红交界处"
   }
 ]

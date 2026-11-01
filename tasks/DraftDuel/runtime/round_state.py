@@ -34,9 +34,14 @@ class DraftDuelRoundStateMixin:
         self.draft_unresolved_slots = []
         self._initialize_round_statistics()
 
-    def _observe_duel_lobby(self):
-        """只有重新进入组队大厅，才开启新大轮；连续大厅截图只计一次。"""
+    def _observe_duel_lobby(self) -> bool:
+        """只有重新进入组队大厅，才开启新大轮；连续大厅截图只计一次。
+
+        Returns:
+            本次是否开启新大轮。
+        """
         in_lobby = bool(self.appear(self.I_WAIT_FIGHT_LOBBY))
+        new_round = False
         if in_lobby and not getattr(self, '_draft_wait_lobby_seen', False):
             self._draft_wait_lobby_seen = True
             if getattr(self, '_draft_round_had_battle', False):
@@ -47,9 +52,11 @@ class DraftDuelRoundStateMixin:
                 logger.info(f'DraftDuel completed big rounds: {self.draft_completed_rounds}/{target}')
                 if self.draft_completed_rounds >= target:
                     self._leave_draft_team(f'已完成{self.draft_completed_rounds}大轮协斗')
-                    return
+                    return False
+                self._dismiss_round_report()
             self._initialize_duel_state()
             self.draft_big_round = getattr(self, 'draft_big_round', 0) + 1
+            new_round = True
             logger.info(f'DraftDuel new big round: {self.draft_big_round}')
         if in_lobby:
             self._draft_wait_lobby_seen = True
@@ -58,6 +65,31 @@ class DraftDuelRoundStateMixin:
                 self.I_FIGHT_WAIT, GameUiAssets.I_CHECK_TOWN)):
             # 邀请面板或单帧漏识别不算离开大厅，避免重新看到大厅时误清本轮。
             self._draft_wait_lobby_seen = False
+        return new_round
+
+    def _dismiss_round_report(self) -> bool:
+        """番胜浮窗与奖励浮窗都浮在大厅上，两者都不在了才算回到干净的组队大厅。
+
+        退出条件是：大厅标志 I_WAIT_FIGHT_LOBBY 出现，同时番胜扇面 I_WIN_FAN 与
+        奖励浮窗 I_UI_AWARD 都没出现。番胜卷轴用扇面上沿的金红交界处判定，位置不随番胜数字变化。
+        浮窗比大厅晚一步淡入，所以每轮先等 2 秒再判断，否则会看到干净大厅就直接收工。
+        """
+        for _ in range(6):
+            time.sleep(2)
+            self.screenshot()
+            if self.appear(self.I_WIN_FAN):
+                self.click(self.C_ROUND_REPORT_BLANK, interval=1)
+                continue
+            if self.appear_then_click(self.I_UI_AWARD, interval=1):
+                continue
+            # 扇面与奖励浮窗都不在，此时才把大厅标志当作真正的组队大厅。
+            if (not self.appear(self.I_WIN_FAN)
+                    and not self.appear(self.I_UI_AWARD)
+                    and self.appear(self.I_WAIT_FIGHT_LOBBY)):
+                return True
+            self.click(self.C_ROUND_REPORT_BLANK, interval=1)
+        logger.warning('DraftDuel round report still covers the lobby')
+        return False
 
     def _begin_small_game(self):
         """post_draft_rank 发起的小局；取消匹配重试不增加小局次数。"""

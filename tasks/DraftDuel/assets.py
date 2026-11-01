@@ -12,6 +12,11 @@ from module.atom.list import RuleList
 class DraftDuelAssets: 
 
 
+	# Click Rule Assets
+	# 番胜卷轴与奖励结算的空白处，点击推进下一层
+	C_ROUND_REPORT_BLANK = RuleClick(roi_front=(230,380,80,60), roi_back=(230,380,80,60), name="round_report_blank")
+
+
 	# Image Rule Assets
 	F_SHIKIGAMI_HEAD = RuleFrame(name='shikigami_head', roi_badge=(422, 14, 32, 84), roi_range=[(481, 35, 42, 44), (565, 34, 42, 44), (651, 33, 42, 44), (737, 33, 42, 44), (822, 33, 42, 44)], roi_back=(410, 5, 512, 103), threshold=0.8, method='Template matching', profile='High', badgefile=['./tasks/DraftDuel/draft/shikigami_head_badge_1.png'], range=[Image(method='Template matching', threshold=0.8), Image(method='Template matching', threshold=0.8), Image(method='Template matching', threshold=0.8), Image(method='Template matching', threshold=0.8), Image(method='Template matching', threshold=0.8)])
 	F_FIGHT_SHIKIGAMI = RuleFrame(name='fight_shikigami', roi_badge=(559, 32, 33, 60), roi_range=[(86, 34, 67, 66), (158, 34, 67, 66), (229, 34, 67, 66), (302, 34, 67, 66), (374, 35, 67, 66), (445, 34, 67, 66)], roi_back=(73, 14, 536, 94), threshold=0.8, method='Template matching', profile='High', badgefile=['./tasks/DraftDuel/draft/fight_shikigami_badge_1.png'], range=[Image(method='Template matching', threshold=0.8), Image(method='Template matching', threshold=0.8), Image(method='Template matching', threshold=0.8), Image(method='Template matching', threshold=0.8), Image(method='Template matching', threshold=0.8), Image(method='Template matching', threshold=0.8)])
@@ -80,6 +85,8 @@ class DraftDuelAssets:
 	I_AUTO_RIGHT = RuleImage(roi_front=(1000,619,58,71), roi_back=(957,579,142,138), threshold=0.8, method="Template matching", profile="High", file="./tasks/DraftDuel/draft/draft_auto_right.png")
 	# 自动上阵 
 	I_AUTO_DOWN = RuleImage(roi_front=(999,619,58,71), roi_back=(956,574,142,138), threshold=0.8, method="Template matching", profile="High", file="./tasks/DraftDuel/draft/draft_auto_down.png")
+	# 番胜卷轴扇面上沿的金红交界处，用大范围 roiBack 检索 
+	I_WIN_FAN = RuleImage(roi_front=(616,238,38,29), roi_back=(448,135,401,244), threshold=0.8, method="Multi-scale template matching", profile="High", file="./tasks/DraftDuel/draft/draft_win_fan.png")
 
 
 	# Ocr Rule Assets
