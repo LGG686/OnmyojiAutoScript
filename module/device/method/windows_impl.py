@@ -11,7 +11,7 @@ from cached_property import cached_property
 from win32gui import (GetWindowText, EnumWindows, FindWindow, FindWindowEx,
                       IsWindow, GetWindowRect, GetWindowDC, DeleteObject,
                       SetForegroundWindow, IsWindowVisible, GetDC, GetParent,
-                      EnumChildWindows, SetForegroundWindow, GetClientRect)
+                      EnumChildWindows, SetForegroundWindow, GetClientRect, ReleaseDC)
 from win32con import (SRCCOPY, DESKTOPHORZRES, DESKTOPVERTRES, WM_LBUTTONUP,
                       WM_LBUTTONDOWN, WM_ACTIVATE, WA_ACTIVE, MK_LBUTTON,
                       WM_NCHITTEST, WM_SETCURSOR, HTCLIENT, WM_MOUSEMOVE,
@@ -108,19 +108,28 @@ class Window(Handle):
                     '请恢复游戏窗口（可被其他窗口遮挡，但不能最小化）'
                 )
             hwndDc = GetDC(self.screenshot_handle_num)
-            mfcDc = CreateDCFromHandle(hwndDc)
-            saveDc = mfcDc.CreateCompatibleDC()
-            saveBitMap = CreateBitmap()
-            saveBitMap.CreateCompatibleBitmap(mfcDc, widthScreen, heightScreen)
-            saveDc.SelectObject(saveBitMap)
-            saveDc.BitBlt((0, 0), (widthScreen, heightScreen), mfcDc, (0, 0), SRCCOPY)
-            signedIntsArray = saveBitMap.GetBitmapBits(True)
-            imgSrceen = frombuffer(signedIntsArray, dtype='uint8')
-            imgSrceen.shape = (heightScreen, widthScreen, 4)
-            imgSrceen = cv2.cvtColor(imgSrceen, cv2.COLOR_BGR2RGB)
-            DeleteObject(saveBitMap.GetHandle())
-            saveDc.DeleteDC()
-            mfcDc.DeleteDC()
+            saveDc = saveBitMap = None
+            try:
+                mfcDc = CreateDCFromHandle(hwndDc)
+                saveDc = mfcDc.CreateCompatibleDC()
+                saveBitMap = CreateBitmap()
+                saveBitMap.CreateCompatibleBitmap(mfcDc, widthScreen, heightScreen)
+                saveDc.SelectObject(saveBitMap)
+                saveDc.BitBlt((0, 0), (widthScreen, heightScreen), mfcDc, (0, 0), SRCCOPY)
+                signedIntsArray = saveBitMap.GetBitmapBits(True)
+                imgSrceen = frombuffer(signedIntsArray, dtype='uint8')
+                imgSrceen.shape = (heightScreen, widthScreen, 4)
+                imgSrceen = cv2.cvtColor(imgSrceen, cv2.COLOR_BGR2RGB)
+            finally:
+                try:
+                    if saveDc is not None:
+                        saveDc.DeleteDC()
+                finally:
+                    try:
+                        if saveBitMap is not None and saveBitMap.GetHandle():
+                            DeleteObject(saveBitMap.GetHandle())
+                    finally:
+                        ReleaseDC(self.screenshot_handle_num, hwndDc)
         # 客户端锁定大小导致未校准到目标尺寸时兜底缩放，保证与资产同尺寸
         target_w, target_h = self.screenshot_size
         if (widthScreen, heightScreen) != (target_w, target_h):

@@ -603,7 +603,8 @@ class ImageRuntime:
         active_threshold = float(rule_data.get("threshold", 0.0) if threshold is None else threshold)
         roi_front = [int(v) for v in rule_data.get("roi_front", [0, 0, 0, 0])]
         roi_back = [int(v) for v in (roi if roi is not None else rule_data.get("roi_back", [0, 0, 0, 0]))]
-        roi_pad = int(rule_data.get("roi_pad", 0) or 0)
+        roi_pad = int(rule_data.get("roi_pad", 0) or 0) if rule_data.get('method') in (
+            'Template matching', 'Masked template matching', 'Multi-scale template matching') else 0
         if roi_pad > 0:
             roi_back = self._expand_roi(roi_back, roi_pad)
         scale_range = rule_data.get("scale_range")

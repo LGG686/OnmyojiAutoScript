@@ -484,12 +484,11 @@ class ConfigModel(ConfigBase):
             logger.info(f"reset_task_datetime={date_time}")
             self.reset_datetime_for_all_enabled_tasks(date_time)
 
-        # 桌面客户端「启动实例」按钮：点击置 True → 主进程直接拉起该配置的客户端
-        # 实例，完成后改写 False 再走通用保存
+        # 一次性按钮只提交后台启动任务，立即复位，不阻塞配置 API。
         if (task == 'script' and group == 'desktop' and argument == 'launch_instance'
                 and value is True):
-            from module.device.method.desktop_impl import desktop_launch_instance
-            desktop_launch_instance(self)
+            from module.device.desktop_launch import schedule_desktop_launch
+            schedule_desktop_launch(self)
             value = False
 
         # 设置参数

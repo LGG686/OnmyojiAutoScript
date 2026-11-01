@@ -26,6 +26,7 @@ from module.logger import logger
 
 
 class Device(DesktopDevice, Platform, Screenshot, Control, AppControl):
+    image_roi_padding = 0
     _screen_size_checked = False
     detect_record = set()
     click_record = deque(maxlen=15)

@@ -26,6 +26,10 @@ import shutil
 import subprocess
 import time
 import ctypes
+import hashlib
+import tempfile
+from functools import wraps
+from filelock import FileLock
 from ctypes import c_long, byref, POINTER, Structure, wintypes
 
 from contextlib import contextmanager
@@ -42,7 +46,7 @@ from win32con import (WM_KEYDOWN, WM_KEYUP, VK_RETURN, GWL_STYLE, GWL_EXSTYLE,
                       SWP_SHOWWINDOW, SW_RESTORE)
 
 from module.base.decorator import del_cached_property
-from module.exception import EmulatorNotRunningError
+from module.exception import EmulatorNotRunningError, RequestHumanTakeover
 from module.logger import logger
 
 
@@ -508,9 +512,14 @@ def desktop_write_instance_state(profile, pid, logged_in: bool = False) -> None:
         started = desktop_pid_create_time(pid)
         if started:
             state['started'] = started
-        tmp = path.with_suffix('.json.tmp')
-        tmp.write_text(json.dumps(state, ensure_ascii=False), encoding='utf-8')
-        os.replace(tmp, path)
+        fd, temporary = tempfile.mkstemp(prefix='oas_instance.', suffix='.tmp', dir=path.parent)
+        try:
+            with os.fdopen(fd, 'w', encoding='utf-8') as stream:
+                json.dump(state, stream, ensure_ascii=False)
+            os.replace(temporary, path)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
     except Exception as e:
         logger.warning(f'写入桌面实例状态文件失败: {path}: {e}')
 
@@ -681,6 +690,84 @@ def desktop_game_exe(root) -> str:
     return ''
 
 
+def _verified_process(pid, started, root=None):
+    """A reused PID must never be adopted or terminated as the old process."""
+    return bool(started and desktop_pid_alive(pid) and
+                desktop_pid_create_time(pid) == started and
+                (not root or _desktop_pid_under_root(pid, root)))
+
+
+def desktop_valid_instance_state(profile, root=None):
+    state = desktop_read_instance_state(profile)
+    if not _verified_process(state.get('pid'), state.get('started'), root):
+        if state:
+            logger.warning('Desktop instance identity changed; discard stale state')
+            desktop_clear_instance_state(profile)
+        return {}
+    return state
+
+
+def _terminate_verified_pid(pid, started):
+    if not desktop_pid_alive(pid):
+        return True
+    if not started:
+        logger.error(f'Refuse to terminate PID={pid}: creation time unknown')
+        return False
+    kernel32 = ctypes.windll.kernel32
+    handle = kernel32.OpenProcess(0x1001, False, int(pid))
+    if not handle:
+        return False
+    try:
+        creation, exited, kernel, user = (wintypes.FILETIME() for _ in range(4))
+        if not kernel32.GetProcessTimes(handle, byref(creation), byref(exited), byref(kernel), byref(user)):
+            return False
+        actual = (creation.dwHighDateTime << 32) | creation.dwLowDateTime
+        if actual != started:
+            logger.error(f'Refuse to terminate reused PID={pid}')
+            return False
+        return bool(kernel32.TerminateProcess(handle, 0))
+    finally:
+        kernel32.CloseHandle(handle)
+
+
+def _serialized_launch(function):
+    """Serialize buttons and workers; never share an account profile across configs."""
+    @wraps(function)
+    def guarded(owner, *args, **kwargs):
+        config = getattr(owner, 'config', None) or owner
+        settings = config.script.desktop
+        root = desktop_install_root(settings.game_path)
+        if not root:
+            return function(owner, *args, **kwargs)
+        profile = desktop_profile_path(settings.profile_dir)
+        try:
+            if profile is not None:
+                profile = profile.resolve()
+                installation = Path(root).resolve()
+                if profile == installation or installation in profile.parents or profile in installation.parents:
+                    raise ValueError('桌面档案目录必须与游戏安装目录分离')
+                for path in (Path.cwd() / 'config').glob('*.json'):
+                    if path.stem == str(config.config_name):
+                        continue
+                    try:
+                        other = json.loads(path.read_text(encoding='utf-8-sig')).get('script', {}).get('desktop', {})
+                    except (OSError, ValueError):
+                        continue
+                    other_profile = desktop_profile_path(other.get('profile_dir', ''))
+                    if other.get('enable') and other_profile is not None and other_profile.resolve() == profile:
+                        raise ValueError(f'桌面档案目录被其他配置占用：{path.stem}')
+            # 同一安装目录也串行化，避免单实例兼容路径与多开路径同时发现新窗口。
+            key = hashlib.sha256(os.path.normcase(str(Path(root).resolve())).encode()).hexdigest()
+            folder = Path.cwd() / 'data' / 'desktop' / 'locks'
+            folder.mkdir(parents=True, exist_ok=True)
+            with FileLock(str(folder / f'{key}.lock'), timeout=120):
+                return function(owner, *args, **kwargs)
+        except Exception as error:
+            logger.error(f'Desktop launch refused: {error}')
+            return False
+    return guarded
+
+
 def desktop_spawn_client(exe: str, root: str, profile=None, timeout: int = 90,
                          attempt: int = 1, on_bound=None):
     """启动客户端并等其窗口就绪；返回 (bound_pid, spawned_pids)，Popen 失败返回 None。
@@ -695,7 +782,7 @@ def desktop_spawn_client(exe: str, root: str, profile=None, timeout: int = 90,
     """
     before_pids = {w['pid'] for w in list_desktop_windows()}
     logger.info(f'启动桌面客户端（第 {attempt} 轮）: {exe}')
-    spawned = set()
+    spawned = {}
     # 档案隔离：cwd 决定游戏数据根，env 决定 SDK 账号库落点
     cwd = str(profile) if profile is not None else root
     env = desktop_profile_env(Path(profile)) if profile is not None else None
@@ -704,13 +791,16 @@ def desktop_spawn_client(exe: str, root: str, profile=None, timeout: int = 90,
     try:
         proc = subprocess.Popen([exe], cwd=cwd, env=env,
                                 creationflags=getattr(subprocess, 'CREATE_NEW_PROCESS_GROUP', 0))
-        spawned.add(proc.pid)
+        spawned[proc.pid] = desktop_pid_create_time(proc.pid)
     except Exception as e:
         logger.error(f'启动桌面客户端失败: {e}')
         return None
 
     job = _desktop_attach_job(proc.pid)
     try:
+        if profile is not None and not job:
+            logger.error('无法确认多开进程归属：Job 创建失败，拒绝宽松绑定')
+            return 0, spawned
         deadline = time.time() + timeout
         stable_hwnd = 0
         stable_count = 0
@@ -720,9 +810,12 @@ def desktop_spawn_client(exe: str, root: str, profile=None, timeout: int = 90,
             # 匹配标题的新窗口都会成为候选，按 exe 归属收口，避免绑到别的进程。
             # Job 可用时再按「本轮启动的进程树」精确收口（多开必需）
             job_pids = _desktop_job_member_pids(job) if job else set()
+            for member in job_pids:
+                if member not in spawned:
+                    spawned[member] = desktop_pid_create_time(member)
             candidates = [w for w in list_desktop_windows()
                           if _desktop_pid_under_root(w['pid'], root)
-                          and (w['pid'] in job_pids if job_pids
+                          and (w['pid'] in job_pids if job
                                else w['pid'] not in before_pids)]
             if candidates:
                 candidate = candidates[0]
@@ -737,7 +830,7 @@ def desktop_spawn_client(exe: str, root: str, profile=None, timeout: int = 90,
                     hwnd = _desktop_best_window(candidate['pid'], candidate['hwnd'])
                     if on_bound is not None:
                         on_bound(candidate['pid'], hwnd)
-                    spawned.add(candidate['pid'])
+                    spawned[candidate['pid']] = desktop_pid_create_time(candidate['pid'])
                     logger.info(f'桌面客户端已启动并就绪 PID={candidate["pid"]}')
                     # 到这里启动就完成了：进程在跑、窗口句柄已绑定。
                     # MPay 登录弹窗与进游戏属于登录流程，由 Restart 的 app_handle_login
@@ -752,6 +845,7 @@ def desktop_spawn_client(exe: str, root: str, profile=None, timeout: int = 90,
             ctypes.windll.kernel32.CloseHandle(wintypes.HANDLE(job))
 
 
+@_serialized_launch
 def desktop_launch_instance(config) -> bool:
     """「启动实例」按钮的落地动作：按 config.script.desktop 参数拉起一个客户端实例。
 
@@ -779,7 +873,7 @@ def desktop_launch_instance(config) -> bool:
         except Exception as e:
             logger.error(f'准备多开档案失败，拒绝启动（避免登录到错误账号）: {e}')
             return False
-    state = desktop_read_instance_state(profile)
+    state = desktop_valid_instance_state(profile, root)
     state_pid = state.get('pid')
     if state_pid and desktop_pid_alive(state_pid):
         logger.info(f'客户端实例已在运行（PID={state_pid}），跳过启动')
@@ -794,6 +888,8 @@ def desktop_launch_instance(config) -> bool:
     bound_pid, spawned = result
     if not bound_pid:
         logger.error('客户端已启动但未识别到游戏窗口')
+        for pid, started in spawned.items():
+            _terminate_verified_pid(pid, started)
         return False
     # 状态文件供 worker 认领；PID 不写配置，只活在这里与运行时
     desktop_write_instance_state(profile, bound_pid)
@@ -1165,6 +1261,7 @@ class DesktopWindow:
         """解析桌面客户端安装目录：优先 script.desktop.game_path 配置，其次自动发现。"""
         return desktop_install_root(getattr(self.config.script.desktop, 'game_path', ''))
 
+    @_serialized_launch
     def launch_desktop_client(self, timeout: int = 90) -> bool:
         """自动启动桌面客户端并绑定新窗口的 PID/HWND，成功返回 True。
 
@@ -1188,6 +1285,13 @@ class DesktopWindow:
             logger.error(f'未找到游戏程序（bin\\onmyoji.exe 或 Launch.exe）：{root}')
             return False
         profile = self.desktop_profile_dir()
+        # 启动锁内重新认领，覆盖 UI 按钮与 worker 同时判断“尚未运行”的竞态。
+        existing_pid, existing_hwnd = self._desktop_locate_window()
+        if existing_pid:
+            if not existing_hwnd and not self._desktop_wait_window_ready(existing_pid):
+                return False
+            self.desktop_bind_pid(existing_pid, existing_hwnd, just_launched=False)
+            return True
         if profile is not None:
             try:
                 desktop_prepare_profile_if_needed(profile, root)
@@ -1208,12 +1312,15 @@ class DesktopWindow:
                 # 89 线程 42s CPU 却无窗口）。OAS 靠枚举窗口只绑到窗口进程，关闭时若只杀
                 # 它，启动器就成了无主残留。这里留档，交给 desktop_stop_client 一并清理
                 self._desktop_spawned_pids = set(spawned_pid)
+                self._desktop_process_tokens = dict(spawned_pid)
                 return True
-            if attempt == 1:
+            if attempt in (1, 2):
                 # 只杀本轮确切启动的进程：绑定阶段就失败时 root_handle 仍是上一次的陈旧
                 # PID，直接调 desktop_force_kill 会误杀（PID 可能已被系统复用）
-                logger.warning('第 1 轮启动未就绪，清理本轮客户端后重试')
-                self._desktop_kill_pids(spawned_pid)
+                logger.warning(f'第 {attempt} 轮启动未就绪，清理本轮客户端')
+                if not self._desktop_kill_pids(spawned_pid):
+                    logger.error('启动失败后的进程无法清理，停止重试以免重复拉起客户端')
+                    return False
         logger.error('桌面客户端连续 2 轮启动均未就绪，请检查客户端状态与机器负载')
         return False
 
@@ -1239,7 +1346,7 @@ class DesktopWindow:
         except Exception as e:
             logger.warning(f'摆放多开窗口失败 (hwnd={hwnd}): {e}')
 
-    def _desktop_kill_pids(self, pids) -> None:
+    def _desktop_kill_pids(self, pids) -> bool:
         """强杀指定 PID 集合（本轮启动失败的清理），逐个容错并验证真的退出。"""
         kernel32 = ctypes.windll.kernel32
         wait = self._desktop_close_wait_seconds()
@@ -1248,17 +1355,12 @@ class DesktopWindow:
                 pid_int = int(pid)
             except (TypeError, ValueError):
                 continue
+            tokens = pids if isinstance(pids, dict) else getattr(self, '_desktop_process_tokens', {})
+            started = tokens.get(pid_int)
             for attempt in range(1, DESKTOP_KILL_ATTEMPTS + 1):
                 # PROCESS_TERMINATE(0x0001)
-                handle = kernel32.OpenProcess(0x0001, False, pid_int)
-                if not handle:
-                    # 进程已自行退出
+                if not _terminate_verified_pid(pid_int, started):
                     break
-                try:
-                    kernel32.TerminateProcess(handle, 0)
-                    logger.info(f'清理桌面客户端 PID={pid_int}')
-                finally:
-                    kernel32.CloseHandle(handle)
                 # 杀完必须确认进程真的没了，被拒或正在退出都会让下一轮启动撞上残留
                 if self._desktop_wait_pid_gone(pid_int, wait):
                     break
@@ -1268,6 +1370,9 @@ class DesktopWindow:
                 logger.error(f'桌面客户端 PID={pid_int} 无法清理，可能需要手动结束进程')
         # 等窗口真的消失，避免残留窗口干扰下一轮的新窗口识别
         self._desktop_wait_closed(wait)
+        tokens = pids if isinstance(pids, dict) else getattr(self, '_desktop_process_tokens', {})
+        return all(not desktop_pid_alive(pid) or (
+            tokens.get(pid) and desktop_pid_create_time(pid) != tokens[pid]) for pid in pids)
 
     def _desktop_wait_pid_gone(self, pid, wait: float) -> bool:
         """在 wait 秒内等待指定进程退出，返回是否已退出。"""
@@ -1297,7 +1402,7 @@ class DesktopWindow:
            宁可重拉一个自己的，也不能控制别人的客户端。
         """
         profile = self.desktop_profile_dir()
-        state = desktop_read_instance_state(profile)
+        state = desktop_valid_instance_state(profile, self.desktop_resolve_install_root())
         state_pid = state.get('pid')
         if state_pid:
             if desktop_pid_alive(state_pid):
@@ -1368,7 +1473,11 @@ class DesktopWindow:
         just_launched=True 表示窗口是本轮新拉起的，必然未登录；
         False 表示认领已存在的窗口，登录态优先取档案状态文件，无记录再实测。
         """
+        started = desktop_pid_create_time(pid)
+        if not started:
+            raise RequestHumanTakeover(f'无法确认客户端进程身份：PID={pid}')
         self.root_handle = str(pid)
+        self._desktop_bound_started = started
         if hwnd:
             self.root_handle_num = hwnd
         if hwnd:
@@ -1546,17 +1655,8 @@ class DesktopWindow:
         except (TypeError, ValueError):
             logger.error(f'Invalid desktop PID: {pid}, skip force kill')
             return
-        kernel32 = ctypes.windll.kernel32
-        # PROCESS_TERMINATE(0x0001)
-        handle = kernel32.OpenProcess(0x0001, False, pid_int)
-        if not handle:
-            # 进程已自行退出
-            return
-        try:
-            kernel32.TerminateProcess(handle, 0)
+        if _terminate_verified_pid(pid_int, getattr(self, '_desktop_bound_started', None)):
             logger.info(f'Desktop client PID={pid_int} force terminated')
-        finally:
-            kernel32.CloseHandle(handle)
 
     def desktop_window_restore_if_minimized(self, wait: float = 3.0) -> bool:
         """桌面窗口被最小化（用户误操作）时还原并等待客户区恢复，返回是否发生过还原。
