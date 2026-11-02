@@ -124,7 +124,7 @@ class ActivityShikigamiAssets:
 	# 探索奖励关闭按钮 
 	I_EVENT_REWARD_CLOSE = RuleImage(roi_front=(1203,140,42,38), roi_back=(1184,116,76,87), threshold=0.8, method="Template matching", profile="High", file="./tasks/ActivityShikigami/as/exploration/exploration_event_reward_close.png")
 	# 委派 
-	I_EXP_DELEGATE = RuleImage(roi_front=(66,339,43,27), roi_back=(0,85,293,345), threshold=0.8, method="Template matching", profile="High", file="./tasks/ActivityShikigami/as/exploration/exploration_exp_delegate.png")
+	I_EXP_DELEGATE = RuleImage(roi_front=(11,341,43,27), roi_back=(0,85,293,345), threshold=0.8, method="Template matching", profile="High", file="./tasks/ActivityShikigami/as/exploration/exploration_exp_delegate.png")
 	# 委派界面 
 	I_EVENT_DELEGATE = RuleImage(roi_front=(489,54,102,54), roi_back=(397,21,479,155), threshold=0.8, method="Template matching", profile="High", file="./tasks/ActivityShikigami/as/exploration/exploration_event_delegate.png")
 	# 领取委派奖励用（ui_reward） 

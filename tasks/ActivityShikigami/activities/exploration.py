@@ -54,6 +54,8 @@ class ExplorationAct:
             self.click(self.I_EVENT_REWARD_CLOSE, interval=0.8)
             if not self._wait_exp(lambda: not self.appear(self.I_EVENT_REWARD_CLOSE), timeout=5):
                 raise GameStuckError('Exploration reward close button did not disappear')
+            # 领完奖励会弹出「是否立即启用闲暇时光」，全屏模态吞掉后续点击，选取消。
+            self.appear_then_click(self.I_UI_CANCEL, interval=1)
             return True
         for marker, click in (
             (self.I_UI_REWARD, self.C_UI_REWARD),
@@ -61,7 +63,6 @@ class ExplorationAct:
                 self.I_SHIKIGAMI_HELP,
                 settlement_random_click(self.C_SAFE_RANDOM_CLICK_AREA_ACT),
             ),
-            (self.I_EVENT_STORY, self.I_EVENT_STORY),
         ):
             if not self.appear(marker):
                 continue
@@ -70,8 +71,29 @@ class ExplorationAct:
             self.click(click, interval=0.8)
             if not self._wait_exp(lambda: not self.appear(marker), timeout=5):
                 raise GameStuckError(f'Exploration reward did not close: {marker.name}')
+            # 领完奖励会弹出「是否立即启用闲暇时光」，全屏模态吞掉后续点击，选取消。
+            self.appear_then_click(self.I_UI_CANCEL, interval=1)
+            return True
+        # 剧情不按"点一下就关"处理：点掉右上角跳过后会弹出确认框，
+        # 而确认框上的「跳过」依然命中，单点判定必然死等超时。
+        if self.appear(self.I_STORY_SKIP_ENSURE) or self.appear(self.I_EVENT_STORY):
+            self._skip_exp_story()
             return True
         return False
+
+    def _skip_exp_story(self, timeout=10):
+        """跳过剧情：按出现顺序点掉确认框与右上角跳过，两者都不在即剧情结束。"""
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            self.screenshot()
+            if self.appear(self.I_STORY_SKIP_ENSURE):
+                self.click(self.I_STORY_SKIP_ENSURE, interval=0.8)
+            elif self.appear(self.I_EVENT_STORY):
+                self.click(self.I_EVENT_STORY, interval=0.8)
+            else:
+                return
+            time.sleep(0.2)
+        raise GameStuckError('Exploration story did not close')
 
     @staticmethod
     def _exp_entry_roi(box, viewport, height):
@@ -183,13 +205,10 @@ class ExplorationAct:
                 )
                 return True
             if self.appear(self.I_EVENT_STORY):
-                if not self._wait_exp(lambda: self.appear(self.I_STORY_SKIP_ENSURE),
-                                      click=self.I_EVENT_STORY):
-                    raise GameStuckError('Story skip confirmation did not appear')
+                self._skip_exp_story()
                 # 剧情奖励面板时有时无，回到探索主界面同样视为剧情结束。
                 if not self._wait_exp(lambda: self.appear(self.I_UI_REWARD)
-                                      or self._exp_main_ready(),
-                                      click=self.I_STORY_SKIP_ENSURE):
+                                      or self._exp_main_ready()):
                     raise GameStuckError('Story did not end after skipping')
                 self._clear_exp_rewards()
                 return True
