@@ -6,17 +6,69 @@ from tasks.DraftDuel.config import DraftMatchMode
 from tasks.Component.GeneralBattle.assets import GeneralBattleAssets
 from tasks.GameUi.assets import GameUiAssets
 from tasks.GameUi.page import page_draft_duel
+from tasks.GameUi.default_pages import page_reward, random_click
 
 
 class DraftDuelInvitationMixin:
+    def _dismiss_draft_lobby_overlay(self):
+        """大厅背景可透过最终番胜或奖励页，优先点掉遮罩再处理大厅。"""
+        if not (any(self.appear(rule) for rule in
+                    (self.I_FIGHT_RESULT, self.I_DRAFT_SHARE, self.I_FIGHT_STATISTIC))
+                or page_reward.recognizer.evaluate(self)):
+            return False
+        logger.info('DraftDuel lobby result/reward overlay detected; dismiss before lobby actions')
+        self.click(random_click(ltrb=(True, False, True, False)))
+        return True
+
+    def _clear_draft_lobby_overlays(self):
+        """有界清理连续遮罩；两张新截图均无结算附页后才允许大厅动作。"""
+        deadline = time.monotonic() + 15
+        clear_frames = 0
+        while time.monotonic() < deadline:
+            if self._dismiss_draft_lobby_overlay() is True:
+                clear_frames = 0
+            else:
+                clear_frames += 1
+                if clear_frames >= 2:
+                    return True
+            self.device.stuck_record_clear()
+            time.sleep(0.3)
+            self.screenshot()
+        logger.warning('DraftDuel lobby result/reward overlays did not clear within 15s')
+        return False
+
     def _invite_teammate(self):
-        """协斗只负责打开大厅邀请入口，查找、选中和发送均调用通用邀请。"""
-        for _ in range(3):
+        """打开邀请最多三次；每次先清理附属结算页，再复核邀请面板或入队结果。"""
+        for attempt in range(1, 4):
+            self.screenshot()
+            if not self._clear_draft_lobby_overlays():
+                logger.warning(f'DraftDuel invite attempt {attempt}/3 blocked by result overlay')
+                continue
+            if self.appear(self.I_INVITE_ENSURE):
+                if self.invite_friends(self.config.draft_duel.invite_config, open_invite=False):
+                    return True
+                continue
+            if not self.appear(self.I_EMPTY_TEAMMATE) and self.is_in_room(False):
+                return True
             if not self.appear_then_click(self.I_EMPTY_TEAMMATE, interval=1):
-                return False
-            if self.wait_until_appear(self.I_INVITE_ENSURE, wait_time=5):
-                return self.invite_friends(self.config.draft_duel.invite_config, open_invite=False)
-            logger.warning('DraftDuel invite panel did not appear, retry clicking teammate slot')
+                logger.warning(f'DraftDuel invite entry not clicked: attempt={attempt}/3')
+                continue
+            deadline = time.monotonic() + 5
+            while time.monotonic() < deadline:
+                self.device.stuck_record_clear()
+                self.screenshot()
+                if self._dismiss_draft_lobby_overlay() is True:
+                    time.sleep(0.3)
+                    continue
+                if self.appear(self.I_INVITE_ENSURE):
+                    if self.invite_friends(self.config.draft_duel.invite_config, open_invite=False):
+                        return True
+                    break
+                if not self.appear(self.I_EMPTY_TEAMMATE) and self.is_in_room(False):
+                    return True
+                time.sleep(0.3)
+            logger.warning(f'DraftDuel invite panel not confirmed; retry {attempt}/3')
+        logger.warning('DraftDuel invite failed after 3 attempts')
         return False
 
     def is_in_room(self, is_screenshot=True):
@@ -38,7 +90,10 @@ class DraftDuelInvitationMixin:
     def _goto_draft_lobby(self) -> bool:
         """复用全局路径：庭院 -> 町中 -> 协同对弈。"""
         self.goto_page(page_draft_duel)
+        # 番胜扇面与奖励浮窗由本地清理；结算分享/统计与奖励页由通用遮罩清理兜底。
         self._dismiss_round_report()
+        if not self._clear_draft_lobby_overlays():
+            return False
         self._observe_duel_lobby()
         return self._in_draft_lobby()
 
@@ -50,6 +105,11 @@ class DraftDuelInvitationMixin:
             # 主动等人由邀请超时管理，避免被设备的无操作计时提前中断。
             self.device.stuck_record_clear()
             self.screenshot()
+            if self._dismiss_draft_lobby_overlay() is True:
+                if time.monotonic() >= deadline:
+                    return False
+                time.sleep(0.3)
+                continue
             if self.is_in_room(False):
                 logger.info('DraftDuel empty_teammate disappeared; teammate joined')
                 return True
@@ -69,6 +129,8 @@ class DraftDuelInvitationMixin:
         if mode == DraftMatchMode.CAPTAIN:
             self.prepare_battle_cooperation('DraftDuel')
             self.screenshot()
+            if not self._clear_draft_lobby_overlays():
+                return False
             if self.appear(self.I_EMPTY_TEAMMATE):
                 if not self._invite_teammate():
                     return False
@@ -107,6 +169,11 @@ class DraftDuelInvitationMixin:
         while True:
             self.device.stuck_record_clear()
             self.screenshot()
+            if self._dismiss_draft_lobby_overlay() is True:
+                if time.monotonic() >= deadline:
+                    self._finish_member_wait_timeout()
+                time.sleep(0.3)
+                continue
             if self._member_match_started():
                 logger.info('DraftDuel captain started; member entered draft or battle')
                 return True
