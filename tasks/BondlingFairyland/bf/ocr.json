@@ -55,8 +55,8 @@
   },
   {
     "itemName": "b_ball_number",
-    "roiFront": "1186,666,65,26",
-    "roiBack": "1186,666,65,26",
+    "roiFront": "1183,666,68,27",
+    "roiBack": "1183,666,68,27",
     "mode": "DigitCounter",
     "method": "Default",
     "keyword": "",
