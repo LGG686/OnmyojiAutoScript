@@ -1,0 +1,52 @@
+name: Sync Upstream
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/runhey/OnmyojiAutoScript.git \
+            || git remote set-url upstream https://github.com/runhey/OnmyojiAutoScript.git
+
+      - name: Sync dev
+        run: |
+          git fetch upstream dev
+          git push --force origin upstream/dev:refs/heads/dev
+
+      - name: Sync master
+        run: |
+          git fetch upstream master
+          git fetch origin master
+          git checkout -B sync_master upstream/master
+          git show origin/master:.github/workflows/sync-upstream.yml > .github/workflows/sync-upstream.yml
+          git add .github/workflows/sync-upstream.yml
+          if git diff --cached --quiet; then
+            echo "master already aligned, skip push"
+            exit 0
+          fi
+          git commit -m "chore: align master to upstream, keep sync-upstream workflow"
+          if git diff --quiet origin/master sync_master; then
+            echo "master tree already matches, skip push"
+            exit 0
+          fi
+          git push --force origin sync_master:refs/heads/master
