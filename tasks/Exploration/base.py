@@ -16,7 +16,8 @@ from tasks.Exploration.assets import ExplorationAssets
 from tasks.Exploration.config import ChooseRarity, AutoRotate, AttackNumber, UpType
 from tasks.Component.GeneralBattle.general_battle import GeneralBattle
 from tasks.GameUi.game_ui import GameUi
-from tasks.GameUi.page import page_exploration, page_shikigami_records, page_main
+from tasks.GameUi.page import page_shikigami_records, page_main
+import tasks.Exploration.page as pages
 from tasks.RealmRaid.script_task import ScriptTask as RealmRaidScriptTask
 from tasks.Utils.config_enum import ShikigamiClass
 
@@ -57,9 +58,9 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
     def _match_end(self):
         return RuleAnimate(self.I_SWIPE_END)
 
-    def is_swipe_unchanged(self, before_image, after_image, threshold: float = 20) -> bool:
-        # 对比滑屏前后同一块区域，变化很小说明地图大概率没有移动，已经滑到尽头。
-        swipe_check_roi = (1216, 86, 64, 225)
+    def is_swipe_unchanged(self, before_image, after_image, threshold: float = 15) -> bool:
+        # 对比滑屏前后中上部背景区域(避开顶部跑马灯、下方小怪挑战图标及最右侧浮动鬼火)，变化很小说明地图已滑到尽头。
+        swipe_check_roi = (250, 140, 800, 90)
         before = self.I_SWIPE_END.corp(before_image, swipe_check_roi)
         after = self.I_SWIPE_END.corp(after_image, swipe_check_roi)
         diff = np.mean(np.abs(before.astype(np.int16) - after.astype(np.int16)))
@@ -112,8 +113,9 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
                 self.exp_100()
             self.close_buff()
 
-        # 探索页面
-        self.goto_page(page_exploration)
+        # 探索页面（大地图始终处于主线/玩法 tab 之一，裸 page_exploration 永远被 prio 60 的 tab 页遮蔽、
+        # 无法作为当前页抵达，故直接进入主线 tab）
+        self.goto_page(pages.page_mainline)
 
     def post_process(self):
         self.wait_until_stable(self.I_UI_BACK_RED)
@@ -133,6 +135,11 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
 
     # 打开指定的章节：
     def open_expect_level(self):
+        # 选关依赖主线 tab 右侧的章节列表（I_E_EXPLORATION_CLICK + 章节名 OCR）。
+        # 探索大地图常驻「主线/玩法」之一，若停在玩法 tab 不选回主线，右边会是御魂/今日掉落等模块名，
+        # I_E_EXPLORATION_CLICK 不出现、OCR 交集为空 → 一直滑屏卡死。故进选关前无条件确保主线 tab。
+        self.goto_page(pages.page_mainline)
+
         swipeCount = 0
         while 1:
             # 探索的 config
@@ -155,7 +162,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
             if self.appear_then_click(self.I_UI_CONFIRM_SAMLL, interval=1):
                 continue
             self.device.click_record_clear()
-            self.swipe(self.S_SWIPE_LEVEL_UP)
+            self.swipe(self.S_SWIPE_LEVEL_DOWN)
             swipeCount += 1
             debug_info = f"Swiped {swipeCount} times, current exploration level: {text1}"
             logger.info(debug_info)
@@ -322,11 +329,11 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
                     self.I_NORMAL_BATTLE_BUTTON.roi_front = roi_front
                     logger.info(f"Target locked: sword at {roi_front} (aligned with UP icon)")
                     return self.I_NORMAL_BATTLE_BUTTON
-            else:
-                # 没找到 UP 图标，返回 None 让外层逻辑去处理(滑动或退出)
-                return None
+            # 没找到 UP 图标或对应战斗图标，返回 None 让外层逻辑去处理(滑动或退出)
+            return None
 
         # 2. 如果是默认情况 (UpType.ALL)，则只要有怪就打
+        self.I_NORMAL_BATTLE_BUTTON.roi_back = (0, 0, 1279, 719)
         if self.appear(self.I_NORMAL_BATTLE_BUTTON):
             return self.I_NORMAL_BATTLE_BUTTON
             
@@ -382,6 +389,7 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
 
     def quit_explore(self):
         logger.info('Quit explore')
+        self.device.click_record_remove(self.S_SWIPE_BACKGROUND_RIGHT.name)
         boss_timer = Timer(15)
         boss_timer.start()
         # click_yellow_button = 0 #用于保证只点一次左上返回按钮，不要直接触发连点回到主界面
@@ -410,8 +418,18 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
 
             if self.appear_then_click(self.I_E_EXIT_CONFIRM, interval=0.8):
                 continue
-            if self.appear_then_click(self.I_BACK_YOLLOW, interval=3.5):
-                continue
+            if self.appear(self.I_BACK_YOLLOW):
+                self.screenshot()
+                # https://github.com/runhey/OnmyojiAutoScript/issues/1935
+                if not self.appear(self.I_BACK_YOLLOW) or self.appear(self.I_E_EXPLORATION_CLICK):
+                    continue
+                is_main = (
+                        self.appear(self.I_E_SETTINGS_BUTTON)
+                        or self.appear(self.I_E_AUTO_ROTATE_ON)
+                        or self.appear(self.I_E_AUTO_ROTATE_OFF)
+                )
+                if is_main and self.click(self.I_BACK_YOLLOW, interval=3.5):
+                    continue
             
             if self.appear(self.I_EXPLORATION_TITLE) or self.appear(self.I_CHECK_EXPLORATION):
                 continue

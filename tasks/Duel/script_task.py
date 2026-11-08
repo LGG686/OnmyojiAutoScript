@@ -191,7 +191,8 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, DuelAssets, SwitchOnmyoji):
                 self.duel_exit_battle()
                 continue
             if ret is None and not battle_operated:  # 进行战斗前的操作
-                self.ui_click(self.O_D_HAND, self.O_D_AUTO, interval=0.8)
+                # https://github.com/runhey/OnmyojiAutoScript/pull/1934
+                self.ui_click(self.O_D_HAND, self.O_D_AUTO, interval=6, timeout=45)
                 self.green_mark(self.conf.duel_config.green_enable, self.conf.duel_config.green_mark)
                 battle_operated = True
                 self.reset_device('BATTLE_STATUS_S')
@@ -207,7 +208,7 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, DuelAssets, SwitchOnmyoji):
             self.screenshot()
             if self.appear(self.I_D_FAIL) or self.appear(self.I_FALSE):
                 return
-            if self.appear_then_click(self.I_EXIT_ENSURE):
+            if self.appear_then_click(self.I_UI_CONFIRM):
                 continue
             # 选式神界面退出或战斗内退出
             if self.appear_then_click(self.I_DUEL_EXIT, interval=1) or self.appear_then_click(self.I_EXIT, interval=1):
@@ -303,7 +304,8 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, DuelAssets, SwitchOnmyoji):
             self.appear(self.I_D_CHECK_BAN)
 
     def is_battle_win(self) -> bool:
-        return self.appear(self.I_WIN) or self.appear(self.I_D_VICTORY)
+        return self.appear(self.I_WIN) or self.appear(self.I_D_VICTORY) or \
+            self.appear(self.I_D_VICTORY_SHARE)
 
     def is_battle_lose(self) -> bool:
         return self.appear(self.I_FALSE) or self.appear(self.I_D_FAIL)

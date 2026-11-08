@@ -31,6 +31,19 @@
 
 阴阳师，作为一个手游，已经进入了生命周期的晚期。从现在到关服的这段时间里，请减少花费在阴阳师上的时间，把一切都交给 OAS。
 
+
+## 临时仓库
+
+2026.11.08 runhey 账号被 github 禁掉了。不知名原因、没有邮件通知，在申诉成功之前暂时使用当前备份仓库：
+
+https://github.com/nearaura/OnmyojiAutoScript
+
+国内镜像仓库，一直都挺稳定的：
+
+https://gitcode.com/OnmyojiAutoScript/OnmyojiAutoScript
+
+https://gitee.com/runheng/OnmyojiAutoScript
+
 ## 功能 Features
 
 - **日常任务**: 悬赏封印、小猫咪、小杂签到、金币妖怪、年兽、花合战、地鬼、封魔、御魂整理

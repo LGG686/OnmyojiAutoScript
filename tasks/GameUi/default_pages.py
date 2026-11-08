@@ -61,7 +61,7 @@ page_login.add_enter_success_hooks(handle_login_page)
 # 庭院主页(此处通过提高阈值来处理部分探索章节会识别成原始庭院的问题, 后续有其他更好方法需改善)
 page_main = Page(GameUiAssets.I_CHECK_MAIN, category="global")
 page_main.add_enter_success_hooks(
-    GameUiAssets.I_AD_CLOSE_RED, GlobalGameAssets.I_UI_BACK_RED, RestartAssets.I_CANCEL_BATTLE,
+    GameUiAssets.I_AD_CLOSE_RED, GlobalGameAssets.I_UI_BACK_RED, GlobalGameAssets.I_UI_CANCEL_SAMLL,
     conditional_action(RestartAssets.I_LOGIN_COURTYARD, RestartAssets.C_LOGIN_SCROLL_CLOSE_AREA),
 )
 
@@ -95,7 +95,7 @@ page_daily.add_enter_failure_hooks(
 page_daily.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_daily->page_main")
 page_main.connect(page_daily, GameUiAssets.I_MAIN_GOTO_DAILY, key="page_main->page_daily")
 
-page_mall = Page(GameUiAssets.I_CHECK_MALL, category="global")
+page_mall = Page(any_of(GameUiAssets.I_CHECK_MALL, GameUiAssets.I_CHECK_MALL_PURPLE), category="global")
 page_mall.add_enter_failure_hooks(conditional_action(condition=GameUiAssets.I_CHECK_MAIN,
                                                      action=RestartAssets.C_LOGIN_SCROLL_CLOSE_AREA))
 page_mall.add_enter_success_hooks(GameUiAssets.I_AD_CLOSE_RED, GlobalGameAssets.I_UI_BACK_RED, GlobalGameAssets.I_UI_CANCEL_SAMLL)
