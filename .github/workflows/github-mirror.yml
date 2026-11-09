@@ -36,7 +36,7 @@ jobs:
       - name: Mirror the GitHub repos to Gitee with cache
         uses: Yikun/hub-mirror-action@master
         with:
-          src: github/runhey
+          src: github/${{ github.repository_owner }}
           dst: gitee/runheng
           dst_key: ${{ secrets.GITEE_PRIVATE_KEY }} # 复用公钥
           dst_token: ${{ secrets.GITEE_TOKEN }}
@@ -50,7 +50,7 @@ jobs:
       - name: Mirror the GitHub repos to GitCode with cache
         uses: Yikun/hub-mirror-action@master
         with:
-          src: github/runhey
+          src: github/${{ github.repository_owner }}
           dst: gitcode/OnmyojiAutoScript
           dst_key: ${{ secrets.GITEE_PRIVATE_KEY }} # 复用公钥
           dst_token: ${{ secrets.GITCODE_TOKEN }}
