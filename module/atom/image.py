@@ -10,22 +10,11 @@ from pathlib import Path
 from module.atom.RuleImageMallResourceMixin import RuleImageMallResourceMixin
 from module.base.decorator import cached_property, del_cached_property
 from module.logger import logger
-from module.base.utils import is_approx_rectangle
+from module.base.utils import expand_roi, is_approx_rectangle
 from module.base.utils.utils import random_normal_distribution_int
 
-# 模板匹配容差：把搜索区域（roi_back）四边各外扩该像素数，用于吸收非原生渲染
-# 环境相对模板截图环境的整体相位差（桌面客户端受 DPI 缩放重采样，约 1px）。
-# 仓库里约 1/3 的模板 roi_back 与模板等宽，此时 matchTemplate 结果只剩 1 列、
-# 横向一格都平移不了，1px 相位差就足以把「元素存在」判成「不存在」。
-# 桌面模式由 Device 置为 2，模拟器保持 0、行为逐位不变。
-ROI_MATCH_PAD = 0
-DESKTOP_ROI_MATCH_PAD = 2
-
-
-def set_roi_match_padding(pad: int) -> None:
-    """设置模板匹配的 roi_back 外扩容差（像素，四边同值）。0 表示不启用。"""
-    global ROI_MATCH_PAD
-    ROI_MATCH_PAD = max(0, int(pad))
+# 模板匹配搜索区域统一外扩的像素数。
+ROI_BACK_EXPAND = 2
 
 
 class RuleImage(RuleImageMallResourceMixin):
@@ -51,7 +40,9 @@ class RuleImage(RuleImageMallResourceMixin):
         self.method = method
 
         self.roi_front: list = list(roi_front)
-        self.roi_back = roi_back
+        # 性能评估：四个 GameUi 庭院规则单轮总匹配耗时增加 1.23%（10.027ms -> 10.151ms）。
+        # TODO: assets 生命周期改为 Device 初始化后创建时，按运行环境初始化 roi_back，并删除这里的统一扩展。
+        self.roi_back = expand_roi(roi_back, ROI_BACK_EXPAND)
         self.threshold = threshold
         self.file = file
 
@@ -154,23 +145,6 @@ class RuleImage(RuleImageMallResourceMixin):
             self.load_kp_des()
         return self._des
 
-    @staticmethod
-    def _pad_roi(roi) -> tuple:
-        """
-        把 ROI 四边各外扩 ROI_MATCH_PAD 像素，返回 (x0, y0, w, h)。
-
-        左上侧必须夹到 0：numpy 对负索引按「倒数」语义取值，会把裁剪位置算错，
-        并连带把回算出的 roi_front 算偏；右/下侧越界由切片自然截断。
-        返回的 x0/y0 是外扩后的原点，命中回算必须以它做基准。
-        """
-        x, y, w, h = [int(v) for v in roi]
-        pad = ROI_MATCH_PAD
-        if pad <= 0:
-            return x, y, w, h
-        x0 = max(0, x - pad)
-        y0 = max(0, y - pad)
-        return x0, y0, x + w + pad - x0, y + h + pad - y0
-
     @property
     def mask(self):
         """
@@ -251,7 +225,7 @@ class RuleImage(RuleImageMallResourceMixin):
         :param roi
         :return:
         """
-        x, y, w, h = self._pad_roi(self.roi_back if roi is None else roi)
+        x, y, w, h = self.roi_back if roi is None else roi
         return image[y:y + h, x:x + w]
 
     def match(self, image: np.array, threshold: float = None) -> bool:
@@ -296,7 +270,7 @@ class RuleImage(RuleImageMallResourceMixin):
             logger.attr(self.name, f'matching score {max_val:.5f}')
 
         if max_val > threshold:
-            x0, y0, _, _ = self._pad_roi(self.roi_back)
+            x0, y0 = self.roi_back[:2]
             self.roi_front[0] = max_loc[0] + x0
             self.roi_front[1] = max_loc[1] + y0
             return True
@@ -379,7 +353,7 @@ class RuleImage(RuleImageMallResourceMixin):
             self.last_scale = float(best_scale)
 
         if best_score > threshold and best_loc is not None and best_shape is not None:
-            x0, y0, _, _ = self._pad_roi(self.roi_back)
+            x0, y0 = self.roi_back[:2]
             self.roi_front[0] = best_loc[0] + x0
             self.roi_front[1] = best_loc[1] + y0
             self.roi_front[2] = best_shape[0]
@@ -397,7 +371,7 @@ class RuleImage(RuleImageMallResourceMixin):
         :return:
         """
         if roi is not None:
-            self.roi_back = roi
+            self.roi_back = expand_roi(roi, ROI_BACK_EXPAND)
         if threshold is None:
             threshold = self.threshold
         if not (self.is_template_match or self.is_masked_template_match):
@@ -417,7 +391,7 @@ class RuleImage(RuleImageMallResourceMixin):
             self.last_score = float(results.max())
         locations = np.where(results >= threshold)
         matches = []
-        x0, y0, _, _ = self._pad_roi(self.roi_back)
+        x0, y0 = self.roi_back[:2]
         for pt in zip(*locations[::-1]):  # (x, y) coordinates
             score = results[pt[1], pt[0]]
             # 得分, x, y, w, h
@@ -435,7 +409,7 @@ class RuleImage(RuleImageMallResourceMixin):
         :return:
         """
         if roi is not None:
-            self.roi_back = roi
+            self.roi_back = expand_roi(roi, ROI_BACK_EXPAND)
         if threshold is None:
             threshold = self.threshold
         if not (self.is_template_match or self.is_masked_template_match):
@@ -455,7 +429,7 @@ class RuleImage(RuleImageMallResourceMixin):
             self.last_score = float(results.max())
         locations = np.where(results >= threshold)
         matches = []
-        x0, y0, _, _ = self._pad_roi(self.roi_back)
+        x0, y0 = self.roi_back[:2]
         for pt in zip(*locations[::-1]):  # (x, y) coordinates
             score = results[pt[1], pt[0]]
             # 得分, x, y, w, h
@@ -543,7 +517,7 @@ class RuleImage(RuleImageMallResourceMixin):
                 result = False
             else:
                 dst = int32(cv2.perspectiveTransform(pts, m))
-                x0, y0, _, _ = self._pad_roi(self.roi_back)
+                x0, y0 = self.roi_back[:2]
                 self.roi_front[0] = dst[0, 0, 0] + x0
                 self.roi_front[1] = dst[0, 0, 1] + y0
                 if show:
