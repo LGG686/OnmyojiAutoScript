@@ -411,7 +411,7 @@ class Minitouch(Connection):
 
     def _humanized_pressure(self) -> int:
         top = getattr(self, 'max_pressure', 100) or 100
-        return random.randint(max(20, top // 2), top)
+        return random.randint(max(1, top // 2), top)
 
     def _humanized_dwell(self) -> int:
         return int(random.triangular(45, 130, 65))
