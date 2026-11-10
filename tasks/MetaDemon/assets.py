@@ -12,7 +12,7 @@ class MetaDemonAssets:
 
 	# Image Rule Assets
 	# description 
-	I_MD_ENTER = RuleImage(roi_front=(426,463,60,80), roi_back=(239,369,547,215), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_md_enter.png")
+	I_MD_ENTER = RuleImage(roi_front=(1190,297,37,32), roi_back=(1153,124,127,451), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_md_enter.png")
 	# description 
 	I_MD_MAIN = RuleImage(roi_front=(658,156,41,139), roi_back=(636,133,100,245), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_md_main.png")
 	# description 
@@ -51,15 +51,15 @@ class MetaDemonAssets:
 	# 右侧进去 
 	I_RIGHT_ENTER = RuleImage(roi_front=(1183,314,46,34), roi_back=(1150,131,100,360), threshold=0.75, method="Template matching", file="./tasks/MetaDemon/md/md_right_enter.png")
 	# description 
-	I_ENTER2 = RuleImage(roi_front=(461,265,44,156), roi_back=(428,220,100,258), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_enter2.png")
+	I_ENTER2 = RuleImage(roi_front=(925,102,44,156), roi_back=(852,20,195,413), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_enter2.png")
 	# 寻找鬼王 
 	I_FIND_DEMON = RuleImage(roi_front=(1140,582,86,81), roi_back=(1102,546,132,133), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_find_demon.png")
 	# 点击战斗 
-	I_BATTLE_DEMON = RuleImage(roi_front=(1131,573,100,100), roi_back=(1085,536,165,161), threshold=0.7, method="Template matching", file="./tasks/MetaDemon/md/md_battle_demon.png")
+	I_BATTLE_DEMON = RuleImage(roi_front=(1133,595,98,54), roi_back=(1085,536,165,161), threshold=0.7, method="Template matching", file="./tasks/MetaDemon/md/md_battle_demon.png")
 	# description 
 	I_BOSS_EMPTY = RuleImage(roi_front=(44,134,88,85), roi_back=(44,134,88,85), threshold=0.7, method="Template matching", file="./tasks/MetaDemon/md/md_boss_empty.png")
 	# 集结 
-	I_BOSS_CONVENE = RuleImage(roi_front=(247,146,47,52), roi_back=(228,127,88,85), threshold=0.7, method="Template matching", file="./tasks/MetaDemon/md/md_boss_convene.png")
+	I_BOSS_CONVENE = RuleImage(roi_front=(251,155,47,52), roi_back=(228,127,88,90), threshold=0.7, method="Template matching", file="./tasks/MetaDemon/md/md_boss_convene.png")
 	# description 
 	I_BOSS_EMPTY_1 = RuleImage(roi_front=(46,372,87,90), roi_back=(46,372,87,90), threshold=0.5, method="Template matching", file="./tasks/MetaDemon/md/md_boss_empty_1.png")
 	# description 
@@ -69,7 +69,7 @@ class MetaDemonAssets:
 	# 空 
 	I_CRAFTING_EMPTY = RuleImage(roi_front=(939,460,75,81), roi_back=(922,447,108,111), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_crafting_empty.png")
 	# 一星卡片 
-	I_CRAFTING_CARD_STAR_1 = RuleImage(roi_front=(217,156,87,92), roi_back=(191,127,140,137), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_crafting_card_star_1.png")
+	I_CRAFTING_CARD_STAR_1 = RuleImage(roi_front=(214,152,87,92), roi_back=(191,127,140,137), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_crafting_card_star_1.png")
 	# 开始合成 
 	I_CRAFTING_START = RuleImage(roi_front=(889,561,140,39), roi_back=(840,521,231,100), threshold=0.75, method="Template matching", file="./tasks/MetaDemon/md/md_crafting_start.png")
 	# description 

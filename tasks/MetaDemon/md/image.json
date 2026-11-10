@@ -2,8 +2,8 @@
   {
     "itemName": "md_enter",
     "imageName": "md_md_enter.png",
-    "roiFront": "426,463,60,80",
-    "roiBack": "239,369,547,215",
+    "roiFront": "1190,297,37,32",
+    "roiBack": "1153,124,127,451",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "description"
