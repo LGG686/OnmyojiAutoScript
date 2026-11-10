@@ -109,7 +109,8 @@ class ScriptTask(RightActivity, GeneralBattle, SwitchSoul, Star56):
                 continue
 
             # 先看自己有没有鬼王要打
-            if not self.appear(self.I_BOSS_EMPTY) and self.appear(self.I_BOSS_CONVENE):
+            if (not self.appear(self.I_BOSS_EMPTY) and
+                    (self.appear(self.I_BOSS_CONVENE) or self.appear(self.I_BOOS_PUBLIC))):
                 logger.info('Try to battle boss from self')
                 self.click(self.I_BOSS_EMPTY, interval=1.5)
                 battle_processing = True

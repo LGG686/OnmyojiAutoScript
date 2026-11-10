@@ -151,5 +151,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "description"
+  },
+  {
+    "itemName": "boos_public",
+    "imageName": "md_boos_public.png",
+    "roiFront": "251,155,47,52",
+    "roiBack": "228,127,88,90",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "已公开"
   }
 ]

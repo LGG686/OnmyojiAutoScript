@@ -14,6 +14,7 @@ class MetaDemonAssets:
 	# 失败 
 	I_MD_BATTLE_FAILURE = RuleImage(roi_front=(412,105,100,100), roi_back=(412,105,100,100), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_md_battle_failure.png")
 
+
 	# Image Rule Assets
 	# 右侧进去 
 	I_RIGHT_ENTER = RuleImage(roi_front=(1183,314,46,34), roi_back=(1150,131,100,360), threshold=0.75, method="Template matching", file="./tasks/MetaDemon/md/md_right_enter.png")
@@ -49,6 +50,8 @@ class MetaDemonAssets:
 	I_STAR56_HP_THRESHOLD_F = RuleImage(roi_front=(659,517,26,19), roi_back=(659,517,26,19), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_star56_hp_threshold_f.png")
 	# description 
 	I_ENTER_ENSURE = RuleImage(roi_front=(541,578,186,48), roi_back=(443,555,370,100), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_enter_ensure.png")
+	# 已公开 
+	I_BOOS_PUBLIC = RuleImage(roi_front=(251,155,47,52), roi_back=(228,127,88,90), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_boos_public.png")
 
 
 	# Ocr Rule Assets
