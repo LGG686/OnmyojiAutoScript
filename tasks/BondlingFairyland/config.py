@@ -53,8 +53,9 @@ class UserStatus(str, Enum):
 class BondlingConfig(ConfigBase):
     # 身份
     user_status: UserStatus = Field(default=UserStatus.ALONE, description=(
-        '选择本次任务的身份。交换身份-队长与交换身份-队员在任务正常结束后自动互换，'
-        '下一次任务使用交换后的身份；次数按完整配置执行。普通队长、队员不自动交换。'))
+        '选择本次任务的身份。交换身份-队长：本次任务先当队长跑一半次数，再当队员跑另一半；'
+        '交换身份-队员：先当队员跑一半，再当队长跑另一半。上限次数为两种身份合计。'
+        '普通队长、队员不切换身份。'))
     bondling_mode: BondlingMode = Field(default=BondlingMode.MODE1,
                                         description='只刷探查:自动切换契灵对应地域\n低级式盘:自动切换非连续,非羁绊\n中级式盘:自动切换连续,羁绊')
     limit_time: Time = Field(default=Time(minute=30), description='limit_time_help')
