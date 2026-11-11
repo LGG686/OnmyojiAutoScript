@@ -175,7 +175,7 @@ class CostumeAssets:
 	#  
 	I_MAIN_GOTO_SUMMON_4 = RuleImage(roi_front=(959,215,41,62), roi_back=(556,187,659,100), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/Costume/main4/main4_main_goto_summon_4.png")
 	# description 
-	I_MAIN_GOTO_TOWN_4 = RuleImage(roi_front=(814,242,47,60), roi_back=(524,228,555,82), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/Costume/main4/main4_main_goto_town_4.png")
+	I_MAIN_GOTO_TOWN_4 = RuleImage(roi_front=(842,240,19,36), roi_back=(524,228,555,82), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/Costume/main4/main4_main_goto_town_4.png")
 	# description 
 	I_PET_HOUSE_4 = RuleImage(roi_front=(977,387,29,40), roi_back=(922,371,241,73), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/Costume/main4/main4_pet_house_4.png")
 

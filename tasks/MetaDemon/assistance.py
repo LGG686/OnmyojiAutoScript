@@ -48,15 +48,18 @@ class AssistanceLink:
                     or other_settings.get('cooperation_script', '') not in ('', self.runtime.name)):
                 raise ScriptError('鬼王协同脚本应为匹配的上供和协助实例')
 
-    def publish(self, portrait=''):
+    def publish(self, portrait='', boss_type=None):
         if self.peer:
             if portrait:
                 self.session = uuid4().hex
             remaining = (self.task.limit_time - (datetime.now() - self.task.start_time)).total_seconds()
-            self.runtime.publish_battle_state(self.CHANNEL, self.peer, self.session, {
+            payload = {
                 'portrait': portrait,
                 'expires': time.time() + max(0, remaining),
-            })
+            }
+            if boss_type is not None:
+                payload['stars'] = int(boss_type)
+            self.runtime.publish_battle_state(self.CHANNEL, self.peer, self.session, payload)
 
     def target(self):
         state = self.runtime.peer_battle_state(self.CHANNEL, self.peer)
@@ -108,6 +111,7 @@ class GhostOffering:
         self.task = task
         self.link = link
         self.settings = task.conf.assistance_config
+        self.stars = self.settings.share_stars_v
         self.shared_generation = None
         self.waiting = False
         self.settled = False
@@ -260,8 +264,8 @@ class GhostOffering:
 
     def share(self):
         t = self.task
-        if t.cur_boss_type != BossType.SIX_STARS:
-            logger.warning('仅允许分享本次已确认召唤的六星鬼王')
+        if t.cur_boss_type not in self.stars:
+            logger.warning(f'当前鬼王不在分享星级 {[int(star) for star in self.stars]} 内，跳过分享')
             return False
         portrait_sent = False
         select_recipients = True
@@ -316,7 +320,7 @@ class GhostOffering:
         if not encoded:
             logger.warning('上供鬼王截图编码失败')
             return False
-        self.link.publish(b64encode(png).decode('ascii'))
+        self.link.publish(b64encode(png).decode('ascii'), t.cur_boss_type)
         logger.info('已同步上供鬼王截图，等待协助端确认')
         return True
 
@@ -336,9 +340,9 @@ class GhostOffering:
             return True
         if not self.settled and t.appear(t.I_MD_FIRE):
             self.empty_frames = 0
-            if t.cur_boss_type != BossType.SIX_STARS:
+            if t.cur_boss_type not in self.stars:
                 if not self.unknown_reported:
-                    logger.warning('已有鬼王星级未确认，不分享、不挑战；等待其消失后仅召唤六星')
+                    logger.warning('已有鬼王不在分享星级内，不分享、不挑战；等待其消失后按配置星级召唤')
                     self.unknown_reported = True
             elif self.shared_generation != t._boss_generation:
                 if not self.share():
@@ -367,7 +371,7 @@ class GhostOffering:
             if not self.within_limit():
                 return True
         self.empty_frames = 0
-        return t.check_and_switch_ticket(sequence=(BossType.SIX_STARS,)) or t.State.done
+        return t.check_and_switch_ticket(sequence=tuple(self.stars)) or t.State.done
 
 
 class GhostAssistant:
@@ -394,6 +398,14 @@ class GhostAssistant:
         )
         return tuple(result['roi_front']) if result['matched'] else None
 
+    def target_boss_type(self, target):
+        """上供端同步的鬼王星级；缺失或超出范围时按六星处理。"""
+        state = self.link.runtime.peer_battle_state(AssistanceLink.CHANNEL, self.link.peer)
+        stars = state['payload'].get('stars') if state and state['session'] == target[0] else None
+        if isinstance(stars, int) and 1 <= stars <= 6:
+            return BossType(stars)
+        return BossType.SIX_STARS
+
     def open_row(self, area):
         t = self.task
         t.click(RuleClick(roi_front=area, roi_back=area, name='metademon_assist_row'))
@@ -414,10 +426,10 @@ class GhostAssistant:
             t.appear_then_click(t.I_MD_CLOSE_POPUP, interval=0.8)
             t.goto_page(md_pages.page_meta_demon_boss, skip_first_screenshot=False)
 
-    def fight(self, target):
+    def fight(self, target, boss_type=BossType.SIX_STARS):
         t = self.task
         if self.active_target != target:
-            t.cur_boss_type = BossType.SIX_STARS
+            t.cur_boss_type = boss_type
             t._boss_generation += 1
             t._current_boss_attempts = 0
             self.active_target = target
@@ -469,7 +481,7 @@ class GhostAssistant:
                     self.link.confirm(target)
                     opened = self.open_row(area)
                     if not self.observe_settlement(target) and opened and self.link.target() == target:
-                        self.fight(target)
+                        self.fight(target, self.target_boss_type(target))
                     self.return_to_list()
                     return
                 t.swipe(swipe)

@@ -208,8 +208,23 @@ class MetaDemonAssistanceConfig(ConfigBase):
         description='上供召唤六星鬼王并分享；协助从超鬼王主页寻找好友分享的鬼王并挑战。')
     friend_names: str = Field(default='', title='分享好友名字',
         description='填写游戏内好友完整名字；多个名字用分号或换行分隔，按名称精确匹配，不使用近似名字。')
+    share_stars: str = Field(default='6', title='分享鬼王星级',
+        description='上供按此顺序召唤并分享鬼王，可选一至六星；多个星级用空格分隔，例：6 5（先六星后五星）。')
     poll_interval: int = Field(default=5, ge=2, le=60, title='协助轮询间隔（秒）',
         description='上供按此间隔检查是否已击杀，协助按此间隔重新寻找好友分享。')
+
+    @field_validator('share_stars')
+    @classmethod
+    def validate_share_stars(cls, value: str) -> str:
+        for text in str(value).split():
+            if not text.isdigit() or not 1 <= int(text) <= 6:
+                raise ValueError(f'分享鬼王星级只能填写一至六星：{text}')
+        return value
+
+    @property
+    def share_stars_v(self) -> list[BossType]:
+        stars = (BossType(int(text)) for text in self.share_stars.split())
+        return list(dict.fromkeys(stars)) or [BossType.SIX_STARS]
 
     @field_validator('cooperation_script')
     @classmethod
