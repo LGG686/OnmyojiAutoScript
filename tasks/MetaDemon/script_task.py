@@ -264,6 +264,7 @@ class ScriptTask(RightActivity, Battle, GeneralBattle, SwitchSoul, Star56):
         @return: True 战斗胜利，False 战斗失败
         """
         logger.info('Battle boss')
+        self.ui_click(self.I_TEAM_LOCK, self.I_TEAM_UNLOCK, interval=1.5, timeout=5)
         self.ui_click_until_disappear(self.I_BATTLE_DEMON, interval=1.8)
         # 任务级战斗计数：本场是第几场（和旧日志 Current count 对齐）
         count = runtime.pub_ctx.per_task.count if runtime.pub_ctx else 0
