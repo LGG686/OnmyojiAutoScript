@@ -269,21 +269,24 @@ class ScriptTask(RightActivity, GeneralBattle, SwitchSoul, Star56):
 
     def battle_wait(self, random_click_swipt_enable: bool) -> bool:
         # 重写
-        self.device.stuck_record_add('BATTLE_STATUS_S')
+        self.device.stuck_record_add("BATTLE_STATUS_S")
         self.device.click_record_clear()
         logger.info("Start battle process")
         self.boss_mark_reset()
         while 1:
             self.screenshot()
-            # if self.appear_then_click(self.I_MD_WIN, interval=1):
-            #     continue
             if self.appear(self.I_MD_WIN):
-                logger.info('Win battle')
-                self.ui_click_until_disappear(self.I_MD_WIN)
+                logger.info("Win battle")
+                while 1:
+                    self.screenshot()
+                    if not self.appear(self.I_MD_WIN):
+                        break
+                    self.click(self.I_MD_WIN)
+                    sleep(0.5)
                 return True
 
             if self.appear(self.I_MD_BATTLE_FAILURE):
-                logger.warning('False battle')
+                logger.warning("False battle")
                 self.ui_click_until_disappear(self.I_MD_BATTLE_FAILURE)
                 return False
             if self.boss_mark():
