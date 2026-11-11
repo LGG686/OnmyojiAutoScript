@@ -208,5 +208,15 @@
     "threshold": 0.8,
     "profile": "High",
     "description": "一键上阵委派式神"
+  },
+  {
+    "itemName": "event_story_skip_ensure",
+    "imageName": "exploration_event_story_skip_ensure.png",
+    "roiFront": "719,446,109,30",
+    "roiBack": "702,432,144,54",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "确认跳过"
   }
 ]

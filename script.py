@@ -59,6 +59,8 @@ class Script:
         self.runtime = ScriptRuntimeController(self)
         self.gui_update_task: Callable = None  # 回调函数, gui进程注册当每次config更新任务的时候更新gui的信息
         self.config_name = config_name
+        from module.config.config_updater import ConfigUpdater
+        ConfigUpdater().update_config(config_name)
         # Skip first restart
         self.is_first_task = True
         # Failure count of tasks
@@ -555,7 +557,7 @@ class Script:
         try:
             cooperation = self.__dict__.get('_cooperation')
             self.config.cooperation_runtime = cooperation
-            if command in BATTLE_TASKS:
+            if command in BATTLE_TASKS and command not in ('MetaDemon', 'MetaDemonTicket'):
                 prepare_task_cooperation(self.config, command)
             try:
                 self.device.screenshot()

@@ -18,6 +18,10 @@ from tasks.Component.GeneralBattle.assets import GeneralBattleAssets
 from module.logger import logger
 
 
+FIRST_INVITE_RETRY_SECONDS = 20
+CONTINUE_INVITE_RETRY_SECONDS = 30
+
+
 class FriendList(str, Enum):
     RECENT_FRIEND = 'recent_friend'
     GUILD_FRIEND = 'guild_friend'

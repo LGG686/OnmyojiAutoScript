@@ -79,6 +79,8 @@ class RestartAssets:
 	I_LOGIN_SCROOLL_CLOSE = RuleImage(roi_front=(1181,634,28,39), roi_back=(1162,595,77,112), threshold=0.7, method="Template matching", profile="High", file="./tasks/Restart/login/login_login_scrooll_close.png")
 	# 闲庭图片 
 	I_LOGIN_COURTYARD = RuleImage(roi_front=(40,640,100,50), roi_back=(40,640,100,50), threshold=0.8, method="Template matching", profile="High", file="./tasks/Restart/login/login_courtyard.png")
+	# description 
+	# description 
 	# 用于判断是否出现登录选区的 
 	I_LOGIN_8 = RuleImage(roi_front=(178,572,53,60), roi_back=(1,547,241,105), threshold=0.8, method="Template matching", profile="High", file="./tasks/Restart/login/login_login_8.png")
 	# 登录时候不观看CG视频 
@@ -103,6 +105,13 @@ class RestartAssets:
 	I_EARLY_SERVER = RuleImage(roi_front=(596,269,115,33), roi_back=(596,269,115,33), threshold=0.8, method="Template matching", profile="High", file="./tasks/Restart/login/login_early_server.png")
 	# 登录界面 弹出框 取消引擎更新 
 	I_CANCEL_UPDATE = RuleImage(roi_front=(477,416,117,46), roi_back=(367,227,545,296), threshold=0.8, method="Template matching", profile="High", file="./tasks/Restart/login/login_cancel_update.png")
+	# 取消体验服切换弹窗 
+	# 取消继续战斗 
+	# 取消返回百鬼棋局，进入棋局结算流程 
+	#  
+	I_LOGIN_SCROOLL_CLOSE_DECADE = RuleImage(roi_front=(1201,633,28,39), roi_back=(1162,595,77,112), threshold=0.8, method="Template matching", profile="High", file="./tasks/Restart/login/login_login_scrooll_close_decade.png")
+	#  
+	I_LOGIN_SCROOLL_OPEN_DECADE = RuleImage(roi_front=(1213,626,28,39), roi_back=(1186,608,77,112), threshold=0.8, method="Template matching", profile="High", file="./tasks/Restart/login/login_login_scrooll_open_decade.png")
 
 
 	# Ocr Rule Assets

@@ -3,10 +3,13 @@
 import time
 from datetime import datetime, timedelta
 
+from module.base.timer import Timer
+from module.exception import GameStuckError
 from module.logger import logger
 from tasks.Exploration.base import BaseExploration
-from tasks.Exploration.config import AutoRotate, UserStatus, ExplorationLevel
-import tasks.Exploration.page as pages
+from tasks.Exploration.config import AutoRotate, ExplorationDifficulty, UserStatus, ExplorationLevel
+import tasks.GameUi.page as pages
+import tasks.Exploration.page as exp_pages
 from tasks.GameUi.page_definition import Page
 from typing import Callable
 
@@ -24,19 +27,20 @@ class ScriptTask(BaseExploration):
 
     def arrive_end(self) -> bool:
         # 28章直接匹配
-        if self._config.exploration_config.exploration_level == ExplorationLevel.EXPLORATION_28:
-            return self.appear(self.I_SWIPE_END)
+        if (self._config.exploration_config.exploration_level == ExplorationLevel.EXPLORATION_28
+                and self.appear(self.I_SWIPE_END)):
+            return True
         return super().arrive_end()
 
     @property
     def exp_page_handle_dict(self) -> dict[Page, Callable]:
         return {
-            pages.page_exp_main: self.run_on_exp_main,
-            pages.page_exp_settings: self.run_on_exp_settings,
-            pages.page_exp_exit: self.run_on_exp_exit,
-            pages.page_exp_entrance: self.run_on_exp_entrance,
-            pages.page_mainline: self.run_on_exp,
-            pages.page_gameplay: self.run_on_exp,
+            exp_pages.page_exp_main: self.run_on_exp_main,
+            exp_pages.page_exp_settings: self.run_on_exp_settings,
+            exp_pages.page_exp_exit: self.run_on_exp_exit,
+            exp_pages.page_exp_entrance: self.run_on_exp_entrance,
+            exp_pages.page_mainline: self.run_on_exp,
+            exp_pages.page_gameplay: self.run_on_exp,
             pages.page_exploration: self.run_on_exp,
             pages.page_battle_prepare: self.run_on_battle,
             pages.page_battle: self.run_on_battle,
@@ -54,22 +58,23 @@ class ScriptTask(BaseExploration):
         self.post_process()
 
     def exec_exp_page(self):
+        self.prepare_battle_cooperation('Exploration')
         pages.page_battle_team_exit = self.navigator.resolve_page(pages.page_battle_team_exit)
-        pages.page_battle_team_exit.connect(pages.page_exp_entrance, self.I_UI_CONFIRM, key="page_battle_team_exit->page_exp_entrance")
+        pages.page_battle_team_exit.connect(exp_pages.page_exp_entrance, self.I_UI_CONFIRM, key="page_battle_team_exit->page_exp_entrance")
         while True:
             self.screenshot()
             if self.close_chat_sidebar_first():
                 continue
             current_page = self.get_current_page()
-            if current_page is None:
-                time.sleep(0.5)
-                continue
             if self.check_exit(current_page):
                 self.appear_then_click(self.I_UI_CANCEL, interval=0.8)  # 处理队长结束的邀请弹窗
                 break
+            if current_page is None:
+                time.sleep(0.5)
+                continue
             handle = self.exp_page_handle_dict.get(current_page, None)
             if handle is None:
-                self.goto_page(pages.page_mainline)
+                self.goto_page(exp_pages.page_mainline)
                 continue
             try:
                 handle()
@@ -88,10 +93,17 @@ class ScriptTask(BaseExploration):
         return False
 
     def run_on_exp_main(self):
-        if self.pre_page and self.pre_page != pages.page_exp_main:
+        # Returning to the scene for one delayed frame must not restart combat
+        # and revoke an exit already requested after exhausting target monsters.
+        if self.need_exit:
+            self.quit_exp_main()
+            return
+        if self.pre_page and self.pre_page != exp_pages.page_exp_main:
             # 防止因延迟过大, 一直在主界面和奖励页面切换导致too many click
             self.device.click_record_clear()
         if self.collect_reward():
+            return
+        if self.ensure_exploration_team_locked():
             return
         if self.user_status != UserStatus.ALONE:
             if self.fire_monster_type == 'boss':
@@ -108,6 +120,21 @@ class ScriptTask(BaseExploration):
         if self.fire_monster_type != 'boss' and self.swipe(self.S_SWIPE_BACKGROUND_RIGHT, interval=1.5) and self.arrive_end():
             self.quit_exp_main()
 
+    def ensure_exploration_team_locked(self) -> bool:
+        """按战斗配置切换探索阵容锁，下一帧重新确认。"""
+        if self._config.exploration_config.auto_rotate == AutoRotate.yes:
+            return False
+        lock_enabled = self._config.general_battle_config.lock_team_enable
+        expected, toggle = self.I_EXP_LOCK, self.I_EXP_UNLOCK
+        if not lock_enabled:
+            expected, toggle = toggle, expected
+        if self.appear(expected):
+            return False
+        if self.appear_then_click(toggle, interval=1):
+            logger.info(f'Exploration: set team lock to {lock_enabled}')
+            return True
+        return False
+
     def run_on_exp_entrance(self):
         self.collect_treasure_box()
         self.fire_monster_type = ''  # 入口处重置怪物类型
@@ -117,12 +144,39 @@ class ScriptTask(BaseExploration):
                 if self.check_and_invite(self._config.invite_config.default_invite):
                     return
                 if datetime.now() - self.wait_start_time >= timedelta(seconds=10) or self.current_count == 0:
+                    self.ensure_difficulty(ExplorationDifficulty.HARD)
                     self.enter_team()
             case UserStatus.ALONE:
-                self.goto_page(pages.page_exp_main)
+                difficulty = self.solo_difficulty
+                if difficulty is not None:
+                    self.ensure_difficulty(difficulty)
+                self.goto_page(exp_pages.page_exp_main)
             case UserStatus.MEMBER:
                 self.check_then_accept()
                 self.device.stuck_record_clear()
+
+    @property
+    def solo_difficulty(self) -> ExplorationDifficulty | None:
+        return self._config.exploration_config.difficulty
+
+    def ensure_difficulty(self, difficulty: ExplorationDifficulty) -> None:
+        hard = difficulty == ExplorationDifficulty.HARD
+        selector = self.C_SELECT_HARD if hard else self.C_SELECT_NORMAL
+        timeout = Timer(8).start()
+        matched = False
+        while not timeout.reached():
+            self.screenshot()
+            if not self.appear(self.I_E_EXPLORATION_CLICK):
+                matched = False
+                continue
+            if self.appear(self.I_EXP_CREATE_TEAM) == hard:
+                if matched:
+                    return
+                matched = True
+                continue
+            matched = False
+            self.click(selector, interval=1)
+        raise GameStuckError(f'未确认探索难度：{difficulty.value}')
 
     def run_on_exp(self):
         self.fire_monster_type = ''  # 入口处重置怪物类型
@@ -133,17 +187,17 @@ class ScriptTask(BaseExploration):
                 if self.check_and_invite(self._config.invite_config.default_invite):
                     return
                 if datetime.now() - self.wait_start_time >= timedelta(seconds=10) or self.current_count == 0:
-                    self.goto_page(pages.page_exp_entrance)
+                    self.goto_page(exp_pages.page_exp_entrance)
             case UserStatus.ALONE:
                 self.collect_treasure_box()
-                self.goto_page(pages.page_exp_main)
+                self.goto_page(exp_pages.page_exp_entrance)
             case UserStatus.MEMBER:
                 self.collect_treasure_box()
                 self.check_then_accept()
                 self.device.stuck_record_clear()
 
     def run_on_battle(self):
-        self.run_general_battle(self._config.general_battle_config, exit_matcher=pages.page_exp_main)
+        self.run_general_battle(self._config.general_battle_config, exit_matcher=exp_pages.page_exp_main)
         self._match_end.refresh()  # 防止同一张图多次打怪导致误以为探索结束
         self.wait_start_time = datetime.now()  # 队友等待时间重置
 
@@ -155,11 +209,11 @@ class ScriptTask(BaseExploration):
                     return
                 raise InviteFailedException('Invite failed, quit')
             case UserStatus.ALONE:
-                self.goto_page(pages.page_exp_main)
+                self.goto_page(exp_pages.page_exp_main)
 
     def run_on_exp_settings(self):
         if self._config.exploration_config.auto_rotate == AutoRotate.no:
-            self.goto_page(pages.page_exp_main)
+            self.goto_page(exp_pages.page_exp_main)
             return
         self.fill_shikigami()
         self.appear_then_click(self.I_E_AUTO_ROTATE_OFF, interval=0.8)

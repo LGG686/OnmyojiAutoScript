@@ -31,6 +31,7 @@ class GlobalGameAssets:
 	I_NETWORK_ERROR = RuleImage(roi_front=(431,253,416,208), roi_back=(431,253,416,208), threshold=0.8, method="Template matching", profile="High", file="./tasks/GlobalGame/gg/gg_network_error.png")
 	# 我还没有碰到这个情况没能截图 
 	I_CLIENT_CLEAR = RuleImage(roi_front=(578,369,151,72), roi_back=(578,369,151,72), threshold=0.8, method="Template matching", profile="High", file="./tasks/GlobalGame/gg/gg_client_clear.png")
+	# 客户端重启确认 
 	# description 
 	I_CHAT_CLOSE_BUTTON = RuleImage(roi_front=(632,343,49,103), roi_back=(632,343,49,103), threshold=0.8, method="Template matching", profile="High", file="./tasks/GlobalGame/gg/gg_chat_close_button.png")
 
@@ -43,6 +44,8 @@ class GlobalGameAssets:
 	# Image Rule Assets
 	# 长一点的确认 
 	I_UI_CONFIRM = RuleImage(roi_front=(667,398,179,66), roi_back=(547,368,336,261), threshold=0.8, method="Template matching", profile="High", file="./tasks/GlobalGame/ui/ui_ui_confirm.png")
+	# 通用确认 
+	# 备用确认 
 	# 长一点的取消 
 	I_UI_CANCEL = RuleImage(roi_front=(435,413,177,62), roi_back=(240,325,542,338), threshold=0.8, method="Template matching", profile="High", file="./tasks/GlobalGame/ui/ui_ui_cancel.png")
 	# '获得奖励' 四个大字 
@@ -65,5 +68,6 @@ class GlobalGameAssets:
 	I_UI_CHECK = RuleImage(roi_front=(564,341,40,38), roi_back=(512,329,164,78), threshold=0.8, method="Template matching", profile="High", file="./tasks/GlobalGame/ui/ui_ui_check.png")
 	# 弯曲返回按钮 
 	I_UI_BACK_CIRCLE = RuleImage(roi_front=(24,21,36,39), roi_back=(0,0,95,101), threshold=0.8, method="Template matching", profile="High", file="./tasks/GlobalGame/ui/ui_ui_back_circle.png")
+	# 通用返回按钮1：左上角圆框返回箭头 
 
 

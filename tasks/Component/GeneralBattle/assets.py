@@ -1,4 +1,5 @@
 from module.atom.image import RuleImage
+from module.atom.frame import RuleFrame, Image, Ocr, Click
 from module.atom.click import RuleClick
 from module.atom.scatter import RuleScatter
 from module.atom.long_click import RuleLongClick
@@ -166,6 +167,10 @@ class GeneralBattleAssets:
 	# Image Rule Assets
 	# description 
 	I_GREED_GHOST = RuleImage(roi_front=(56,40,45,45), roi_back=(56,40,45,45), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralBattle/gb/gb_greed_ghost.png")
+	# 确认按钮 
+	I_CONFIRM = RuleImage(roi_front=(732,383,83,43), roi_back=(330,228,615,286), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralBattle/gb/gb_confirm.png")
+	# 关闭御魂不一致提示弹窗 
+	I_CONFIRM_CLOSE_DIFF_SOUL = RuleImage(roi_front=(550,408,180,64), roi_back=(517,374,226,112), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralBattle/gb/gb_confirm_close_diff_soul.png")
 	# 禁用御魂不一致提示7天 
 	I_DISABLE_7DAYS_DIFF_SOUL = RuleImage(roi_front=(544,346,24,27), roi_back=(524,325,70,71), threshold=0.8, method="Template matching", profile="High", file="./tasks/Component/GeneralBattle/gb/gb_disable_7days_diff_soul.png")
 
@@ -183,6 +188,8 @@ class GeneralBattleAssets:
 	O_BATTLE_AUTO = RuleOcr(roi=(37,642,51,36), area=(0,589,133,128), mode="Single", method="Default", keyword="自动", name="battle_auto")
 	# 战斗页面手动标志 
 	O_BATTLE_HAND = RuleOcr(roi=(35,644,52,34), area=(0,589,136,129), mode="Single", method="Default", keyword="手动", name="battle_hand")
+	# 超鬼王门票
+	O_METADEMON_PASS = RuleOcr(roi=(1126,3,95,39), area=(1126,3,95,39), mode="DigitCounter", method="Default", keyword="", name="metademon_pass")
 
 
 	# Scatter Rule Assets
