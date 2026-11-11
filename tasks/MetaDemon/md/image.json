@@ -7,5 +7,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "失败"
+  },
+  {
+    "itemName": "md_win",
+    "imageName": "md_md_win.png",
+    "roiFront": "691,55,236,170",
+    "roiBack": "668,32,282,216",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": ""
   }
 ]

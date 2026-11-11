@@ -341,6 +341,15 @@ class PerTaskPreset:
     # 一次任务类型触发一次，想要再次触发把done设置False
     done: bool = False
 
+    @classmethod
+    def reset_preset_state(cls, owner: 'BattleWait') -> None:
+        if runtime.task_owner is not owner:
+            # runtime 还没绑定到本任务，per_task 会在首个钩子调用时整体重建，这里无需处理
+            return
+        for hook_name, ctx in runtime.pri_ctx.items():
+            if runtime.hook2event(hook_name) == 'preset':
+                ctx.per_task = cls()
+
 
 @dataclass
 class PerTaskGreen:
