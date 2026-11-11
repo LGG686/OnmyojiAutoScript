@@ -31,6 +31,7 @@ class MetaDemonAssets:
 	I_MD_FIRE_POWER = RuleImage(roi_front=(1159,498,100,37), roi_back=(1159,498,100,37), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_md_fire_power.png")
 	# 失败 
 	I_MD_BATTLE_FAILURE = RuleImage(roi_front=(412,105,100,100), roi_back=(412,105,100,100), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_md_battle_failure.png")
+	I_MD_WIN = RuleImage(roi_front=(691,55,236,170), roi_back=(668,32,282,216), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_md_win.png")
 	# 进入鬼王界面 
 	I_A2 = RuleImage(roi_front=(751,137,41,149), roi_back=(751,137,41,149), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/Screenshots_a2.png")
 	# 召唤鬼王 
@@ -49,9 +50,9 @@ class MetaDemonAssets:
 
 	# Image Rule Assets
 	# 右侧进去 
-	I_RIGHT_ENTER = RuleImage(roi_front=(1183,314,46,34), roi_back=(1150,131,100,360), threshold=0.75, method="Template matching", file="./tasks/MetaDemon/md/md_right_enter.png")
+	I_RIGHT_ENTER = RuleImage(roi_front=(1182,226,46,34), roi_back=(1150,131,100,360), threshold=0.75, method="Template matching", file="./tasks/MetaDemon/md/md_right_enter.png")
 	# description 
-	I_ENTER2 = RuleImage(roi_front=(461,265,44,156), roi_back=(428,220,100,258), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_enter2.png")
+	I_ENTER2 = RuleImage(roi_front=(933,150,73,125), roi_back=(893,47,116,244), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_enter2.png")
 	# 寻找鬼王 
 	I_FIND_DEMON = RuleImage(roi_front=(1140,582,86,81), roi_back=(1102,546,132,133), threshold=0.8, method="Template matching", file="./tasks/MetaDemon/md/md_find_demon.png")
 	# 点击战斗 
