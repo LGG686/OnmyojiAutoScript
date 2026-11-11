@@ -3,7 +3,7 @@
     "itemName": "check_exploration",
     "imageName": "page_check_exploration.png",
     "roiFront": "1152,148,21,22",
-    "roiBack": "1152,148,21,22",
+    "roiBack": "1138,134,56,50",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "探索界面标识"
