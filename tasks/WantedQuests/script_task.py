@@ -287,13 +287,18 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
         列表中，因此记录其进度区域，供 find_wq 在本次连续跳过期间
         （列表未变动时）跳过；列表一旦变动记录会在 run() 中清空，
         神秘卡最坏被重新打开跳过一次，不会漏掉其它悬赏。
+
+        取消追踪只把按钮改回「追踪」，详情面板不会自己关，也要点
+        红色返回退出来，否则后续进度扫描读的是被详情挡住的列表。
         """
         if self.appear(self.I_TRACE_DISABLE):
             toggle_timer = Timer(4).start()
             while not toggle_timer.reached():
                 self.screenshot()
                 if self.appear(self.I_TRACE_FALSE):
-                    return  # 取消追踪成功，卡位会从列表消失
+                    # 取消追踪成功，卡位会从列表消失，关掉详情返回列表
+                    self.appear_then_click(self.I_UI_BACK_RED)
+                    return
                 self.appear_then_click(self.I_TRACE_DISABLE, interval=1)
             logger.warning('Trace toggle not working, close by back button')
         self._wq_skipped_areas.append(list(self.O_WQ_TEXT_ALL.area))

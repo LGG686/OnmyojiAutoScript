@@ -437,5 +437,5 @@ class BossBattle(GeneralBattle, SwitchSoul, QuickLoadout, GameUi, MetaDemonAsset
         return True
 
     def finish_task(self):
-        self.goto_page(pages.page_main)
+        self.goto_page(pages.page_main, skip_first_screenshot=False)
         raise TaskEnd

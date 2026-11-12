@@ -18,6 +18,7 @@ from tasks.MetaDemon.config import AssistanceRole, BossType, MetaDemonMode
 import tasks.MetaDemon.page as md_pages
 class AssistanceLink:
     CHANNEL = 'MetaDemonAssistance'
+    PEER_WAIT_SECONDS = 120
 
     def __init__(self, task):
         self.task = task
@@ -91,13 +92,24 @@ class AssistanceLink:
         task = 'MetaDemon'
         if not self.runtime.prepare(self.task.config, task, self.peer, defer=False):
             return False
-        deadline = time.monotonic() + min(30, self.task.limit_time.total_seconds())
+        # 对端可能正在重启或登录：心跳存在但任务为空时继续等，只有进程离线或
+        # 转去跑别的任务才放弃，避免两边只差几十秒却各自失败一轮。
+        deadline = time.monotonic() + min(self.PEER_WAIT_SECONDS, self.task.limit_time.total_seconds())
+        waiting_logged = False
         while time.monotonic() < deadline:
             running = self.runtime.runner_task(self.peer)
             if running == task:
                 return True
+            if running is None:
+                self.runtime.skip_without_wake(task, self.peer, '对端脚本已离线')
+                logger.info(f'超鬼王协同跳过：{self.peer} 脚本已离线')
+                return False
             if running != '':
                 break
+            if not waiting_logged:
+                logger.info(f'等待对端启动：{self.peer} 在线但未进入任务，'
+                            f'最多等待 {int(deadline - time.monotonic())} 秒')
+                waiting_logged = True
             time.sleep(0.5)
         self.runtime.skip_without_wake(task, self.peer, '对端未进入超鬼王协同任务')
         logger.info(f'超鬼王协同跳过：{self.peer} 未进入同一任务')
@@ -488,7 +500,7 @@ class GhostAssistant:
                 time.sleep(0.5)
 
     def run(self):
-        self.task.goto_page(md_pages.page_meta_demon_boss)
+        self.task.goto_page(md_pages.page_meta_demon_boss, skip_first_screenshot=False)
         waiting_logged = False
         while self.within_limit():
             if not self.link.peer_in_task():
@@ -508,7 +520,7 @@ class GhostAssistant:
 
 
 def run_offering(task, link):
-    task.goto_page(md_pages.page_meta_demon_boss)
+    task.goto_page(md_pages.page_meta_demon_boss, skip_first_screenshot=False)
     offering = GhostOffering(task, link)
     success = True
     while offering.within_limit():
