@@ -83,12 +83,6 @@ class DesktopDevice:
             self.config.script.device.control_method = 'window_message'
         self.config.save()
         self.screenshot_interval_set()
-        # 桌面客户端的渲染经过 DPI 缩放重采样，相对模板截图环境（模拟器原生
-        # 1280x720）存在约 1px 的相位差；仓库里约 1/3 的模板 roi 与模板等宽，
-        # matchTemplate 结果只剩 1 列、横向无法平移补偿，这点相位差就足以把
-        # 「元素存在」判成「不存在」。这里统一外扩 2px 吸收之，模拟器模式保持 0。
-        from module.atom.image import DESKTOP_ROI_MATCH_PAD, set_roi_match_padding
-        set_roi_match_padding(DESKTOP_ROI_MATCH_PAD)
         # 客户区校准到 1280x720 保证识别 1:1。窗口存在性已由 __init__ 的
         # _desktop_ensure_launched 保证，运行期掉了由 Restart 负责重拉
         self.desktop_window_set_size()

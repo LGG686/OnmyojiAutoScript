@@ -225,6 +225,17 @@ def area_pad(area, pad=10):
     return upper_left_x + pad, upper_left_y + pad, bottom_right_x - pad, bottom_right_y - pad
 
 
+def expand_roi(roi, padding=2, screen_size=(1280, 720)):
+    """Expand an (x, y, width, height) ROI and clip it to the screen bounds."""
+    x, y, width, height = [int(value) for value in roi]
+    screen_width, screen_height = screen_size
+    x0 = min(max(0, x - padding), screen_width)
+    y0 = min(max(0, y - padding), screen_height)
+    x1 = min(max(0, x + width + padding), screen_width)
+    y1 = min(max(0, y + height + padding), screen_height)
+    return x0, y0, max(0, x1 - x0), max(0, y1 - y0)
+
+
 def limit_in(x, lower, upper):
     """
     Limit x within range (lower, upper)

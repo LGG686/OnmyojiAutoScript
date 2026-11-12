@@ -1,0 +1,20 @@
+[
+  {
+    "itemName": "team_lock",
+    "imageName": "lock_team_lock.png",
+    "roiFront": "1135,379,26,31",
+    "roiBack": "728,354,470,341",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "显示是锁队伍的图标"
+  },
+  {
+    "itemName": "team_unlock",
+    "imageName": "lock_team_unlock.png",
+    "roiFront": "1136,379,25,27",
+    "roiBack": "724,346,472,342",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "显示是没有锁队伍的图标"
+  }
+]

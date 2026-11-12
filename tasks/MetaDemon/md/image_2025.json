@@ -2,7 +2,7 @@
   {
     "itemName": "right_enter",
     "imageName": "md_right_enter.png",
-    "roiFront": "1183,314,46,34",
+    "roiFront": "1188,220,37,26",
     "roiBack": "1150,131,100,360",
     "method": "Template matching",
     "threshold": 0.75,
@@ -11,8 +11,8 @@
   {
     "itemName": "enter2",
     "imageName": "md_enter2.png",
-    "roiFront": "461,265,44,156",
-    "roiBack": "428,220,100,258",
+    "roiFront": "933,150,73,125",
+    "roiBack": "893,47,116,244",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "description"
@@ -29,7 +29,7 @@
   {
     "itemName": "battle_demon",
     "imageName": "md_battle_demon.png",
-    "roiFront": "1131,573,100,100",
+    "roiFront": "1133,595,98,54",
     "roiBack": "1085,536,165,161",
     "method": "Template matching",
     "threshold": 0.7,
@@ -47,8 +47,8 @@
   {
     "itemName": "boss_convene",
     "imageName": "md_boss_convene.png",
-    "roiFront": "247,146,47,52",
-    "roiBack": "228,127,88,85",
+    "roiFront": "251,155,47,52",
+    "roiBack": "228,127,88,90",
     "method": "Template matching",
     "threshold": 0.7,
     "description": "集结"
@@ -92,7 +92,7 @@
   {
     "itemName": "crafting_card_star_1",
     "imageName": "md_crafting_card_star_1.png",
-    "roiFront": "217,156,87,92",
+    "roiFront": "214,152,87,92",
     "roiBack": "191,127,140,137",
     "method": "Template matching",
     "threshold": 0.8,
@@ -151,5 +151,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "description"
+  },
+  {
+    "itemName": "boos_public",
+    "imageName": "md_boos_public.png",
+    "roiFront": "251,155,47,52",
+    "roiBack": "228,127,88,90",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "已公开"
   }
 ]

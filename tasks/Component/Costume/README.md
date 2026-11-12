@@ -42,4 +42,4 @@
 
    **在测试之前你需要打开一次 OASX 修改你对应的庭院皮肤的选项**
 
-8. 完事啦？？？哪有那么简单，你没有发现打开 OASX 的时候发现你的选项还是 `costume_main_xxx` 这种吗。你还需要添加一个翻译，[点击这儿](https://runhey.github.io/OnmyojiAutoScript-website/docs/development/user-option#7翻译)
+8. 完事啦？？？哪有那么简单，你没有发现打开 OASX 的时候发现你的选项还是 `costume_main_xxx` 这种吗。你还需要添加一个翻译，[点击这儿](https://www.onmyojiautoscript.cn/docs/development/user-option#7翻译)

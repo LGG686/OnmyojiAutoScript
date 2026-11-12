@@ -13,6 +13,11 @@ from module.exception import TaskEnd
 
 from tasks.Component.RightActivity.right_activity import RightActivity
 from tasks.Component.GeneralBattle.general_battle import GeneralBattle
+from tasks.Component.GeneralBattle.battle import Battle
+from tasks.Component.GeneralBattle.battle_wait import (
+    BattleResult, HookSignal, PerTaskPreset, PrivateContext, PublicContext,
+    battle_wait_strategy, battle_wait_options, runtime,
+)
 from tasks.Component.GeneralBattle.config_general_battle import GeneralBattleConfig
 from tasks.Component.SwitchSoul.switch_soul import SwitchSoul
 from tasks.GameUi.game_ui import GameUi
@@ -69,7 +74,7 @@ class Star56(GameUi, MetaDemonAssets):
         return tmp if tmp else self.cached_default_group_team
 
 
-class ScriptTask(RightActivity, GeneralBattle, SwitchSoul, Star56):
+class ScriptTask(RightActivity, Battle, GeneralBattle, SwitchSoul, Star56):
 
     def run(self):
         if self.config.meta_demon.switch_soul.enable:
@@ -109,14 +114,15 @@ class ScriptTask(RightActivity, GeneralBattle, SwitchSoul, Star56):
                 continue
 
             # 先看自己有没有鬼王要打
-            if not self.appear(self.I_BOSS_EMPTY) and self.appear(self.I_BOSS_CONVENE):
+            if (not self.appear(self.I_BOSS_EMPTY) and
+                    (self.appear(self.I_BOSS_CONVENE) or self.appear(self.I_BOOS_PUBLIC))):
                 logger.info('Try to battle boss from self')
                 self.click(self.I_BOSS_EMPTY, interval=1.5)
                 battle_processing = True
                 if self.is_star56():
                     is_hard_boss = True
             # 看别人的是否给我共享鬼王
-            if not battle_processing:
+            if not battle_processing and self.config.meta_demon.meta_demon_config.auto_shared_boss:
                 if not self.appear(self.I_BOSS_EMPTY_1) and self.ocr_appear(self.O_BOSS_EMPTY_1):
                     logger.info('Try to battle boss 1 from others')
                     self.click(self.I_BOSS_EMPTY_1, interval=1.5)
@@ -248,46 +254,80 @@ class ScriptTask(RightActivity, GeneralBattle, SwitchSoul, Star56):
         return True
 
     def battle_boss(self, group: int = None, team: int = None) -> bool:
+        """
+        战斗流程不再自己写 while 循环，全部交给 battle_wait 的策略化钩子：
+          prepare/preset  准备阶段与预设队伍（5/6 星按推荐阵容切队）
+          success/failure 超鬼王自带的结算界面（I_MD_WIN / I_MD_BATTLE_FAILURE）
+          idle            战斗中给鬼王上标记
+        @param group: 预设组，与 team 同时为 None 时不切预设队伍
+        @param team:  预设队伍，与 group 同时为 None 时不切预设队伍
+        @return: True 战斗胜利，False 战斗失败
+        """
         logger.info('Battle boss')
+        self.ui_click(self.I_TEAM_LOCK, self.I_TEAM_UNLOCK, interval=1.5, timeout=5)
         self.ui_click_until_disappear(self.I_BATTLE_DEMON, interval=1.8)
+        # 任务级战斗计数：本场是第几场（和旧日志 Current count 对齐）
+        count = runtime.pub_ctx.per_task.count if runtime.pub_ctx else 0
+        logger.info(f'Current count: {count + 1}')
+
         battle_config = GeneralBattleConfig()
         battle_config.lock_team_enable = False
-        if group is None and team is None:
-            battle_config.preset_enable = False
-            success = self.run_general_battle(battle_config)
-            return True if success else False
         # 针对5/6星的挑战
-        else:
+        if group is not None and team is not None:
             battle_config.preset_enable = True
             battle_config.preset_group = group
             battle_config.preset_team = team
-            tmp_battle_count = self.current_count
-            self.current_count = 0
-            success = self.run_general_battle(battle_config)
-            self.current_count = tmp_battle_count + 1
-            return True if success else False
+            # 每只5/6星鬼王的推荐阵容不同，而预设队伍默认是按任务只切一次的，
+            # 这里只复位 preset 的任务级状态，per_task.count 保持累加
+            PerTaskPreset.reset_preset_state(self)
 
-    def battle_wait(self, random_click_swipt_enable: bool) -> bool:
-        # 重写
-        self.device.stuck_record_add('BATTLE_STATUS_S')
-        self.device.click_record_clear()
-        logger.info("Start battle process")
+        strategies, options = self.loadout_from_config(battle_config)
+        strategies['success'] = 'metademon'
+        strategies['failure'] = 'metademon'
+        strategies['idle'] = 'metademon'
+        options['completion'].check_imgs = [self.I_CRAFTING_1, self.I_FIND_DEMON, self.I_BATTLE_DEMON]
+
+        self.loadout_show((strategies, options))
         self.boss_mark_reset()
+        with battle_wait_strategy(**strategies), battle_wait_options(**options):
+            win = self.battle_wait()
+        logger.info(f'Battle boss win: {win}, current count: {runtime.pub_ctx.per_task.count}')
+        return win
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # battle_wait 钩子：超鬼王自己的结算界面与战中行为
+    # ------------------------------------------------------------------------------------------------------------------
+    def _bw_success_metademon(self, pub: PublicContext, pri: PrivateContext) -> HookSignal:
+        if not self.appear(self.I_MD_WIN):
+            return HookSignal.CONTINUE
+        logger.info('Win battle')
         while 1:
             self.screenshot()
-            # if self.appear_then_click(self.I_WIN, interval=1):
-            #     continue
-            if self.appear(self.I_WIN):
-                logger.info('Win battle')
-                self.ui_click_until_disappear(self.I_WIN)
-                return True
+            if not self.appear(self.I_MD_WIN):
+                break
+            self.click(self.I_MD_WIN)
+            sleep(0.5)
+        pub.per_battle.success = BattleResult.SUCCESS
+        return runtime.hook_enabled_update(
+            enable=('completion',),
+            disable=('success', 'failure'),
+        )
 
-            if self.appear(self.I_MD_BATTLE_FAILURE):
-                logger.warning('False battle')
-                self.ui_click_until_disappear(self.I_MD_BATTLE_FAILURE)
-                return False
-            if self.boss_mark():
-                continue
+    def _bw_failure_metademon(self, pub: PublicContext, pri: PrivateContext) -> HookSignal:
+        if not self.appear(self.I_MD_BATTLE_FAILURE):
+            return HookSignal.CONTINUE
+        logger.warning('False battle')
+        self.ui_click_until_disappear(self.I_MD_BATTLE_FAILURE)
+        pub.per_battle.success = BattleResult.FAILURE
+        return runtime.hook_enabled_update(
+            enable=('completion',),
+            disable=('success', 'failure'),
+        )
+
+    def _bw_idle_metademon(self, pub: PublicContext, pri: PrivateContext) -> HookSignal:
+        if self.is_in_real_battle(False):
+            self.boss_mark()
+        return HookSignal.CONTINUE
 
 
 if __name__ == '__main__':
