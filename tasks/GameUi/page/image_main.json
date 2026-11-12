@@ -167,7 +167,7 @@
     "roiFront": "1087,413,47,114",
     "roiBack": "1043,397,116,155",
     "method": "Template matching",
-    "threshold": 0.8,
+    "threshold": 0.6,
     "description": "商店页面标志"
   },
   {
