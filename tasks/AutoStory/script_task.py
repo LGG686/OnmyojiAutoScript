@@ -35,11 +35,13 @@ class ScriptTask(GeneralBattle, GameUi, AutoStoryAssets):
             return result
 
     def _check_story_finished(self) -> None:
-        """每秒检查庭院，使用全局皮肤配置替换后的主界面资源。"""
+        """每秒检查庭院与平安百物语页面，识别到任一结束标志即结束。"""
         now = time.monotonic()
         if now - self._story_last_check < 1:
             return
         self._story_last_check = now
+        if self.appear(self.I_PAGE_HEIAN_HYAKUMONOGATALI):
+            raise _StoryFinished
         if (self._on_courtyard_main()
                 and not self.appear(self.I_STORY_CHAT_1)
                 and not self.appear(self.I_STORY_CHAT_SKIP)
@@ -66,6 +68,7 @@ class ScriptTask(GeneralBattle, GameUi, AutoStoryAssets):
         self._reset_story_idle()
         self._story_unknown_click_at = 0
         self._reset_story_entry()
+        self._story_random_click_pending = False
         self._story_monitor_enabled = True
         try:
             while True:
@@ -73,7 +76,7 @@ class ScriptTask(GeneralBattle, GameUi, AutoStoryAssets):
                 self._handle_story_frame()
                 time.sleep(0.4)
         except _StoryFinished:
-            logger.info('识别到庭院主界面且无待处理对话，自动剧情结束')
+            logger.info('识别到庭院主界面或平安百物语页面，自动剧情结束')
             return True
         finally:
             self._story_monitor_enabled = False
@@ -82,7 +85,20 @@ class ScriptTask(GeneralBattle, GameUi, AutoStoryAssets):
         # 视频确认和跳过均全局检测，确认优先。
         confirm = self.appear_then_click(self.I_STORY_VIDEO_SKIP_CONFIRM, interval=0.4)
         skip = self.appear_then_click(self.I_STORY_VIDEO_SKIP, interval=2)
-        return bool(confirm or skip)
+        if confirm or skip:
+            return True
+        # 有跳过入口时仍按第一种视频处理。
+        if self.appear(self.I_STORY_VIDEO_SKIP):
+            return True
+        # 第二种视频处理：没有跳过入口时点击加速，直到变为已加速状态；
+        # 之后只等待，已加速状态消失并回到剧情页面时结束本次处理。
+        if not self.appear(self.I_STORY_VIDEO_SPEED):
+            return False
+        logger.info('视频无跳过入口，点击加速')
+        self.ui_click_until_disappear(self.I_STORY_VIDEO_SPEED, interval=1)
+        self.wait_until_disappear(self.I_STORY_VIDEO_SPEED_DONE)
+        self.wait_until_appear(self.I_STORY_BACK, wait_time=10)
+        return True
 
     def _run_story_battle(self) -> None:
         self._reset_story_entry()
@@ -109,6 +125,13 @@ class ScriptTask(GeneralBattle, GameUi, AutoStoryAssets):
         # 实时剧情会长期重复入口/跳过等合法操作，不跨轮累计点击保护记录。
         # 通用战斗仍使用自身的点击保护和清理流程。
         self.device.click_record_clear()
+        # 上一帧未知界面随机点击后，本帧补一次式神剧情跳过检测。
+        if self._story_random_click_pending:
+            self._story_random_click_pending = False
+            if self.appear_then_click(self.I_SHIKIGAMI_STORY_SKIP, interval=0.4):
+                self._reset_story_entry()
+                self._reset_story_idle()
+                return
         # 事件内容独立循环处理，不依赖主页面，也不跟踪事件结束。
         if self._handle_story_video():
             self._reset_story_entry()
@@ -179,6 +202,7 @@ class ScriptTask(GeneralBattle, GameUi, AutoStoryAssets):
             if now >= self._story_unknown_click_at:
                 self.click(random_click(), interval=0.4)
                 self._story_unknown_click_at = now + random.uniform(2, 4)
+                self._story_random_click_pending = True
             return
         self._story_unknown_click_at = 0
         if now - self._story_idle_since <= 5:

@@ -108,5 +108,45 @@
     "threshold": 0.8,
     "profile": "High",
     "description": ""
+  },
+  {
+    "itemName": "story_video_speed",
+    "imageName": "res_story_video_speed.png",
+    "roiFront": "1095,40,34,38",
+    "roiBack": "1077,23,75,76",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "视频加速"
+  },
+  {
+    "itemName": "story_video_speed_done",
+    "imageName": "res_story_video_speed_done.png",
+    "roiFront": "1095,40,34,38",
+    "roiBack": "1077,23,75,76",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "已经加速"
+  },
+  {
+    "itemName": "page_heian_hyakumonogatali",
+    "imageName": "res_page_heian_hyakumonogatali.png",
+    "roiFront": "152,15,134,43",
+    "roiBack": "121,0,193,70",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "平安百物语"
+  },
+  {
+    "itemName": "shikigami_story_skip",
+    "imageName": "res_shikigami_story_skip.png",
+    "roiFront": "1128,39,74,36",
+    "roiBack": "1093,20,141,66",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "跳过式神故事动画"
   }
 ]

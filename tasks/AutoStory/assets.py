@@ -42,5 +42,13 @@ class AutoStoryAssets:
 	I_LOADING_2 = RuleImage(roi_front=(606,294,66,98), roi_back=(577,258,122,191), threshold=0.8, method="Template matching", profile="High", file="./tasks/AutoStory/res/res_loading_2.png")
 	#  
 	I_LOADING_1 = RuleImage(roi_front=(606,343,80,35), roi_back=(577,324,130,76), threshold=0.8, method="Template matching", profile="High", file="./tasks/AutoStory/res/res_loading_1.png")
+	# 视频加速
+	I_STORY_VIDEO_SPEED = RuleImage(roi_front=(1095,40,34,38), roi_back=(1077,23,75,76), threshold=0.8, method="Template matching", profile="High", file="./tasks/AutoStory/res/res_story_video_speed.png")
+	# 已经加速
+	I_STORY_VIDEO_SPEED_DONE = RuleImage(roi_front=(1095,40,34,38), roi_back=(1077,23,75,76), threshold=0.8, method="Template matching", profile="High", file="./tasks/AutoStory/res/res_story_video_speed_done.png")
+	# 平安百物语
+	I_PAGE_HEIAN_HYAKUMONOGATALI = RuleImage(roi_front=(152,15,134,43), roi_back=(121,0,193,70), threshold=0.8, method="Template matching", profile="High", file="./tasks/AutoStory/res/res_page_heian_hyakumonogatali.png")
+	# 跳过式神故事动画
+	I_SHIKIGAMI_STORY_SKIP = RuleImage(roi_front=(1128,39,74,36), roi_back=(1093,20,141,66), threshold=0.8, method="Template matching", profile="High", file="./tasks/AutoStory/res/res_shikigami_story_skip.png")
 
 
