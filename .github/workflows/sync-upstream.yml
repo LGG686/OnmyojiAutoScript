@@ -1,0 +1,110 @@
+name: Sync Upstream
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      allow_rewind:
+        description: '允许回退（上游改写历史或切回更旧的源时手动开启）'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+env:
+  # 按序探测，第一个可达的源胜出。
+  # runhey 被封期间自动落到作者的备份仓库；申诉恢复后自动切回 runhey。
+  UPSTREAM_CANDIDATES: |
+    https://github.com/runhey/OnmyojiAutoScript.git
+    https://github.com/nearaura/OnmyojiAutoScript.git
+  GIT_TERMINAL_PROMPT: '0'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Resolve upstream source
+        run: |
+          set -euo pipefail
+          git remote remove upstream 2>/dev/null || true
+          while IFS= read -r url; do
+            [ -z "$url" ] && continue
+            if timeout 30 git ls-remote --heads "$url" dev master >/dev/null 2>&1; then
+              echo "resolved upstream: $url"
+              git remote add upstream "$url"
+              exit 0
+            fi
+            echo "::warning::unreachable upstream: $url"
+          done <<< "$UPSTREAM_CANDIDATES"
+          echo "::error::no reachable upstream candidate"
+          exit 1
+
+      - name: Sync dev
+        run: |
+          set -euo pipefail
+          git fetch upstream dev
+          base=$(git rev-parse origin/dev)
+          echo "origin/dev:   $base"
+          echo "upstream/dev: $(git rev-parse upstream/dev)"
+
+          if ! git merge-base --is-ancestor "$base" upstream/dev; then
+            if [ "${{ inputs.allow_rewind }}" != "true" ]; then
+              echo "::error::upstream/dev 不是 origin/dev 的后代，拒绝回退。确认要跟随该源时手动 dispatch 并勾选 allow_rewind"
+              exit 1
+            fi
+            echo "::warning::allow_rewind=true，强制对齐上游 dev"
+          fi
+
+          if git diff --quiet "$base" upstream/dev; then
+            echo "dev already aligned, skip push"
+            exit 0
+          fi
+
+          git push --force-with-lease=dev:"$base" origin upstream/dev:refs/heads/dev
+
+      - name: Sync master
+        run: |
+          set -euo pipefail
+          git fetch upstream master
+          base=$(git rev-parse origin/master)
+          echo "origin/master:   $base"
+          echo "upstream/master: $(git rev-parse upstream/master)"
+
+          # 上次对齐的上游 sha 记在提交标题里，用于判断新源是否比当前更旧
+          prev=$(git log -1 --format=%s "$base" | sed -n 's/.*upstream (\([0-9a-f]\{7,40\}\)).*/\1/p')
+          if [ -n "$prev" ] && git rev-parse --verify --quiet "$prev^{commit}" >/dev/null; then
+            if ! git merge-base --is-ancestor "$prev" upstream/master; then
+              if [ "${{ inputs.allow_rewind }}" != "true" ]; then
+                echo "::error::上游 master 回退了（上次对齐 $prev 不在 upstream/master 历史中），拒绝回退。确认要跟随该源时手动 dispatch 并勾选 allow_rewind"
+                exit 1
+              fi
+              echo "::warning::allow_rewind=true，强制对齐上游 master"
+            fi
+          fi
+
+          git checkout -B sync_master upstream/master
+          git show origin/master:.github/workflows/sync-upstream.yml > .github/workflows/sync-upstream.yml
+          git add .github/workflows/sync-upstream.yml
+          if git diff --cached --quiet; then
+            echo "master already aligned, skip push"
+            exit 0
+          fi
+          git commit -m "chore: align master to upstream ($(git rev-parse --short=12 upstream/master)), keep sync-upstream workflow"
+          if git diff --quiet "$base" sync_master; then
+            echo "master tree already matches, skip push"
+            exit 0
+          fi
+          git push --force-with-lease=master:"$base" origin sync_master:refs/heads/master
