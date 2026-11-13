@@ -79,6 +79,14 @@ class MainManager(ConfigManager):
                 logger.info('Kill all server')
                 for script_p in self.script_process.values():
                     await script_p.stop()
+                # 退出走 SIGILL，不会触发 atexit，这里显式关闭图像/OCR 服务
+                try:
+                    from module.image.rpc import shutdown_image_server
+                    from module.ocr.rpc import shutdown_ocr_server
+                    shutdown_image_server()
+                    shutdown_ocr_server()
+                except Exception as e:
+                    logger.warning(f'Shutdown image/ocr server failed: {e}')
                 logger.info('Kill push data thread')
                 sys.exit(0)
             # logger.info(asyncio.all_tasks())

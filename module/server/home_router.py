@@ -8,10 +8,10 @@ from fastapi import APIRouter, Body
 from pathlib import Path
 
 from module.config.utils import write_file
-from module.image.rpc import ensure_image_server_ready, get_image_client, shutdown_image_server
+from module.image.rpc import ensure_image_server_ready, get_image_client
 from module.logger import logger
 from module.server.api_logger import ApiLoggingRoute
-from module.ocr.rpc import ensure_ocr_server_ready, get_ocr_client, shutdown_ocr_server
+from module.ocr.rpc import ensure_ocr_server_ready, get_ocr_client
 from module.server.main_manager import MainManager
 from module.server.updater import Updater
 from module.server.i18n import I18n
@@ -65,8 +65,7 @@ async def notify_test(setting: str, title: str, content: str):
 
 @home_app.get('/kill_server')
 async def kill_server():
-    shutdown_image_server()
-    shutdown_ocr_server()
+    # 只置信号，由主循环在退出前关闭图像/OCR 服务，避免启动器等待子进程退出。
     MainManager.signal_kill_server = True
     return 'success'
 
