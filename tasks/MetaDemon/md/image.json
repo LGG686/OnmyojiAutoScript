@@ -45,7 +45,7 @@
     "roiFront": "907,60,76,208",
     "roiBack": "869,14,171,288",
     "method": "Template matching",
-    "threshold": 0.8,
+    "threshold": 0.7,
     "profile": "High",
     "description": "超鬼王主界面"
   },

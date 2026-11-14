@@ -155,27 +155,6 @@ class GhostOffering:
         t = self.task
         return len(t.I_MD_FRIEND_SELECTED.match_all_any(t.device.image, frame_id=t.device.image_frame_id))
 
-    def list_to_top(self):
-        t = self.task
-        swipe = t.S_MD_SWIPE_FRIEND_UP
-        reverse = RuleSwipe(roi_front=swipe.roi_back, roi_back=swipe.roi_front,
-                            mode='default', name='metademon_friend_list_to_top')
-        previous = None
-        stable = 0
-        for _ in range(20):
-            if not self.within_limit():
-                return False
-            t.screenshot()
-            if not t.appear(t.I_MD_INVITE_FRIENDS):
-                return False
-            signature = tuple(self.friend_rows())
-            stable = stable + 1 if signature == previous else 0
-            if stable >= 2:
-                return True
-            previous = signature
-            t.swipe(reverse, interval=1.2)
-        return False
-
     def open_share_panel(self):
         t = self.task
         deadline = time.monotonic() + 12
@@ -184,6 +163,7 @@ class GhostOffering:
             if t.appear(t.I_MD_INVITE_FRIENDS):
                 return True
             t.appear_then_click(t.I_MD_INVITE, interval=1.5)
+        logger.warning('分享面板未打开，停止本次分享')
         return False
 
     def select_friend(self, name, area):
@@ -210,68 +190,34 @@ class GhostOffering:
         if not t.appear(t.I_MD_INVITE_FRIENDS) or self.selected_count():
             logger.warning('分享列表存在已有选择或已关闭，请清空好友选择后重试')
             return False
-        rows = self.friend_rows()
-        # All recipients are already visible. Avoid moving away from their rows.
-        if wanted.keys() <= rows.keys():
-            for name in wanted:
-                rows = self.friend_rows()
-                if len(rows.get(name, ())) != 1 or not self.select_friend(name, rows[name][0]):
-                    return False
-            return True
-        if not self.list_to_top():
-            return False
-        # Inspect the whole list before selecting, so stale selections cannot
-        # silently include an unconfigured recipient on an off-screen row.
-        previous = None
-        stable = 0
-        available = set()
-        for _ in range(30):
-            if not self.within_limit():
-                return False
-            t.screenshot()
-            if not t.appear(t.I_MD_INVITE_FRIENDS) or self.selected_count():
-                logger.warning('分享列表存在已有选择或已关闭，请清空好友选择后重试')
-                return False
-            rows = self.friend_rows()
-            if any(len(rows.get(name, [])) > 1 for name in wanted):
-                logger.warning('好友名字有多个相同识别结果，无法唯一选择')
-                return False
-            available.update(rows)
-            signature = tuple(rows)
-            stable = stable + 1 if signature == previous else 0
-            if stable >= 2:
-                break
-            previous = signature
-            t.swipe(t.S_MD_SWIPE_FRIEND_UP, interval=1.2)
-        else:
-            logger.warning('好友列表扫描超过限制，停止分享')
-            return False
-        missing = wanted.keys() - available
-        if missing:
-            logger.warning('未找到指定好友: ' + '; '.join(wanted[name] for name in missing))
-            return False
-        if not self.list_to_top():
-            return False
+        # 边扫边选：识别到目标好友就当场选中，选完即返回。整表遍历不再依赖
+        # OCR 行签名稳定（头像等级徽章会被识别成额外文本、偶发漏字），面板
+        # 展开动画导致首帧识别为空时也只是多滑一次，不会卡在回顶判定里。
+        # 每次选择都校验选中数 +1，不会留下未配置的好友选择。
         remaining = dict(wanted)
         for _ in range(30):
             if not self.within_limit():
+                logger.warning('运行时间内未完成好友选择，停止本次分享')
                 return False
             t.screenshot()
             if not t.appear(t.I_MD_INVITE_FRIENDS):
+                logger.warning('选择好友时分享面板已关闭，停止本次分享')
                 return False
             rows = self.friend_rows()
             for name in tuple(remaining):
-                # Selection can reorder rows; resolve each subsequent name on
-                # the latest screenshot instead of reusing an earlier box.
-                rows = self.friend_rows()
-                if name not in rows:
-                    continue
-                if len(rows[name]) != 1 or not self.select_friend(remaining[name], rows[name][0]):
+                if len(rows.get(name, [])) > 1:
+                    logger.warning('好友名字有多个相同识别结果，无法唯一选择')
                     return False
-                del remaining[name]
-            if not remaining:
-                return True
+                if len(rows.get(name, [])) == 1:
+                    if not self.select_friend(remaining[name], rows[name][0]):
+                        return False
+                    del remaining[name]
+                    if not remaining:
+                        return True
+                    # 选中后列表可能重排，后续好友按最新一帧重新定位。
+                    rows = self.friend_rows()
             t.swipe(t.S_MD_SWIPE_FRIEND_UP, interval=1.2)
+        logger.warning('未找到指定好友: ' + '; '.join(remaining.values()))
         return False
 
     def share(self):
@@ -299,6 +245,7 @@ class GhostOffering:
                 logger.warning('邀请重试前好友选中状态已变化，停止本次上供')
                 return False
             if not t.appear_then_click(t.I_MD_INVITE_FRIENDS, interval=self.INVITE_RETRY_SECONDS):
+                logger.warning('分享按钮未出现，停止本次分享')
                 return False
             deadline = time.monotonic() + self.INVITE_RETRY_SECONDS
             select_recipients = False
@@ -311,6 +258,7 @@ class GhostOffering:
                     continue
                 select_recipients = True
                 if t.appear(t.I_MD_SUMMON_BOSS) and not portrait_sent:
+                    logger.warning('邀请面板已关闭且未发出鬼王截图，停止本次分享')
                     return False
                 if not portrait_sent and t.appear(t.I_MD_FIRE):
                     portrait_sent = self.send_portrait()
@@ -320,6 +268,16 @@ class GhostOffering:
                 logger.info('邀请已等待 20 秒，未收到协助端确认，准备重试')
         logger.warning('运行时间内未收到协助端确认，停止本次上供')
         return False
+
+    def share_with_retry(self):
+        """分享失败时原地重试一次，重试前先关掉可能残留的分享面板。"""
+        if self.share():
+            return True
+        if not self.within_limit():
+            return False
+        logger.warning('分享失败，重置分享面板后重试一次')
+        self.task.appear_then_click(self.task.I_MD_CLOSE_POPUP, interval=1)
+        return self.share()
 
     def send_portrait(self):
         t = self.task
@@ -357,7 +315,7 @@ class GhostOffering:
                     logger.warning('已有鬼王不在分享星级内，不分享、不挑战；等待其消失后按配置星级召唤')
                     self.unknown_reported = True
             elif self.shared_generation != t._boss_generation:
-                if not self.share():
+                if not self.share_with_retry():
                     return False
                 self.shared_generation = t._boss_generation
             self.waiting = True

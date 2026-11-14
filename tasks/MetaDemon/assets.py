@@ -33,7 +33,7 @@ class MetaDemonAssets:
 	# 鬼王页面标志 
 	I_CHECK_BOSS_PAGE = RuleImage(roi_front=(1068,23,34,32), roi_back=(1054,7,62,63), threshold=0.8, method="Template matching", profile="High", file="./tasks/MetaDemon/md/md_check_boss_page.png")
 	# 超鬼王主界面 
-	I_MD_CHECK_MAIN_PAGE = RuleImage(roi_front=(907,60,76,208), roi_back=(869,14,171,288), threshold=0.8, method="Template matching", profile="High", file="./tasks/MetaDemon/md/md_md_check_main_page.png")
+	I_MD_CHECK_MAIN_PAGE = RuleImage(roi_front=(907,60,76,208), roi_back=(869,14,171,288), threshold=0.7, method="Template matching", profile="High", file="./tasks/MetaDemon/md/md_md_check_main_page.png")
 	# 领取昨日奖励 
 	I_MD_GET_YESTERDAY_REWARD = RuleImage(roi_front=(709,544,183,56), roi_back=(628,487,327,163), threshold=0.8, method="Template matching", profile="High", file="./tasks/MetaDemon/md/md_md_get_yesterday_reward.png")
 	# 一星鬼王召唤票 
