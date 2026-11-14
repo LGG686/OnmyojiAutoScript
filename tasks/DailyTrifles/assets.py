@@ -29,6 +29,8 @@ class DailyTriflesAssets:
 	I_ENTER_DAILY = RuleImage(roi_front=(1131,122,84,76), roi_back=(1117,98,136,226), threshold=0.8, method="Template matching", profile="High", file="./tasks/DailyTrifles/dt/dt_enter_daily.png")
 	# 右上角检查是否在日常中 
 	I_CHECK_IN_DAILY = RuleImage(roi_front=(1131,115,106,88), roi_back=(1128,94,151,281), threshold=0.8, method="Template matching", profile="High", file="./tasks/DailyTrifles/dt/dt_check_in_daily.png")
+	# 下载召唤动画弹窗的加大取消 
+	I_CANCEL_LARGE = RuleImage(roi_front=(414,415,154,64), roi_back=(350,380,400,160), threshold=0.8, method="Template matching", profile="High", file="./tasks/DailyTrifles/dt/dt_cancel_large.png")
 
 
 	# Image Rule Assets

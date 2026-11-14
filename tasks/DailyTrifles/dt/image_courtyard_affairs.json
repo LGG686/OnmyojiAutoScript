@@ -48,5 +48,15 @@
     "threshold": 0.8,
     "profile": "High",
     "description": "右上角检查是否在日常中"
+  },
+  {
+    "itemName": "cancel_large",
+    "imageName": "dt_cancel_large.png",
+    "roiFront": "414,415,154,64",
+    "roiBack": "350,380,400,160",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "profile": "High",
+    "description": "下载召唤动画弹窗的加大取消"
   }
 ]

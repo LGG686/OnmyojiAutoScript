@@ -54,16 +54,28 @@ class TicketRewardMixin:
         return result
 
     def check_ticket_reward(self):
-        if getattr(self, '_ticket_farming_complete', False) or getattr(self, '_ticket_full', False):
+        if getattr(self, '_ticket_farming_complete', False) or getattr(self, '_ticket_full', False) \
+                or getattr(self, '_ticket_full_pending', False):
             return
         if metademon_tickets_full(self):
             logger.info('门票已满')
             peer = getattr(self, '_ticket_peer', '')
-            if not peer:
+            if peer:
+                self._ticket_full = True
+                self.config.cooperation_runtime.notify_task_completion('MetaDemonTicket', peer, 'tickets_full')
+                logger.info('本号门票已满，继续组队直到对方满票')
+                return
+            if self._battle_context is None:
                 raise TicketsFull
-            self._ticket_full = True
-            self.config.cooperation_runtime.notify_task_completion('MetaDemonTicket', peer, 'tickets_full')
-            logger.info('本号门票已满，继续组队直到对方满票')
+            # 结算页还在展示，等本轮战斗把奖励页点完自动收尾后再中断，避免停在奖励页无连边可走。
+            self._ticket_full_pending = True
+
+    def run_general_battle(self, *args, **kwargs):
+        """满票在结算页识别到时，先让本轮战斗正常收尾，再结束门票刷取。"""
+        result = super().run_general_battle(*args, **kwargs)
+        if getattr(self, '_ticket_full_pending', False):
+            raise TicketsFull
+        return result
 
     def _handle_reward(self, context, config):
         self.check_ticket_reward()
@@ -187,6 +199,7 @@ def run_ticket_farming(owner, mode) -> bool:
     runner._battle_cooperation_prepared = True
     runner._ticket_farming_complete = False
     runner._ticket_full = local_full
+    runner._ticket_full_pending = False
     runner.install_ticket_reward_hook()
     buff_opened = False
     cooperation_started = False

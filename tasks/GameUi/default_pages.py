@@ -259,7 +259,7 @@ page_main.connect(page_daily, GameUiAssets.I_MAIN_GOTO_DAILY, key="page_main->pa
 page_courtyard_affairs = Page(DailyTriflesAssets.I_CHECK_COURTYARD_AFFAIRS, category="global")
 page_main.connect(page_courtyard_affairs, DailyTriflesAssets.I_ENTER_COURTYARD_AFFAIRS, key="page_main->page_courtyard_affairs")
 page_courtyard_affairs.connect(page_main, GlobalGameAssets.I_UI_BACK_YELLOW, key="page_courtyard_affairs->page_main")
-page_courtyard_affairs.add_leave_failure_hooks(GlobalGameAssets.I_UI_CANCEL_SAMLL, GlobalGameAssets.I_UI_BACK_RED,
+page_courtyard_affairs.add_leave_failure_hooks(DailyTriflesAssets.I_CANCEL_LARGE, GlobalGameAssets.I_UI_CANCEL_SAMLL, GlobalGameAssets.I_UI_BACK_RED,
                                                ActivityShikigamiAssets.I_SKIP_BUTTON, GlobalGameAssets.I_UI_BACK_YELLOW)
 
 page_mall = Page(GameUiAssets.I_CHECK_MALL, category="global")
