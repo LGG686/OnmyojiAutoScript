@@ -12,7 +12,7 @@
     "itemName": "enter2",
     "imageName": "md_enter2.png",
     "roiFront": "933,150,73,125",
-    "roiBack": "893,47,116,244",
+    "roiBack": "893,47,130,259",
     "method": "Template matching",
     "threshold": 0.8,
     "description": "description"
