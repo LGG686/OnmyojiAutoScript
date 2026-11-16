@@ -72,6 +72,8 @@
   "limit_cultivation_drills_help": "搜寻到一只后会一直打，直到打完算一次",
   "auto_shared_boss": "自动挑战共享鬼王",
   "auto_shared_boss_help": "是否自动挑战其他玩家共享的鬼王",
+  "md_fatigue_summon_first": "疲劳≥61优先召唤鬼王",
+  "md_fatigue_summon_first_help": "开启后，疲劳值达到61及以上且自己没有鬼王在线时，优先召唤鬼王（先于协战鬼王判定）；疲劳满后仍按原逻辑买茶/退出",
   "enable_switch_daily_training": "日常训练开启切换御魂",
   "enable_switch_cultivation_drills": "修行合训开启切换御魂",
   "demon_battle_config": "逢魔战斗内切换阵容",
