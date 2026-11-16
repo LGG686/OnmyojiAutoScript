@@ -2,8 +2,8 @@
   {
     "itemName": "right_enter",
     "imageName": "md_right_enter.png",
-    "roiFront": "1188,220,37,26",
-    "roiBack": "1150,131,100,360",
+    "roiFront": "1193,229,32,22",
+    "roiBack": "1167,131,87,382",
     "method": "Template matching",
     "threshold": 0.75,
     "description": "右侧进去"
@@ -11,7 +11,7 @@
   {
     "itemName": "enter2",
     "imageName": "md_enter2.png",
-    "roiFront": "933,150,73,125",
+    "roiFront": "933,150,61,126",
     "roiBack": "893,47,130,259",
     "method": "Template matching",
     "threshold": 0.8,
