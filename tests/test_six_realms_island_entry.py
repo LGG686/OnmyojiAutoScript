@@ -83,6 +83,27 @@ class IslandEntryTests(unittest.TestCase):
                     patch.object(task, "_marker_boxes", side_effect=lambda kind: boxes.get(kind, [])):
                 self.assertEqual(task.decide(prefer_store=prefer_store), ocr)
 
+    def test_decide_rereads_when_ocr_box_matches_no_marker(self):
+        task = OfflineMoonSea()
+        stale = (870, 358, 20, 90)
+        fresh = (716, 396, 20, 90)
+        boxes = {MoonSeaType.island104: [fresh]}
+        with patch.object(task, "_read_map_ocr",
+                          side_effect=[(MoonSeaType.island104, 19, stale),
+                                       (MoonSeaType.island104, 19, fresh)]), \
+                patch.object(task, "_marker_boxes", side_effect=lambda kind: boxes.get(kind, [])):
+            self.assertEqual(task.decide(), (MoonSeaType.island104, 19, fresh))
+
+    def test_decide_falls_back_to_store_island_when_it_is_the_only_one(self):
+        task = OfflineMoonSea()
+        store = (649, 359, 20, 90)
+        with patch.object(task, "_read_map_ocr",
+                          return_value=(MoonSeaType.island100, 11, (0, 0, 0, 0))), \
+                patch.object(task, "_marker_boxes",
+                             side_effect=lambda kind: [store] if kind == MoonSeaType.island101 else []), \
+                patch.object(task, "appear", side_effect=lambda rule, **kwargs: rule is task.I_M_STORE):
+            self.assertEqual(task.decide(), (MoonSeaType.island101, 11, store))
+
     def test_disappearing_marker_times_out_without_clicking_adjacent_island(self):
         task = OfflineMoonSea()
         adjacent = (290, 330, 20, 90)
