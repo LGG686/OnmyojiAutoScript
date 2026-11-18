@@ -35,6 +35,7 @@ class Control(Minitouch, Adb, Scrcpy, Window):
             'ADB': self.click_adb,
             'uiautomator2': self.click_uiautomator2,
             'minitouch': self.click_minitouch,
+            'oasaos': self.click_oasaos,
             # 'Hermit': self.click_hermit,
             # 'MaaTouch': self.click_maatouch,
         }
@@ -48,7 +49,8 @@ class Control(Minitouch, Adb, Scrcpy, Window):
             'ADB': self.long_click_adb,
             'uiautomator2': self.long_click_uiautomator2,
             'minitouch': self.long_click_minitouch,
-            'scrcpy': self.long_click_scrcpy
+            'scrcpy': self.long_click_scrcpy,
+            'oasaos': self.long_click_oasaos,
             # 'Hermit': self.click_hermit,
             # 'MaaTouch': self.click_maatouch,
         }
@@ -132,6 +134,8 @@ class Control(Minitouch, Adb, Scrcpy, Window):
             swipe_log = 'Swipe %s -> %s' % (point2str(*p1), point2str(*p2))
         elif method == 'uiautomator2':
             swipe_log = 'Swipe %s -> %s, %s' % (point2str(*p1), point2str(*p2), duration)
+        elif method == 'oasaos':
+            swipe_log = 'Swipe %s -> %s, %s' % (point2str(*p1), point2str(*p2), duration)
         elif method == 'scrcpy':
             swipe_log = 'Swipe %s -> %s' % (point2str(*p1), point2str(*p2))
         # elif method == 'MaaTouch':
@@ -163,6 +167,8 @@ class Control(Minitouch, Adb, Scrcpy, Window):
             self.swipe_window_message(p1, p2)
         elif method == 'uiautomator2':
             self.swipe_uiautomator2(p1, p2, duration=duration)
+        elif method == 'oasaos':
+            self.swipe_oasaos(p1, p2, duration=duration)
         elif method == 'scrcpy':
             self.swipe_scrcpy(p1, p2)
         # elif method == 'MaaTouch':
@@ -227,6 +233,8 @@ class Control(Minitouch, Adb, Scrcpy, Window):
             self.drag_uiautomator2(
                 p1, p2, segments=segments, shake=shake, point_random=point_random, shake_random=shake_random,
                 swipe_duration=swipe_duration, shake_duration=shake_duration)
+        elif method == 'oasaos':
+            self.swipe_oasaos(p1, p2, duration=ensure_time(swipe_duration))
         elif method == 'scrcpy':
             self.drag_scrcpy(p1, p2, point_random=point_random)
         # elif method == 'MaaTouch':

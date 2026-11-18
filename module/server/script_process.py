@@ -48,13 +48,13 @@ class ScriptProcess(ScriptWSManager):
         return message
 
     async def start(self):
-        self.state = ScriptState.RUNNING
-        await self.broadcast_state({"state": self.state})
-        if self._process:
-            logger.warning(f'Script {self.config_name} is initialized')
+        # 旧进程要先收掉再置运行态：stop() 会把 state 复位成 INACTIVE。这里漏掉 await
+        # 只得到一个从未执行的协程，旧进程会和新进程并行跑同一份配置。
         if self._process and self._process.is_alive():
             logger.warning(f'Script {self.config_name} is already running and first stop it')
-            self.stop()
+            await self.stop()
+        elif self._process:
+            logger.warning(f'Script {self.config_name} is initialized')
         self._process = _SCRIPT_PROCESS_CONTEXT.Process(
             target=func,
             args=(self.config_name, self.state_queue, self.log_pipe_in,),
@@ -62,6 +62,8 @@ class ScriptProcess(ScriptWSManager):
             daemon=True,
         )
         self._process.start()
+        self.state = ScriptState.RUNNING
+        await self.broadcast_state({"state": self.state})
 
 
     async def stop(self):

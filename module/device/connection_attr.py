@@ -96,12 +96,12 @@ class ConnectionAttr:
                     self.config.script.device.screenshot_method = 'uiautomator2'
                     self.config.script.device.control_method = 'uiautomator2'
         if self.is_over_http:
-            if self.config.script.device.screenshot_method not in ["ADB", "uiautomator2", "aScreenCap"] \
-                    or self.config.script.device.control_method not in ["ADB", "uiautomator2", "minitouch"]:
+            if self.config.script.device.screenshot_method not in ["ADB", "uiautomator2", "aScreenCap", "oasaos"] \
+                    or self.config.script.device.control_method not in ["ADB", "uiautomator2", "minitouch", "oasaos"]:
                 logger.warning(
                     f'When connecting to a device over http: {self.serial} '
-                    f'ScreenshotMethod can only use ["ADB", "uiautomator2", "aScreenCap"], '
-                    f'ControlMethod can only use ["ADB", "uiautomator2", "minitouch"]'
+                    f'ScreenshotMethod can only use ["ADB", "uiautomator2", "aScreenCap", "oasaos"], '
+                    f'ControlMethod can only use ["ADB", "uiautomator2", "minitouch", "oasaos"]'
                 )
                 raise RequestHumanTakeover
 

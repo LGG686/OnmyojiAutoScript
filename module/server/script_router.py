@@ -3,6 +3,7 @@
 # github https://github.com/runhey
 import asyncio
 import json
+from functools import lru_cache
 from urllib.parse import quote
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
@@ -12,6 +13,8 @@ from pydantic import BaseModel, Field
 from typing import Literal
 from datetime import datetime
 from module.config.utils import convert_to_underscore
+from module.config.config_menu import ConfigMenu
+from module.config.config_model import ConfigModel
 
 from module.logger import logger
 from module.server.api_logger import ApiLoggingRoute, log_ws_event
@@ -24,6 +27,7 @@ from module.server.config_manager import (
     ConfigTaskError,
     ConfigValidationError,
 )
+from module.server.i18n import Addition
 from module.server.main_manager import mm
 from module.server.script_process import ScriptProcess, ScriptState
 
@@ -251,7 +255,8 @@ async def task_group_copy(task_name: str, group_name: str, dest_config_name: str
 async def script_start(script_name: str):
     if script_name not in mm.script_process:
         mm.script_process[script_name] = ScriptProcess(script_name)
-    mm.script_process[script_name].start()
+    # start() 是 async，漏掉 await 只会返回一个从未执行的协程，接口 200 但脚本不启动
+    await mm.script_process[script_name].start()
     return
 
 @script_app.get('/{script_name}/stop')
@@ -259,7 +264,8 @@ async def script_stop(script_name: str):
     if script_name not in mm.script_process:
         logger.warning(f'[{script_name}] script process does not exist')
         return
-    mm.script_process[script_name].stop()
+    # 同 start()：stop() 也是 async，漏掉 await 只会返回一个从未执行的协程
+    await mm.script_process[script_name].stop()
     return
 
 @script_app.get('/{script_name}/desktop/launch-status')
@@ -369,6 +375,155 @@ async def sync_next_run(script_name: str, task: str, target_dt: str):
     config.get_next()
     await script_process.broadcast_state({"schedule": config.get_schedule_data()})
     return True
+
+
+# --------------------------------------  调度  --------------------------------------
+# 不在配置菜单里的任务归到这一类，避免新加的任务在面板上消失。
+FALLBACK_MENU = 'Other'
+FALLBACK_MENU_TITLE = {'en-US': 'Other', 'zh-CN': '其他'}
+
+
+@lru_cache(maxsize=1)
+def _translations() -> dict:
+    """任务名与分类名的 zh-CN / en-US 词表。
+
+    词表随 rootfs 出厂（assets/i18n），运行期不会变，进程内取一次就够；面板每几秒轮询一次，
+    重复读盘不划算。
+    """
+    return Addition.load_additions()
+
+
+def _panel_language(language: str | None) -> str:
+    """请求语言归一：词表只有 en-US 与 zh-CN 两套。"""
+    return 'zh-CN' if str(language or '').lower().startswith('zh') else 'en-US'
+
+
+def _menu_positions() -> tuple[dict[str, tuple[str, int]], dict[str, int]]:
+    """任务名 → (分类, 组内序号)，以及分类的先后顺序。
+
+    菜单就是 OAS 桌面端左侧那份手写结构，面板沿用同一套分类，不另立一套。
+    """
+    menu = ConfigMenu().gui_menu_list
+    positions: dict[str, tuple[str, int]] = {}
+    order: dict[str, int] = {}
+    for category_index, (category, tasks) in enumerate(menu.items()):
+        order[category] = category_index
+        if not isinstance(tasks, list):
+            continue
+        for task_index, task in enumerate(tasks):
+            positions[task] = (category, task_index)
+    return positions, order
+
+
+def _task_rows(model, table: dict, language: str) -> list[dict]:
+    """任务清单：命令行、本地化名称、所属分类与调度开关，顺序沿用配置字段顺序。
+
+    只有带 scheduler 组的任务才参与调度，script/optimization 这类配置组跳过。
+    """
+    positions, order = _menu_positions()
+    dumped = model.model_dump()
+    rows = []
+    for key in model.model_fields:
+        data = dumped.get(key)
+        if not isinstance(data, dict) or not isinstance(data.get('scheduler'), dict):
+            continue
+        scheduler = data['scheduler']
+        command = ConfigModel.type(key)
+        category, task_order = positions.get(command, (FALLBACK_MENU, 0))
+        rows.append({
+            'group': key,
+            'command': command,
+            'name': table.get(command, command),
+            'menu': category,
+            'menu_title': table.get(category) or (
+                FALLBACK_MENU_TITLE[language] if category == FALLBACK_MENU else category),
+            'menu_order': order.get(category, len(order)),
+            'task_order': task_order,
+            'enable': bool(scheduler.get('enable', False)),
+            'next_run': str(scheduler.get('next_run', '')),
+            'priority': int(scheduler.get('priority', 5)),
+        })
+    return rows
+
+
+@script_app.get('/{script_name}/tasks')
+async def script_tasks(script_name: str, language: str = 'zh-CN'):
+    """任务清单与调度开关；`language` 决定 `name` / `menu_title` 用哪套词表。"""
+    lang = _panel_language(language)
+    return _task_rows(mm.config_cache(script_name).model, _translations().get(lang, {}), lang)
+
+
+@script_app.get('/{script_name}/panel')
+async def script_panel(script_name: str, language: str = 'zh-CN'):
+    """调度面板：分类后的任务清单与调度运行态，一次请求取全。
+
+    面板每几秒轮询一次，而 config_cache 每次都重新读配置并校验；把清单和运行态合成一个响应，
+    只加载一次配置，也少一次请求往返。
+    """
+    lang = _panel_language(language)
+    table = _translations().get(lang, {})
+    config = mm.config_cache(script_name)
+    rows = _task_rows(config.model, table, lang)
+    config.update_scheduler()
+    process = mm.script_process.get(script_name)
+    state = int(process.state) if process is not None else 0
+
+    menus: dict[str, dict] = {}
+    for row in rows:
+        menu = menus.get(row['menu'])
+        if menu is None:
+            menu = menus[row['menu']] = {
+                'key': row['menu'],
+                'title': row['menu_title'],
+                'order': row['menu_order'],
+                'tasks': [],
+            }
+        menu['tasks'].append({
+            key: value for key, value in row.items()
+            if key not in ('menu', 'menu_title', 'menu_order')
+        })
+
+    # 进程没起来时没有「正在执行」，整条 pending 都是待运行
+    pending = config.pending_task
+    running = None
+    if state and pending:
+        running = {'name': pending[0].command, 'next_run': str(pending[0].next_run)}
+        pending = pending[1:]
+    return {
+        'language': lang,
+        'state': state,
+        'schedule': {
+            'running': running,
+            'pending': [{'name': f.command, 'next_run': str(f.next_run)} for f in pending],
+            'waiting': [{'name': f.command, 'next_run': str(f.next_run)} for f in config.waiting_task],
+        },
+        'menus': sorted(menus.values(), key=lambda item: item['order']),
+        'settings': _settings_entries(table),
+    }
+
+
+def _settings_entries(table: dict) -> list[dict]:
+    """脚本级配置（脚本 / 全局配置 / 重启）：它们不参与调度，但同样能按任务参数读写。
+
+    菜单里的 `Script` 分类就是这三项，面板把入口直接给出去，省得另立一份清单。
+    """
+    entries = ConfigMenu().gui_menu_list.get('Script') or []
+    return [{'command': task, 'name': table.get(task, task)} for task in entries]
+
+
+@script_app.get('/{script_name}/schedule')
+async def script_schedule(script_name: str):
+    """调度运行态：脚本进程状态与当前/待运行/等待中队列。
+
+    config_cache 是请求级实例，update_scheduler 只刷新本次推导，不影响正在运行的脚本进程。
+    """
+    config = mm.config_cache(script_name)
+    config.update_scheduler()
+    process = mm.script_process.get(script_name)
+    return {
+        'state': int(process.state) if process is not None else 0,
+        'schedule': config.get_schedule_data(),
+    }
 
 
 # --------------------------------------  SSE  --------------------------------------
