@@ -89,7 +89,11 @@ def fun(ev: threading.Event):
                     host=host,
                     port=port,
                     factory=True,
-                    log_config=None)
+                    log_config=None,
+                    # 面板每 5 秒轮询一次，uvicorn 默认的空闲 5 秒就关连接，刚好卡在轮询边界上：
+                    # 客户端下次复用这条已关闭的连接，读到 unexpected end of stream。拉长到远超
+                    # 轮询间隔，空闲连接就不会在两次轮询之间被服务端单方面掐掉。
+                    timeout_keep_alive=75)
     finally:
         shutdown_image_server()
         shutdown_ocr_server()
