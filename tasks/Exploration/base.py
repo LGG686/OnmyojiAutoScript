@@ -264,10 +264,13 @@ class BaseExploration(GameUi, GeneralBattle, GeneralRoom, GeneralInvite, Replace
                 current_page not in (pages.page_mainline, pages.page_gameplay,
                                      pages.page_exploration, pages.page_exp_entrance):
             return
+        # 超鬼王活动期间探索右上角被活动入口挤位，改用 *_META 版本；活动开/关时切换下面每组的注释
         if current_page == pages.page_exp_entrance:
-            cu, res, total = self.O_REALM_RAID_NUMBER1_META.ocr_digit_counter(self.device.image)
+            cu, res, total = self.O_REALM_RAID_NUMBER1.ocr_digit_counter(self.device.image)
+            # cu, res, total = self.O_REALM_RAID_NUMBER1_META.ocr_digit_counter(self.device.image)
         else:
-            cu, res, total = self.O_REALM_RAID_NUMBER_META.ocr_digit_counter(self.device.image)
+            cu, res, total = self.O_REALM_RAID_NUMBER.ocr_digit_counter(self.device.image)
+            # cu, res, total = self.O_REALM_RAID_NUMBER_META.ocr_digit_counter(self.device.image)
         # 判断突破票数量
         if cu < con_scrolls.scrolls_threshold:
             return
