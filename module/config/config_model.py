@@ -44,7 +44,6 @@ from tasks.Tako.config import Tako
 from tasks.AutoCheckinBigGod.config import AutoCheckinBigGod
 # ----------------------------------------------------------------------------------------------------------------------
 from tasks.Orochi.config import Orochi
-from tasks.OrochiMoans.config import OrochiMoans
 from tasks.Sougenbi.config import Sougenbi
 from tasks.FallenSun.config import FallenSun
 from tasks.EternitySea.config import EternitySea
@@ -123,7 +122,6 @@ class ConfigModel(ConfigBase):
 
     # 这些是刷御魂的
     orochi: Orochi = Field(default_factory=Orochi)
-    orochi_moans: OrochiMoans = Field(default_factory=OrochiMoans)
     sougenbi: Sougenbi = Field(default_factory=Sougenbi)
     fallen_sun: FallenSun = Field(default_factory=FallenSun)
     eternity_sea: EternitySea = Field(default_factory=EternitySea)
