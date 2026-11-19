@@ -78,7 +78,9 @@ class Script:
         self._continuous_task_interval_range: tuple[int, int] | None = None
         # 运行loop的线程
         self.loop_thread: Thread = None
-        set_ocr_model_size('medium')
+        # Android 适配层用环境变量切档：只有 small 档的识别权重在 APK 的 NPU 白名单内
+        _ocr_model_size = os.environ.get('OAS_OCR_MODEL_SIZE', 'medium')
+        set_ocr_model_size(_ocr_model_size if _ocr_model_size in ('medium', 'small') else 'medium')
         self.resource_precache_enable = bool(
             self.config.script.device.resource_precache_enable
         )
