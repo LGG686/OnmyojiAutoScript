@@ -295,7 +295,12 @@ def _ensure_repo(repo: str, branch: str, timeout: int = GIT_TIMEOUT) -> None:
     except (OSError, subprocess.SubprocessError):
         pass
     _git(ROOT, 'remote', 'add', 'origin', repo, timeout=timeout)
-    _git(ROOT, 'fetch', '--depth', '1', '--no-tags', 'origin', branch, timeout=timeout)
+    # 显式 refspec：裸分支名只写 FETCH_HEAD，不会建 origin/<branch> 引用，
+    # 提交历史面板按 origin/<branch> 读日志就会空手而归。
+    # An explicit refspec: a bare branch name only writes FETCH_HEAD and never creates the
+    # origin/<branch> ref the commit-history panel reads from.
+    _git(ROOT, 'fetch', '--depth', '1', '--no-tags', 'origin',
+         f'refs/heads/{branch}:refs/remotes/origin/{branch}', timeout=timeout)
 
 
 def _checkout(target: str, keep_changes: bool) -> None:
@@ -483,6 +488,27 @@ def _read_log(count: int, ref: str = 'HEAD') -> list:
         return []
 
 
+def _bundled_commit_row() -> list:
+    """rootfs 不带 .git：镜像里打包的提交从 BUILD_MANIFEST 读出来补一条。
+
+    没有这条时，还没做过首次更新的容器在提交历史面板的“当前版本”一节永远是空的。
+    Without it the "current version" section stays empty for containers that never
+    ran their first update.
+    """
+    try:
+        manifest = json.loads((ROOT / 'BUILD_MANIFEST').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return []
+    commit = str(manifest.get('oas_commit') or '').strip()
+    if not re.fullmatch(r'[0-9a-f]{40}', commit):
+        return []
+    return [{
+        'hash': commit, 'short': commit[:12], 'author': 'OAS Android',
+        'date': str(manifest.get('built_at_utc') or '')[:10],
+        'subject': '内置镜像打包的版本（打开一次提交历史即可拉到完整列表）',
+    }]
+
+
 def history(repo: str = '', branch: str = '', count: int = 20) -> dict:
     """给 App 提交历史面板：当前版本与远端分支各自的最近提交。
 
@@ -503,13 +529,14 @@ def history(repo: str = '', branch: str = '', count: int = 20) -> dict:
     except ValueError as error:
         return {'ok': False, 'error': str(error), 'local': [], 'remote': []}
     # 先把本地能给的拿出来：这一半不碰网络，手机直连 GitHub 断流也照常显示
-    local = _read_log(count)
+    local = _read_log(count) or _bundled_commit_row()
     if _busy():
         return {'ok': True, 'error': '已有更新在进行中', 'local': local, 'remote': []}
     remote, error = [], ''
     try:
         _ensure_repo(repo, branch, timeout=HISTORY_GIT_TIMEOUT)
-        _git(ROOT, 'fetch', '--deepen', str(count), '--no-tags', 'origin', branch,
+        _git(ROOT, 'fetch', '--deepen', str(count), '--no-tags', 'origin',
+             f'refs/heads/{branch}:refs/remotes/origin/{branch}',
              timeout=HISTORY_GIT_TIMEOUT)
         remote = _read_log(count, f'origin/{branch}')
         local = _read_log(count) or local
