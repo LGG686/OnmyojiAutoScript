@@ -156,6 +156,12 @@ async def android_update_status(refresh: int = 0):
     return await asyncio.to_thread(hot_update.status, bool(refresh))
 
 
+@android_app.get('/update/history')
+async def android_update_history(repo: str = '', branch: str = '', count: int = 20):
+    """提交历史面板：当前版本与远端分支各自的最近提交（按需加深 shallow 仓库）。"""
+    return await asyncio.to_thread(hot_update.history, repo, branch, count)
+
+
 @android_app.post('/update/config')
 async def android_update_config(request: Request):
     """只保存更新源，不触发更新：设置页改完地址先存下来，再去检查。"""
