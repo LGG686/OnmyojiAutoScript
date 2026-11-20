@@ -1,10 +1,10 @@
 # This Python file uses the following encoding: utf-8
 """Android 原生面板的兼容层：把 `/android/*` 语义映射到 OAS 自己的进程与日志。
 
-宿主 App 的主页状态卡、悬浮面板与日志板是按 AzurPilot 的薄接口写的，OAS 没有这些端点。这一层
+宿主 App 的主页状态卡、悬浮面板与日志板是按 OAS Android 宿主的薄接口写的，OAS 没有这些端点。这一层
 只做转译，不引入新状态：配置名取自 `config/` 目录，`runner_alive` 取自脚本进程状态，日志取日志
-服务的窗口；热更转发给 `hot_update`（拉仓库覆盖源码后重启），工具（tool）在 OAS 里没有对应概念，
-直接回 501 让面板隐藏这块能力。
+服务的窗口；热更转发给 `hot_update`（git fetch → reset 后重启），常驻工具（半自动点击）转给
+`tool_process`，和调度进程互斥。
 
 **边界（固定分法）**：这一层只回答宿主控制面的四个问题——进程活着没、启动、停止、日志尾，外加
 宿主侧的源码更新。业务数据（任务列表、调度、任务参数、实时日志流）一律走 OAS 原生端点
@@ -15,8 +15,9 @@
 The Android native panel compatibility layer maps the `/android/*` contract onto OAS's own
 processes and logs. It only translates and introduces no new state: config names come from the
 `config/` directory, `runner_alive` from the script process state, logs from the log service
-window. Hot updates are forwarded to `hot_update`, which overlays source from a Git repository and
-restarts; tools have no OAS counterpart and answer 501 so the panels hide that block.
+window. Hot updates are forwarded to `hot_update`, which updates the source tree via Git and
+restarts; long-running tools (semi-auto click) go through `tool_process` and are mutually
+exclusive with the scheduler.
 
 **Boundary (a fixed split)**: this layer answers only the four host-control questions — is the
 process alive, start, stop, tail the log. Business data (task list, schedule, task arguments, live
@@ -35,12 +36,12 @@ from module.server import hot_update
 from module.server.log_service import log_browser_service
 from module.server.main_manager import mm
 from module.server.script_process import ScriptState
+from module.server.tool_process import tool_names, tool_process
 
 android_app = APIRouter(prefix='/android', tags=['android'])
 
 TEMPLATE_CONFIG = 'template'
 MAX_LOG_TAIL = 2000
-UNSUPPORTED = JSONResponse({'ok': False, 'error': 'not supported by OAS'}, status_code=501)
 
 
 def _config_names() -> list[str]:
@@ -101,8 +102,7 @@ async def android_status(config: str = ''):
         'runner_alive': alive,
         'pid': getattr(getattr(_runner(name), '_process', None), 'pid', None) if alive else None,
         'config': name if alive else None,
-        'tool_alive': False,
-        'tool_name': None,
+        **tool_process.status(),
         'gui_alive': True,
         'log_lines': log_lines,
     }
@@ -126,10 +126,12 @@ async def android_logs(config: str = '', tail: int = 120):
 
 @android_app.api_route('/start', methods=['GET', 'POST'])
 async def android_start(config: str = ''):
-    """启动调度进程，等价于 `/{script_name}/start`。"""
+    """启动调度进程，等价于 `/{script_name}/start`；先停掉工具（两者互斥）。"""
     name = _config_name(config)
     if not name:
         return JSONResponse({'ok': False, 'error': 'no config available'}, status_code=400)
+    if tool_process.alive:
+        await asyncio.to_thread(tool_process.stop)
     if name not in mm.script_process:
         mm.add_script_file(name)
     await mm.script_process[name].start()
@@ -165,8 +167,11 @@ async def android_update_config(request: Request):
     if not isinstance(payload, dict):
         return JSONResponse({'ok': False, 'error': 'invalid payload'}, status_code=400)
     try:
+        keep = payload.get('keepLocalChanges')
         config = await asyncio.to_thread(
-            hot_update.save_requested, str(payload.get('repo') or ''), str(payload.get('branch') or ''))
+            hot_update.save_requested,
+            str(payload.get('repo') or ''), str(payload.get('branch') or ''),
+            None if keep is None else bool(keep))
     except ValueError as error:
         return JSONResponse({'ok': False, 'error': str(error)}, status_code=400)
     return {'ok': True, **config}
@@ -192,6 +197,8 @@ async def android_update_apply(request: Request, repo: str = '', branch: str = '
             await process.stop()
         except Exception as error:
             logger.warning(f'android update stop {name} failed: {error}')
+    if tool_process.alive:
+        await asyncio.to_thread(tool_process.stop)
     try:
         return await asyncio.to_thread(hot_update.apply, repo, branch)
     except ValueError as error:
@@ -199,7 +206,32 @@ async def android_update_apply(request: Request, repo: str = '', branch: str = '
 
 
 @android_app.api_route('/tool/start', methods=['GET', 'POST'])
+async def android_tool_start(name: str = '', config: str = ''):
+    """启动常驻工具（半自动点击）。
+
+    工具与调度进程互斥：先停下所有脚本进程，再拉工具。工具名未知直接 400，宿主据此
+    把按钮置灰，而不是让人对着一个永远不动的画面等。
+    """
+    if name not in tool_names():
+        return JSONResponse(
+            {'ok': False, 'error': f'unknown tool: {name}', 'tools': tool_names()}, status_code=400)
+    config_name = _config_name(config)
+    if not config_name:
+        return JSONResponse({'ok': False, 'error': 'no config available'}, status_code=400)
+    for script_name, process in list(mm.script_process.items()):
+        try:
+            await process.stop()
+        except Exception as error:
+            logger.warning(f'android tool stop {script_name} failed: {error}')
+    try:
+        await asyncio.to_thread(tool_process.start, name, config_name)
+    except ValueError as error:
+        return JSONResponse({'ok': False, 'error': str(error)}, status_code=400)
+    return {'ok': True, 'tools': tool_names()}
+
+
 @android_app.api_route('/tool/stop', methods=['GET', 'POST'])
-async def android_tool_unsupported():
-    """OAS 没有独立工具的概念。"""
-    return UNSUPPORTED
+async def android_tool_stop():
+    """停止常驻工具；没在跑时直接成功。"""
+    await asyncio.to_thread(tool_process.stop)
+    return {'ok': True}

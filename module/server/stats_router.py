@@ -36,12 +36,20 @@ class TaskStatsResponse(BaseModel):
     runs: list[TaskRunStatsResponse] = Field(default_factory=list)
 
 
+class EventResponse(BaseModel):
+    time: str
+    kind: str
+    message: str
+
+
 class StatsResponse(BaseModel):
     script_name: str
     total_runtime_seconds: float
     total_task_run_count: int
     total_battle_count: int
     tasks: dict[str, TaskStatsResponse] = Field(default_factory=dict)
+    event_count: int = 0
+    events: list[EventResponse] = Field(default_factory=list)
 
 
 class StatsAvailableDatesResponse(BaseModel):
@@ -56,6 +64,8 @@ class StatsUpdateResponse(BaseModel):
     total_battle_count: int
     changed_tasks: dict[str, TaskStatsResponse] = Field(default_factory=dict)
     removed_tasks: list[str] = Field(default_factory=list)
+    event_count: int = 0
+    events: list[EventResponse] = Field(default_factory=list)
 
 
 def _parse_target_date(date_text: str) -> date:

@@ -31,6 +31,13 @@ _SIX_REALMS_TASK_NAMES = {
     "PEACOCKKINGDOM": "PeacockKingdom",
 }
 
+# 事件规则：日志正文命中其中一条就记一条事件。加事件类型只加一行。
+# Event rules: a log message matching one of these becomes an event. One line per kind.
+_EVENT_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
+    ("cooperation", re.compile(r"^Cooperation:\s*(?P<message>.+)$", re.IGNORECASE)),
+)
+MAX_EVENTS = 200
+
 
 @dataclass
 class BattleState:
@@ -74,6 +81,7 @@ class LogStatsParser:
         self._six_realms_active = False
         self._six_realms_start_time: datetime | None = None
         self._six_realms_last_time: datetime | None = None
+        self.events: list[dict[str, Any]] = []
 
     def consume_lines(self, lines: list[str]) -> None:
         index = 0
@@ -118,6 +126,8 @@ class LogStatsParser:
                 for task in tasks.values()
             ),
             "tasks": tasks,
+            "event_count": len(parser.events),
+            "events": list(parser.events),
         }
 
     @classmethod
@@ -282,6 +292,24 @@ class LogStatsParser:
         task_ended_title = self._extract_task_ended_title(line)
         if task_ended_title is not None:
             self._handle_task_ended(task_ended_title)
+
+        self._consume_event_line(line, ts)
+
+    def _consume_event_line(self, line: str, ts: datetime) -> None:
+        message = line.rsplit("|", 1)[-1].strip()
+        for kind, pattern in _EVENT_PATTERNS:
+            matched = pattern.match(message)
+            if matched is None:
+                continue
+            self.events.append(
+                {
+                    "time": ts.strftime("%H:%M:%S"),
+                    "kind": kind,
+                    "message": matched.group("message").strip(),
+                }
+            )
+            del self.events[:-MAX_EVENTS]
+            return
 
     def _consume_runtime_timestamp(self, ts: datetime) -> None:
         runtime = self.runtime
@@ -531,7 +559,9 @@ class LogStatsService:
             previous_snapshot.get(field) != current_snapshot.get(field)
             for field in ("total_runtime_seconds", "total_task_run_count", "total_battle_count")
         )
-        if not totals_changed and not changed_tasks and not removed_tasks:
+        events = current_snapshot.get("events", [])
+        events_changed = previous_snapshot.get("event_count", 0) != current_snapshot.get("event_count", 0)
+        if not totals_changed and not changed_tasks and not removed_tasks and not events_changed:
             return None
 
         return {
@@ -541,6 +571,8 @@ class LogStatsService:
             "total_battle_count": current_snapshot.get("total_battle_count", 0),
             "changed_tasks": changed_tasks,
             "removed_tasks": removed_tasks,
+            "event_count": current_snapshot.get("event_count", 0),
+            "events": events,
         }
 
     def _parse_log_file(self, path: Path) -> dict[str, Any]:
@@ -661,6 +693,8 @@ class LogStatsService:
             "total_task_run_count": 0,
             "total_battle_count": 0,
             "tasks": {},
+            "event_count": 0,
+            "events": [],
         }
 
     @staticmethod
