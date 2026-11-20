@@ -276,7 +276,7 @@ def status(force: bool = False, repo: str = '', branch: str = '') -> dict:
     }
 
 
-def _ensure_repo(repo: str, branch: str) -> None:
+def _ensure_repo(repo: str, branch: str, timeout: int = GIT_TIMEOUT) -> None:
     """确保 /opt/oas 是能 fetch 的 shallow 仓库；没有 .git 就原地浅引导。
 
     每次都把 origin 指到当前配置的地址：设置页改了仓库后不需要删掉重来。
@@ -287,15 +287,15 @@ def _ensure_repo(repo: str, branch: str) -> None:
     """
     if not (ROOT / '.git').is_dir():
         logger.hr('[HotUpdate] 首次引导：原地初始化 shallow 仓库')
-        _git(ROOT, 'init')
-        _git(ROOT, 'config', 'user.name', 'OAS')
-        _git(ROOT, 'config', 'user.email', 'oas@localhost')
+        _git(ROOT, 'init', timeout=timeout)
+        _git(ROOT, 'config', 'user.name', 'OAS', timeout=timeout)
+        _git(ROOT, 'config', 'user.email', 'oas@localhost', timeout=timeout)
     try:
-        _git(ROOT, 'remote', 'remove', 'origin')
+        _git(ROOT, 'remote', 'remove', 'origin', timeout=timeout)
     except (OSError, subprocess.SubprocessError):
         pass
-    _git(ROOT, 'remote', 'add', 'origin', repo)
-    _git(ROOT, 'fetch', '--depth', '1', '--no-tags', 'origin', branch)
+    _git(ROOT, 'remote', 'add', 'origin', repo, timeout=timeout)
+    _git(ROOT, 'fetch', '--depth', '1', '--no-tags', 'origin', branch, timeout=timeout)
 
 
 def _checkout(target: str, keep_changes: bool) -> None:
@@ -444,6 +444,78 @@ def _run(repo: str, branch: str, keep_changes: bool = False) -> None:
         elif first_install:
             _write_state(requiresRuntimeUpdate=True)
         _write_state(phase='done', result='failed', error=reason + restore_error)
+
+
+_LOG_FORMAT = '%H%x1f%h%x1f%an%x1f%ci%x1f%s'
+
+# 历史面板的 git 网络操作限时：App 那边读超时只有 45 秒，补仓库与加深各占一半就顶到上限了。
+HISTORY_GIT_TIMEOUT = 15
+
+
+def _parse_log(output: str) -> list:
+    """把 `git log` 输出按分隔符解析成 App 好消费的字典列表。"""
+    rows = []
+    for line in output.splitlines():
+        parts = line.split('\x1f')
+        if len(parts) != 5:
+            continue
+        full, short, author, date, subject = parts
+        rows.append({
+            'hash': full, 'short': short, 'author': author,
+            'date': date[:10], 'subject': subject,
+        })
+    return rows
+
+
+def _read_log(count: int, ref: str = 'HEAD') -> list:
+    """读本地 git 日志；没引导过仓库或引用不存在时返回空表，不抛。
+
+    面板打开时先看本地能给出什么，网络再慢也不至于连一条提交都显示不出来。
+    Read the local log first: no repository or missing ref yields an empty list instead of
+    raising, so a slow network never blanks the whole panel.
+    """
+    if not (ROOT / '.git').is_dir():
+        return []
+    try:
+        return _parse_log(_git(ROOT, 'log', f'--format={_LOG_FORMAT}', '-n', str(count), ref,
+                               timeout=10))
+    except (OSError, subprocess.SubprocessError):
+        return []
+
+
+def history(repo: str = '', branch: str = '', count: int = 20) -> dict:
+    """给 App 提交历史面板：当前版本与远端分支各自的最近提交。
+
+    shallow 仓库默认只有 1 条，按需 `--deepen` 增量加深；deepen 失败（镜像不支持、
+    网络中断）只回传已有部分并附原因，不阻塞面板打开。
+    The shallow clone only holds one commit; deepen it on demand. A failed deepen still
+    returns whatever is already available plus the reason.
+    """
+    try:
+        count = max(1, min(int(count), 50))
+    except (TypeError, ValueError):
+        count = 20
+    config = load_config()
+    repo = (repo or '').strip() or config['repo']
+    branch = (branch or '').strip() or config['branch']
+    try:
+        _validate(repo, branch)
+    except ValueError as error:
+        return {'ok': False, 'error': str(error), 'local': [], 'remote': []}
+    # 先把本地能给的拿出来：这一半不碰网络，手机直连 GitHub 断流也照常显示
+    local = _read_log(count)
+    if _busy():
+        return {'ok': True, 'error': '已有更新在进行中', 'local': local, 'remote': []}
+    remote, error = [], ''
+    try:
+        _ensure_repo(repo, branch, timeout=HISTORY_GIT_TIMEOUT)
+        _git(ROOT, 'fetch', '--deepen', str(count), '--no-tags', 'origin', branch,
+             timeout=HISTORY_GIT_TIMEOUT)
+        remote = _read_log(count, f'origin/{branch}')
+        local = _read_log(count) or local
+    except (OSError, subprocess.SubprocessError, ValueError) as caught:
+        error = (getattr(caught, 'stderr', None) or str(caught)).strip()[-300:]
+    return {'ok': True, 'error': error, 'local': local, 'remote': remote}
 
 
 def save_requested(repo: str = '', branch: str = '', keep_local_changes=None) -> dict:
