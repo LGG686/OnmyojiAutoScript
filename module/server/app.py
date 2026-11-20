@@ -17,6 +17,8 @@ from module.server.script_router import script_app
 from module.server.stats_router import stats_app
 from module.server.tool_router import tool_app
 from module.server.chesslineup_router import chesslineup_app
+from module.server.android_router import android_app
+from module.server.auth import LanAuthMiddleware
 from starlette import status
 from starlette.responses import JSONResponse
 from module.server.setting import State
@@ -51,6 +53,7 @@ app.include_router(stats_app)
 app.include_router(log_app)
 app.include_router(tool_app)
 app.include_router(chesslineup_app)
+app.include_router(android_app)
 
 app.mount('/tool/chesslineup/static', StaticFiles(directory=str(
     Path(__file__).resolve().parent / 'web/chesslineup/static')), name='chesslineup_static')
@@ -117,5 +120,8 @@ def fastapi_app():
         runs = [l.strip(" ['\"]") for l in tmp if len(l)]
     # ------------------------------------------------------------------------------------------------------------------
     app.state.script_instances = runs
+
+    # 局域网监听时补上口令校验；回环来源（App 自身）不受影响
+    app.add_middleware(LanAuthMiddleware, password=State.deploy_config.Password)
 
     return app

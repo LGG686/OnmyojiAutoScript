@@ -10,6 +10,7 @@ _ = get_distribution
 
 from module.base.utils import get_color
 from module.device.env import IS_WINDOWS
+from module.device.method.oasaos import Oasaos
 from module.base.timer import Timer
 from module.config.utils import get_server_next_update
 from module.device.app_control import AppControl
@@ -25,7 +26,7 @@ from module.exception import (GameNotRunningError,
 from module.logger import logger
 
 
-class Device(DesktopDevice, Platform, Screenshot, Control, AppControl):
+class Device(DesktopDevice, Platform, Oasaos, Screenshot, Control, AppControl):
     image_roi_padding = 0
     _screen_size_checked = False
     detect_record = set()

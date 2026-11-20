@@ -53,6 +53,7 @@ class Screenshot(Adb, DroidCast, Scrcpy, Window, NemuIpc):
             'DroidCast': self.screenshot_droidcast,
             'DroidCast_raw': self.screenshot_droidcast_raw,
             'scrcpy': self.screenshot_scrcpy,
+            'oasaos': self.screenshot_oasaos,
         }
         if IS_WINDOWS:
             methods.update({

@@ -31,6 +31,7 @@ class ScreenshotMethod(str, Enum):
     SCRCPY = 'scrcpy'
     WINDOW_BACKGROUND = 'window_background'
     NEMU_IPC = 'nemu_ipc'
+    OASAOS = 'oasaos'
 
 
 class ControlMethod(str, Enum):
@@ -38,6 +39,7 @@ class ControlMethod(str, Enum):
     UIAUTOMATOR2 = 'uiautomator2'
     MINITOUCH = 'minitouch'
     WINDOW_MESSAGE = 'window_message'
+    OASAOS = 'oasaos'
 
 
 class EmulatorInfoType(str, Enum):

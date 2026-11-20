@@ -88,6 +88,10 @@ def press_and_drag(
             release_duration=release_duration,
             curve=curve,
         )
+    elif method == 'oasaos':
+        # 桥只暴露一次 swipe，把起点停顿折进总时长，不引入 sleep
+        device.swipe_oasaos(p1, p2, duration=swipe_duration,
+                            hold_duration=hold_duration)
     elif curve:
         _press_and_drag_adb(device, p1, p2, hold_duration, point_random,
                             swipe_duration, release_duration, curve=curve)

@@ -51,6 +51,9 @@ _OCR_MODEL_MIN_FILE_SIZE = {
     "inference.yml": 128,
 }
 _OCR_DOWNLOAD_CONTEXT = multiprocessing.get_context("spawn")
+# OCR RPC 服务必须用 spawn：fork 会继承已 gevent 化的 hub，zerorpc 的 acceptor 卡死，
+# 端口可连但 ping 超时。与 module/image/rpc.py 的 _IMAGE_SERVER_CONTEXT 保持一致。
+_OCR_SERVER_CONTEXT = multiprocessing.get_context("spawn")
 
 
 
@@ -531,7 +534,7 @@ def ensure_ocr_server_started() -> bool:
         logger.info("OCR server process already started")
         return True
 
-    _OCR_SERVER_PROCESS = multiprocessing.Process(
+    _OCR_SERVER_PROCESS = _OCR_SERVER_CONTEXT.Process(
         target=run_ocr_server,
         args=(host, port, _build_server_settings()),
         name="ocr_server",
@@ -637,9 +640,12 @@ def run_ocr_server(host: str, port: int, settings: dict[str, Any] | None = None)
     # DLL initialization on Windows, causing ImportError.
     import onnxruntime as _ort  # noqa: F401
     runtime = OcrRuntime(settings=settings)
-    server = zerorpc.Server(runtime)
     try:
+        # 先加载 PaddleOCR/ONNX 再建 zerorpc.Server：Paddle 首次导入会装自己的信号
+        # 处理器，若在 zerorpc 已拉起 gevent hub 之后再做，hub 唤不醒——端口能连、
+        # RPC 永不返回。zerorpc.Server() 构造即建 hub，所以必须排在它前面。
         runtime.warmup()
+        server = zerorpc.Server(runtime)
         server.bind(f"tcp://{host}:{port}")
         server.run()
     finally:

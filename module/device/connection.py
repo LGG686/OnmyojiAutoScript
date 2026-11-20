@@ -95,6 +95,11 @@ class Connection(ConnectionAttr):
             config (AzurLaneConfig, str): Name of the user config under ./config
         """
         super().__init__(config)
+        # Android 桥模式：serial 是哨兵值，不经过 adb 设备/包检测
+        if getattr(self.config.script.device, 'screenshot_method', '') == 'oasaos':
+            self.package = self.config.script.device.package_name.value
+            logger.attr('PackageName', self.package)
+            return
         # 桌面客户端模式：不经过 adb 设备/包检测，包名直接用配置值
         if self.is_desktop:
             self.package = self.config.script.device.package_name.value

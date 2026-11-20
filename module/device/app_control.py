@@ -21,6 +21,8 @@ class AppControl(Adb, Uiautomator2):
         # 进程存活的等价判断是窗口仍存在
         if self.is_desktop:
             return self.desktop_window_exists()
+        if getattr(self.config.script.device, 'screenshot_method', '') == 'oasaos':
+            return self.app_is_alive_oasaos(package_name)
 
         if not package_name:
             package_name = self.package
@@ -42,7 +44,9 @@ class AppControl(Adb, Uiautomator2):
         method = self.config.script.device.control_method
         # if self.is_wsa:
         #     package = self.app_current_wsa()
-        if method in AppControl._app_u2_family:
+        if method == 'oasaos':
+            package = self.app_current_oasaos()
+        elif method in AppControl._app_u2_family:
             package = self.app_current_uiautomator2()
         else:
             package = self.app_current_adb()
@@ -56,7 +60,9 @@ class AppControl(Adb, Uiautomator2):
         logger.info(f'App start: {self.package}')
         # if self.config.Emulator_Serial == 'wsa-0':
         #     self.app_start_wsa(display=0)
-        if method in AppControl._app_u2_family:
+        if method == 'oasaos':
+            self.app_start_oasaos()
+        elif method in AppControl._app_u2_family:
             self.app_start_uiautomator2()
         else:
             self.app_start_adb()
@@ -64,7 +70,9 @@ class AppControl(Adb, Uiautomator2):
     def app_stop(self):
         method = self.config.script.device.screenshot_method
         logger.info(f'App stop: {self.package}')
-        if method in AppControl._app_u2_family:
+        if method == 'oasaos':
+            self.app_stop_oasaos()
+        elif method in AppControl._app_u2_family:
             self.app_stop_uiautomator2()
         else:
             self.app_stop_adb()
@@ -75,6 +83,8 @@ class AppControl(Adb, Uiautomator2):
             etree._Element: Select elements with `self.hierarchy.xpath('//*[@text="Hermit"]')` for example.
         """
         method = self.config.script.device.screenshot_method
+        if method == 'oasaos':
+            return self.dump_hierarchy_oasaos()
         if method in AppControl._app_u2_family:
             self.hierarchy = self.dump_hierarchy_uiautomator2()
         else:
