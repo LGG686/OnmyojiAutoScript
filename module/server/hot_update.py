@@ -1,25 +1,28 @@
 # This Python file uses the following encoding: utf-8
-"""从 Git 仓库热更新 OAS 源码。
+"""基于 Git 的 OAS 源码热更新（与 OAS 自带更新机制同源）。
 
-运行时里的 `/opt/oas` 是构建时用 tar 展开的，没有 `.git`，所以只能「拉一份新源码 → 覆盖 →
-重启」，不能原地 `git pull`。覆盖只动源码树：用户配置、日志、虚拟环境、OCR 模型缓存与构建
-产物一律保留；改动前用硬链接留一份快照，任一阶段失败都能整份还原。
+运行时里的 /opt/oas 初始是 tar 展开的开箱快照，没有 .git；第一次更新时在这里做一次性浅
+引导（git init → fetch --depth 1 → reset --hard），此后它就是一个常规的 shallow 仓库，
+每次更新只拉增量。更新源（仓库/分支）写在 config/deploy.yaml —— 与桌面端 OASX 部署页
+编辑的是同一份配置；config/*.yaml 被 OAS 仓库的 .gitignore 忽略，reset --hard 永远不会
+碰用户配置，log/.venv 等运行时数据也不在 Git 管理范围内，因此不再需要快照/覆盖/KEEP
+那套机制，回滚就是 `git reset --hard <旧提交>`。
 
-热更新由 `/android/update/*` 驱动，重启靠退出码 75 交给 rootfs 入口进程 `android_host.py`
+热更新由 /android/update/* 驱动，重启靠退出码 75 交给 rootfs 入口进程 `android_host.py`
 重新拉起 WebUI，App 不参与重启动作。
 
-Hot-updates OAS source from a Git repository.
-
-`/opt/oas` inside the runtime is a tar extraction without `.git`, so an in-place `git pull` is
-impossible; the only path is fetch a fresh tree, overlay it, and restart. The overlay touches
-source only: user config, logs, the virtualenv, the OCR model cache and build artifacts are all
-preserved, and a hard-link snapshot taken beforehand lets any failure roll the tree back whole.
+Hot-updates the OAS source tree with plain Git, mirroring OAS's own update machinery.
+`/opt/oas` starts as a tar extraction without `.git`; the first update bootstraps a shallow
+repository in place (git init → fetch --depth 1 → reset --hard), and every later update only
+pulls new objects. The update source lives in config/deploy.yaml — the same file the desktop
+OASX deploy page edits. config/*.yaml is gitignored, so `git reset --hard` never touches user
+configs, and log/.venv are outside Git's control entirely: no snapshot/overlay/KEEP machinery
+is needed, and rollback is just `git reset --hard <old commit>`.
 """
 
 import json
 import os
 import re
-import shutil
 import subprocess
 import threading
 import time
@@ -28,11 +31,12 @@ from pathlib import Path
 from module.logger import logger
 
 ROOT = Path(__file__).resolve().parents[2]
-# 与 ROOT 同一文件系统的暂存区，clone 与快照都放这里，避免跨设备复制
-STAGE = ROOT.parent / 'oas-update'
 
-STATE_FILE = 'config/oas-update-state.json'
-CONFIG_FILE = 'config/oas-update.json'
+# 与桌面端 OASX 部署页同源：更新源就是 config/deploy.yaml 的 Repository/Branch
+DEPLOY_FILE = ROOT / 'config/deploy.yaml'
+DEPLOY_TEMPLATE = ROOT / 'deploy/template'
+
+STATE_FILE = 'oas-update-state.json'
 COMMIT_FILE = 'OAS_SOURCE_COMMIT'
 
 DEFAULT_REPO = 'https://github.com/LGG686/OnmyojiAutoScript'
@@ -44,15 +48,9 @@ GIT_TIMEOUT = 900
 PROBE_TIMEOUT = 20
 PROBE_CACHE_SECONDS = 60
 
-# 覆盖与快照都不碰的顶层条目：用户数据、运行环境、构建产物、rootfs 注入的入口脚本
-KEEP = frozenset({
-    'config', 'configs', 'log', '.venv', '.git',
-    'requirements-linux.txt', 'requirements-headless.txt',
-    'BUILD_MANIFEST', COMMIT_FILE,
-    'android_host.py', 'seed_oas.py',
-})
-# 模型缓存与字节码与源码无关：既不该覆盖，也不该进快照
-SKIP_NAMES = shutil.ignore_patterns('__pycache__', '*.pyc', '.paddlex', '.paddle')
+# 旧版本把状态与更新源写在 config/*.json 里，会被配置列表误认成配置实例；启动时迁移并清掉
+_LEGACY_STATE = (ROOT / 'config/oas-update-state.json', ROOT / 'oas-update-state.json')
+_LEGACY_CONFIG = (ROOT / 'config/oas-update.json', ROOT / 'oas-update.json')
 
 _URL_PATTERN = re.compile(r'^(?:https?://|ssh://|git://|git@)[^\s]+$')
 _BRANCH_PATTERN = re.compile(r'^[A-Za-z0-9._/-]{1,120}$')
@@ -83,20 +81,73 @@ def _write_json(path, value) -> None:
     temporary.replace(target)
 
 
+def _deploy_read() -> dict:
+    """读 deploy.yaml（OAS 自带的 poor yaml 实现，不引入 pyyaml）。"""
+    from deploy.utils import poor_yaml_read
+    data = poor_yaml_read(str(DEPLOY_FILE))
+    return data if isinstance(data, dict) else {}
+
+
+def _deploy_write(values: dict) -> None:
+    """把键写回 deploy.yaml；按 deploy 模板展开，保证文件完整、桌面端也能读。"""
+    from deploy.utils import poor_yaml_write
+    poor_yaml_write({**_deploy_read(), **values}, str(DEPLOY_FILE),
+                    template_file=str(DEPLOY_TEMPLATE))
+
+
+def _migrate_legacy() -> None:
+    """旧版状态/更新源文件从 config/ 搬走：状态上移一层，更新源并入 deploy.yaml。"""
+    legacy_state, state = _LEGACY_STATE
+    if legacy_state.is_file():
+        try:
+            if state.is_file():
+                legacy_state.unlink()
+            else:
+                os.replace(legacy_state, state)
+        except OSError:
+            pass
+    for legacy in _LEGACY_CONFIG:
+        if not legacy.is_file():
+            continue
+        try:
+            data = json.loads(legacy.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            data = {}
+        if isinstance(data, dict) and data.get('repo') and not _deploy_read().get('Repository'):
+            _deploy_write({'Repository': str(data['repo']),
+                           'Branch': str(data.get('branch') or DEFAULT_BRANCH)})
+        try:
+            legacy.unlink()
+        except OSError:
+            pass
+
+
+_migrate_legacy()
+
+
+def _truthy(value) -> bool:
+    """deploy.yaml 里布尔可能被写成 true/True/"true"；统一按语义取值。"""
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in ('1', 'true', 'yes', 'on')
+
+
 def load_config() -> dict:
     """当前的更新源；没配置过就是默认的公开仓库与 OASA 分支。"""
-    data = _read_json(CONFIG_FILE, {})
-    if not isinstance(data, dict):
-        data = {}
+    data = _deploy_read()
     return {
-        'repo': str(data.get('repo') or DEFAULT_REPO),
-        'branch': str(data.get('branch') or DEFAULT_BRANCH),
+        'repo': str(data.get('Repository') or DEFAULT_REPO),
+        'branch': str(data.get('Branch') or DEFAULT_BRANCH),
+        'keepLocalChanges': _truthy(data.get('KeepLocalChanges')),
     }
 
 
-def save_config(repo: str, branch: str) -> None:
-    """记住用户填的地址与分支，下次「检查更新」直接用这一份。"""
-    _write_json(CONFIG_FILE, {'repo': repo, 'branch': branch, 'updatedAt': _now()})
+def save_config(repo: str, branch: str, keep_local_changes=None) -> None:
+    """记住用户填的地址、分支与「保留本地修改」，下次更新直接用这一份。"""
+    values = {'Repository': repo, 'Branch': branch}
+    if keep_local_changes is not None:
+        values['KeepLocalChanges'] = bool(keep_local_changes)
+    _deploy_write(values)
 
 
 def _state() -> dict:
@@ -116,13 +167,23 @@ def _busy() -> bool:
     return _state().get('phase') not in (None, 'idle', 'done')
 
 
-def local_head() -> str:
-    """当前源码对应的提交；构建时就写进 OAS_SOURCE_COMMIT，热更成功后跟着更新。"""
+def _read_commit_file() -> str:
+    """构建时写入的 OAS_SOURCE_COMMIT；引导前的唯一提交来源。"""
     try:
         text = (ROOT / COMMIT_FILE).read_text(encoding='utf-8').strip()
     except OSError:
         return ''
     return text if re.fullmatch(r'[0-9a-f]{40}', text) else ''
+
+
+def local_head() -> str:
+    """当前源码对应的提交；引导后读 git，没引导过退回 OAS_SOURCE_COMMIT。"""
+    try:
+        if (ROOT / '.git').is_dir():
+            return _git(ROOT, 'rev-parse', 'HEAD', timeout=15)
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return _read_commit_file()
 
 
 def _validate(repo: str, branch: str) -> None:
@@ -163,8 +224,7 @@ def upstream_head(repo: str, branch: str, force: bool = False) -> str:
         return cached['head']
     head, error = '', ''
     try:
-        output = _git(STAGE if STAGE.exists() else ROOT,
-                      'ls-remote', repo, f'refs/heads/{branch}', timeout=PROBE_TIMEOUT)
+        output = _git(ROOT, 'ls-remote', repo, f'refs/heads/{branch}', timeout=PROBE_TIMEOUT)
         head = output.split()[0] if output else ''
     except (OSError, subprocess.SubprocessError) as caught:
         detail = (getattr(caught, 'stderr', None) or str(caught)).strip()
@@ -212,76 +272,57 @@ def status(force: bool = False, repo: str = '', branch: str = '') -> dict:
         'requiresRuntimeUpdate': bool(state.get('requiresRuntimeUpdate')),
         'repo': probe_repo,
         'branch': probe_branch,
+        'keepLocalChanges': config['keepLocalChanges'],
     }
 
 
-def _rmtree(path: Path) -> None:
-    """删目录并强制清掉只读位。
+def _ensure_repo(repo: str, branch: str) -> None:
+    """确保 /opt/oas 是能 fetch 的 shallow 仓库；没有 .git 就原地浅引导。
 
-    Git 的对象文件是只读的，Windows 上 `shutil.rmtree` 会直接失败；运行时的 `ignore_errors`
-    又会让残留的暂存区把下一次更新挡在 `mkdir` 上。
-    Git object files are read-only, which makes a plain `shutil.rmtree` fail on Windows; the
-    runtime's `ignore_errors` would then leave a stale stage that blocks the next update.
+    每次都把 origin 指到当前配置的地址：设置页改了仓库后不需要删掉重来。
+    `user.name/email` 只写进 .git/config：`git stash` 要建提交，缺身份会直接失败。
+    Re-point origin at the configured address every time, so changing the repo in settings
+    never requires deleting the repository. The identity is local-only: `git stash` creates a
+    commit and fails outright without one.
     """
-
-    def retry(func, target, _error=None):
-        try:
-            os.chmod(target, 0o700)
-        except OSError:
-            pass
-        try:
-            func(target)
-        except OSError:
-            pass
-
-    if not path.exists():
-        return
+    if not (ROOT / '.git').is_dir():
+        logger.hr('[HotUpdate] 首次引导：原地初始化 shallow 仓库')
+        _git(ROOT, 'init')
+        _git(ROOT, 'config', 'user.name', 'OAS')
+        _git(ROOT, 'config', 'user.email', 'oas@localhost')
     try:
-        shutil.rmtree(path, onexc=retry)
-    except TypeError:
-        # Python 3.10/3.11 只有 onerror 这个名字
-        shutil.rmtree(path, onerror=retry)
+        _git(ROOT, 'remote', 'remove', 'origin')
+    except (OSError, subprocess.SubprocessError):
+        pass
+    _git(ROOT, 'remote', 'add', 'origin', repo)
+    _git(ROOT, 'fetch', '--depth', '1', '--no-tags', 'origin', branch)
 
 
-def _place(source: Path, destination: Path) -> None:
-    """写临时文件再原子替换。
+def _checkout(target: str, keep_changes: bool) -> None:
+    """把工作区切到目标提交；开了「保留本地修改」就先 stash 再叠回来。
 
-    不能直接覆盖：快照里是硬链接，原地截断会把备份一起改掉。
-    Never write in place — the snapshot holds hard links, so truncating would corrupt the backup.
+    deploy.yaml 的 KeepLocalChanges 与桌面端 OAS 同义：源码照常更新，自己改过的文件在更新
+    后仍在。新版本改了同一行时以新版本为准，改动整份留在 stash 里不丢。
+
+    Switches the work tree to the target commit. With KeepLocalChanges the local edits are stashed
+    and re-applied afterwards, matching the desktop flag: conflicts keep the upstream side and the
+    stashed copy stays intact instead of being discarded.
     """
-    destination = Path(destination)
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    temporary = destination.with_name(destination.name + '.hotupdate-tmp')
-    shutil.copy2(source, temporary)
-    os.replace(temporary, destination)
-
-
-def _overlay(source_root: Path, destination_root: Path) -> None:
-    """把 source_root 的顶层条目铺到 destination_root，跳过 KEEP 与缓存。"""
-    for name in sorted(os.listdir(source_root)):
-        if name in KEEP:
-            continue
-        source = source_root / name
-        destination = destination_root / name
-        if source.is_dir():
-            shutil.copytree(source, destination, dirs_exist_ok=True,
-                            ignore=SKIP_NAMES, copy_function=_place)
-        elif source.is_file():
-            _place(source, destination)
-
-
-def _snapshot(destination_root: Path) -> None:
-    """硬链接快照：只占目录项，回滚时读的是未被替换的旧 inode。"""
-    for name in sorted(os.listdir(ROOT)):
-        if name in KEEP:
-            continue
-        source = ROOT / name
-        destination = destination_root / name
-        if source.is_dir():
-            shutil.copytree(source, destination, ignore=SKIP_NAMES, copy_function=os.link)
-        elif source.is_file():
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            os.link(source, destination)
+    if not keep_changes:
+        _git(ROOT, 'reset', '--hard', target)
+        return
+    dirty = _git(ROOT, 'status', '--porcelain')
+    if not dirty:
+        _git(ROOT, 'reset', '--hard', target)
+        return
+    logger.info('[HotUpdate] 保留本地修改：stash → reset → stash pop')
+    _git(ROOT, 'stash', 'push', '--include-untracked')
+    _git(ROOT, 'reset', '--hard', target)
+    try:
+        _git(ROOT, 'stash', 'pop')
+    except (OSError, subprocess.SubprocessError) as caught:
+        detail = (getattr(caught, 'stderr', None) or str(caught)).strip()[-200:]
+        logger.warning(f'[HotUpdate] 本地修改与新版本冲突，改动保留在 git stash：{detail}')
 
 
 def _deps_signature(text: str) -> list:
@@ -293,12 +334,35 @@ def _deps_signature(text: str) -> list:
 
 
 def _install_requirements() -> None:
-    """依赖变化时同步虚拟环境；失败由调用方回滚并提示整包更新。"""
+    """依赖变化时同步虚拟环境；失败由调用方回滚并提示整包更新。
+
+    镜像构建（build-oas.sh）对 requirements.txt 做过两处 Linux 化：去掉 pywin32、
+    opencv-python 换 contrib-headless（ARM64 无 opencv-python 轮子）。运行期安装沿用同一
+    规则，否则装回与镜像不一致的包。
+    """
+    lines = [
+        line.strip() for line in (ROOT / 'requirements.txt').read_text(encoding='utf-8').splitlines()
+        if line.strip() and not line.strip().startswith('#') and not line.startswith('pywin32==')
+    ]
+    filtered = ROOT / 'requirements-linux.txt'
+    filtered.write_text(
+        '\n'.join(
+            line.replace('opencv-python==', 'opencv-contrib-python-headless==', 1)
+            if line.startswith('opencv-python==') else line
+            for line in lines
+        ) + '\n',
+        encoding='utf-8',
+    )
     command = ['uv', 'pip', 'install', '--python', str(ROOT / '.venv/bin/python'),
-               '-r', str(ROOT / 'requirements-linux.txt')]
+               '-r', str(filtered)]
     subprocess.run(command, cwd=str(ROOT), check=True, capture_output=True, text=True,
                    encoding='utf-8', errors='replace', timeout=GIT_TIMEOUT)
     logger.info('[HotUpdate] 依赖已同步 / dependencies synced')
+
+
+def _write_commit(target: str) -> None:
+    """刷新 OAS_SOURCE_COMMIT；App 的「OAS 提交」读的就是它。"""
+    (ROOT / COMMIT_FILE).write_text(target + '\n', encoding='utf-8')
 
 
 def _restart() -> None:
@@ -320,47 +384,46 @@ def _restart() -> None:
     timer.start()
 
 
-def _run(repo: str, branch: str) -> None:
-    """完整一轮：克隆 → 校验 → 快照 → 覆盖 → 依赖 → 重启；异常则回滚。"""
-    stage = STAGE
-    snapshot_dir = stage / 'snapshot'
+def _run(repo: str, branch: str, keep_changes: bool = False) -> None:
+    """完整一轮：fetch → 切到目标提交 → 依赖同步 → 重启；失败尽量回滚到旧提交。"""
+    first_install = not (ROOT / '.git').is_dir()
+    old_head = ''
     try:
         _write_state(phase='clone', result='', target='', error='', requiresRuntimeUpdate=False)
-        _rmtree(stage)
-        stage.mkdir(parents=True)
-        source = stage / 'src'
-        _git(stage, 'clone', '--depth', '1', '--branch', branch, '--single-branch',
-             '--quiet', repo, str(source))
-        for marker in ('server.py', 'module/server/app.py', 'requirements.txt'):
-            if not (source / marker).is_file():
-                raise RuntimeError(f'仓库不像 OAS 源码：缺少 {marker}')
-        target = _git(source, 'rev-parse', 'HEAD')
+        if not first_install:
+            old_head = local_head()
+        old_requirements = ''
+        try:
+            old_requirements = (ROOT / 'requirements.txt').read_text(encoding='utf-8')
+        except OSError:
+            pass
 
-        old_requirements = (ROOT / 'requirements.txt').read_text(encoding='utf-8')
-        new_requirements = (source / 'requirements.txt').read_text(encoding='utf-8')
-        deps_changed = _deps_signature(old_requirements) != _deps_signature(new_requirements)
+        _ensure_repo(repo, branch)
+        target = _git(ROOT, 'rev-parse', 'FETCH_HEAD')
 
-        _write_state(phase='backup', target=target)
-        snapshot_dir.mkdir(parents=True, exist_ok=True)
-        _snapshot(snapshot_dir)
+        if not first_install and target == old_head:
+            _write_state(phase='done', result='updated', target=target, error='',
+                         requiresRuntimeUpdate=False)
+            logger.info(f'[HotUpdate] 已是最新 {target}（{repo}@{branch}）')
+            return
 
-        _write_state(phase='swap')
-        _overlay(source, ROOT)
-        (ROOT / COMMIT_FILE).write_text(target + '\n', encoding='utf-8')
+        _write_state(phase='swap', target=target)
+        # 首次引导还没有初始提交，stash 无从做起，也谈不上保留旧改动。
+        _checkout(target, keep_changes and not first_install)
+        _write_commit(target)
 
-        if deps_changed:
+        new_requirements = (ROOT / 'requirements.txt').read_text(encoding='utf-8')
+        if _deps_signature(old_requirements) != _deps_signature(new_requirements):
             _write_state(phase='deps')
             try:
                 _install_requirements()
             except (OSError, subprocess.SubprocessError) as caught:
-                _write_state(requiresRuntimeUpdate=True)
                 detail = (getattr(caught, 'stderr', None) or str(caught)).strip()[-300:]
                 raise RuntimeError(f'依赖变化且安装失败，需整包更新：{detail}') from caught
 
         _write_state(phase='done', result='updated', target=target, error='',
                      requiresRuntimeUpdate=False)
         logger.info(f'[HotUpdate] 已更新到 {target}（{repo}@{branch}）')
-        _rmtree(stage)
         _restart()
     except Exception as caught:
         logger.exception('[HotUpdate] 更新失败')
@@ -368,37 +431,43 @@ def _run(repo: str, branch: str) -> None:
                  (getattr(caught, 'stderr', None) or str(caught)).strip().splitlines() if line.strip()]
         fatal = [line for line in lines if line.startswith(('fatal:', 'error:'))]
         reason = (fatal[0] if fatal else (lines[0] if lines else caught.__class__.__name__))[:300]
+        # 已经落到新提交才需要回滚；首次引导没有旧提交可退，只能提示整包更新
         restore_error = ''
-        if (snapshot_dir / 'server.py').is_file():
+        if old_head:
             try:
-                _overlay(snapshot_dir, ROOT)
+                _checkout(old_head, keep_changes)
+                _write_commit(old_head)
                 logger.info('[HotUpdate] 已回滚到旧版本 / rolled back')
             except Exception as rollback:
                 logger.exception('[HotUpdate] 回滚失败')
                 restore_error = f'，回滚失败：{rollback}'
+        elif first_install:
+            _write_state(requiresRuntimeUpdate=True)
         _write_state(phase='done', result='failed', error=reason + restore_error)
-        _rmtree(stage)
 
 
-def save_requested(repo: str = '', branch: str = '') -> dict:
+def save_requested(repo: str = '', branch: str = '', keep_local_changes=None) -> dict:
     """校验并保存更新源；留空的一项保留原值，方便只改地址或只改分支。"""
     config = load_config()
     repo = (repo or '').strip() or config['repo']
     branch = (branch or '').strip() or config['branch']
     _validate(repo, branch)
-    save_config(repo, branch)
+    save_config(repo, branch, keep_local_changes)
     # 目标变了，上一个仓库的探测结果作废
     _PROBE['key'] = ''
-    return {'repo': repo, 'branch': branch}
+    return load_config()
 
 
-def apply(repo: str = '', branch: str = '') -> dict:
+def apply(repo: str = '', branch: str = '', keep_local_changes=None) -> dict:
     """接受一次热更新请求；参数留空就沿用上次保存的地址与分支。"""
     with _LOCK:
         if _busy():
             return {'ok': False, 'error': '已有更新在进行中'}
-        config = save_requested(repo, branch)
+        config = save_requested(repo, branch, keep_local_changes)
         _write_state(phase='prepare', result='', target='', error='', requiresRuntimeUpdate=False)
-        threading.Thread(target=_run, args=(config['repo'], config['branch']),
-                         name='oas-hot-update', daemon=True).start()
+        threading.Thread(
+            target=_run,
+            args=(config['repo'], config['branch'], config['keepLocalChanges']),
+            name='oas-hot-update', daemon=True,
+        ).start()
     return {'ok': True, **config}

@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-"""OAS Android 设备后端：所有设备 I/O 经 AzurPilot-for-Android 本机特权桥完成。
+"""OAS Android 设备后端：所有设备 I/O 经 OAS Android 宿主本机特权桥完成。
 
 桥监听 127.0.0.1:22301，协议为行分隔 JSON；screencap 元数据行后紧接 BGR888 原始帧。
 本模块不 import adb / uiautomator2；serial 使用哨兵值 "oasaos"。
@@ -34,7 +34,7 @@ OASAOS_SERIAL = 'oasaos'
 OASAOS_CLICK_DURATION_MS = 10
 
 # 共享内存帧通道：抽象 Unix socket，App 侧监听，握手时用 SCM_RIGHTS 交出只读映射 FD。
-OASAOS_FRAME_SOCKET = 'com.azurpilot.ghio.frames.v1'
+OASAOS_FRAME_SOCKET = 'com.oas.ghio.frames.v1'
 OASAOS_FRAME_MAX_BYTES = 32 * 1024 * 1024
 OASAOS_FRAME_MAX_LINE = 4096
 OASAOS_FRAME_TIMEOUT = 5
