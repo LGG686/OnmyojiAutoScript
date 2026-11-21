@@ -19,6 +19,7 @@ from module.server.tool_router import tool_app
 from module.server.chesslineup_router import chesslineup_app
 from module.server.android_router import android_app
 from module.server.auth import LanAuthMiddleware
+from module.server import web_gui_updater
 from starlette import status
 from starlette.responses import JSONResponse
 from module.server.setting import State
@@ -76,6 +77,7 @@ async def on_startup():
     :return:
     """
     ensure_api_logger()
+    web_gui_updater.start_background_check()
     logger.info('OAS web service startup done')
     if app.state.script_instances:
         await mm.restart_processes(app.state.script_instances)

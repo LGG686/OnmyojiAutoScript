@@ -15,6 +15,7 @@ from module.ocr.rpc import ensure_ocr_server_ready, get_ocr_client
 from module.server.main_manager import MainManager
 from module.server.updater import Updater
 from module.server.i18n import I18n
+from module.server import web_gui_updater
 
 home_app = APIRouter(
     prefix="/home",
@@ -124,3 +125,15 @@ async def export_diagnostic(config_name: str = ''):
     except Exception as e:
         logger.exception(e)
         return {'success': False, 'path': '', 'error': str(e)}
+
+
+@home_app.get('/webgui_info')
+def webgui_info():
+    """网页控制台（OASX web）本地版本与远端新包对比。"""
+    return web_gui_updater.check_update()
+
+
+@home_app.post('/webgui_update')
+def webgui_update():
+    """手动触发网页控制台包下载与替换。"""
+    return web_gui_updater.apply_update()
