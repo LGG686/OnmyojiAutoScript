@@ -114,7 +114,7 @@ class Agent:
         return z
 
     @classmethod
-    def argmax_gamma(cls, z: np.ndarray, tracks: list[tuple]) -> Focus:
+    def argmax_gamma(cls, z: np.ndarray, tracks: list[tuple]) -> Focus | None:
         max_y, max_x = np.unravel_index(np.argmax(z), z.shape)
         max_variance = 2000
         max_index = -1
@@ -124,6 +124,8 @@ class Agent:
             if variance < max_variance:
                 max_index = index
                 max_variance = variance
+        if max_index < 0:
+            return None
         return Focus(inputs=tracks[max_index])
 
     def decision(self, tracks: list[tuple], state: list, freeze: bool = False) -> list:
@@ -147,6 +149,11 @@ class Agent:
     def check_observe(self, tracks: list[tuple]):
         z = Agent.gamma(tracks=tracks, weights=self.weights, priorities=self.priorities)
         focus = Agent.argmax_gamma(z=z, tracks=tracks)
+        if focus is None:
+            if self.focus is not None:
+                logger.info('Focus disappear')
+            self.focus = None
+            return
         omega = focus.omega(z)
         if omega < self.OBSERVE_THRESHOLD:
             if self.focus is not None:
