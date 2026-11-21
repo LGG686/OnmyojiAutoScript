@@ -241,3 +241,14 @@ async def android_tool_stop():
     """停止常驻工具；没在跑时直接成功。"""
     await asyncio.to_thread(tool_process.stop)
     return {'ok': True}
+
+
+@android_app.post('/oas/restart')
+async def android_oas_restart():
+    """只重启 OAS：退出码 75 交给 rootfs 入口进程重拉 WebUI，proot 容器原样保留。
+
+    与「重启容器（proot）」是两件事：容器重启连 Linux 会话一起换，这里只是 OAS 服务进程
+    重来一遍，秒级完成，热更或改配置后用这个就够。0.8 秒延迟保证响应先出网。
+    """
+    await asyncio.to_thread(hot_update.request_restart)
+    return {'ok': True, 'restarting': True}

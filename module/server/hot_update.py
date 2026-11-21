@@ -414,6 +414,26 @@ def _write_commit(target: str) -> None:
     (ROOT / COMMIT_FILE).write_text(target + '\n', encoding='utf-8')
 
 
+def request_restart() -> None:
+    """外部请求重启 OAS：复用热更的重启通道（退出码 75 交给入口进程重拉 WebUI）。
+
+    Android 面板的「重启 OAS」按钮走这里——只重启 OAS 本身，proot 容器与会话原样保留，
+    比整容器重启快得多。0.8 秒延迟让 HTTP 响应先发出去，不然请求方只会看到连接被掐断。
+
+    External restart request: reuses the hot-update restart channel (exit code 75, the entry
+    process respawns the WebUI). The Android panel's "restart OAS" button lands here — OAS
+    alone restarts while the proot container and session stay up, far cheaper than a full
+    container restart. The 0.8 s delay lets the HTTP response go out first; otherwise the
+    caller just sees the connection drop.
+    """
+    if not os.environ.get('OAS_ANDROID_HOST'):
+        raise RuntimeError('当前环境没有接管重启的入口进程，请在容器内使用')
+    logger.info('[HotUpdate] 收到外部重启请求，交给入口进程重启 WebUI')
+    timer = threading.Timer(0.8, lambda: os._exit(RESTART_EXIT_CODE))
+    timer.daemon = False
+    timer.start()
+
+
 def _restart() -> None:
     """完成态在调用前就已落盘，这里只管退出：新进程起来时 phase 必须是 done。
 
@@ -495,23 +515,25 @@ def _run(repo: str, branch: str, keep_changes: bool = False) -> None:
         _write_state(phase='done', result='failed', error=reason + restore_error)
 
 
-_LOG_FORMAT = '%H%x1f%h%x1f%an%x1f%ci%x1f%s'
+# 每条提交一段：字段用 \x1f 分隔，记录用 \x1e 收尾——%b 的正文自带换行，按行切会把
+# 多行描述切碎，必须按记录切。
+_LOG_FORMAT = '%H%x1f%h%x1f%an%x1f%ci%x1f%s%x1f%b%x1e'
 
 # 历史面板的 git 网络操作限时：App 那边读超时 45 秒，只做一次 deepen 留出余量。
 HISTORY_GIT_TIMEOUT = 30
 
 
 def _parse_log(output: str) -> list:
-    """把 `git log` 输出按分隔符解析成 App 好消费的字典列表。"""
+    """把 `git log` 输出按记录分隔符解析成 App 好消费的字典列表；body 缺省为空串。"""
     rows = []
-    for line in output.splitlines():
-        parts = line.split('\x1f')
-        if len(parts) != 5:
+    for entry in output.split('\x1e'):
+        parts = entry.strip('\n').split('\x1f')
+        if len(parts) != 6:
             continue
-        full, short, author, date, subject = parts
+        full, short, author, date, subject, body = parts
         rows.append({
             'hash': full, 'short': short, 'author': author,
-            'date': date[:10], 'subject': subject,
+            'date': date[:10], 'subject': subject, 'body': body.strip(),
         })
     return rows
 
@@ -550,6 +572,7 @@ def _bundled_commit_row() -> list:
         'hash': commit, 'short': commit[:12], 'author': 'OAS Android',
         'date': str(manifest.get('built_at_utc') or '')[:10],
         'subject': '内置镜像打包的版本（打开一次提交历史即可拉到完整列表）',
+        'body': '',
     }]
 
 
