@@ -199,6 +199,25 @@ def _validate(repo: str, branch: str) -> None:
         raise ValueError('分支名不合法')
 
 
+def _drop_git_leftovers(git_dir: Path, locks_only: bool = False) -> None:
+    """清掉被杀的 git 留下的锁与半个 pack。
+
+    只在确认子进程已结束之后调用：单用户容器里没有并发 git，此刻还留着的锁必然是
+    残留，半个 `tmp_pack_*` 也永远不会补完（真机踩过：多次超时堆出 50MB 垃圾）。
+    Only call this after the child has exited: a single-user container never has a
+    concurrent git, so any lock still present is stale and a half-written pack will
+    never complete.
+    """
+    if not git_dir.is_dir():
+        return
+    for name in ('index.lock', 'shallow.lock'):
+        (git_dir / name).unlink(missing_ok=True)
+    if locks_only:
+        return
+    for pack in (git_dir / 'objects' / 'pack').glob('tmp_pack_*'):
+        pack.unlink(missing_ok=True)
+
+
 def _git(cwd, *args, timeout=GIT_TIMEOUT) -> str:
     """限时执行 Git，失败时把 stderr 尾部带进异常给状态文件用。
 
@@ -206,8 +225,11 @@ def _git(cwd, *args, timeout=GIT_TIMEOUT) -> str:
     “Another git process seems to be running”或“Unable to create ... File exists”
     挡死（真机发生过：提交历史永远远端拉取失败）。锁已存在超过 10 秒就当残留清掉
     重试一次——单用户容器里没有并发 git；更新鲜的锁可能属于正在跑的进程，不动。
+
+    TimeoutExpired 的 stderr 是空的，但子进程已经被杀，锁必然是死的，一起清掉。
     """
-    locks = [Path(cwd) / '.git' / 'index.lock', Path(cwd) / '.git' / 'shallow.lock']
+    git_dir = Path(cwd) / '.git'
+    locks = [git_dir / 'index.lock', git_dir / 'shallow.lock']
 
     def run() -> subprocess.CompletedProcess:
         return subprocess.run(
@@ -219,13 +241,15 @@ def _git(cwd, *args, timeout=GIT_TIMEOUT) -> str:
 
     try:
         return run().stdout.strip()
+    except subprocess.TimeoutExpired:
+        _drop_git_leftovers(git_dir)
+        raise
     except subprocess.SubprocessError as caught:
         stderr = getattr(caught, 'stderr', '') or ''
         stale = [l for l in locks if l.is_file() and time.time() - l.stat().st_mtime > 10]
         if stale and ('index.lock' in stderr or 'shallow.lock' in stderr
                       or 'Another git process' in stderr):
-            for lock in stale:
-                lock.unlink(missing_ok=True)
+            _drop_git_leftovers(git_dir)
             return run().stdout.strip()
         raise
 
@@ -529,13 +553,37 @@ def _bundled_commit_row() -> list:
     }]
 
 
+def _has_remote_ref(branch: str) -> bool:
+    """本地是否已有 origin/<branch> 引用：没有就说明从没成功拉过一次远端。
+
+    Whether the local repository already carries `origin/<branch>`; a miss means no
+    successful fetch has ever completed here.
+    """
+    if not (ROOT / '.git').is_dir():
+        return False
+    try:
+        _git(ROOT, 'rev-parse', '--verify', '--quiet',
+             f'refs/remotes/origin/{branch}', timeout=10)
+        return True
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
 def history(repo: str = '', branch: str = '', count: int = 20) -> dict:
     """给 App 提交历史面板：当前版本与远端分支各自的最近提交。
 
     shallow 仓库默认只有 1 条，按需 `--deepen` 增量加深；deepen 失败（镜像不支持、
     网络中断）只回传已有部分并附原因，不阻塞面板打开。
+
+    从没成功拉过远端时不做任何 fetch：首次 `--depth 1` 要下整棵树（数百 MB），
+    面板只是点开看一眼，十几秒必然超时，还会留下 shallow.lock 与半个 pack，
+    把之后的更新一起挡住（真机踩过）。首次拉取交给「立即更新」完成。
+
     The shallow clone only holds one commit; deepen it on demand. A failed deepen still
-    returns whatever is already available plus the reason.
+    returns whatever is already available plus the reason. No fetch happens before the
+    first successful pull: the initial depth-1 download is the whole tree, far beyond a
+    panel-open budget, and killing it leaves a stale lock and a half-written pack that
+    block every later update.
     """
     try:
         count = max(1, min(int(count), 50))
@@ -553,8 +601,10 @@ def history(repo: str = '', branch: str = '', count: int = 20) -> dict:
     if _busy():
         return {'ok': True, 'error': '已有更新在进行中', 'local': local, 'remote': []}
     remote, error = [], ''
+    if not _has_remote_ref(branch):
+        return {'ok': True, 'local': local, 'remote': [],
+                'error': '本地还没有远端历史，完成一次更新后即可查看'}
     try:
-        _ensure_repo(repo, branch, timeout=HISTORY_GIT_TIMEOUT)
         _git(ROOT, 'fetch', '--deepen', str(count), '--no-tags', 'origin',
              f'refs/heads/{branch}:refs/remotes/origin/{branch}',
              timeout=HISTORY_GIT_TIMEOUT)
