@@ -200,14 +200,34 @@ def _validate(repo: str, branch: str) -> None:
 
 
 def _git(cwd, *args, timeout=GIT_TIMEOUT) -> str:
-    """限时执行 Git，失败时把 stderr 尾部带进异常给状态文件用。"""
-    result = subprocess.run(
-        ['git', '-c', 'http.lowSpeedLimit=1024', '-c', 'http.lowSpeedTime=30', *args],
-        cwd=str(cwd), check=True, capture_output=True, text=True,
-        encoding='utf-8', errors='replace', timeout=timeout,
-        env={**os.environ, 'GIT_TERMINAL_PROMPT': '0'},
-    )
-    return result.stdout.strip()
+    """限时执行 Git，失败时把 stderr 尾部带进异常给状态文件用。
+
+    进程被杀会留下 `.git/index.lock` / `.git/shallow.lock`，之后所有写操作都被
+    “Another git process seems to be running”或“Unable to create ... File exists”
+    挡死（真机发生过：提交历史永远远端拉取失败）。锁已存在超过 10 秒就当残留清掉
+    重试一次——单用户容器里没有并发 git；更新鲜的锁可能属于正在跑的进程，不动。
+    """
+    locks = [Path(cwd) / '.git' / 'index.lock', Path(cwd) / '.git' / 'shallow.lock']
+
+    def run() -> subprocess.CompletedProcess:
+        return subprocess.run(
+            ['git', '-c', 'http.lowSpeedLimit=1024', '-c', 'http.lowSpeedTime=30', *args],
+            cwd=str(cwd), check=True, capture_output=True, text=True,
+            encoding='utf-8', errors='replace', timeout=timeout,
+            env={**os.environ, 'GIT_TERMINAL_PROMPT': '0'},
+        )
+
+    try:
+        return run().stdout.strip()
+    except subprocess.SubprocessError as caught:
+        stderr = getattr(caught, 'stderr', '') or ''
+        stale = [l for l in locks if l.is_file() and time.time() - l.stat().st_mtime > 10]
+        if stale and ('index.lock' in stderr or 'shallow.lock' in stderr
+                      or 'Another git process' in stderr):
+            for lock in stale:
+                lock.unlink(missing_ok=True)
+            return run().stdout.strip()
+        raise
 
 
 def upstream_head(repo: str, branch: str, force: bool = False) -> str:
