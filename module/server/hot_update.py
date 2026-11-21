@@ -497,8 +497,8 @@ def _run(repo: str, branch: str, keep_changes: bool = False) -> None:
 
 _LOG_FORMAT = '%H%x1f%h%x1f%an%x1f%ci%x1f%s'
 
-# 历史面板的 git 网络操作限时：App 那边读超时只有 45 秒，补仓库与加深各占一半就顶到上限了。
-HISTORY_GIT_TIMEOUT = 15
+# 历史面板的 git 网络操作限时：App 那边读超时 45 秒，只做一次 deepen 留出余量。
+HISTORY_GIT_TIMEOUT = 30
 
 
 def _parse_log(output: str) -> list:
@@ -601,17 +601,26 @@ def history(repo: str = '', branch: str = '', count: int = 20) -> dict:
     if _busy():
         return {'ok': True, 'error': '已有更新在进行中', 'local': local, 'remote': []}
     remote, error = [], ''
+    ref = f'refs/remotes/origin/{branch}'
     if not _has_remote_ref(branch):
         return {'ok': True, 'local': local, 'remote': [],
                 'error': '本地还没有远端历史，完成一次更新后即可查看'}
+    # 先把拉到过的远端提交摆出来：deepen 只是补更多历史，网络一慢不该把列表变空
+    remote = _read_log(count, f'origin/{branch}')
+    if len(remote) >= count:
+        return {'ok': True, 'error': '', 'local': local, 'remote': remote}
     try:
         _git(ROOT, 'fetch', '--deepen', str(count), '--no-tags', 'origin',
-             f'refs/heads/{branch}:refs/remotes/origin/{branch}',
-             timeout=HISTORY_GIT_TIMEOUT)
-        remote = _read_log(count, f'origin/{branch}')
+             f'refs/heads/{branch}:{ref}', timeout=HISTORY_GIT_TIMEOUT)
+        remote = _read_log(count, f'origin/{branch}') or remote
         local = _read_log(count) or local
     except (OSError, subprocess.SubprocessError, ValueError) as caught:
-        error = (getattr(caught, 'stderr', None) or str(caught)).strip()[-300:]
+        detail = (getattr(caught, 'stderr', None) or str(caught)).strip()[-300:]
+        # 已有数据时只记日志：面板还能正常列，不必把「拉取失败」糊在用户脸上
+        if remote:
+            logger.warning(f'[HotUpdate] 提交历史加深失败：{detail}')
+        else:
+            error = detail
     return {'ok': True, 'error': error, 'local': local, 'remote': remote}
 
 
