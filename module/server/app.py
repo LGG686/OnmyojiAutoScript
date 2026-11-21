@@ -63,6 +63,13 @@ if annotator_static_dir.exists():
     app.mount("/tool/annotator/static", StaticFiles(directory=str(annotator_static_dir)), name="annotator_static")
 
 
+# 网页控制台（OASX web）：构建时打进 web/gui，存在才挂载，缺失时容器照常启动。
+# Web console (OASX web): bundled into web/gui at build time; mounted only when present.
+oasx_web_dir = Path(__file__).resolve().parent / "web" / "gui"
+if (oasx_web_dir / "index.html").exists():
+    app.mount("/gui", StaticFiles(directory=str(oasx_web_dir), html=True), name="oasx_web")
+
+
 async def on_startup():
     """
     app.state 的生命周期在定义app的时候就有了
