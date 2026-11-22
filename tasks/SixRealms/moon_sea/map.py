@@ -42,28 +42,41 @@ class MoonSeaMap(MoonSeaSkills):
         if nearest and abs(nearest[0] + nearest[2] / 2 - center_x) <= 60:
             return nearest
 
-    def decide(self, prefer_store=False) -> tuple:
-        self.screenshot()
-        if self.appear(self.I_BOSS_FIRE):
-            # 最后的boss
-            return MoonSeaType.island106, 0, (0, 0, 0, 0)
-        kind, rounds, roi = self._read_map_ocr()
+    def _island_candidates(self, skip_store=True) -> dict:
         candidates = {}
         for island in self.island_markers:
-            if island == MoonSeaType.island101 and self.appear(self.I_M_STORE):
+            if skip_store and island == MoonSeaType.island101 and self.appear(self.I_M_STORE):
                 continue
             boxes = self._marker_boxes(island)
             if boxes:
                 candidates[island] = boxes
-        if prefer_store and kind != MoonSeaType.island101 and MoonSeaType.island101 in candidates:
-            kind = MoonSeaType.island101
-            roi = max(candidates[kind])
-        elif kind != MoonSeaType.island100:
-            roi = self._nearby_marker(candidates.get(kind, []), roi) or roi
-        elif candidates:
-            # OCR 未识别出岛型时，沿用从右向左的选岛顺序。
-            kind, roi = max(((island, max(boxes)) for island, boxes in candidates.items()),
-                            key=lambda candidate: candidate[1][0])
+        return candidates
+
+    def decide(self, prefer_store=False) -> tuple:
+        # 转场还没结束就截图时，OCR 可能给出不在任何一列岛上的坐标。重读几次（每次约 1.2s，
+        # 转场一般 2~4s 内结束），重新拿到对得上标牌的坐标就能自愈。
+        for _ in range(3):
+            self.screenshot()
+            if self.appear(self.I_BOSS_FIRE):
+                # 最后的boss
+                return MoonSeaType.island106, 0, (0, 0, 0, 0)
+            kind, rounds, roi = self._read_map_ocr()
+            candidates = self._island_candidates()
+            if not candidates:
+                # 只剩宁息岛时也得进去，否则回合推进不了。
+                candidates = self._island_candidates(skip_store=False)
+            if prefer_store and kind != MoonSeaType.island101 and MoonSeaType.island101 in candidates:
+                kind = MoonSeaType.island101
+                roi = max(candidates[kind])
+            elif kind != MoonSeaType.island100:
+                roi = self._nearby_marker(candidates.get(kind, []), roi) or roi
+            elif candidates:
+                # OCR 未识别出岛型时，沿用从右向左的选岛顺序。
+                kind, roi = max(((island, max(boxes)) for island, boxes in candidates.items()),
+                                key=lambda candidate: candidate[1][0])
+            if not candidates.get(kind) or self._nearby_marker(candidates[kind], roi):
+                break
+            logger.warning('Island {} at {} matches no marker, re-read the map'.format(kind.name, roi))
         logger.info('Island type: {}, Residue: {}, ROI: {}'.format(kind, rounds, roi))
         return kind, rounds, roi
 
