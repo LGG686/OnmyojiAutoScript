@@ -55,6 +55,8 @@ class MoonSea(MoonSeaMap, MoonSeaL101, MoonSeaL102, MoonSeaL103, MoonSeaL104, Mo
     def one(self):
         self.cnt_skill101 = 1
         self._start()
+        # 选完技能还有「获得新技能」转场，先等地图稳定，免得把转场帧的坐标当成岛屿位置。
+        self.wait_animate_stable(self.C_MAIN_ANIMATE_KEEP, timeout=3)
         while 1:
             self.screenshot()
             if not self.in_main():
