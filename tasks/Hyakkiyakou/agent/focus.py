@@ -41,6 +41,10 @@ xywh: ({self._cx}, {self._cy}, {self._w}, {self._h})
 velocity: {self._v}"""
 
     def omega(self, z):
+        height, width = z.shape[:2]
+        if not (0 <= self._cy < height and 0 <= self._cx < width):
+            self._omega = 0.
+            return self._omega
         __omega = z[self._cy, self._cx]
         self._omega = __omega
         return __omega
