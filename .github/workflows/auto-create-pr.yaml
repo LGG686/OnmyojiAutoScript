@@ -18,7 +18,8 @@ jobs:
       - name: Create or find automated sync PR
         id: pr
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 组织策略禁止 GITHUB_TOKEN 创建 PR 时，配置 SYNC_PR_TOKEN（PAT）即可覆盖
+          GH_TOKEN: ${{ secrets.SYNC_PR_TOKEN || secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           TZ: Asia/Shanghai
         run: |
@@ -49,6 +50,7 @@ jobs:
       - name: Merge automated sync PR
         if: steps.pr.outputs.number != ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 组织策略禁止 GITHUB_TOKEN 创建 PR 时，配置 SYNC_PR_TOKEN（PAT）即可覆盖
+          GH_TOKEN: ${{ secrets.SYNC_PR_TOKEN || secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: gh pr merge "${{ steps.pr.outputs.number }}" --merge
