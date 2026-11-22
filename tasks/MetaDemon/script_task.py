@@ -113,6 +113,15 @@ class ScriptTask(RightActivity, Battle, GeneralBattle, SwitchSoul, Star56):
             if not (self.appear(self.I_FIND_DEMON) or self.appear(self.I_BATTLE_DEMON)):
                 continue
 
+            # 疲劳达到阈值时优先召唤鬼王（开关控制，判定先于原有逻辑）
+            if self.config.meta_demon.meta_demon_config.md_fatigue_summon_first:
+                fatigue = self.current_exhaustion()
+                if 61 <= fatigue <= 100 and self.appear(self.I_BOSS_EMPTY):
+                    logger.info('Fatigue >= 61, summon demon first')
+                    if self.find_demon():
+                        boss_timer.reset()
+                        continue
+
             # 先看自己有没有鬼王要打
             if (not self.appear(self.I_BOSS_EMPTY) and
                     (self.appear(self.I_BOSS_CONVENE) or self.appear(self.I_BOOS_PUBLIC))):
