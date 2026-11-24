@@ -19,6 +19,11 @@ from ctypes import wintypes
 class EmulatorUnknown(Exception):
     pass
 
+def _window_keyword(window_name) -> str:
+    """窗口标题关键字，空标题返回空串（调用方需自行跳过，否则会匹配所有窗口）"""
+    return (window_name or '').strip().lower()
+
+
 def minimize_by_name(window_name, convert_hidden=True):
     """
     按名称处理窗口状态
@@ -26,9 +31,14 @@ def minimize_by_name(window_name, convert_hidden=True):
         window_name (str): 窗口名称（支持部分匹配）
         convert_hidden (bool): 是否将隐藏窗口改为最小化
     """
+    keyword = _window_keyword(window_name)
+    if not keyword:
+        logger.warning('窗口标题为空，跳过最小化窗口')
+        return
+
     def callback(hwnd, lParam):
         title = get_window_title(hwnd)
-        if window_name.lower() in title.lower():
+        if keyword in title.lower():
             # 检查窗口当前状态
             is_visible = ctypes.windll.user32.IsWindowVisible(hwnd)
             
@@ -49,10 +59,15 @@ def find_hwnd_by_name(window_name):
     """
     枚举所有窗口，返回第一个匹配名称的 hwnd
     """
+    keyword = _window_keyword(window_name)
+    # 空标题会匹配所有窗口，随后对任意系统窗口 ShowWindow 可能导致调用线程永久阻塞
+    if not keyword:
+        return None
+
     target = None
     def callback(hwnd, lParam):
         title = get_window_title(hwnd)
-        if window_name.lower() in title.lower():
+        if keyword in title.lower():
             nonlocal target
             target = hwnd
             return False  # 停止枚举
