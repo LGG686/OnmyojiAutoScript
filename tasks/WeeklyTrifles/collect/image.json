@@ -2,61 +2,41 @@
   {
     "itemName": "wt_collect",
     "imageName": "collect_wt_collect.png",
-    "profile": "High",
     "roiFront": "1170,606,78,83",
     "roiBack": "1170,606,78,83",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "点击分享"
-  },
-  {
-    "itemName": "wt_scroll_1",
-    "imageName": "collect_wt_scroll_1.png",
-    "profile": "High",
-    "roiFront": "1180,27,28,121",
-    "roiBack": "1159,12,65,152",
-    "method": "Template matching",
-    "threshold": 0.7,
-    "description": "百鬼夜行图"
-  },
-  {
-    "itemName": "wt_scroll_2",
-    "imageName": "collect_wt_scroll_2.png",
-    "profile": "High",
-    "roiFront": "1182,24,24,122",
-    "roiBack": "1163,12,63,155",
-    "method": "Template matching",
-    "threshold": 0.7,
-    "description": "百妖风物鉴"
   },
   {
     "itemName": "wt_collect_wechat",
     "imageName": "collect_wt_collect_wechat.png",
-    "profile": "High",
-    "roiFront": "280,600,440,100",
-    "roiBack": "280,600,440,100",
+    "roiFront": "326,649,48,37",
+    "roiBack": "106,609,811,105",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "微信分享"
   },
   {
     "itemName": "wt_qr_code",
     "imageName": "collect_wt_qr_code.png",
-    "profile": "High",
     "roiFront": "473,161,336,96",
     "roiBack": "404,112,483,168",
     "method": "Template matching",
     "threshold": 0.65,
+    "profile": "High",
     "description": "二维码"
   },
   {
     "itemName": "wt_share",
     "imageName": "collect_wt_share.png",
-    "profile": "High",
-    "roiFront": "331,282,60,53",
-    "roiBack": "133,243,270,120",
+    "roiFront": "836,611,28,26",
+    "roiBack": "651,550,401,101",
     "method": "Template matching",
     "threshold": 0.8,
+    "profile": "High",
     "description": "式神图鉴头像旁边的分享按钮"
   }
 ]

@@ -4,7 +4,6 @@ from copy import copy
 
 from tasks.ActivityShikigami.assets import ActivityShikigamiAssets
 from tasks.Component.GeneralInvite.assets import GeneralInviteAssets
-from tasks.Component.SwitchAccount.assets import SwitchAccountAssets
 from tasks.Exploration.assets import ExplorationAssets
 from tasks.GameUi.action import conditional_action, sequence
 from tasks.GameUi.chess_battle import (
@@ -178,7 +177,7 @@ def handle_activity_overlay(task) -> bool:
 
 
 # 登录页。
-page_login = Page(SwitchAccountAssets.I_CHECK_LOGIN_FORM, category="global")
+page_login = Page(RestartAssets.I_LOGIN_8, category="global")
 page_login.add_enter_success_hooks(handle_login_page)
 
 # 庭院主页(此处通过提高阈值来处理部分探索章节会识别成原始庭院的问题, 后续有其他更好方法需改善)

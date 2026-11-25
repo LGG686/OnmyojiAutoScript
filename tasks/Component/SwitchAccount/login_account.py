@@ -9,6 +9,7 @@ from module.image.operators import threshold_bgr_to_inverted_rgb
 from module.logger import logger
 from tasks.Component.SwitchAccount.assets import SwitchAccountAssets
 from tasks.Component.SwitchAccount.switch_account_config import AccountInfo
+from tasks.Restart.assets import RestartAssets
 from tasks.base_task import BaseTask
 
 
@@ -38,8 +39,6 @@ class LoginAccount(BaseTask, SwitchAccountAssets):
 
     def switch_svr(self, svrName: str):
         """在已有角色卡片中匹配服务器，选择后等待进入游戏按钮。"""
-        from tasks.Restart.assets import RestartAssets
-
         if not self.open_server_selection():
             return False
         target = self.O_SA_SELECT_SVR_CHARACTER_LIST
@@ -152,7 +151,7 @@ class LoginAccount(BaseTask, SwitchAccountAssets):
                 return
             if self.appear_then_click(self.I_SA_SWITCH_ACCOUNT_BTN, interval=1.5):
                 continue
-            if self.appear(self.I_CHECK_LOGIN_FORM):
+            if self.appear(RestartAssets.I_LOGIN_8):
                 self.click(self.C_SA_LOGIN_FORM_USER_CENTER, 1.5)
                 continue
         return
@@ -235,7 +234,7 @@ class LoginAccount(BaseTask, SwitchAccountAssets):
         """
         self.screenshot()
         #
-        if not (self.appear(self.I_CHECK_LOGIN_FORM) or self.appear(self.I_SA_NETEASE_GAME_LOGO)):
+        if not (self.appear(RestartAssets.I_LOGIN_8) or self.appear(self.I_SA_NETEASE_GAME_LOGO)):
             logger.error("Unknown Page,%s %s Login Failed", accountInfo.character, accountInfo.svr)
             return False
 
@@ -307,7 +306,7 @@ class LoginAccount(BaseTask, SwitchAccountAssets):
             isCharacterSelected = self.switch_svr(accountInfo.svr)
         if isAccountLogon and isCharacterSelected:
             # 成功登录账号 找到角色
-            # self.ui_click_until_disappear(self.C_SA_LOGIN_FORM_ENTER_GAME_BTN, stop=self.I_CHECK_LOGIN_FORM)
+            # self.ui_click_until_disappear(self.C_SA_LOGIN_FORM_ENTER_GAME_BTN, stop=RestartAssets.I_LOGIN_8)
             logger.info("character %s-%s account:%s %s login Success", accountInfo.character, accountInfo.svr,
                         accountInfo.account,
                         'Android' if accountInfo.apple_or_android else 'Apple')

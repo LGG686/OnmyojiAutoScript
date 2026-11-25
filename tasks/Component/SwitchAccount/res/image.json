@@ -1,15 +1,5 @@
 [
   {
-    "itemName": "check_login_form",
-    "imageName": "check_login_form.png",
-    "roiFront": "178,572,53,60",
-    "roiBack": "1,547,241,105",
-    "method": "Template matching",
-    "threshold": 0.8,
-    "profile": "High",
-    "description": "用于判断是否在登录界面的"
-  },
-  {
     "itemName": "sa_user_center",
     "imageName": "sa_user_center.png",
     "roiFront": "190,390,330,200",
