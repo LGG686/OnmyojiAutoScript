@@ -628,13 +628,27 @@ def history(repo: str = '', branch: str = '', count: int = 20) -> dict:
     if not _has_remote_ref(branch):
         return {'ok': True, 'local': local, 'remote': [],
                 'error': '本地还没有远端历史，完成一次更新后即可查看'}
-    # 先把拉到过的远端提交摆出来：deepen 只是补更多历史，网络一慢不该把列表变空
+    # 远端历史以实时 upstream HEAD 为准：卡片的「最新版本」走 ls-remote，
+    # 而本地 origin/<branch> 只在真正更新时才前进。有新版未更新时若只读本地
+    # ref，远端一节会退化成旧历史，第一条对不上卡片显示的提交。
+    # Remote history follows the live upstream head: status() uses ls-remote while
+    # origin/<branch> advances only on a real update, so a stale ref would show the
+    # old local chain instead of the commit displayed as "latest".
+    upstream = upstream_head(repo, branch)
+    try:
+        origin_tip = _git(ROOT, 'rev-parse', '--verify', '--quiet', ref, timeout=10)
+    except (OSError, subprocess.SubprocessError):
+        origin_tip = ''
+    stale = bool(upstream) and origin_tip != upstream
+    # 先把拉到过的远端提交摆出来：网络一慢不该把列表变空
     remote = _read_log(count, f'origin/{branch}')
-    if len(remote) >= count:
+    if not stale and len(remote) >= count:
         return {'ok': True, 'error': '', 'local': local, 'remote': remote}
     try:
-        _git(ROOT, 'fetch', '--deepen', str(count), '--no-tags', 'origin',
-             f'refs/heads/{branch}:{ref}', timeout=HISTORY_GIT_TIMEOUT)
+        # 有新版未更新：先把 origin/<branch> 推进到 upstream 再读，只取最近 count 条。
+        # 只动远端跟踪 ref，不动 HEAD/工作区。
+        _git(ROOT, 'fetch', '--depth' if stale else '--deepen', str(count), '--no-tags',
+             'origin', f'refs/heads/{branch}:{ref}', timeout=HISTORY_GIT_TIMEOUT)
         remote = _read_log(count, f'origin/{branch}') or remote
         local = _read_log(count) or local
     except (OSError, subprocess.SubprocessError, ValueError) as caught:
