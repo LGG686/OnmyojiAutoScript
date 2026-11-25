@@ -24,6 +24,19 @@ class PortraitUIMixin(BaseTask):
     if TYPE_CHECKING:
         def _adb_shell(self, cmd, timeout=15): ...
 
+    def _is_oasaos(self):
+        """与 ScriptTask / 核心设备层同一判据，让 mixin 单独使用也成立。"""
+        device = getattr(self, 'device', None)
+        if device is None:
+            return False
+        serial = getattr(device, 'serial', None)
+        if serial == 'oasaos':
+            return True
+        config = getattr(self, 'config', None)
+        script = getattr(config, 'script', None) if config is not None else None
+        section = getattr(script, 'device', None) if script is not None else None
+        return section is not None and getattr(section, 'screenshot_method', '') == 'oasaos'
+
     def _init_portrait(self):
         """进入竖屏应用前调用：关闭横屏假设的屏幕检查，锁定 orientation=0。"""
         # 720x1280+orientation=0：check_screen_size 会反复调 dumpsys 且无法旋正，直接跳过
@@ -41,14 +54,22 @@ class PortraitUIMixin(BaseTask):
         return appear
 
     def _tap(self, x, y, name=None):
-        """竖屏点击：adb input tap 直传原始坐标，与 control_method 无关。"""
+        """竖屏点击：adb input tap 直传原始坐标，与 control_method 无关。
+        Oasaos 下走桥触控（绑定当前虚拟屏），input tap 只会落在主屏。"""
         logger.info(f'点击 {name} @ ({x},{y})')
+        if self._is_oasaos():
+            self.device.click_oasaos(x, y)
+            return
         self._adb_shell(['input', 'tap', str(x), str(y)])
 
     def _swipe(self, x1, y1, x2, y2, duration=400):
         """竖屏滑动：adb input swipe 直传原始坐标，与 control_method 无关。
-        duration 为按下到抬起的时间(ms)，调大可减少松手后的惯性滚动。"""
+        duration 为按下到抬起的时间(ms)，调大可减少松手后的惯性滚动。
+        Oasaos 下走桥触控（绑定当前虚拟屏）。"""
         logger.info(f'滑动 ({x1},{y1}) -> ({x2},{y2}) ({duration}ms)')
+        if self._is_oasaos():
+            self.device.swipe_oasaos((x1, y1), (x2, y2), duration=duration / 1000.0)
+            return
         self._adb_shell(['input', 'swipe', str(x1), str(y1), str(x2), str(y2), str(duration)])
 
     def _screenshot_safe(self):
@@ -67,7 +88,24 @@ class PortraitUIMixin(BaseTask):
 
     def _launch_app_foreground(self, package, timeout=30):
         """前台启动指定包名 app（UI导航需要app可见）。低性能设备可调大 timeout。
-        优先 am start（monkey 在部分安卓虚拟机会卡住不返回）。"""
+        优先 am start（monkey 在部分安卓虚拟机会卡住不返回）。
+
+        Oasaos 通道：虚拟屏临时切竖屏 720x1280，把 app 投进虚拟屏，截图/点击/模板
+        三者落在同一块屏、同一套坐标；桌面/Redroid 保持原来的主屏启动不变。"""
+        device = getattr(self, 'device', None)
+        if device is not None and callable(getattr(device, 'oasaos_set_display_size', None)) \
+                and self._is_oasaos():
+            logger.info('Oasaos 虚拟屏切竖屏 720x1280')
+            display_id = device.oasaos_set_display_size(720, 1280)
+            device.app_start_portrait_oasaos(package, display_id=display_id)
+            confirm = Timer(timeout, count=2).start()
+            while 1:
+                if self._pidof(package):
+                    logger.info(f'{package} 已在虚拟屏运行')
+                    return True
+                if confirm.reached():
+                    logger.warning(f'等待 {package} 启动超时（{timeout}s）')
+                    return False
         # 优先 am start（动态获取主 activity，避免硬编码版本漂移）
         component = self._resolve_main_activity(package)
         if component:
@@ -139,7 +177,19 @@ class PortraitUIMixin(BaseTask):
         # 把阴阳师游戏重新拉到前台（竖屏app已杀死，恢复游戏界面）
         pkg = self.config.script.device.package_name
         component = self._resolve_main_activity(pkg)
-        if component:
+        if self._is_oasaos():
+            # 大神从虚拟屏退出：先把屏切回 1280x720 横屏，再用 app_start_oasaos 恢复
+            # 游戏原生渲染与焦点；裸 am start 不带 --display 会落回主屏。
+            logger.info('Oasaos 虚拟屏切回横屏 1280x720')
+            self.device.oasaos_set_display_size(1280, 720)
+            try:
+                logger.info('恢复阴阳师到虚拟屏')
+                self.device.app_start_oasaos(pkg)
+                self.device.wait_app_start_ready(timeout=30)
+                logger.info('阴阳师已进入虚拟屏，清理完成')
+            except Exception as e:
+                logger.warning(f'恢复阴阳师到虚拟屏失败: {e}')
+        elif component:
             try:
                 logger.info(f'恢复阴阳师前台: {component}')
                 self._adb_shell(['am', 'start', '-n', component])

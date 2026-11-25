@@ -4,6 +4,7 @@ import tempfile
 import threading
 import lzma
 import os
+import shutil
 import sys
 import time
 import json
@@ -18,6 +19,7 @@ import urllib3
 
 from module.logger import logger
 from module.exception import TaskEnd
+from module.device.method.oasaos import OASAOS_SERIAL
 from tasks.AutoCheckinBigGod.manual_claim import ManualClaimMixin
 
 try:
@@ -43,6 +45,9 @@ APP_KEY = "g37"
 GL_VERSION = "4.12.0"  # 默认值，运行时会从APP动态获取
 GL_CLIENTTYPE = "50"
 _NO_WINDOW = subprocess.CREATE_NO_WINDOW if sys.platform == 'win32' else 0
+# 通用 adb：优先系统 PATH 里的 adb（Linux/Redroid、配置好 PATH 的 Windows）；
+# 只有系统没有时才回退第三方包自带的 Windows adb.exe。Oasaos 通道不走这里。
+SYSTEM_ADB = shutil.which('adb') or ADB_PATH
 
 
 class ScriptTask(ManualClaimMixin):
@@ -187,9 +192,36 @@ class ScriptTask(ManualClaimMixin):
 
     # ======================== ADB 操作 ========================
 
+    def _is_oasaos(self):
+        """当前设备是否走 Oasaos 桥（手机虚拟屏），shell 命令由 App 侧执行。
+        判据与核心设备层一致：截图方法为 oasaos，或 serial 为哨兵值 oasaos。"""
+        if getattr(getattr(self, 'device', None), 'serial', None) == OASAOS_SERIAL:
+            return True
+        script = getattr(getattr(self, 'config', None), 'script', None)
+        return getattr(getattr(script, 'device', None), 'screenshot_method', '') == 'oasaos'
+
     def _adb_cmd_result(self, args, timeout=10):
-        # 如果有设备序列号且命令不是 connect/devices，则添加 -s 参数指定设备
-        cmd = [ADB_PATH]
+        if not args:
+            return subprocess.CompletedProcess(args, 0, stdout='', stderr='')
+
+        # Oasaos 通道：没有本地 adb，shell 走桥；connect/devices 视为已连接。
+        if self._is_oasaos():
+            if args[0] == 'shell':
+                shell_cmd = ' '.join(str(a) for a in args[1:])
+                try:
+                    out = self.device.oasaos_shell_output(shell_cmd, timeout=timeout)
+                    return subprocess.CompletedProcess(args, 0, stdout=out, stderr='')
+                except Exception as e:
+                    return subprocess.CompletedProcess(args, 1, stdout='', stderr=str(e))
+            if args[0] in ('connect', 'devices'):
+                return subprocess.CompletedProcess(args, 0, stdout='', stderr='')
+            # root/push 等 Frida 专用命令在 Oasaos 下不适用
+            return subprocess.CompletedProcess(args, 1, stdout='',
+                                              stderr=f'oasaos 不支持 adb {args[0]}')
+
+        # 其它通道（Windows 模拟器 / Linux + Redroid）统一用系统 adb，
+        # 不再依赖第三方包自带的 Windows adb.exe；Windows 找不到系统 adb 时才回退。
+        cmd = [SYSTEM_ADB]
         if hasattr(self, '_adb_serial') and self._adb_serial and args[0] not in ['connect', 'devices']:
             cmd.extend(['-s', self._adb_serial])
         cmd.extend(args)
@@ -272,13 +304,12 @@ class ScriptTask(ManualClaimMixin):
             # 优先通过 ContentProvider 后台启动（不显示UI，需要 su 权限）
             logger.info('后台启动大神APP进程...')
             try:
-                subprocess.run(
-                    [ADB_PATH] + (['-s', self._adb_serial] if getattr(self, '_adb_serial', None) else []) +
+                self._adb_cmd_result(
                     ['shell', 'su', '0', 'content', 'query', '--uri',
                      f'content://{GL_PACKAGE}.utilcode.provider/'],
-                    capture_output=True, timeout=20, creationflags=_NO_WINDOW
+                    timeout=20,
                 )
-            except subprocess.TimeoutExpired:
+            except (subprocess.TimeoutExpired, OSError):
                 pass
 
             # 等待进程启动
@@ -312,6 +343,16 @@ class ScriptTask(ManualClaimMixin):
     # ======================== Frida Server 管理 ========================
 
     def _check_adb_connection(self):
+        # Oasaos 通道：桥在线即视为可用，无需 adb connect/devices
+        if self._is_oasaos():
+            try:
+                self.device.oasaos_ping()
+                self._adb_serial = None
+                logger.info('Oasaos 通道就绪')
+                return True
+            except Exception as e:
+                logger.warning(f'Oasaos 通道不可用: {e}')
+                return False
         try:
             serial = str(self.config.script.device.serial).strip()
             if serial and serial != 'auto':

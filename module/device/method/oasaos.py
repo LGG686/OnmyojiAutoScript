@@ -22,7 +22,7 @@ import time
 
 import numpy as np
 
-from module.base.decorator import cached_property
+from module.base.decorator import cached_property, del_cached_property
 from module.exception import GameNotRunningError, RequestHumanTakeover, ScriptError
 from module.logger import logger
 
@@ -368,6 +368,29 @@ class Oasaos:
             raise ScriptError(f'Oasaos virtual display not ready: {display_id!r}')
         return display_id
 
+    # ---------------------------------------------------------------- 虚拟屏尺寸
+
+    def oasaos_set_display_size(self, width: int, height: int) -> int:
+        """临时改虚拟屏尺寸，返回重建后的 displayId。
+
+        竖屏任务（如大神签到）用 720x1280 让截图与竖屏模板坐标一致；用完必须调回横屏。
+        App 侧 setResolution 会重建屏，displayId 随之变化，调用方不能用缓存的旧 ID。
+        """
+        resp = self._oasaos_call_ok({
+            'method': 'set_display_size', 'width': int(width), 'height': int(height),
+        })
+        display_id = resp.get('displayId')
+        if not isinstance(display_id, int) or display_id < 1:
+            raise ScriptError(f'Oasaos resize failed: no display after {width}x{height}')
+        # 重建后帧尺寸变化，旧共享内存映射容量不匹配；丢弃让下次截图按新尺寸重握手。
+        old_client = self.__dict__.get('oasaos_shared_frame')
+        if old_client is not None:
+            old_client.close()
+        del_cached_property(self, 'oasaos_shared_frame')
+        self._oasaos_frame_retry_at = 0
+        logger.attr('Oasaos display size', f'{width}x{height}@{display_id}')
+        return display_id
+
     # ---------------------------------------------------------------- App 控制
 
     def oasaos_resolve_activity(self, package: str) -> str:
@@ -406,6 +429,25 @@ class Oasaos:
         if 'Error' in out:
             raise ScriptError(f'Oasaos app start failed: {out.strip()[:200]}')
         if caps.get('appFocus'):
+            self._oasaos_call_ok({
+                'method': 'app_focus', 'package': package, 'displayId': display_id,
+            })
+        return True
+
+    def app_start_portrait_oasaos(self, package_name, display_id=None) -> bool:
+        """把竖屏应用启动到副屏，跳过只服务 1280x720 原生游戏渲染的 app_prepare。
+
+        与 app_start_oasaos 的区别：不调 app_prepare（它硬性要求 1280x720），
+        displayId 由调用方在切完竖屏尺寸后传入，避免用重建前的旧 ID。
+        """
+        package = package_name
+        display_id = display_id or self.oasaos_display_id
+        component = self.oasaos_resolve_activity(package)
+        out = self.oasaos_shell_output(
+            f'am start -W --display {display_id} -n {shlex.quote(component)}', timeout=60)
+        if 'Error' in out:
+            raise ScriptError(f'Oasaos portrait app start failed: {out.strip()[:200]}')
+        if self.oasaos_capabilities().get('appFocus'):
             self._oasaos_call_ok({
                 'method': 'app_focus', 'package': package, 'displayId': display_id,
             })
