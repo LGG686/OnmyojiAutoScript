@@ -174,7 +174,7 @@ class ScriptTask(BaseTask):
         except Exception:
             pass
         try:
-            self._adb_shell(['su -c "killall frida-server"'])
+            self._shell_as_root('killall frida-server re.frida.helper')
         except Exception:
             pass
 
@@ -200,6 +200,22 @@ class ScriptTask(BaseTask):
     def _adb_shell(self, cmd, timeout=15):
         return self._adb_cmd(['shell'] + cmd, timeout=timeout)
 
+    def _shell_as_root(self, cmd, timeout=15):
+        """以 root 身份执行 shell 命令。
+        有 su 的环境走 su -c；MuMu + KernelSU 等无 su 的环境直接执行
+        （调用方需先用 `adb root` 提权）。
+        """
+        if self._adb_shell(['command -v su']).strip():
+            return self._adb_shell([f'su -c "{cmd}"'], timeout=timeout)
+        return self._adb_shell([cmd], timeout=timeout)
+
+    def _root_prefix(self) -> str:
+        """拼在 shell 命令前的 root 前缀。
+        有 su 的环境用 `su 0 `；MuMu + KernelSU 之类没有 su 命令的环境直接返回空串
+        （root 由 `adb root` 提供，adb shell 本身就是 uid=0）。
+        """
+        return 'su 0 ' if self._adb_shell(['command -v su']).strip() else ''
+
     def _get_app_pid(self):
         try:
             output = self._adb_shell(['pidof', GL_PACKAGE])
@@ -218,21 +234,21 @@ class ScriptTask(BaseTask):
                 logger.info('大神APP已在运行，无需重启')
                 return pid
 
-            # 优先通过 ContentProvider 后台启动（不显示UI，需要 su 权限）
+            # 优先通过 ContentProvider 后台启动（不显示UI；需要 root，有 su 用 su，没有就直接跑）
             logger.info('后台启动大神APP进程...')
             try:
                 subprocess.run(
                     [ADB_PATH] + (['-s', self._adb_serial] if getattr(self, '_adb_serial', None) else []) +
-                    ['shell', 'su', '0', 'content', 'query', '--uri',
-                     f'content://{GL_PACKAGE}.utilcode.provider/'],
+                    ['shell', f'{self._root_prefix()}content query --uri '
+                              f'content://{GL_PACKAGE}.utilcode.provider/'],
                     capture_output=True, timeout=20, creationflags=_NO_WINDOW
                 )
             except subprocess.TimeoutExpired:
                 pass
 
-            # 等待进程启动
-            for _ in range(10):
-                time.sleep(2)
+            # 等待进程启动（provider 返回即代表进程已拉起，1 秒轮询足够）
+            for _ in range(5):
+                time.sleep(1)
                 pid = self._get_app_pid()
                 if pid:
                     return pid
@@ -394,11 +410,16 @@ class ScriptTask(BaseTask):
 
     def _start_frida_server(self):
         logger.info('启动Frida Server...')
-        # 使用 su + nohup 以 root 身份后台启动，否则无权 attach 其他进程
-        # 将 stdout/stderr 重定向到 /dev/null 避免阻塞
-        start_cmd = f'su -c "nohup {FRIDA_SERVER_REMOTE} > /dev/null 2>&1 &"'
+        # 部分模拟器（如 MuMu + KernelSU）没有 su 命令，root 通过 adb root 提供，
+        # 先 adb root 提权，再按环境自动选择 su -c 或直接执行
         try:
-            self._adb_shell([start_cmd], timeout=5)
+            self._adb_cmd(['root'], timeout=10)
+            self._adb_cmd(['wait-for-device'], timeout=30)
+        except Exception:
+            pass
+        # 将 stdout/stderr 重定向到 /dev/null 避免阻塞
+        try:
+            self._shell_as_root(f'nohup {FRIDA_SERVER_REMOTE} > /dev/null 2>&1 &', timeout=5)
         except subprocess.TimeoutExpired:
             # su 启动可能超时，但进程已经在后台运行了
             pass
@@ -776,7 +797,8 @@ Java.perform(function() {{
             sql = 'SELECT uid, token, account, ursAuthedToken, ursAuhtedId, authType FROM userauths LIMIT 1'
             db_path = f'/data/data/{GL_PACKAGE}/databases/auth'
             # 用单条字符串传给 adb shell，避免参数拆分导致 SQL 断裂
-            shell_cmd = f'su 0 sqlite3 {db_path} "{sql}"'
+            # root 前缀按环境自动选择：有 su 用 su 0，无 su（adb root）直接跑
+            shell_cmd = f'{self._root_prefix()}sqlite3 {db_path} "{sql}"'
             result = subprocess.run(
                 [ADB_PATH] + (['-s', self._adb_serial] if getattr(self, '_adb_serial', None) else []) +
                 ['shell', shell_cmd],
@@ -784,7 +806,10 @@ Java.perform(function() {{
             )
             row = result.stdout.strip()
             if not row or '|' not in row:
-                logger.warning('auth数据库为空或不可读')
+                # stdout 为空分三种情况：没 su、没 root（permission denied）、SQL/DB 错，
+                # 只有把 stderr 带出来才能区分，否则日志里长得一模一样
+                err = result.stderr.strip()
+                logger.warning(f'auth数据库为空或不可读, stderr: {err[:200] if err else "(空)"}')
                 return None
 
             fields = row.split('|')

@@ -643,7 +643,10 @@ class Script:
         if not self.config.script.device.run_background_only and IS_WINDOWS:
             from module.device.platform2.platform_windows import minimize_by_name, show_window_by_name
             target_window_name = self.config.script.device.handle  # 在这里输入你的具体窗口名称
-            if self.config.script.device.emulator_window_minimize:
+            if not target_window_name:
+                # 标题为空时不能去枚举窗口，否则会匹配到任意系统窗口并卡死
+                logger.info('script.device.handle 未配置，跳过模拟器窗口前置')
+            elif self.config.script.device.emulator_window_minimize:
                 minimize_by_name(target_window_name)
                 logger.info(f'重新显示: {target_window_name}')
             else:

@@ -11,10 +11,10 @@
   {
     "itemName": "main_goto_exploration_9",
     "imageName": "main9_main_goto_exploration_9.png",
-    "roiFront": "553,107,31,30",
-    "roiBack": "234,98,904,68",
+    "roiFront": "537,113,49,76",
+    "roiBack": "300,60,680,200",
     "method": "Template matching",
-    "threshold": 0.3,
+    "threshold": 0.75,
     "description": "description"
   },
   {
