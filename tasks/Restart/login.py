@@ -156,15 +156,14 @@ class LoginHandler(BaseTask, RestartAssets, GameUiAssets, GeneralBuffAssets):
                 logger.warning('Appear create account')
                 raise GameStuckError('Appear create account')
 
-            # 点击“进入游戏”速度过快会进入区服设置，同时需在检测I_LOGIN_8之前检测，因为新服图标会让I_LOGIN_8向右偏移导致永远无法检测成功
-            # 同时修复了点击位置（之前是点击I_CHARACTARS而不是左边的区域）
+            # Handle server selection before checking the rating badge because the new-server icon can shift it.
             if self.appear(self.I_CHARACTARS, interval=1):
                 logger.info('误入区服设置')
                 # https://github.com/runhey/OnmyojiAutoScript/issues/585
                 self.device.click(x=106, y=535)
                 
-            # 点击’进入游戏‘
-            if not self.appear(self.I_LOGIN_8):
+            # Accept either age-rating badge used by the login screen.
+            if not (self.appear(self.I_LOGIN_8) or self.appear(self.I_LOGIN_16)):
                 continue
             
             # 登录体验服时，点击“进入游戏”速度过快，可能会出现体验服的弹窗
