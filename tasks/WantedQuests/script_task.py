@@ -663,6 +663,7 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
         reg_fengyin = re.compile(r'.*[封|野]印.*')
         # 由于斜杠'/'经常被误识别为'7',且悬赏封印悬赏怪物总数没有与‘7’相关的数字
         reg_progress = re.compile(r'^(\d+)([7/])(\d+)$')
+        reg_mystery_monster = re.compile(r'^[?？]+$')
         # 没有检测到斜杠，符合格式：前N位与后N位相同,表示已完成
         reg_XX = re.compile(r'^(\d+)\1$')
         # 过滤掉协或者未知悬赏等其他无用字符
@@ -676,6 +677,9 @@ class ScriptTask(WQExplore, SecretScriptTask, WantedQuestsAssets):
             if reg_other.search(res.ocr_text):
                 continue
             if (match := reg_progress.match(res.ocr_text)):
+                if index > 0 and reg_mystery_monster.fullmatch(res_list[index - 1].ocr_text.strip()):
+                    logger.info('Skip wanted quest for mystery monster')
+                    continue
                 spliter_index = match.start(2)
                 xywh = calc_xywh(res.box)
                 self.O_WQ_TEXT_ALL.area = xywh
