@@ -41,7 +41,7 @@ class Special(Buy, MallNavbar):
             if totem_bought and medium_bought and low_bought:
                 logger.info('All bought')
                 break
-            if self.appear(self.I_SP_SWIPE_CHECK):
+            if self.appear(self.I_SP_SWIPE_CHECK) or self.appear(self.I_SOLD_OUT):
                 # 如果滑动到底了
                 logger.info('Swipe to bottom')
                 break

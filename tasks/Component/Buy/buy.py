@@ -115,13 +115,20 @@ class Buy(BaseTask, BuyAssets):
         else:
             # 四次截图数字都一样，就可以退出了
             number_record = []
+            add_click_count = 0
+            clear_add_click_record = number > 10
             ocr_timer = Timer(0.8)
             ocr_timer.start()
             while 1:
                 self.screenshot()
 
                 if self.appear_then_click(self.I_BUY_ADD, interval=0.8):
-                    continue
+                    if not clear_add_click_record:
+                        continue
+                    add_click_count += 1
+                    if add_click_count >= 7:
+                        self.device.click_record_remove(self.I_BUY_ADD)
+                        add_click_count = 0
 
                 if not ocr_timer.reached():
                     continue

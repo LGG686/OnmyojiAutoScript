@@ -34,5 +34,14 @@
     "method": "Template matching",
     "threshold": 0.8,
     "description": "判断是否滑动到底"
+  },
+  {
+    "itemName": "sold_out",
+    "imageName": "special_sold_out.png",
+    "roiFront": "442,344,54,32",
+    "roiBack": "142,312,876,290",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "售罄"
   }
 ]
