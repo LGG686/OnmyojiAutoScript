@@ -51,7 +51,16 @@
     "roiBack": "1,547,241,105",
     "method": "Template matching",
     "threshold": 0.8,
-    "description": "用于判断是否出现登录选区的"
+    "description": "Login server selection screen with the 8+ age rating icon"
+  },
+  {
+    "itemName": "login_16",
+    "imageName": "login_login_16.png",
+    "roiFront": "8,558,64,80",
+    "roiBack": "1,547,241,105",
+    "method": "Template matching",
+    "threshold": 0.8,
+    "description": "Login server selection screen with the 16+ age rating icon"
   },
   {
     "itemName": "login_specific_serve",
