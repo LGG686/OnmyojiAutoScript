@@ -292,7 +292,30 @@ class Oasaos:
                     self.oasaos_capture_transport = 'shared_memory'
                     return image
                 except OasaosNoFrame as e:
-                    raise GameNotRunningError(f'Oasaos bridge: {e}')
+                    # 竖屏切换会重建虚拟屏：新握手的连接可能赶在首帧之前，一次瞬时无帧就被
+                    # 判成「游戏未运行」，任务整轮重试又会再重建一次屏，形成失败循环。
+                    # 先丢弃连接、按当前帧尺寸重新握手取一次，真的还没帧才继续上抛。
+                    old_client = self.__dict__.get('oasaos_shared_frame')
+                    if old_client is not None:
+                        old_client.close()
+                    del_cached_property(self, 'oasaos_shared_frame')
+                    retry_client = self.oasaos_shared_frame
+                    if retry_client is not None:
+                        try:
+                            image = retry_client.capture()
+                            self.oasaos_capture_transport = 'shared_memory'
+                            logger.warning(f'Oasaos 重连取帧成功，忽略一次瞬时无帧: {e}')
+                            return image
+                        except (OasaosNoFrame, OasaosFrameError, OSError, ValueError) as retry_error:
+                            self._oasaos_frame_retry_at = (
+                                time.monotonic() + OASAOS_FRAME_RETRY_SECONDS)
+                            logger.warning(f'Oasaos 共享内存重连后仍无帧，回退 TCP: {retry_error}')
+                            if isinstance(retry_error, OasaosNoFrame):
+                                raise GameNotRunningError(f'Oasaos bridge: {retry_error}')
+                    else:
+                        self._oasaos_frame_retry_at = (
+                            time.monotonic() + OASAOS_FRAME_RETRY_SECONDS)
+                        logger.warning(f'Oasaos 共享内存不可用，回退 TCP: {e}')
                 except (OasaosFrameError, OSError, ValueError) as e:
                     # 通道不可用就回退 TCP，并冷却一段时间再重新协商，避免每帧多付一次失败开销。
                     self._oasaos_frame_retry_at = time.monotonic() + OASAOS_FRAME_RETRY_SECONDS
@@ -418,9 +441,20 @@ class Oasaos:
         display_id = self.oasaos_display_id
         caps = self.oasaos_capabilities()
         if caps.get('nativeGameResolution'):
-            self._oasaos_call_ok({
-                'method': 'app_prepare', 'package': package, 'displayId': display_id,
-            })
+            try:
+                self._oasaos_call_ok({
+                    'method': 'app_prepare', 'package': package, 'displayId': display_id,
+                })
+            except ScriptError as e:
+                # 竖屏任务（大神签到）异常退出会把虚拟屏留在 720x1280，
+                # 横屏游戏的 app_prepare 硬性要求 1280x720，先恢复横屏再重试。
+                if 'requires 1280x720' not in str(e):
+                    raise
+                logger.warning(f'虚拟屏非 1280x720，恢复横屏后重试 app_prepare: {e}')
+                display_id = self.oasaos_set_display_size(1280, 720)
+                self._oasaos_call_ok({
+                    'method': 'app_prepare', 'package': package, 'displayId': display_id,
+                })
         component = self.oasaos_resolve_activity(package)
         # -W 等启动完成再返回。窗口没建好就 app_focus 会回 no ready target window，
         # 而 am start 立即返回时窗口往往还在创建中。

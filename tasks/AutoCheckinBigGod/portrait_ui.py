@@ -11,6 +11,8 @@ _launch_app_foreground。
 """
 from typing import TYPE_CHECKING
 
+import time
+
 from module.logger import logger
 from module.base.timer import Timer
 from tasks.base_task import BaseTask
@@ -83,8 +85,14 @@ class PortraitUIMixin(BaseTask):
         if callable(fallback):
             try:
                 self.device.image = fallback()
+                return
             except Exception as e:
                 logger.warning(f'adb 截图回退失败: {e}')
+        # 两条路都没拿到新帧：旧 image_frame_id 已被服务端替换或过期（默认 TTL 3s），
+        # 继续用它匹配只会 KeyError: Unknown frame id 崩掉任务。清掉引用让本轮按
+        # 本地旧图匹配，下一轮循环重新截图，而不是带着失效帧引用退出。
+        self.device.image_frame_id = None
+        self.device.invalidate_image_batch_cache()
 
     def _launch_app_foreground(self, package, timeout=30):
         """前台启动指定包名 app（UI导航需要app可见）。低性能设备可调大 timeout。
@@ -96,6 +104,14 @@ class PortraitUIMixin(BaseTask):
         if device is not None and callable(getattr(device, 'oasaos_set_display_size', None)) \
                 and self._is_oasaos():
             logger.info('Oasaos 虚拟屏切竖屏 720x1280')
+            # set_display_size 会重建虚拟屏（displayId 变化，旧屏内容销毁）。若目标 app
+            # 已在旧屏上运行，am start --display 只会把它拉回前台，窗口仍留在已销毁的旧屏，
+            # 新屏全程黑屏：截图有帧但全是黑的，识别永远匹配不到。先强停让下一次启动在新屏
+            # 重建窗口，这是竖屏临时屏用完后必须付出的代价（该 app 本就是本次签到的工具）。
+            device.app_stop_oasaos(package)
+            stop_timer = Timer(3, count=3).start()
+            while self._pidof(package) and not stop_timer.reached():
+                time.sleep(0.2)
             display_id = device.oasaos_set_display_size(720, 1280)
             device.app_start_portrait_oasaos(package, display_id=display_id)
             confirm = Timer(timeout, count=2).start()

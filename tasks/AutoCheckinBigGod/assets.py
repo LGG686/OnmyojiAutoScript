@@ -17,13 +17,21 @@ class AutoCheckinBigGodAssets:
 	I_CIRCLE = RuleImage(profile="High", roi_front=(44,1229,55,34), roi_back=(0,1101,176,179), threshold=0.8, method="Template matching", file="./tasks/AutoCheckinBigGod/res/res_circle.png")
 	# 确认是否处于圈子界面 
 	I_CIRCLE_CHECK = RuleImage(profile="High", roi_front=(44,1221,53,51), roi_back=(0,1067,273,213), threshold=0.8, method="Template matching", file="./tasks/AutoCheckinBigGod/res/res_circle_check.png")
-	# 圈子界面进入福利中心 
-	I_WELFARE = RuleImage(profile="High", roi_front=(87,185,45,27), roi_back=(0,0,249,243), threshold=0.8, method="Template matching", file="./tasks/AutoCheckinBigGod/res/res_welfare.png")
+	# 首页右上「福利」入口。roi_back 沿用原宽度与起点，只把下沿从 243 补到 282：
+	# 真实 720x1280 帧里入口在 y≈239（模板高 27，需覆盖到 266），原 243 会把模板下沿切掉，
+	# 实测分数只有 0.3845 < 0.8；补到 282 后同一帧 1.0。仍限制在左侧卡片内，避免匹配到
+	# 右上角弹窗标题里的同名文字、把点击位置带到标题上。
+	I_WELFARE = RuleImage(profile="High", roi_front=(87,185,45,27), roi_back=(0,0,249,282), threshold=0.8, method="Template matching", file="./tasks/AutoCheckinBigGod/res/res_welfare.png")
 	# 福利中心浮窗领取领取奖励按钮（兼是否有浮窗检测按钮） 
 	I_CLAIM = RuleImage(profile="High", roi_front=(595,539,60,33), roi_back=(0,0,720,1280), threshold=0.8, method="Template matching", file="./tasks/AutoCheckinBigGod/res/res_claim.png")
 	# 重新登录按钮，刚启动app可能会因为在其他设备登录过显示重新登录按钮 
 	I_LOGIN_AGAIN = RuleImage(profile="High", roi_front=(527,694,53,30), roi_back=(0,335,720,556), threshold=0.8, method="Template matching", file="./tasks/AutoCheckinBigGod/res/res_login_again.png")
-	# 确认是否处于福利中心界面 
+	# 确认是否处于福利中心界面：匹配页面顶部标题「阴阳师福利中心」整串。
+	# roi 沿用原定义（roi_back 原值 0..262 已覆盖标题所在 y≈102..138），
+	# 只是模板图换成真实 720x1280 帧裁出的整串标题（196x36）：
+	# 原模板只截「福利」两字（60x39），在 720x1280@240dpi 下字形缩放不一致，
+	# 全屏最高只有 0.6578 < 0.8，永远判不出「已进入福利中心」。
+	# 换模板后实测福利页 1.0、首页 0.27，既稳又不误判。
 	I_CLAIM_S = RuleImage(profile="High", roi_front=(348,51,60,39), roi_back=(0,0,719,262), threshold=0.8, method="Template matching", file="./tasks/AutoCheckinBigGod/res/res_claim_s.png")
 	# 取消更新按钮 
 	I_X = RuleImage(profile="High", roi_front=(352,912,19,48), roi_back=(0,375,720,768), threshold=0.75, method="Template matching", file="./tasks/AutoCheckinBigGod/res/res_x.png")
