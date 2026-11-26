@@ -416,6 +416,21 @@ class Oasaos:
 
     # ---------------------------------------------------------------- App 控制
 
+    def detect_package_oasaos(self) -> str:
+        """自动检测设备上的阴阳师游戏包。带渠道后缀的具体包名优先于裸 com.netease.onmyoji。"""
+        resp = self.oasaos_shell('pm list packages', timeout=15)
+        packages = re.findall(r'package:([^\s]+)', resp.get('stdout', ''))
+        games = sorted(
+            (pkg for pkg in packages if 'onmyoji' in pkg.lower()),
+            key=len,
+            reverse=True,
+        )
+        if not games:
+            raise RequestHumanTakeover(
+                '未检测到阴阳师游戏包，请在配置里手动填写 package_name')
+        logger.attr('PackageName (auto)', games[0])
+        return games[0]
+
     def oasaos_resolve_activity(self, package: str) -> str:
         """解析 launcher Activity，返回 pkg/activity 形式。"""
         out = self.oasaos_shell_output(

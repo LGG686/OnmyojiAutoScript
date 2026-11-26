@@ -70,6 +70,23 @@ def _is_alive(name: str) -> bool:
     return process is not None and process.state != ScriptState.INACTIVE
 
 
+def _runner_state_code(name: str) -> str:
+    """调度器三态：running（在跑）/ warning（出错待人工接管）/ stopped（空闲）。
+
+    WARNING 是子进程捕获 RequestHumanTakeover 后通过状态队列回传的，进程退出后该状态仍
+    保留到下一次启动/停止，正好作为「上次出错」的判据。
+    """
+    process = _runner(name)
+    if process is None:
+        return 'stopped'
+    if process.state == ScriptState.WARNING:
+        return 'warning'
+    raw_process = getattr(process, '_process', None)
+    if process.state == ScriptState.RUNNING and raw_process is not None and raw_process.is_alive():
+        return 'running'
+    return 'stopped'
+
+
 def _runner(name: str):
     """取已注册的脚本进程；未访问过的配置还没有进程对象。"""
     if not name:
@@ -100,6 +117,7 @@ async def android_status(config: str = ''):
             logger.warning(f'android status log window failed: {error}')
     return {
         'runner_alive': alive,
+        'runner_state': _runner_state_code(name),
         'pid': getattr(getattr(_runner(name), '_process', None), 'pid', None) if alive else None,
         'config': name if alive else None,
         **tool_process.status(),

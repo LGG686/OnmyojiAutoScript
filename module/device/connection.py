@@ -98,6 +98,8 @@ class Connection(ConnectionAttr):
         # Android 桥模式：serial 是哨兵值，不经过 adb 设备/包检测
         if getattr(self.config.script.device, 'screenshot_method', '') == 'oasaos':
             self.package = self.config.script.device.package_name.value
+            if self.package == 'auto':
+                self.package = self.detect_package_oasaos()
             logger.attr('PackageName', self.package)
             return
         # 桌面客户端模式：不经过 adb 设备/包检测，包名直接用配置值

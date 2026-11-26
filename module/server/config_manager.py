@@ -3,6 +3,7 @@
 # github https://github.com/runhey
 import copy
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any, get_args, get_origin
@@ -518,9 +519,21 @@ class ConfigManager:
             return
 
         with open(template_path, 'r', encoding='utf-8') as f:
-            template_content = f.read()
+            data = json.loads(f.read())
+        # 顶层 config_name 同步成文件名（模板里是占位值）；运行时 ConfigModel 也会再覆盖一次。
+        data['config_name'] = file
+        # OAS-Android：新配置默认走 oasaos 特权桥（手机）。模板里的 auto/minitouch 是 PC
+        # 模拟器的默认值，在 proot 里没有可扫描的 adb 设备，会识别不到设备。包名先放 auto，
+        # 由 oasaos 设备后端在初始化时自动检测真实游戏包。
+        if os.environ.get('OAS_ANDROID_HOST'):
+            device = data.get('script', {}).get('device')
+            if isinstance(device, dict):
+                device['serial'] = 'oasaos'
+                device['screenshot_method'] = 'oasaos'
+                device['control_method'] = 'oasaos'
+                device['package_name'] = 'auto'
         with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(template_content)
+            json.dump(data, f, ensure_ascii=False, indent=2)
         logger.info(f'copy {template_path} to {file_path}')
 
 
